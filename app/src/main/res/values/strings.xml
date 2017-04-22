@@ -18,4 +18,25 @@
     <string name="title_activity_sign_up">Create an Account</string>
     <string name="prompt_name">Full Name</string>
     <string name="prompt_confirm_password">Confirm Password</string>
+    <string name="error_confirm_password">Password is not the same, please reenter password</string>
+    <string name="error_full_name_required">Full name is required</string>
+    <string name="error_invalid_network">Invalid Network Provider</string>
+
+    <string-array name="networks">
+        <item>Select Mobile Network</item>
+        <item>AirTel</item>
+        <item>Etisalat</item>
+        <item>Glo</item>
+        <item>MTN</item>
+        <item>N-Tel</item>
+    </string-array>
+
+    <!-- Package -->
+    <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
+
+    <!-- URls -->
+    <string name="register_url">http://192.168.8.100:5030/customer/register</string>
+    <string name="login_url">http://192.168.8.100:5030/customer/authenticate</string>
+    <string name="logo_text">LOGO</string>
+    <string name="or">OR</string>
 </resources>

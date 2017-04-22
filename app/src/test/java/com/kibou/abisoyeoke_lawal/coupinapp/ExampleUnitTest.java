@@ -1,8 +1,8 @@
-package com.example.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Example local unit test, which will execute on the development machine (host).

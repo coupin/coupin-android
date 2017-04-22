@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.abisoyeoke_lawal.coupinapp.LandingActivity">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -36,7 +34,7 @@
             android:layout_marginBottom="@dimen/activity_vertical_margin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="LOGO"
+            android:text="@string/logo_text"
             android:textColor="@android:color/white"
             android:textSize="30sp"/>
 
@@ -63,9 +61,9 @@
 
                 <View
                     android:background="@android:color/white"
-                    android:layout_marginTop="14sp"
-                    android:layout_width="100px"
-                    android:layout_height="1px" />
+                    android:layout_marginTop="16dp"
+                    android:layout_width="100dp"
+                    android:layout_height="1dp" />
 
                 <TextView
                     android:gravity="center_horizontal"
@@ -76,20 +74,21 @@
                     android:layout_marginRight="@dimen/activity_horizontal_margin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="OR"
+                    android:text="@string/or"
                     android:textColor="@android:color/white"
                     android:textSize="30sp"/>
 
                 <View
                     android:background="@android:color/white"
-                    android:layout_marginTop="14sp"
-                    android:layout_width="100px"
-                    android:layout_height="1px"/>
+                    android:layout_marginTop="16dp"
+                    android:layout_width="100dp"
+                    android:layout_height="1dp"/>
 
             </LinearLayout>
 
             <Button
                 android:background="@drawable/round_edges"
+                android:id="@+id/sign_in_button"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

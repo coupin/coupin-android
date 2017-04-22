@@ -1,14 +1,10 @@
-package com.example.abisoyeoke_lawal.coupinapp.Utils;
+package com.kibou.abisoyeoke_lawal.coupinapp.Utils;
 
 import android.content.res.AssetFileDescriptor;
 import android.graphics.Matrix;
 import android.media.MediaMetadataRetriever;
 import android.view.TextureView;
 import android.widget.FrameLayout;
-
-/**
- * Created by abisoyeoke-lawal on 4/21/17.
- */
 
 public class VideoUtils {
     // Video measurement

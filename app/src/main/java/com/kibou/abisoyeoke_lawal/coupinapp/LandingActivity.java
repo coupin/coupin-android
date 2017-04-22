@@ -1,23 +1,18 @@
-package com.example.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.VideoView;
 
-import com.example.abisoyeoke_lawal.coupinapp.Utils.VideoUtils;
-
-import java.io.IOException;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.VideoUtils;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -27,6 +22,8 @@ public class LandingActivity extends Activity {
     public TextureView backVideo;
     @BindView(R.id.sign_up_button)
     public Button signUpButton;
+    @BindView(R.id.sign_in_button)
+    public Button signInButton;
 
     private MediaPlayer mediaPlayer;
 
@@ -37,14 +34,21 @@ public class LandingActivity extends Activity {
         setContentView(R.layout.activity_landing);
         ButterKnife.bind(this);
 
-        signUpButton.getBackground().setColorFilter(getResources().getColor(android.R.color.holo_blue_bright), null);
+//        signUpButton.getBackground().setColorFilter(getResources().getColor(android.R.color.holo_blue_bright), null);
 
         final String video_path = "android.resource://" + getPackageName() + "/" + R.raw.back;
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LandingActivity.this, "Testing button pressed", Toast.LENGTH_SHORT).show();
+                startActivity(new Intent(LandingActivity.this, SignUpActivity.class));
+            }
+        });
+
+        signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LandingActivity.this, LoginActivity.class));
             }
         });
 
@@ -69,10 +73,8 @@ public class LandingActivity extends Activity {
                             mp.start();
                         }
                     });
-                } catch (IOException ioE) {
-                    ioE.printStackTrace();
-                } catch (IllegalStateException isE) {
-                    isE.printStackTrace();
+                } catch (Exception gE) {
+                    gE.printStackTrace();
                 }
             }
 
@@ -91,14 +93,6 @@ public class LandingActivity extends Activity {
 
             }
         });
-
-        // Put the video in a loop
-//        backVideo.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-//            @Override
-//            public void onPrepared(MediaPlayer mp) {
-//                mp.setLooping(true);
-//            }
-//        });
     }
 
     @Override
@@ -116,7 +110,7 @@ public class LandingActivity extends Activity {
     public void onPause() {
         super.onPause();
         if(mediaPlayer.isPlaying()) {
-            mediaPlayer.pause();
+            mediaPlayer.stop();
         }
     }
 
