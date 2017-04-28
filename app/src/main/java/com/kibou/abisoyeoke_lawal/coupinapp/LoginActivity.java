@@ -88,7 +88,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         requestQueue = Volley.newRequestQueue(this);
-        url = "http://192.168.8.100:5030/customer/authenticate";
+        url = getString(R.string.login_url);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

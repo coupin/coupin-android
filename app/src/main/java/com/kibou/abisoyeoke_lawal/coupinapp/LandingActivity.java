@@ -7,26 +7,37 @@ import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Surface;
 import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.VideoUtils;
+import com.synnapps.carouselview.CarouselView;
+import com.synnapps.carouselview.ViewListener;
+import com.yqritc.scalablevideoview.ScalableVideoView;
+
+import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LandingActivity extends Activity {
-   @BindView(R.id.back_video)
-    public TextureView backVideo;
+    @BindView(R.id.back_video)
+    public ScalableVideoView backVideo;
     @BindView(R.id.sign_up_button)
     public Button signUpButton;
     @BindView(R.id.sign_in_button)
     public Button signInButton;
+    @BindView(R.id.carouselView)
+    public CarouselView carouselView;
 
-    private MediaPlayer mediaPlayer;
-
+    String[] quotes = new String[]{"If one is to know himself, he must first discover freedom",
+            "Tell a man what his dreams are and he will tell you your nightmares",
+            "Balley was once in town for Reni, now Balley is no more"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,73 +63,32 @@ public class LandingActivity extends Activity {
             }
         });
 
-        backVideo.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-            @Override
-            public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-                Surface surface1 = new Surface(surface);
-
-                try {
-                    AssetFileDescriptor assetFileDescriptor = LandingActivity.this.getContentResolver().openAssetFileDescriptor(Uri.parse(video_path), "r");
-                    VideoUtils.calculateVideoSize(assetFileDescriptor);
-//                    VideoUtils.updateVideoSize(width, height, backVideo);
-                    mediaPlayer = new MediaPlayer();
-                    mediaPlayer.setDataSource(assetFileDescriptor.getFileDescriptor(), assetFileDescriptor.getStartOffset(), assetFileDescriptor.getLength());
-                    mediaPlayer.setSurface(surface1);
-                    mediaPlayer.setLooping(true);
-                    mediaPlayer.prepareAsync();
-                    mediaPlayer.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                        @Override
-                        public void onPrepared(MediaPlayer mp) {
-                            mp.seekTo(5000);
-                            mp.start();
-                        }
-                    });
-                } catch (Exception gE) {
-                    gE.printStackTrace();
+        try {
+            backVideo.setRawData(R.raw.back);
+            backVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mp.seekTo(5000);
+                    mp.setLooping(true);
+                    mp.start();
                 }
-            }
-
-            @Override
-            public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
-
-            }
-
-            @Override
-            public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
-                return false;
-            }
-
-            @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture surface) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if(mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-            mediaPlayer = null;
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
+        carouselView.setPageCount(quotes.length);
+        carouselView.setViewListener(viewListener);
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        if(mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-        }
-    }
+    ViewListener viewListener = new ViewListener() {
+        @Override
+        public View setViewForPosition(int position) {
+            View customView = getLayoutInflater().inflate(R.layout.carousel_view, null);
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(mediaPlayer != null) {
-            mediaPlayer.start();
+            ((TextView)customView.findViewById(R.id.quote)).setText(quotes[position]);
+
+            return customView;
         }
-    }
+    };
 }

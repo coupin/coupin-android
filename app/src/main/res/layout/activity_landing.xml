@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@android:color/black"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity">
@@ -9,11 +11,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextureView
+        <com.yqritc.scalablevideoview.ScalableVideoView
             android:id="@+id/back_video"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center|top" />
+            app:scalableType="centerCrop"/>
 
     </FrameLayout>
 
@@ -22,7 +24,7 @@
         android:layout_marginStart="@dimen/activity_horizontal_margin"
         android:layout_marginRight="@dimen/activity_horizontal_margin"
         android:layout_marginEnd="@dimen/activity_horizontal_margin"
-        android:paddingTop="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/landing_top_padding"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -44,56 +46,44 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
+            <com.synnapps.carouselview.CarouselView
+                android:id="@+id/carouselView"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                app:fillColor="#FFFFFFFF"
+                app:pageColor="#80FFFFFF"
+                app:radius="5dp"
+                app:slideInterval="5000"
+                app:strokeColor="#80FFFFFF"
+                app:strokeWidth="1dp" />
+
             <Button
-                android:background="@drawable/round_edges"
+                android:background="@drawable/green_round_edges"
                 android:id="@+id/sign_up_button"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/sign_up"
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/button_text"/>
+
+            <TextView
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_width="match_parent"
+                android:text="@string/already_user"
                 android:textColor="@android:color/white"/>
 
-            <LinearLayout
-                android:gravity="center_horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <View
-                    android:background="@android:color/white"
-                    android:layout_marginTop="16dp"
-                    android:layout_width="100dp"
-                    android:layout_height="1dp" />
-
-                <TextView
-                    android:gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                    android:layout_marginStart="@dimen/activity_horizontal_margin"
-                    android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                    android:layout_marginRight="@dimen/activity_horizontal_margin"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/or"
-                    android:textColor="@android:color/white"
-                    android:textSize="30sp"/>
-
-                <View
-                    android:background="@android:color/white"
-                    android:layout_marginTop="16dp"
-                    android:layout_width="100dp"
-                    android:layout_height="1dp"/>
-
-            </LinearLayout>
-
             <Button
-                android:background="@drawable/round_edges"
+                android:background="@drawable/blue_round_edges"
                 android:id="@+id/sign_in_button"
                 android:layout_marginBottom="@dimen/activity_vertical_margin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/sign_in"
-                android:textColor="@android:color/white"/>
+                android:textColor="@android:color/white"
+                android:textSize="@dimen/button_text"/>
 
         </LinearLayout>
 

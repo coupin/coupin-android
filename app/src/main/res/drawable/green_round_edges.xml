@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <gradient
-        android:endColor="@color/gradientStart"
-        android:centerColor="@color/gradientCenter"
-        android:startColor="@color/gradientEnd"
-        android:angle="180"/>
+
+    <solid
+        android:color="@color/gradientEnd"/>
 
     <corners android:bottomLeftRadius="@dimen/round_button"
         android:bottomRightRadius="@dimen/round_button"
         android:topLeftRadius="@dimen/round_button"
         android:topRightRadius="@dimen/round_button"/>
+
 </shape>

@@ -15,6 +15,8 @@
     </string>
     <string name="sign_up">Sign Up</string>
     <string name="sign_in">Sign In</string>
+    <string name="sign_in_w_facebook">Sign In with Facebook</string>
+    <string name="forgot">Forgot Password?</string>
     <string name="title_activity_sign_up">Create an Account</string>
     <string name="prompt_name">Full Name</string>
     <string name="prompt_confirm_password">Confirm Password</string>
@@ -35,8 +37,9 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <string name="register_url">http://192.168.8.100:5030/customer/register</string>
-    <string name="login_url">http://192.168.8.100:5030/customer/authenticate</string>
+    <string name="register_url">http://192.168.43.35:5030/customer/register</string>
+    <string name="login_url">http://192.168.43.35:5030/customer/authenticate</string>
     <string name="logo_text">LOGO</string>
     <string name="or">OR</string>
+    <string name="already_user">Already a user?</string>
 </resources>
