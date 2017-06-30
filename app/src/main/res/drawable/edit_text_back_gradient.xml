@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
     <padding
-        android:bottom="@dimen/activity_vertical_margin"
-        android:top="@dimen/activity_vertical_margin"/>
+        android:bottom="5dp"
+        android:top="5dp"/>
 
-    <gradient
-        android:endColor="@color/editTextGradientStartEnd"
-        android:centerColor="@android:color/white"
-        android:startColor="@color/editTextGradientStartEnd"
-        android:angle="180"/>
+    <solid
+        android:color="@android:color/transparent"/>
+
+    <stroke
+        android:color="#ffffff"
+        android:width="1px"/>
 
 </shape>

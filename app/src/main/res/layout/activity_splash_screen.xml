@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/back"
+    android:id="@+id/body"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.SplashScreen">
 
-</android.support.constraint.ConstraintLayout>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true">
+
+        <io.saeid.fabloading.LoadingView
+            android:layout_gravity="center"
+            android:id="@+id/loading_view"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleX="2.5"
+            android:scaleY="2.5"
+            app:mfl_duration="1000"
+            app:mfl_repeat="30"/>
+
+    </FrameLayout>
+
+    <!--<com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimatedView-->
+        <!--android:id="@+id/anim_view"-->
+        <!--android:layout_centerInParent="true"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="200dp" />-->
+
+</RelativeLayout>

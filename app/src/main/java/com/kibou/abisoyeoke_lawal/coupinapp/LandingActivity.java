@@ -2,25 +2,16 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetFileDescriptor;
-import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.Surface;
-import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.VideoUtils;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 import com.yqritc.scalablevideoview.ScalableVideoView;
-
-import java.util.HashMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,6 +26,8 @@ public class LandingActivity extends Activity {
     @BindView(R.id.carouselView)
     public CarouselView carouselView;
 
+    public MediaPlayer mediaPlayer;
+
     String[] quotes = new String[]{"If one is to know himself, he must first discover freedom",
             "Tell a man what his dreams are and he will tell you your nightmares",
             "Balley was once in town for Reni, now Balley is no more"};
@@ -44,10 +37,6 @@ public class LandingActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
         ButterKnife.bind(this);
-
-//        signUpButton.getBackground().setColorFilter(getResources().getColor(android.R.color.holo_blue_bright), null);
-
-        final String video_path = "android.resource://" + getPackageName() + "/" + R.raw.back;
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,9 +57,10 @@ public class LandingActivity extends Activity {
             backVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {
-                    mp.seekTo(5000);
-                    mp.setLooping(true);
-                    mp.start();
+                    mediaPlayer = mp;
+                    mediaPlayer.seekTo(5000);
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.start();
                 }
             });
         } catch (Exception e) {
@@ -79,16 +69,54 @@ public class LandingActivity extends Activity {
 
         carouselView.setPageCount(quotes.length);
         carouselView.setViewListener(viewListener);
+
+        ((TextView)findViewById(R.id.forgot_password)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LandingActivity.this, SplashScreen.class));
+            }
+        });
+
+        ((ImageView)findViewById(R.id.logo_wh)).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LandingActivity.this, HomeActivity.class));
+            }
+        });
     }
 
     ViewListener viewListener = new ViewListener() {
         @Override
         public View setViewForPosition(int position) {
             View customView = getLayoutInflater().inflate(R.layout.carousel_view, null);
-
             ((TextView)customView.findViewById(R.id.quote)).setText(quotes[position]);
 
             return customView;
         }
     };
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (mediaPlayer != null) {
+            mediaPlayer.start();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        if (mediaPlayer != null) {
+            mediaPlayer.pause();
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+    }
 }

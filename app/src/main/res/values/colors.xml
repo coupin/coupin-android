@@ -2,12 +2,15 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <!--<color name="colorAccent">#FF4081</color>-->
+    <color name="colorAccent">#05AFE6</color>
     <color name="darkGrey">#606060</color>
     <color name="facebookBlue">#3b5998</color>
     <color name="googleRed">#d62d20</color>
     <color name="gradientStart">#05AFE6</color>
     <color name="gradientCenter">#3EBAA1</color>
     <color name="gradientEnd">#6A9D3C</color>
-    <color name="editTextGradientStartEnd">#F3F4F5</color>
+    <color name="editTextGradientStartEnd">#dadbdc</color>
+    <color name="white">#FFFFFF</color>
+    <color name="round_shadow">#60000000</color>
 </resources>

@@ -69,8 +69,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public AutoCompleteTextView mEmailView;
     @BindView(R.id.password)
     public EditText mPasswordView;
-    public View mProgressView;
+    @BindView(R.id.login_form)
     public View mLoginFormView;
+    @BindView(R.id.login_progress)
+    public View mProgressView;
     public View focusView;
 
     public RequestQueue requestQueue;
@@ -108,9 +110,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 attemptLogin();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
 
     }
 
@@ -213,16 +212,18 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                 finish();
                             } else {
+                                showProgress(false);
                                 Toast.makeText(LoginActivity.this, res.getString("message"), Toast.LENGTH_SHORT).show();
                             }
-                            Log.v("Volley Response: ", response);
                         } catch (Exception e) {
+                            showProgress(false);
                             e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        showProgress(false);
                         Log.e("Volley Error: ", error.toString());
                     }
                 }){
@@ -239,6 +240,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 requestQueue.add(stringRequest);
             } catch (Exception e) {
+                showProgress(false);
                 e.printStackTrace();
             }
         }
@@ -286,7 +288,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 //            // The ViewPropertyAnimator APIs are not available, so simply show
 //            // and hide the relevant UI components.
 //            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//            mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 //        }
     }
 

@@ -3,11 +3,11 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -21,6 +21,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import org.json.JSONObject;
 
@@ -44,13 +45,13 @@ public class SignUpActivity extends AppCompatActivity {
     public EditText confirmPasswordView;
     @BindView(R.id.mobileNetwork)
     public Spinner mobileNetworkView;
+    @BindView(R.id.sign_up_form)
+    public View mSignUpFormView;
+    @BindView(R.id.sign_up_progress)
+    public View mProgressView;
 
     // Voley Variables
     RequestQueue reqQueue = null;
-
-    // UI references.
-    private View mProgressView;
-    private View mLoginFormView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,7 +60,7 @@ public class SignUpActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         reqQueue = Volley.newRequestQueue(this);
 
-        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.networks, android.R.layout.simple_spinner_item);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.networks, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         mobileNetworkView.setAdapter(adapter);
 
@@ -70,9 +71,6 @@ public class SignUpActivity extends AppCompatActivity {
                 attemptCreate();
             }
         });
-
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
     }
 
     /**
@@ -81,7 +79,6 @@ public class SignUpActivity extends AppCompatActivity {
      * errors are presented and no actual login attempt is made.
      */
     private void attemptCreate() {
-
         // Reset errors.
         nameView.setError(null);
         emailView.setError(null);
@@ -130,7 +127,7 @@ public class SignUpActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if(mobileNetworkView.getSelectedItemPosition() == 0) {
+        if (mobileNetworkView.getSelectedItemPosition() == 0) {
             Toast.makeText(this, getString(R.string.error_invalid_network), Toast.LENGTH_SHORT).show();
             focusView = mobileNetworkView;
             cancel = true;
@@ -149,15 +146,24 @@ public class SignUpActivity extends AppCompatActivity {
                 public void onResponse(String response) {
                     try {
                         JSONObject object = new JSONObject(response);
-                        Log.v("Volley Response:", object.toString());
-                        Log.v("Volley Response", "" + object.get("success").toString());
+                        if (object.getBoolean("success")) {
+                            PreferenceMngr.setContext(SignUpActivity.this);
+                            PreferenceMngr.setToken(object.getString("token"));
+                            startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
+                            finish();
+                        } else {
+                            showProgress(false);
+                            Toast.makeText(SignUpActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
+                        }
                     } catch (Exception e) {
+                        showProgress(false);
                         e.printStackTrace();
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    showProgress(false);
                     error.printStackTrace();
                 }
             }){
@@ -199,12 +205,12 @@ public class SignUpActivity extends AppCompatActivity {
 //        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+            mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            mSignUpFormView.animate().setDuration(shortAnimTime).alpha(
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -220,7 +226,7 @@ public class SignUpActivity extends AppCompatActivity {
             // The ViewPropertyAnimator APIs are not available, so simply show
             // and hide the relevant UI components.
 //            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+//            mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
 //        }
     }
 }

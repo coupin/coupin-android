@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<animation-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:oneshot="false">
+    <item
+        android:drawable="@drawable/bar_holo_8"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_7"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_6"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_5"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_4"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_3"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_2"
+        android:duration="120"/>
+    <item
+        android:drawable="@drawable/bar_holo_1"
+        android:duration="120"/>
+</animation-list>
