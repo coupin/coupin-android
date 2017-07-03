@@ -40,6 +40,7 @@ public class RewardsTab extends Fragment {
 
         // Setting View Pager for each tab
         ViewPager viewPager = (ViewPager) rootView.findViewById(R.id.rewards_viewpager);
+        setupWithViewPager(viewPager);
 
         // Set Tabs inside toolbar
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.rewards_tabs);
@@ -49,11 +50,11 @@ public class RewardsTab extends Fragment {
     }
 
     public void setupWithViewPager(ViewPager viewPager) {
-        RewardsTabAdapter adapter = new RewardsTabAdapter(getFragmentManager());
-        adapter.addFragment(new Tab3(), "One");
-        adapter.addFragment(new Tab3(), "Two");
-        viewPager.setOffscreenPageLimit(1);
+        RewardsTabAdapter adapter = new RewardsTabAdapter(getChildFragmentManager());
+        adapter.addFragment(new UseNowFragment(), "In Use");
+        adapter.addFragment(new SaveForLaterFragment(), "Saved For Later");
         viewPager.setAdapter(adapter);
-    };
+        viewPager.setOffscreenPageLimit(1);
+    }
 
 }

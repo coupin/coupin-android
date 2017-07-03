@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/activity_vertical_margin">
+
+        <com.mikhaellopez.circularimageview.CircularImageView
+            android:id="@+id/merchant_image"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="100dp"
+            android:layout_marginRight="@dimen/icon_space_horizontal"
+            android:layout_width="100dp"
+            app:civ_border="true"
+            app:civ_shadow="true"/>
+
+        <TextView
+            android:layout_toRightOf="@id/merchant_image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/testing"/>
+
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/merchant_rewards_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

@@ -5,16 +5,32 @@
     android:layout_height="match_parent"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab">
 
-    <com.google.android.gms.maps.MapView
-        android:id="@+id/map"
+    <com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout
+        android:id="@+id/map_relative_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/map"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout>
 
     <LinearLayout
         android:layout_alignParentTop="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
+
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/coupin"
+            android:textColor="@color/white"
+            android:textSize="30sp"
+            android:layout_marginBottom="5dp"/>
 
         <RelativeLayout
             android:id="@+id/icon_holder"
@@ -47,7 +63,7 @@
             android:layout_marginRight="@dimen/icon_space_horizontal"
             android:layout_marginTop="@dimen/home_vertical_space"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="50dp"
             app:cardCornerRadius="2dp"
             android:elevation="3dp">
 

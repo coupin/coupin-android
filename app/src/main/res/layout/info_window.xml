@@ -3,12 +3,12 @@
     android:background="@color/white"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:clickable="false">
+    android:layout_height="300dp">
 
     <FrameLayout
         android:background="@color/colorPrimary"
-        android:layout_width="match_parent"
+        android:layout_margin="3dp"
+        android:layout_width="380dp"
         android:layout_height="100dp">
     </FrameLayout>
 

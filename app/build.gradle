@@ -42,6 +42,7 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:10.2.1'
     compile 'com.mikhaellopez:circularimageview:3.0.2'
     compile 'cn.pedant.sweetalert:library:1.3'
+    compile 'com.appolica:interactive-info-window:v1.0.6'
     testCompile 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
 }
