@@ -13,4 +13,5 @@
     <color name="editTextGradientStartEnd">#dadbdc</color>
     <color name="white">#FFFFFF</color>
     <color name="round_shadow">#60000000</color>
+    <color name="black">#000000</color>
 </resources>

@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.comA/tools"
     android:background="@drawable/back_sm"
     android:layout_width="match_parent"
@@ -9,13 +10,23 @@
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.LoginActivity">
 
     <!-- Login progress -->
-    <ProgressBar
+    <RelativeLayout
         android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <com.wang.avi.AVLoadingIndicatorView
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_centerInParent="true"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="visible"
+            app:indicatorName="BallClipRotatePulseIndicator"
+            app:indicatorColor="@color/white"/>
+
+    </RelativeLayout>
 
     <ScrollView
         android:id="@+id/login_form"

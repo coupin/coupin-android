@@ -55,7 +55,7 @@ public class MapWrapperLayout extends RelativeLayout {
         boolean ret = false;
 
         // Make sure window is showing and we have all the references
-        if (marker != null & marker.isInfoWindowShown() && googleMap != null && infoWindow != null) {
+        if (marker != null && marker.isInfoWindowShown() && googleMap != null && infoWindow != null) {
             // Get marker position on the screen
             Point point = googleMap.getProjection().toScreenLocation(marker.getPosition());
 

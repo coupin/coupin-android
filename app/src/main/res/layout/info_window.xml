@@ -10,6 +10,13 @@
         android:layout_margin="3dp"
         android:layout_width="380dp"
         android:layout_height="100dp">
+
+        <ImageView
+            android:id="@+id/marker_banner"
+            android:background="@color/darkGrey"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
     </FrameLayout>
 
     <TextView
@@ -18,7 +25,8 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
-        android:text="@string/example_text_1"/>
+        android:text="@string/example_text_1"
+        android:textSize="@dimen/info_window_title"/>
 
     <TextView
         android:id="@+id/discount_2"
@@ -26,7 +34,9 @@
         android:layout_marginBottom="@dimen/activity_vertical_margin"
         android:layout_marginLeft="@dimen/activity_horizontal_margin"
         android:layout_width="match_parent"
-        android:text="@string/example_text_2"/>
+        android:text="@string/example_text_2"
+        android:textColor="@color/googleRed"
+        android:textSize="@dimen/info_window_validity"/>
 
     <LinearLayout
         android:layout_width="match_parent"

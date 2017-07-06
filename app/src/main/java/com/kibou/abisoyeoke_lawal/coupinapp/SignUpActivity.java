@@ -157,6 +157,7 @@ public class SignUpActivity extends AppCompatActivity {
                         }
                     } catch (Exception e) {
                         showProgress(false);
+                        Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                         e.printStackTrace();
                     }
                 }

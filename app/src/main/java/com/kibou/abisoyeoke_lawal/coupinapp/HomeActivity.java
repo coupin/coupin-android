@@ -26,14 +26,14 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.home), R.drawable.ic_man_user, R.color.googleRed));
-        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.contact), R.drawable.ic_lock, R.color.facebookBlue));
-        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.security), R.drawable.ic_envelope, R.color.colorAccent));
-        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.contact), R.drawable.ic_man_user));
-        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.security), R.drawable.ic_lock));
+        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.home), R.drawable.tab_home));
+        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.coupons), R.drawable.tab_coupon));
+        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.search), R.drawable.tab_search));
+        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.favourite), R.drawable.tab_favourite));
+        bottomNavigationView.addItem(new AHBottomNavigationItem(getResources().getString(R.string.profile), R.drawable.tab_profile));
 
         bottomNavigationView.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
-        bottomNavigationView.setAccentColor(getResources().getColor(R.color.colorAccent));
+        bottomNavigationView.setAccentColor(Color.parseColor("#3498db"));
 
         bottomNavigationView.setCurrentItem(0);
 

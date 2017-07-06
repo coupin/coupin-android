@@ -9,22 +9,30 @@
     android:orientation="vertical"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.SplashScreen">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_centerInParent="true">
 
-        <io.saeid.fabloading.LoadingView
-            android:layout_gravity="center"
-            android:id="@+id/loading_view"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:scaleX="2.5"
-            android:scaleY="2.5"
-            app:mfl_duration="1000"
-            app:mfl_repeat="30"/>
+        <ImageView
+            android:layout_centerInParent="true"
+            android:layout_width="190dp"
+            android:layout_height="190dp"
+            android:src="@drawable/logo"/>
 
-    </FrameLayout>
+        <me.itangqi.waveloadingview.WaveLoadingView
+            android:layout_centerInParent="true"
+            android:id="@+id/wave_loadingview"
+            android:layout_width="220dp"
+            android:layout_height="220dp"
+            app:wlv_borderColor="@color/colorAccent"
+            app:wlv_borderWidth="3dp"
+            app:wlv_progressValue="50"
+            app:wlv_shapeType="circle"
+            app:wlv_waveAmplitude="70"
+            app:wlv_waveColor="@color/colorAccent"/>
+
+    </RelativeLayout>
 
     <!--<com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimatedView-->
         <!--android:id="@+id/anim_view"-->

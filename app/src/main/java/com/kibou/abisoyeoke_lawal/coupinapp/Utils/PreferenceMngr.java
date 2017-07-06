@@ -34,4 +34,12 @@ public class PreferenceMngr {
     public static String getToken() {
         return preferences.getString("token", null);
     }
+
+    public static boolean isLoggedIn() {
+        if (getToken() != null) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

@@ -224,7 +224,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         showProgress(false);
-                        Log.e("Volley Error: ", error.toString());
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            if (error.networkResponse.statusCode == 401) {
+                                Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                        Log.e("Volley Error: ", error.networkResponse.toString());
                     }
                 }){
                     @Override
@@ -240,6 +247,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
                 requestQueue.add(stringRequest);
             } catch (Exception e) {
+                Log.v("VolleyError", e.toString());
                 showProgress(false);
                 e.printStackTrace();
             }
@@ -264,7 +272,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -284,12 +292,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
-//        } else {
-//            // The ViewPropertyAnimator APIs are not available, so simply show
-//            // and hide the relevant UI components.
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
+        } else {
+            // The ViewPropertyAnimator APIs are not available, so simply show
+            // and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
     }
 
     @Override
