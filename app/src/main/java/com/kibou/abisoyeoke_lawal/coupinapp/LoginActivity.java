@@ -90,7 +90,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         populateAutoComplete();
 
         requestQueue = Volley.newRequestQueue(this);
-        url = getString(R.string.login_url);
+        url = getString(R.string.base_url) + getString(R.string.ep_login_user);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -231,7 +231,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         } else {
                             Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                         }
-                        Log.e("Volley Error: ", error.networkResponse.toString());
+//                        Log.e("Volley Error: ", error.networkResponse.toString());
                     }
                 }){
                     @Override

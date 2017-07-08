@@ -52,6 +52,7 @@ public class SignUpActivity extends AppCompatActivity {
 
     // Voley Variables
     RequestQueue reqQueue = null;
+    String url = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,8 @@ public class SignUpActivity extends AppCompatActivity {
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
         reqQueue = Volley.newRequestQueue(this);
+
+        url = getString(R.string.base_url) + getString(R.string.ep_register_user);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.networks, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -141,7 +144,7 @@ public class SignUpActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            StringRequest stringRequest = new StringRequest(StringRequest.Method.POST, getString(R.string.register_url), new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(StringRequest.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     try {

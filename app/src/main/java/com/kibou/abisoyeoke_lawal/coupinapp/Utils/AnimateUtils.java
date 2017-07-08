@@ -19,6 +19,16 @@ public class AnimateUtils {
         boolean onAnimationCancel(View view);
     }
 
+
+    public static void crossFadeViews(View showView, View hideView) {
+        crossFadeViews(showView, hideView, ANIMATION_DURATION_SHORT);
+    }
+
+    public static void crossFadeViews(View showView, final View hideView, int duration) {
+        fadeInView(showView, duration);
+        fadeOutView(hideView, duration);
+    }
+
     public static void fadeInView(View view) {
         fadeInView(view, ANIMATION_DURATION_SHORT);
     }

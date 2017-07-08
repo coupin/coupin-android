@@ -1,8 +1,11 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Utils;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
 /**
@@ -41,5 +44,10 @@ public class PreferenceMngr {
         } else {
             return false;
         }
+    }
+
+    public static void signOut(Activity activity) {
+        preferences.edit().putString("token", null).apply();
+        activity.startActivity(new Intent(activity, LandingActivity.class));
     }
 }

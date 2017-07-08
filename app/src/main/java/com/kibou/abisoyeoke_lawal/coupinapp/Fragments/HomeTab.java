@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -40,18 +41,22 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout;
 import com.kibou.abisoyeoke_lawal.coupinapp.Listener.OnInfoWindowElemTouchListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.ListItem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -94,6 +99,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     public LatLngBounds.Builder latLngBounds;
     public Location currentLocation;
+    public Marker lastOpened;
 
     public String url;
     public RequestQueue requestQueue;
@@ -103,6 +109,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public Marker markers[] = new Marker[100];
     public LatLng min = new LatLng(0, 0);
     public LatLng max = new LatLng(1, 1);
+    public LatLng myLocation;
 
     public HomeTab() {
         // Required empty public constructor
@@ -131,7 +138,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         // Volley Queue Request and Url
         requestQueue = Volley.newRequestQueue(getContext());
-        url = getString(R.string.merchants_url);
+        url = getString(R.string.base_url) + getString(R.string.ep_get_merchants);
 
         // Clear list if it exists
         iconsList.clear();
@@ -152,14 +159,24 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         infoWindowTouchListener = new OnInfoWindowElemTouchListener(useNow) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
-                Toast.makeText(getActivity(), "Use now was pressed", Toast.LENGTH_SHORT).show();
+                try {
+                    JSONObject res = new JSONObject(marker.getSnippet());
+                    Log.v("VolleyResponse", res.getJSONArray("rewards").getJSONObject(0).toString());
+                    LatLng current = new LatLng(
+                            res.getJSONObject("location").getDouble("lat"),
+                            res.getJSONObject("location").getDouble("long")
+                    );
+                    generateCode(res.getJSONArray("rewards").getJSONObject(0).getString("_id"), current);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         };
 
         infoWindowTouchListenerForLater = new OnInfoWindowElemTouchListener(useLater) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
-                Toast.makeText(getActivity(), "Use later is done", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Use later is done ", Toast.LENGTH_SHORT).show();
             }
         };
 
@@ -227,20 +244,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 title.setText(reward.getString("name"));
                                 validity.setText(reward.getString("endDate"));
                             }
-
-                            infoWindow.setOnClickListener(new View.OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
-                                    Bundle extra = new Bundle();
-                                    extra.putString("merchant", marker1.getSnippet().toString());
-                                    merchantIntent.putExtra("info", extra);
-                                    startActivity(merchantIntent);
-                                }
-                            });
-
+                            
                             infoWindowTouchListener.setMarker(marker);
                             infoWindowTouchListenerForLater.setMarker(marker);
+                            infoWindowElemTouchListenerForImage.setMarker(marker);
 
                             mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
                         } catch (Exception e) {
@@ -258,15 +265,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     }
                 });
 
-//                mGoogleMap.addMarker(new MarkerOptions().title("One Place Like That").snippet("Somewhere").position(new LatLng(6.454898, 3.479936)));
-
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        LatLng latLng =  new LatLng(marker.getPosition().latitude, marker.getPosition().longitude + 0.000002);
-                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
-                        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                        onMarker = true;
+//                        LatLng latLng =  new LatLng(marker.getPosition().latitude, marker.getPosition().longitude + 0.000002);
+//                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
+//                        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//                        onMarker = true;
+                        PreferenceMngr.signOut(getActivity());
+
                         return false;
 
                     }
@@ -309,19 +316,83 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 if (Build.VERSION.SDK_INT > 5 && keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
                     if (onMarker) {
+                        if (lastOpened != null && lastOpened.isInfoWindowShown()) {
+                            lastOpened.hideInfoWindow();
+                        }
                         recenterView();
                         onMarker = false;
                         return true;
-                    } else {
-                        return false;
                     }
+                    Toast.makeText(getActivity(), "Press back one more time to Exit.", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
         });
 
-
         return rootView;
+    }
+
+    private void generateCode(final String id, final LatLng current) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.base_url) + getString(R.string.ep_generate_code), new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject resObj = new JSONObject(response);
+                    lastOpened.hideInfoWindow();
+                    GeneratedCodeDialog generatedCodeDialog = new GeneratedCodeDialog(getActivity(), resObj.getString("code"), current);
+                    generatedCodeDialog.show();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.v("VolleyError", error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("rewardId", id);
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", PreferenceMngr.getToken());
+
+                return headers;
+            }
+        };
+
+//        Map<String, String> params = new HashMap<>();
+//        params.put("reward", id);
+//
+//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.base_url) + getString(R.string.ep_generate_code), new JSONObject(params), new Response.Listener<JSONObject>() {
+//            @Override
+//            public void onResponse(JSONObject response) {
+//                Log.v("VolleyResponse", response.toString());
+//            }
+//        }, new Response.ErrorListener() {
+//            @Override
+//            public void onErrorResponse(VolleyError error) {
+//                Log.v("VolleyError", error.toString());
+//            }
+//        }) {
+//            @Override
+//            public Map<String, String> getHeaders() {
+//                Map<String, String> headers = new HashMap<>();
+//                headers.put("Authorization", PreferenceMngr.getToken());
+//
+//                return headers;
+//            }
+//        };
+
+        requestQueue.add(stringRequest);
+//        requestQueue.add(jsonObjectRequest);
     }
 
     private int getPixelsFromDp(Context context, int dp) {
@@ -363,7 +434,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             counter++;
                         }
 
-                        LatLng temp = new LatLng(0, 0);
+//                        LatLng temp = new LatLng(0, 0);
 
 //                        for (int i = 0; i < 3; i++) {
 //                            ListItem item = new ListItem();
@@ -431,6 +502,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
     }
 
+    /**
+     * To recenter the view to the bound created
+     */
     private void recenterView() {
         LatLngBounds bounds = latLngBounds.build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
@@ -482,6 +556,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         loading();
     }
 
+
+
     /**
      * Set loading
      */
@@ -499,6 +575,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
         markers[position].showInfoWindow();
+        lastOpened = markers[position];
         onMarker = true;
     }
 
@@ -532,6 +609,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 //            CameraPosition cameraPosition = new CameraPosition.Builder().zoom(17).target(new LatLng(location.getLatitude(), location.getLongitude())).build();
 //            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //        }
+        double tempLat = location.getLatitude();
+        double tempLong = location.getLongitude();
+
+        if (min.latitude > tempLat) {
+            min = new LatLng(tempLat, tempLong);
+        } else if (max.latitude < tempLat) {
+            max = new LatLng(tempLat, tempLong);
+        }
     }
 
     @Override
