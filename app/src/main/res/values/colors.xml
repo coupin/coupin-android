@@ -5,13 +5,27 @@
     <!--<color name="colorAccent">#FF4081</color>-->
     <color name="colorAccent">#05AFE6</color>
     <color name="darkGrey">#606060</color>
-    <color name="facebookBlue">#3b5998</color>
-    <color name="googleRed">#d62d20</color>
-    <color name="gradientStart">#05AFE6</color>
-    <color name="gradientCenter">#3EBAA1</color>
-    <color name="gradientEnd">#6A9D3C</color>
     <color name="editTextGradientStartEnd">#dadbdc</color>
     <color name="white">#FFFFFF</color>
     <color name="round_shadow">#60000000</color>
     <color name="black">#000000</color>
+
+    <!-- Social Colors -->
+    <color name="facebookBlue">#3b5998</color>
+    <color name="googleRed">#d62d20</color>
+
+    <!-- Gradient Colors -->
+    <color name="gradientStart">#05AFE6</color>
+    <color name="gradientCenter">#3EBAA1</color>
+    <color name="gradientEnd">#6A9D3C</color>
+
+    <!-- Book loading colors -->
+    <color name="book_loading_background">#ffffff</color>
+    <color name="book_loading_book">#ff33b5e5</color>
+    <color name="book_loading_page">#ffffff</color>
+    <color name="off_white">#E5E5E5</color>
+    <color name="lightGrey">#F2F2F2</color>
+
+    <!-- Text Colors -->
+    <color name="text_dark_grey">#35343D</color>
 </resources>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@drawable/background_marker_title"
+    android:orientation="vertical"
+    android:layout_width="200dp"
+    android:layout_height="20dp">
+
+    <TextView
+        android:id="@+id/name"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="5dp"
+        android:layout_marginLeft="@dimen/marker_title"
+        android:layout_marginRight="@dimen/marker_title"
+        android:layout_marginTop="5dp"
+        android:layout_width="match_parent"
+        android:text="Test"
+        android:textColor="@color/white"/>
+
+</LinearLayout>

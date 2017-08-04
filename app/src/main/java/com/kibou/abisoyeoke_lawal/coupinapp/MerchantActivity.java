@@ -6,8 +6,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.mikhaellopez.circularimageview.CircularImageView;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -17,8 +15,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MerchantActivity extends Activity {
-    @BindView(R.id.merchant_image_imageview)
-    public CircularImageView merchantImage;
     @BindView(R.id.merchant_rewards_listview)
     public ListView rewardsListView;
     @BindView(R.id.merchant_details_textview)

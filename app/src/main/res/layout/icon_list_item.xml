@@ -1,30 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
 
-        <com.mikhaellopez.circularimageview.CircularImageView
+    <android.support.v7.widget.CardView
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/icon_space"
+        android:layout_marginLeft="@dimen/icon_space_horizontal"
+        android:layout_marginRight="@dimen/icon_space_horizontal"
+        android:layout_marginTop="@dimen/icon_space"
+        android:layout_width="wrap_content"
+        app:cardCornerRadius="10dp"
+        app:cardUseCompatPadding="true"
+        app:contentPadding="1dp"
+        app:elevation="10dp">
+
+        <!--<View-->
+            <!--android:background="@drawable/round_edges_shadow"-->
+            <!--android:layout_width="70dp"-->
+            <!--android:layout_height="70dp"-->
+            <!--android:layout_marginLeft="6dp"-->
+            <!--android:layout_marginTop="6dp"/>-->
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:background="@drawable/round_edges"
             android:id="@+id/icon"
-            android:layout_marginBottom="@dimen/icon_space"
-            android:layout_marginLeft="@dimen/icon_space_horizontal"
-            android:layout_marginRight="@dimen/icon_space_horizontal"
-            android:layout_marginTop="@dimen/icon_space"
-            android:layout_width="70dp"
             android:layout_height="70dp"
-            app:civ_border="true"
-            app:civ_border_width="1dp"
-            app:civ_shadow="true"
-            app:civ_shadow_color="#90000000"
-            app:civ_shadow_radius="10"/>
+            android:layout_width="70dp"
+            app:riv_border_color="#80000000"
+            app:riv_corner_radius="10dp" />
 
-        <TextView
-            android:gravity="center"
-            android:ellipsize="marquee"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Afiz Cafe"
-            android:textColor="@android:color/black"
-            android:textSize="15sp"/>
+    </android.support.v7.widget.CardView>
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,13 +1,38 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:animateLayoutChanges="true"
+    android:background="@color/off_white"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.UseNowFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/now_loadingview"
+        android:layout_centerInParent="true"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:visibility="gone"
+        app:indicatorName="BallGridPulseIndicator"
+        app:indicatorColor="@color/colorAccent" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/now_recyclerview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <ListView
+        android:id="@+id/now_listview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:visibility="gone"/>
+
     <TextView
+        android:id="@+id/now_empty"
+        android:gravity="center"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:visibility="gone"/>
 
-</FrameLayout>
+</RelativeLayout>

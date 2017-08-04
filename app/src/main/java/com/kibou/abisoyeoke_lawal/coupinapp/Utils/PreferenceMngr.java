@@ -34,6 +34,14 @@ public class PreferenceMngr {
         preferences.edit().putString("token", token).apply();
     }
 
+    public static String getMobileNumber() {
+        return preferences.getString("mobileNumber", null);
+    }
+
+    public static void setMobileNumber(String number) {
+        preferences.edit().putString("mobileNumber", number).apply();
+    }
+
     public static String getToken() {
         return preferences.getString("token", null);
     }

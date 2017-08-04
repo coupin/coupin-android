@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@android:color/transparent"
+    android:orientation="horizontal"
+    android:layout_height="wrap_content"
+    android:layout_margin="@dimen/home_vertical_space"
+    android:layout_width="match_parent"
+    android:paddingBottom="15dp">
+
+    <android.support.v7.widget.CardView
+        android:background="@color/black"
+        android:layout_gravity="top|start"
+        android:layout_height="60dp"
+        android:layout_width="60dp"
+        app:cardCornerRadius="@dimen/cardview_custom_radius"
+        app:cardElevation="5dp"
+        app:contentPadding="3dp"
+        app:cardUseCompatPadding="true">
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/slide1"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:background="@android:color/transparent"
+        android:id="@+id/card"
+        android:layout_height="180dp"
+        android:layout_width="match_parent"
+        app:cardCornerRadius="@dimen/cardview_custom_radius"
+        app:cardElevation="5dp"
+        app:cardUseCompatPadding="true">
+
+        <RelativeLayout
+            android:background="@color/black"
+            android:layout_width="match_parent"
+            android:layout_height="90dp">
+
+            <ImageView
+                android:alpha="0.5"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:src="@drawable/temp1"
+                android:scaleType="centerCrop" />
+
+            <ImageView
+                android:id="@+id/card_category"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentTop="true"
+                android:layout_height="50dp"
+                android:layout_margin="10dp"
+                android:layout_width="50dp"
+                android:src="@drawable/ic_lock_wh" />
+
+            <TextView
+                android:layout_alignParentBottom="true"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:layout_width="wrap_content"
+                android:text="Yakubu's Tea"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+        </RelativeLayout>
+
+    </android.support.v7.widget.CardView>
+
+</LinearLayout>

@@ -1,9 +1,26 @@
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab">
+
+    <RelativeLayout
+        android:background="@color/white"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="Coupins"
+            android:textColor="@color/black"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/rewards_tab_main"
@@ -13,13 +30,14 @@
 
             <android.support.design.widget.TabLayout
                 android:id="@+id/rewards_tabs"
-                android:background="@color/colorPrimary"
+                android:background="@color/white"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:tabIndicatorColor="@color/colorAccent"
+                app:tabIndicatorHeight="2dp"
                 app:tabMode="fixed"
                 app:tabSelectedTextColor="@color/colorAccent"
-                app:tabTextColor="@color/white"/>
+                app:tabTextColor="#a3a3a3"/>
 
         <android.support.v4.view.ViewPager
             android:id="@+id/rewards_viewpager"
@@ -29,4 +47,4 @@
 
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

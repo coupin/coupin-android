@@ -11,6 +11,7 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -35,6 +36,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -66,6 +68,8 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
  * A simple {@link Fragment} subclass.
  */
 public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener {
+    @BindView(R.id.btn_mylocation)
+    public FloatingActionButton btnMyLocation;
     @BindView(R.id.icon_loading)
     public ImageView iconLoadingView;
     @BindView(R.id.icon_list_view)
@@ -77,7 +81,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public ViewGroup infoWindow;
     public ImageView banner;
     public TextView title;
-    public TextView validity;
+    public TextView address;
     public Button useNow;
     public Button useLater;
     public OnInfoWindowElemTouchListener infoWindowTouchListener;
@@ -85,6 +89,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public OnInfoWindowElemTouchListener infoWindowElemTouchListenerForImage;
 
     private GoogleMap mGoogleMap;
+    private GoogleMap.InfoWindowAdapter infoWindowAdapter;
     private LocationManager mLocationManager;
     private LinearLayoutManager mLinearLayoutManager;
 
@@ -98,7 +103,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public Handler handler;
 
     public LatLngBounds.Builder latLngBounds;
-    public Location currentLocation;
+    public Location currentLocation = null;
     public Marker lastOpened;
 
     public String url;
@@ -109,7 +114,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public Marker markers[] = new Marker[100];
     public LatLng min = new LatLng(0, 0);
     public LatLng max = new LatLng(1, 1);
-    public LatLng myLocation;
+
+    public GeneratedCodeDialog generatedCodeDialog;
+    public String rewardId;
+    public LatLng direction;
 
     public HomeTab() {
         // Required empty public constructor
@@ -135,6 +143,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         // Handler for delay and bound for map view
         handler = new Handler();
         latLngBounds = new LatLngBounds.Builder();
+        generatedCodeDialog = new GeneratedCodeDialog(HomeTab.this);
 
         // Volley Queue Request and Url
         requestQueue = Volley.newRequestQueue(getContext());
@@ -148,25 +157,18 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         mapView.onCreate(savedInstanceState);
 
-        // Info window details
-        infoWindow = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.info_window, null);
-        banner = (ImageView) infoWindow.findViewById(R.id.marker_banner);
-        title = (TextView) infoWindow.findViewById(R.id.discount_1);
-        validity = (TextView) infoWindow.findViewById(R.id.discount_2);
-        useNow = (Button) infoWindow.findViewById(R.id.btn_now);
-        useLater = (Button) infoWindow.findViewById(R.id.btn_later);
-
         infoWindowTouchListener = new OnInfoWindowElemTouchListener(useNow) {
             @Override
             protected void onClickConfirmed(View v, Marker marker) {
                 try {
                     JSONObject res = new JSONObject(marker.getSnippet());
-                    Log.v("VolleyResponse", res.getJSONArray("rewards").getJSONObject(0).toString());
                     LatLng current = new LatLng(
                             res.getJSONObject("location").getDouble("lat"),
                             res.getJSONObject("location").getDouble("long")
                     );
-                    generateCode(res.getJSONArray("rewards").getJSONObject(0).getString("_id"), current);
+                    rewardId = res.getJSONArray("rewards").getJSONObject(0).getString("_id");
+                    direction = current;
+                    generatedCodeDialog.show();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -191,9 +193,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
         };
 
-        useNow.setOnTouchListener(infoWindowTouchListener);
-        useLater.setOnTouchListener(infoWindowTouchListenerForLater);
-
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
 
@@ -208,6 +207,16 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
 
+        btnMyLocation.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentLocation != null) {
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                }
+            }
+        });
+
         mapView.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
@@ -220,60 +229,92 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.setMyLocationEnabled(true);
 
                 // Zoom into current location
-                if (currentLocation != null) {
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(17).build();
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                }
+//                if (currentLocation != null) {
+//                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
+//                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+//                }
 
-                mGoogleMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-                    @Override
-                    public View getInfoWindow(Marker marker) {
-                        return null;
+                infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
+                    private boolean opt;
+
+                    public void setTitleOnly(boolean opt) {
+                        this.opt = opt;
                     }
 
                     @Override
-                    public View getInfoContents(Marker marker) {
+                    public View getInfoWindow(Marker marker) {
                         final Marker marker1 = marker;
+
                         try {
                             JSONObject res = new JSONObject(marker.getSnippet());
-                            if (res.getJSONArray("rewards").length() > 1) {
-                                title.setText(res.getJSONArray("rewards").length() + " Discounts All for You.");
-                                validity.setText("See More");
-                            } else {
-                                JSONObject reward = res.getJSONArray("rewards").getJSONObject(0);
-                                title.setText(reward.getString("name"));
-                                validity.setText(reward.getString("endDate"));
-                            }
-                            
-                            infoWindowTouchListener.setMarker(marker);
-                            infoWindowTouchListenerForLater.setMarker(marker);
-                            infoWindowElemTouchListenerForImage.setMarker(marker);
+                            JSONObject reward = res.getJSONArray("rewards").getJSONObject(0);
 
-                            mapWrapperLayout.setMarkerWithInfoWindow(marker, infoWindow);
-                        } catch (Exception e) {
+                            if (marker.getTitle().toString().equals("Yes")) {
+                                infoWindow = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.info_window_title_only, null);
+//                                marker1.setInfoWindowAnchor(1.85f, 0.95f);
+                                TextView tempView = (TextView) infoWindow.findViewById(R.id.name);
+                                tempView.measure(0, 0);
+                                float initWidth =  tempView.getMeasuredWidth();
+                                tempView.setText(res.getString("name"));
+                                tempView.measure(0, 0);
+                                float finalWidth =  tempView.getMeasuredWidth();
+
+                                if ((finalWidth / 2) > initWidth) {
+                                    finalWidth = (finalWidth - initWidth) / 100;
+                                } else if (finalWidth > initWidth) {
+                                    finalWidth = finalWidth / 100;
+                                } else {
+                                    finalWidth = (initWidth + finalWidth) / 100;
+                                }
+
+                                marker1.setInfoWindowAnchor(finalWidth, 0.95f);
+                            } else {
+                                // Info window details
+                                infoWindow = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.info_window, null);
+                                marker1.setInfoWindowAnchor(0.5f, 0.7f);
+
+                                banner = (ImageView) infoWindow.findViewById(R.id.marker_banner);
+                                title = (TextView) infoWindow.findViewById(R.id.discount_1);
+                                address = (TextView) infoWindow.findViewById(R.id.discount_2);
+//                                useNow = (Button) infoWindow.findViewById(R.id.btn_now);
+//                                useLater = (Button) infoWindow.findViewById(R.id.btn_later);
+
+                                title.setText(res.getString("name"));
+                                address.setText(res.getString("address"));
+                                if (res.getJSONArray("rewards").length() > 1) {
+
+                                } else {
+
+                                }
+
+//                                useNow.setOnTouchListener(infoWindowTouchListener);
+//                                useLater.setOnTouchListener(infoWindowTouchListenerForLater);
+
+                                infoWindowTouchListener.setMarker(marker1);
+                                infoWindowTouchListenerForLater.setMarker(marker1);
+
+                                mapWrapperLayout.setMarkerWithInfoWindow(marker1, infoWindow);
+                            }
+                        }   catch (Exception e) {
                             e.printStackTrace();
                         }
 
                         return infoWindow;
                     }
-                });
 
-                mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
-                    public void onInfoWindowClick(Marker marker) {
-
+                    public View getInfoContents(Marker marker) {
+                        return null;
                     }
-                });
+                };
+
+                mGoogleMap.setInfoWindowAdapter(infoWindowAdapter);
 
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-//                        LatLng latLng =  new LatLng(marker.getPosition().latitude, marker.getPosition().longitude + 0.000002);
-//                        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(20).build();
-//                        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//                        onMarker = true;
-                        PreferenceMngr.signOut(getActivity());
-
+                        marker.setTitle("Yes");
+                        marker.showInfoWindow();
                         return false;
 
                     }
@@ -308,7 +349,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         setUpList();
 
-        implementOnScrollListener();
+//        implementOnScrollListener();
 
         rootView.setFocusableInTouchMode(true);
         rootView.setOnKeyListener(new View.OnKeyListener() {
@@ -339,8 +380,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 try {
                     JSONObject resObj = new JSONObject(response);
                     lastOpened.hideInfoWindow();
-                    GeneratedCodeDialog generatedCodeDialog = new GeneratedCodeDialog(getActivity(), resObj.getString("code"), current);
-                    generatedCodeDialog.show();
+                    generatedCodeDialog.setCodeAndDirection(resObj.getString("code"), current);
+                    generatedCodeDialog.showCodeAndDirection();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -368,31 +409,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
         };
 
-//        Map<String, String> params = new HashMap<>();
-//        params.put("reward", id);
-//
-//        JsonObjectRequest jsonObjectRequest = new JsonObjectRequest(Request.Method.POST, getString(R.string.base_url) + getString(R.string.ep_generate_code), new JSONObject(params), new Response.Listener<JSONObject>() {
-//            @Override
-//            public void onResponse(JSONObject response) {
-//                Log.v("VolleyResponse", response.toString());
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Log.v("VolleyError", error.toString());
-//            }
-//        }) {
-//            @Override
-//            public Map<String, String> getHeaders() {
-//                Map<String, String> headers = new HashMap<>();
-//                headers.put("Authorization", PreferenceMngr.getToken());
-//
-//                return headers;
-//            }
-//        };
-
         requestQueue.add(stringRequest);
-//        requestQueue.add(jsonObjectRequest);
     }
 
     private int getPixelsFromDp(Context context, int dp) {
@@ -427,7 +444,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             item.setRewards(res.getJSONArray("rewards"));
                             item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                             item.setLongitude(res.getJSONObject("location").getDouble("long"));
-                            markers[counter] = mGoogleMap.addMarker(new MarkerOptions().title(res.getString("name")).snippet(res.toString()).position(new LatLng(item.getLatitude(), item.getLongitude())));
+                            markers[counter] = mGoogleMap.addMarker(new MarkerOptions()
+                                    .title(res.getString("name"))
+                                    .snippet(res.toString())
+                                    .position(new LatLng(item.getLatitude(), item.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w)));
                             one = item.getLatitude();
                             two = item.getLongitude();
                             iconsList.add(item);
@@ -479,14 +500,25 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Set the bounds for the view
      */
     private void setBounds() {
+        double tempLat = 0;
+        double tempLong = 0;
+
+        if (currentLocation != null) {
+            tempLat = currentLocation.getLatitude();
+            tempLong = currentLocation.getLongitude();
+        }
+
         for (int x = 0; x < iconsList.size(); x++) {
-            double tempLat = iconsList.get(x).getLatitude();
-            double tempLong = iconsList.get(x).getLongitude();
+//            if (tempLat == 0 && tempLong == 0) {
+                tempLat = iconsList.get(x).getLatitude();
+                tempLong = iconsList.get(x).getLongitude();
+//            }
+
+            latLngBounds.include(new LatLng(tempLat, tempLong));
 
             if (x == 0) {
                 min = new LatLng(tempLat, tempLong);
                 max = new LatLng(tempLat, tempLong);
-                continue;
             }
 
             if (min.latitude > tempLat) {
@@ -496,10 +528,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
         }
 
-        latLngBounds.include(new LatLng(min.latitude, min.longitude));
-        latLngBounds.include(new LatLng(max.latitude, max.longitude));
+//        latLngBounds.include(new LatLng(min.latitude, min.longitude));
+//        latLngBounds.include(new LatLng(max.latitude, max.longitude));
         LatLngBounds bounds = latLngBounds.build();
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+        Log.v("VolleyPoint", "Done");
     }
 
     /**
@@ -556,8 +589,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         loading();
     }
 
-
-
     /**
      * Set loading
      */
@@ -574,6 +605,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
         CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+        markers[position].setTitle("No");
         markers[position].showInfoWindow();
         lastOpened = markers[position];
         onMarker = true;
@@ -609,6 +641,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 //            CameraPosition cameraPosition = new CameraPosition.Builder().zoom(17).target(new LatLng(location.getLatitude(), location.getLongitude())).build();
 //            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
 //        }
+        currentLocation = location;
         double tempLat = location.getLatitude();
         double tempLong = location.getLongitude();
 
@@ -632,5 +665,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == 1001) {
+            generateCode(rewardId, direction);
+        }
     }
 }

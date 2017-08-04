@@ -1,38 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@drawable/back"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
     android:id="@+id/body"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.SplashScreen">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true">
+    <LinearLayout
+        android:gravity="center"
+        android:layout_height="180dp"
+        android:layout_width="220dp"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        android:padding="20dp">
 
-        <ImageView
-            android:layout_centerInParent="true"
-            android:layout_width="190dp"
-            android:layout_height="190dp"
-            android:src="@drawable/logo"/>
+        <com.victor.loading.book.BookLoading
+            android:id="@+id/splash_loadingview"
+            android:layout_width="150dp"
+            android:layout_height="100dp"/>
 
-        <me.itangqi.waveloadingview.WaveLoadingView
-            android:layout_centerInParent="true"
-            android:id="@+id/wave_loadingview"
-            android:layout_width="220dp"
-            android:layout_height="220dp"
-            app:wlv_borderColor="@color/colorAccent"
-            app:wlv_borderWidth="3dp"
-            app:wlv_progressValue="50"
-            app:wlv_shapeType="circle"
-            app:wlv_waveAmplitude="70"
-            app:wlv_waveColor="@color/colorAccent"/>
+        <TextView
+            android:layout_gravity="center_horizontal"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:layout_width="wrap_content"
+            android:text="@string/LOADING"/>
 
-    </RelativeLayout>
+    </LinearLayout>
 
     <!--<com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimatedView-->
         <!--android:id="@+id/anim_view"-->

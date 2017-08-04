@@ -1,10 +1,8 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
 import android.app.Activity;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.GoogleMap;
@@ -16,15 +14,21 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
  */
 
 public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
-    public final View myView;
+    public Activity activity;
+    public View myView;
     public ViewGroup infoWindow;
 
+    public boolean opt = false;
+
     public MyInfoWindowAdapter(final Activity activity) {
-        myView = activity.getLayoutInflater().inflate(R.layout.info_window, null);
-
+        this.activity = activity;
         infoWindow = (ViewGroup)activity.getLayoutInflater().inflate(R.layout.info_window, null);
-        Button infoButton = (Button) infoWindow.findViewById(R.id.btn_now);
+//        Button infoButton = (Button) infoWindow.findViewById(R.id.btn_now);
 
+    }
+
+    public void setTitleOnly(boolean opt) {
+        this.opt = opt;
     }
 
     /**
@@ -34,20 +38,26 @@ public class MyInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
      */
     @Override
     public View getInfoWindow(Marker marker) {
-        TextView discount_1 = ((TextView) myView.findViewById(R.id.discount_1));
-        discount_1.setText(marker.getTitle());
 
-        TextView discount_2 = ((TextView) myView.findViewById(R.id.discount_2));
-        discount_1.setText(marker.getSnippet());
+        if (opt) {
+            myView = activity.getLayoutInflater().inflate(R.layout.info_window_title_only, null);
+        } else {
+            myView = activity.getLayoutInflater().inflate(R.layout.info_window, null);
+            TextView discount_1 = ((TextView) myView.findViewById(R.id.discount_1));
+            discount_1.setText(marker.getTitle());
 
-        Button now = (Button)myView.findViewById(R.id.btn_now);
+            TextView discount_2 = ((TextView) myView.findViewById(R.id.discount_2));
+            discount_1.setText(marker.getSnippet());
 
-        ((Button)myView.findViewById(R.id.btn_later)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Log.v("VOLLEYBUTTON", "Later");
-            }
-        });
+//            Button now = (Button)myView.findViewById(R.id.btn_now);
+//
+//            ((Button)myView.findViewById(R.id.btn_later)).setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    Log.v("VOLLEYBUTTON", "Later");
+//                }
+//            });
+        }
 
         return myView;
     }

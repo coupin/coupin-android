@@ -37,11 +37,14 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <string name="base_url">http://192.168.8.100:5030</string>
+    <string name="base_url">https://coupin.herokuapp.com</string>
     <string name="ep_get_merchants">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/code</string>
     <string name="ep_register_user">/customer/register</string>
     <string name="ep_login_user">/customer/authenticate</string>
+    <string name="ep_rewards_for_now">/api/reward/me/now</string>
+    <string name="ep_rewards_for_later">/api/reward/me/later</string>
+    <string name="ep_api_merchant">/api/merchant</string>
 
 
     <string name="logo_text">LOGO</string>
@@ -76,5 +79,10 @@
     <string name="btn_ok">Ok</string>
     <string name="btn_navigate">Go Now</string>
     <string name="example_text_code">g24iou2</string>
+    <string name="verify">Verify</string>
+    <string name="empty_merchants">There are currently no places matching your search</string>
+    <string name="searching">Searching for</string>
+    <string name="white_logo">White Logo</string>
+    <string name="example_address_1">D4 Snoop Street, Off Rap Lane, Lagos.</string>
     <!--192.168.8.100-->
 </resources>

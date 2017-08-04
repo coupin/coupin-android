@@ -1,0 +1,67 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.SearchFragment">
+
+    <android.support.design.widget.TextInputEditText
+        android:drawableLeft="@drawable/small_search"
+        android:id="@+id/search_edittext"
+        android:hint="@string/search"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <LinearLayout
+        android:id="@+id/searching_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <com.wang.avi.AVLoadingIndicatorView
+            android:layout_width="40dp"
+            android:layout_height="4dp"
+            android:layout_marginRight="5dp"
+            app:indicatorName="BallScaleMultipleIndicator"
+            app:indicatorColor="@color/colorAccent"/>
+
+        <TextView
+            android:id="@+id/searching_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/empty_search"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_marginBottom="@dimen/activity_vertical_margin"
+            android:src="@drawable/empty"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_merchants"/>
+
+    </LinearLayout>
+
+    <ListView
+        android:id="@+id/search_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+</LinearLayout>

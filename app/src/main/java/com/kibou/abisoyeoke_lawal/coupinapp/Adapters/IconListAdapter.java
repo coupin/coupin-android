@@ -4,11 +4,11 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.ListItem;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
 
@@ -57,11 +57,11 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
     }
 
     public class IconListViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public ImageView iconView;
+        public RoundedImageView iconView;
 
         public IconListViewHolder(View v, CustomClickListener.OnItemClickListener onClickListener) {
             super(v);
-            iconView = (ImageView) v.findViewById(R.id.icon);
+            iconView = (RoundedImageView) v.findViewById(R.id.icon);
             v.setOnClickListener(this);
         }
 

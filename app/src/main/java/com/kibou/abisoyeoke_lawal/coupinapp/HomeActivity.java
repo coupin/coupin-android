@@ -11,7 +11,7 @@ import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab;
-import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.Tab3;
+import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.SearchFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,10 +38,11 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setCurrentItem(0);
 
         bottomNavigationView.setBehaviorTranslationEnabled(true);
+        bottomNavigationView.setSaveEnabled(true);
 
         final HomeTab homeTab = HomeTab.newInstance();
         final RewardsTab rewardsTab = RewardsTab.newInstance();
-        final Tab3 tab3 = Tab3.newInstance();
+        final SearchFragment searchFragment = SearchFragment.newInstance();
 
         bottomNavigationView.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
@@ -55,7 +56,7 @@ public class HomeActivity extends AppCompatActivity {
                         selectedFrag = rewardsTab;
                         break;
                     case 2:
-                        selectedFrag = tab3;
+                        selectedFrag = searchFragment;
                         break;
                 }
 
