@@ -2,9 +2,9 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.TextView;
+
+import com.kibou.abisoyeoke_lawal.coupinapp.models.ListItem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -15,8 +15,6 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MerchantActivity extends Activity {
-    @BindView(R.id.merchant_rewards_listview)
-    public ListView rewardsListView;
     @BindView(R.id.merchant_details_textview)
     public TextView merchantDetails;
     @BindView(R.id.merchant_name_textview)
@@ -33,8 +31,19 @@ public class MerchantActivity extends Activity {
 
         try {
             JSONObject res = new JSONObject(extra.getBundle("info").getString("merchant"));
-            merchantName.setText(res.getString("name"));
-            merchantDetails.setText(res.getString("details"));
+            ListItem item = new ListItem();
+            item.setId(res.getString("_id"));
+            item.setPicture(R.drawable.slide1);
+            item.setAddress(res.getString("address"));
+            item.setDetails(res.getString("details"));
+            item.setEmail(res.getString("email"));
+            item.setMobile(res.getString("mobile"));
+            item.setTitle(res.getString("name"));
+            item.setRewards(res.getJSONArray("rewards"));
+            item.setLatitude(res.getJSONObject("location").getDouble("lat"));
+            item.setLongitude(res.getJSONObject("location").getDouble("long"));
+            merchantName.setText(item.getTitle());
+            merchantDetails.setText(item.getAddress());
 
             if (res.get("picture").toString() != "null") {
 //                merchantImage.setImage
@@ -50,9 +59,5 @@ public class MerchantActivity extends Activity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, android.R.id.text1, values);
-
-        rewardsListView.setAdapter(adapter);
     }
 }

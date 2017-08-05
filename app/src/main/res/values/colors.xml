@@ -28,4 +28,5 @@
 
     <!-- Text Colors -->
     <color name="text_dark_grey">#35343D</color>
+    <color name="text_light_grey">#9B99A9</color>
 </resources>

@@ -1,9 +1,8 @@
 <resources>
     <!-- Default screen margins, per the Android Design guidelines. -->
-    <dimen name="button_text">16sp</dimen>
     <dimen name="info_window_title">15sp</dimen>
     <dimen name="info_window_address">13sp</dimen>
-    <dimen name="logo_text">30sp</dimen>
+    <dimen name="logo_text">21sp</dimen>
     <dimen name="summary">15sp</dimen>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
@@ -15,11 +14,28 @@
     <dimen name="landing_top_padding">40dp</dimen>
     <dimen name="round_button">100px</dimen>
     <dimen name="small_vertical_space">5dp</dimen>
-    <dimen name="padding_md">30dp</dimen>
 
     <dimen name="padding_top_home">10dp</dimen>
     <dimen name="rounded_edge">10dp</dimen>
     <dimen name="marker_title">20dp</dimen>
     <dimen name="cardview_custom_radius">5dp</dimen>
     <dimen name="rounded_edge_sm">3dp</dimen>
+
+    <!-- Margin -->
+    <dimen name="margin_xs">5dp</dimen>
+    <dimen name="margin_sm">10dp</dimen>
+    <dimen name="margin_md">20dp</dimen>
+    <dimen name="margin_lg">30dp</dimen>
+
+    <!-- Padding -->
+    <dimen name="padding_sm">10dp</dimen>
+    <dimen name="padding_md">30dp</dimen>
+    <dimen name="padding_lg">60dp</dimen>
+
+    <!-- Text -->
+    <dimen name="button_text">16sp</dimen>
+    <dimen name="large_text">15sp</dimen>
+    <dimen name="medium_text">13sp</dimen>
+    <dimen name="small_text">11sp</dimen>
+    <dimen name="merchant_address_text">18sp</dimen>
 </resources>

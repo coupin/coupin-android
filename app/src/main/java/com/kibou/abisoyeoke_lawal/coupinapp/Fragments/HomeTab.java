@@ -45,7 +45,6 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout;
-import com.kibou.abisoyeoke_lawal.coupinapp.Listener.OnInfoWindowElemTouchListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
@@ -82,11 +81,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public ImageView banner;
     public TextView title;
     public TextView address;
-    public Button useNow;
-    public Button useLater;
-    public OnInfoWindowElemTouchListener infoWindowTouchListener;
-    public OnInfoWindowElemTouchListener infoWindowTouchListenerForLater;
-    public OnInfoWindowElemTouchListener infoWindowElemTouchListenerForImage;
+    public Button infoButton;
 
     private GoogleMap mGoogleMap;
     private GoogleMap.InfoWindowAdapter infoWindowAdapter;
@@ -157,41 +152,34 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         mapView.onCreate(savedInstanceState);
 
-        infoWindowTouchListener = new OnInfoWindowElemTouchListener(useNow) {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                try {
-                    JSONObject res = new JSONObject(marker.getSnippet());
-                    LatLng current = new LatLng(
-                            res.getJSONObject("location").getDouble("lat"),
-                            res.getJSONObject("location").getDouble("long")
-                    );
-                    rewardId = res.getJSONArray("rewards").getJSONObject(0).getString("_id");
-                    direction = current;
-                    generatedCodeDialog.show();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        };
+//        infoWindowTouchListener = new OnInfoWindowElemTouchListener(infoButton) {
+//            @Override
+//            protected void onClickConfirmed(View v, Marker marker) {
+//                try {
+//                    JSONObject res = new JSONObject(marker.getSnippet());
+//                    LatLng current = new LatLng(
+//                            res.getJSONObject("location").getDouble("lat"),
+//                            res.getJSONObject("location").getDouble("long")
+//                    );
+//                    rewardId = res.getJSONArray("rewards").getJSONObject(0).getString("_id");
+//                    direction = current;
+//                    generatedCodeDialog.show();
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        };
 
-        infoWindowTouchListenerForLater = new OnInfoWindowElemTouchListener(useLater) {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                Toast.makeText(getActivity(), "Use later is done ", Toast.LENGTH_SHORT).show();
-            }
-        };
-
-        infoWindowElemTouchListenerForImage = new OnInfoWindowElemTouchListener(banner) {
-            @Override
-            protected void onClickConfirmed(View v, Marker marker) {
-                Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
-                Bundle extra = new Bundle();
-                extra.putString("merchant", marker.getSnippet().toString());
-                merchantIntent.putExtra("info", extra);
-                startActivity(merchantIntent);
-            }
-        };
+//        infoWindowElemTouchListenerForImage = new OnInfoWindowElemTouchListener(banner) {
+//            @Override
+//            protected void onClickConfirmed(View v, Marker marker) {
+//                Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
+//                Bundle extra = new Bundle();
+//                extra.putString("merchant", marker.getSnippet().toString());
+//                merchantIntent.putExtra("info", extra);
+//                startActivity(merchantIntent);
+//            }
+//        };
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
@@ -228,26 +216,20 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(true);
 
-                // Zoom into current location
-//                if (currentLocation != null) {
+                // Place marker on current location
+                if (currentLocation != null) {
 //                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
 //                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//                }
+                }
 
                 infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
-                    private boolean opt;
-
-                    public void setTitleOnly(boolean opt) {
-                        this.opt = opt;
-                    }
-
                     @Override
                     public View getInfoWindow(Marker marker) {
                         final Marker marker1 = marker;
 
                         try {
                             JSONObject res = new JSONObject(marker.getSnippet());
-                            JSONObject reward = res.getJSONArray("rewards").getJSONObject(0);
+                            JSONArray reward = res.getJSONArray("rewards");
 
                             if (marker.getTitle().toString().equals("Yes")) {
                                 infoWindow = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.info_window_title_only, null);
@@ -276,24 +258,21 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 banner = (ImageView) infoWindow.findViewById(R.id.marker_banner);
                                 title = (TextView) infoWindow.findViewById(R.id.discount_1);
                                 address = (TextView) infoWindow.findViewById(R.id.discount_2);
-//                                useNow = (Button) infoWindow.findViewById(R.id.btn_now);
-//                                useLater = (Button) infoWindow.findViewById(R.id.btn_later);
+                                infoButton = (Button) infoWindow.findViewById(R.id.info_button);
 
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));
-                                if (res.getJSONArray("rewards").length() > 1) {
-
+                                if (reward.length() > 1) {
+                                    String temp = reward.length() + " Rewards Available";
+                                    infoButton.setText(temp);
                                 } else {
-
+                                    infoButton.setText(reward.getJSONObject(0).getString("name"));
                                 }
 
-//                                useNow.setOnTouchListener(infoWindowTouchListener);
-//                                useLater.setOnTouchListener(infoWindowTouchListenerForLater);
-
-                                infoWindowTouchListener.setMarker(marker1);
-                                infoWindowTouchListenerForLater.setMarker(marker1);
-
-                                mapWrapperLayout.setMarkerWithInfoWindow(marker1, infoWindow);
+//                                infoWindowTouchListener.setMarker(marker1);
+//                                infoWindowTouchListenerForLater.setMarker(marker1);
+//
+//                                mapWrapperLayout.setMarkerWithInfoWindow(marker1, infoWindow);
                             }
                         }   catch (Exception e) {
                             e.printStackTrace();
@@ -307,6 +286,19 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         return null;
                     }
                 };
+
+                mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+                    @Override
+                    public void onInfoWindowClick(Marker marker) {
+                        Log.v("VolleyIt", "was touched " + marker.getId().substring(1));
+                        int index = Integer.valueOf(marker.getId().substring(1));
+                        Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
+                        Bundle extra = new Bundle();
+                        extra.putString("merchant", marker.getSnippet().toString());
+                        merchantIntent.putExtra("info", extra);
+                        startActivity(merchantIntent);
+                    }
+                });
 
                 mGoogleMap.setInfoWindowAdapter(infoWindowAdapter);
 

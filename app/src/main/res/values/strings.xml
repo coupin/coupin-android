@@ -39,7 +39,7 @@
     <!-- URls -->
     <string name="base_url">https://coupin.herokuapp.com</string>
     <string name="ep_get_merchants">/api/merchant</string>
-    <string name="ep_generate_code">/api/reward/code</string>
+    <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_register_user">/customer/register</string>
     <string name="ep_login_user">/customer/authenticate</string>
     <string name="ep_rewards_for_now">/api/reward/me/now</string>

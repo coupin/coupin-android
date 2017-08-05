@@ -12,9 +12,9 @@
         android:layout_marginTop="@dimen/icon_space"
         android:layout_width="wrap_content"
         app:cardCornerRadius="10dp"
+        app:cardElevation="10dp"
         app:cardUseCompatPadding="true"
-        app:contentPadding="1dp"
-        app:elevation="10dp">
+        app:contentPadding="1dp">
 
         <!--<View-->
             <!--android:background="@drawable/round_edges_shadow"-->
@@ -26,8 +26,8 @@
         <com.makeramen.roundedimageview.RoundedImageView
             android:background="@drawable/round_edges"
             android:id="@+id/icon"
-            android:layout_height="70dp"
-            android:layout_width="70dp"
+            android:layout_height="60dp"
+            android:layout_width="60dp"
             app:riv_border_color="#80000000"
             app:riv_corner_radius="10dp" />
 
