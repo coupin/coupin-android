@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.ListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import java.util.ArrayList;
@@ -17,14 +17,14 @@ import java.util.ArrayList;
  */
 
 public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconListViewHolder> {
-    public ArrayList<ListItem> iconList = new ArrayList<>();
+    public ArrayList<Merchant> iconList = new ArrayList<>();
     private CustomClickListener.OnItemClickListener mClickListener;
 
-    public IconListAdapter(ArrayList<ListItem> items) {
+    public IconListAdapter(ArrayList<Merchant> items) {
         iconList = items;
     }
 
-    public IconListAdapter(ArrayList<ListItem> items, CustomClickListener.OnItemClickListener mClickListener) {
+    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener) {
         iconList = items;
         this.mClickListener = mClickListener;
     }
@@ -47,7 +47,7 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
         mClickListener = callback;
     }
 
-    public void setIconList(ArrayList<ListItem> item) {
+    public void setIconList(ArrayList<Merchant> item) {
         iconList = item;
     }
 

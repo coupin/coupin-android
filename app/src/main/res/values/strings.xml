@@ -37,7 +37,9 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <string name="base_url">https://coupin.herokuapp.com</string>
+    <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
+    <!--<string name="base_url">http://192.168.8.100:5030</string>-->
+    <string name="base_url">http://172.16.25.155:5030</string>
     <string name="ep_get_merchants">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_register_user">/customer/register</string>
@@ -84,5 +86,6 @@
     <string name="searching">Searching for</string>
     <string name="white_logo">White Logo</string>
     <string name="example_address_1">D4 Snoop Street, Off Rap Lane, Lagos.</string>
+    <string name="sample_details">when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</string>
     <!--192.168.8.100-->
 </resources>

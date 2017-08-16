@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:padding="@dimen/padding_sm">
+
+    <View
+        android:background="@color/lightGrey"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/margin_xs"
+        android:layout_marginTop="@dimen/margin_xs"
+        android:layout_width="match_parent" />
+
+    <TextView
+        android:id="@+id/list_reward_full_details"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_width="match_parent"
+        android:text="@string/sample_details"
+        android:textColor="@color/text_dark_grey"
+        android:textStyle="normal" />
+    
+    <LinearLayout
+        android:id="@+id/list_reward_gallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        
+        <FrameLayout
+            android:background="@color/text_dark_grey"
+            android:layout_width="50dp"
+            android:layout_height="50dp"></FrameLayout>
+        
+    </LinearLayout>
+
+    <View
+        android:background="@color/lightGrey"
+        android:layout_height="1dp"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="match_parent" />
+
+    <LinearLayout
+        android:id="@+id/discount"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/padding_xs"
+        android:paddingTop="@dimen/padding_xs">
+
+        <TextView
+            android:id="@+id/list_old_price"
+            android:layout_gravity="left|start|center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="6"
+            android:layout_width="wrap_content"
+            android:text="N5000"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/list_new_price"
+            android:layout_gravity="end|center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:text="N7500"
+            android:textColor="@color/text_lighter_grey"
+            android:textSize="@dimen/medium_text" />
+
+        <Button
+            android:background="@drawable/round_edges_btn"
+            android:id="@+id/btn_pin"
+            android:layout_gravity="end|center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:paddingBottom="@dimen/margin_xxs"
+            android:paddingLeft="@dimen/padding_sm"
+            android:paddingRight="@dimen/padding_sm"
+            android:paddingTop="@dimen/margin_xxs"
+            android:text="Pin Reward"
+            android:textColor="@color/white"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
+
+        <Button
+            android:background="@drawable/round_edges_red_btn"
+            android:id="@+id/btn_remove"
+            android:layout_gravity="end|center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_marginLeft="@dimen/margin_sm"
+            android:paddingBottom="@dimen/margin_xxs"
+            android:paddingLeft="@dimen/padding_sm"
+            android:paddingRight="@dimen/padding_sm"
+            android:paddingTop="@dimen/margin_xxs"
+            android:text="Remove"
+            android:textColor="@color/white"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>

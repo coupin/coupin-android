@@ -6,7 +6,7 @@ import org.json.JSONArray;
  * Created by abisoyeoke-lawal on 6/3/17.
  */
 
-public class ListItem {
+public class Merchant {
     public String id;
     public int picture;
     public String title;

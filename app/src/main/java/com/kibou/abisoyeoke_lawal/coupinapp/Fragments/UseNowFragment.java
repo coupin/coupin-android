@@ -18,7 +18,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVAdapter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RewardListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -49,7 +48,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     public RecyclerView recyclerView;
 
     public ArrayList<RewardListItem> nowList = new ArrayList<>();
-    public RewardListAdapter adapter;
+//    public RewardListAdapter adapter;
     public RequestQueue requestQueue;
     public RVAdapter rvAdapter;
     public String url;
@@ -76,8 +75,8 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         recyclerView.setAdapter(rvAdapter);
 
 
-        adapter = new RewardListAdapter(getContext(), nowList);
-        useNowListView.setAdapter(adapter);
+//        adapter = new RewardListAdapter(getContext(), nowList);
+//        useNowListView.setAdapter(adapter);
 
 //        useNowListView.setOnItemClickListener(this);
 
@@ -121,7 +120,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                         nowList.add(item);
                     }
                     rvAdapter.notifyDataSetChanged();
-                    adapter.notifyDataSetChanged();
+//                    adapter.notifyDataSetChanged();
 //                    AnimateUtils.crossFadeViews(useNowListView, loadingView);
 
                 } catch (Exception e) {

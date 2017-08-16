@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
+    
+    <LinearLayout
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_xs"
+        android:layout_weight="4">
+
+        <RelativeLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="@dimen/padding_sm">
+
+            <TextView
+                android:id="@+id/list_reward_percent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/xxlarge_text"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/list_reward_title"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingEnd="50dp"
+                android:paddingRight="50dp"
+                android:text=""
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+
+            <TextView
+                android:id="@+id/list_reward_details"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@id/list_reward_title"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:paddingEnd="90dp"
+                android:paddingRight="90dp"
+                android:maxLines="1"
+                android:text=""
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="normal"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/discount"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingBottom="@dimen/padding_xxs"
+            android:paddingLeft="@dimen/padding_sm"
+            android:paddingRight="@dimen/padding_sm"
+            android:paddingTop="@dimen/padding_xxs">
+
+            <TextView
+                android:id="@+id/list_old_price"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/medium_text"/>
+
+            <TextView
+                android:id="@+id/list_new_price"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="@color/text_lighter_grey"
+                android:textSize="@dimen/medium_text" />
+
+        </RelativeLayout>
+        
+    </LinearLayout>
+    
+    <FrameLayout
+        android:background="@color/ticked"
+        android:id="@+id/tick_frame"
+        android:layout_width="40dp"
+        android:layout_height="100dp"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_done_tick"/>
+
+    </FrameLayout>
+
+</LinearLayout>

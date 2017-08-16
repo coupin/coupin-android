@@ -65,17 +65,18 @@
                             android:layout_width="wrap_content"
                             android:text="4.2/5.0"
                             android:textColor="@color/text_light_grey"
-                            android:textSize="@dimen/medium_text"
+                            android:textSize="@dimen/large_text"
                             android:textStyle="normal"/>
 
                     </LinearLayout>
 
                     <TextView
                         android:id="@+id/merchant_details_textview"
-                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:paddingRight="@dimen/padding_md"
                         android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/merchant_address_text"
+                        android:textSize="@dimen/medium_text"
                         android:textStyle="normal"/>
 
                 </LinearLayout>
@@ -97,7 +98,7 @@
         android:layout_height="124dp">
 
     </RelativeLayout>
-    
+
     <android.support.design.widget.FloatingActionButton
         android:background="@color/colorAccent"
         android:layout_alignParentEnd="true"

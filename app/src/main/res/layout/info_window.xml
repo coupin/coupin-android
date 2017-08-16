@@ -138,7 +138,7 @@
             app:cardCornerRadius="10dp"
             app:cardElevation="5dp"
             app:cardUseCompatPadding="true"
-            app:contentPadding="1dp">
+            android:elevation="5dp">
 
             <ImageView
                 android:background="@drawable/round_edges"

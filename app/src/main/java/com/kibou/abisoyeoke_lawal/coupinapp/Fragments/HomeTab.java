@@ -50,11 +50,12 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.ListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -103,8 +104,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     public String url;
     public RequestQueue requestQueue;
-    private ArrayList<ListItem> iconsList = new ArrayList<>();
+    private ArrayList<Merchant> iconsList = new ArrayList<>();
     public int icons[] = new int[]{R.drawable.slide1, R.drawable.slide2,
+            R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
+            R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
+            R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
+            R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5};
     public Marker markers[] = new Marker[100];
     public LatLng min = new LatLng(0, 0);
@@ -333,7 +338,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-        adapter = new IconListAdapter(new ArrayList<ListItem>(), HomeTab.this);
+        adapter = new IconListAdapter(new ArrayList<Merchant>(), HomeTab.this);
 
         iconListView.setAdapter(adapter);
 
@@ -413,7 +418,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Sets up the horizontal list
      */
     public void setUpList() {
+        BigDecimal longitude = new BigDecimal(currentLocation.getLongitude());
+        BigDecimal latitude = new BigDecimal(currentLocation.getLatitude());
+        longitude = longitude.setScale(6, BigDecimal.ROUND_HALF_UP);
+        latitude = latitude.setScale(6, BigDecimal.ROUND_HALF_UP);
 
+        url = url + "?longitude=" + longitude.doubleValue()
+                +  "&latitude=" + latitude.doubleValue();
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -425,7 +436,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         JSONArray resArr = new JSONArray(response);
                         for (int j = 0; j < resArr.length(); j++) {
                             JSONObject res = resArr.getJSONObject(j);
-                            ListItem item = new ListItem();
+                            Merchant item = new Merchant();
                             item.setId(res.getString("_id"));
                             item.setPicture(icons[j]);
                             item.setAddress(res.getString("address"));
@@ -447,20 +458,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             counter++;
                         }
 
-//                        LatLng temp = new LatLng(0, 0);
-
-//                        for (int i = 0; i < 3; i++) {
-//                            ListItem item = new ListItem();
-//                            item.setId(String.valueOf(i));
-//                            item.setPicture(icons[i]);
-//                            item.setLatitude(one - 0.0200 + (i * 0.034577));
-//                            item.setLongitude(two - 0.0200 + (i  * 0.034577));
-//                            temp = new LatLng(item.getLatitude(), item.getLongitude());
-//                            markers[counter] = mGoogleMap.addMarker(new MarkerOptions().title(item.getId()).snippet("Somewhere " + item.getLatitude() + " - " + item.getLongitude()).position(new LatLng(item.getLatitude(), item.getLongitude())));
-//                            iconsList.add(item);
-//                            counter++;
-//                        }
-
                         setBounds();
 
                         adapter.setIconList(iconsList);
@@ -472,7 +469,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-//                    errorDialog.getProgressHelper().setBarColor(Color.parseColor("#" + Integer.toHexString(ContextCompat.getColor(getContext(), R.color.colorAccent))));
                     if (HomeTab.this.isVisible()) {
                         new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Error")
@@ -498,6 +494,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         if (currentLocation != null) {
             tempLat = currentLocation.getLatitude();
             tempLong = currentLocation.getLongitude();
+            latLngBounds.include(new LatLng(tempLat, tempLong));
         }
 
         for (int x = 0; x < iconsList.size(); x++) {
@@ -508,22 +505,22 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
             latLngBounds.include(new LatLng(tempLat, tempLong));
 
-            if (x == 0) {
-                min = new LatLng(tempLat, tempLong);
-                max = new LatLng(tempLat, tempLong);
-            }
-
-            if (min.latitude > tempLat) {
-                min = new LatLng(tempLat, tempLong);
-            } else if (max.latitude < tempLat) {
-                max = new LatLng(tempLat, tempLong);
-            }
+//            if (x == 0) {
+//                min = new LatLng(tempLat, tempLong);
+//                max = new LatLng(tempLat, tempLong);
+//            }
+//
+//            if (min.latitude > tempLat) {
+//                min = new LatLng(tempLat, tempLong);
+//            } else if (max.latitude < tempLat) {
+//                max = new LatLng(tempLat, tempLong);
+//            }
         }
 
 //        latLngBounds.include(new LatLng(min.latitude, min.longitude));
 //        latLngBounds.include(new LatLng(max.latitude, max.longitude));
         LatLngBounds bounds = latLngBounds.build();
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 15));
         Log.v("VolleyPoint", "Done");
     }
 
@@ -569,7 +566,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      */
     private void addIcons() {
         for (int i = 0; i < 5; i++) {
-            ListItem item = new ListItem();
+            Merchant item = new Merchant();
             item.setId(String.valueOf(i));
             item.setPicture(icons[i]);
             iconsList.add(item);

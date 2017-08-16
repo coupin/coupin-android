@@ -9,7 +9,7 @@
     <dimen name="card_space">10dp</dimen>
     <dimen name="home_vertical_space">5dp</dimen>
     <dimen name="icon_space">3dp</dimen>
-    <dimen name="icon_space_horizontal">5dp</dimen>
+    <dimen name="icon_space_horizontal">3dp</dimen>
     <dimen name="image_space_horizontal">10dp</dimen>
     <dimen name="landing_top_padding">40dp</dimen>
     <dimen name="round_button">100px</dimen>
@@ -22,20 +22,25 @@
     <dimen name="rounded_edge_sm">3dp</dimen>
 
     <!-- Margin -->
+    <dimen name="margin_xxs">3dp</dimen>
     <dimen name="margin_xs">5dp</dimen>
     <dimen name="margin_sm">10dp</dimen>
     <dimen name="margin_md">20dp</dimen>
     <dimen name="margin_lg">30dp</dimen>
 
     <!-- Padding -->
+    <dimen name="padding_xxs">3dp</dimen>
+    <dimen name="padding_xs">5dp</dimen>
     <dimen name="padding_sm">10dp</dimen>
     <dimen name="padding_md">30dp</dimen>
     <dimen name="padding_lg">60dp</dimen>
 
     <!-- Text -->
     <dimen name="button_text">16sp</dimen>
+    <dimen name="xxlarge_text">19sp</dimen>
+    <dimen name="xlarge_text">17sp</dimen>
     <dimen name="large_text">15sp</dimen>
     <dimen name="medium_text">13sp</dimen>
     <dimen name="small_text">11sp</dimen>
-    <dimen name="merchant_address_text">18sp</dimen>
+    <dimen name="merchant_address_text">16sp</dimen>
 </resources>
