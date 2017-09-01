@@ -14,6 +14,7 @@ public class RewardListItem implements Serializable {
     public String merchantAddress;
     public String merchantLogo;
     public String merchantName;
+    public String rewardDetails;
     public String rewardDescription;
     public String rewardName;
 
@@ -39,6 +40,10 @@ public class RewardListItem implements Serializable {
 
     public String getMerchantName() {
         return merchantName;
+    }
+
+    public String getRewardDetails() {
+        return rewardDetails;
     }
 
     public String getRewardDescription() {
@@ -71,6 +76,10 @@ public class RewardListItem implements Serializable {
 
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
+    }
+
+    public void setRewardDetails(String rewardDetails) {
+        this.rewardDetails = rewardDetails;
     }
 
     public void setRewardDescription(String rewardDescription) {

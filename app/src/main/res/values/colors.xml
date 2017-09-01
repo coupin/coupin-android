@@ -25,6 +25,7 @@
     <color name="book_loading_page">#ffffff</color>
     <color name="off_white">#E5E5E5</color>
     <color name="lightGrey">#F2F2F2</color>
+    <color name="lighterGrey">#F8F8F8</color>
 
     <!-- Text Colors -->
     <color name="text_dark_grey">#35343D</color>
@@ -33,4 +34,5 @@
 
     <!-- Card Colors -->
     <color name="ticked">#474556</color>
+    <color name="white_trans">#CCFFFFFF</color>
 </resources>

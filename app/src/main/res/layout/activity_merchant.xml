@@ -2,7 +2,6 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -88,6 +87,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
+            <android.support.design.widget.FloatingActionButton
+                android:background="@color/colorAccent"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="200dp"
+                android:layout_height="64dp"
+                android:layout_width="64dp"
+                android:src="@drawable/ic_nav_arrow"
+                app:elevation="10dp"
+                app:backgroundTint="@color/colorAccent"
+                app:rippleColor="@color/black"/>
+
         </LinearLayout>
 
     </ScrollView>
@@ -99,17 +111,77 @@
 
     </RelativeLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:background="@color/colorAccent"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="200dp"
-        android:layout_height="64dp"
-        android:layout_width="64dp"
-        android:src="@drawable/ic_nav_arrow"
-        app:elevation="10dp"
-        app:backgroundTint="@color/colorAccent"
-        app:rippleColor="@color/black"/>
+    <LinearLayout
+        android:animateLayoutChanges="true"
+        android:background="@color/white"
+        android:id="@+id/selected_holder"
+        android:layout_alignParentBottom="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <TextView
+            android:background="@color/colorAccent"
+            android:gravity="center_horizontal"
+            android:id="@+id/code"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingBottom="@dimen/padding_md"
+            android:paddingTop="@dimen/padding_md"
+            android:text="example"
+            android:textAllCaps="true"
+            android:textColor="@color/white"
+            android:textSize="@dimen/xxxlarge_text"
+            android:textStyle="bold"
+            android:visibility="gone"/>
+
+
+        <TextView
+            android:id="@+id/selected_text"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="match_parent"
+            android:text="10 Selected"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/small_text"/>
+
+        <LinearLayout
+            android:id="@+id/button_holder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:background="@drawable/round_edges_grey"
+                android:id="@+id/selected_btn_save"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_xs"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:text="@string/save_select"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <Button
+                android:background="@drawable/round_edges_btn"
+                android:id="@+id/selected_btn_pin"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_xs"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_weight="2"
+                android:layout_width="match_parent"
+                android:text="@string/get_coupin"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
 
 </RelativeLayout>

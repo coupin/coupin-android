@@ -10,6 +10,8 @@ import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.DetailsDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 
@@ -23,6 +25,8 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
     public ArrayList<Reward> rewards;
     public Context context;
     public boolean drawerVisible = false;
+
+    static public MyOnSelect myOnSelect;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public Button bodyPinBtn;
@@ -60,8 +64,9 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
         }
     }
 
-    public RVExpandableAdapter(ArrayList<Reward> rewards, Context context) {
+    public RVExpandableAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect) {
         this.context = context;
+        this.myOnSelect = myOnSelect;
         this.rewards = rewards;
     }
 
@@ -74,7 +79,7 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
     }
 
     @Override
-    public void onBindViewHolder(final RVExpandableAdapter.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RVExpandableAdapter.ViewHolder holder, final int position) {
         Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.getDetails());
@@ -95,49 +100,55 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
         holder.head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(drawerVisible) {
-                    holder.body.setVisibility(View.GONE);
-                    holder.headDiscount.setVisibility(View.VISIBLE);
-                    drawerVisible = false;
-                } else {
-                    holder.headDiscount.setVisibility(View.GONE);
-                    holder.body.setVisibility(View.VISIBLE);
-                    drawerVisible = true;
-                }
+//            if(drawerVisible) {
+//                holder.body.setVisibility(View.GONE);
+//                holder.headDiscount.setVisibility(View.VISIBLE);
+//                drawerVisible = false;
+//            } else {
+//                holder.headDiscount.setVisibility(View.GONE);
+//                holder.body.setVisibility(View.VISIBLE);
+//                drawerVisible = true;
+//            }
+                DetailsDialog detailsDialog = new DetailsDialog(context);
+                detailsDialog.show();
             }
         });
 
         holder.bodyPinBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-                holder.tickFrame.setVisibility(View.VISIBLE);
-                holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
-                holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
-                holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
-                holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
-                holder.body.setVisibility(View.GONE);
-                holder.headDiscount.setVisibility(View.VISIBLE);
-                holder.bodyPinBtn.setVisibility(View.GONE);
-                holder.bodyRemoveBtn.setVisibility(View.VISIBLE);
-                holder.body.setBackground(context.getResources().getDrawable(R.drawable.body_selected));
+            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+            holder.tickFrame.setVisibility(View.VISIBLE);
+            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
+            holder.body.setVisibility(View.GONE);
+            drawerVisible = false;
+            holder.headDiscount.setVisibility(View.VISIBLE);
+            holder.bodyPinBtn.setVisibility(View.GONE);
+            holder.bodyRemoveBtn.setVisibility(View.VISIBLE);
+            holder.body.setBackground(context.getResources().getDrawable(R.drawable.body_selected));
+            myOnSelect.onSelect(true, position);
             }
         });
 
         holder.bodyRemoveBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
-                holder.tickFrame.setVisibility(View.GONE);
-                holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.text_lighter_grey));
-                holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                holder.body.setVisibility(View.GONE);
-                holder.headDiscount.setVisibility(View.VISIBLE);
-                holder.bodyRemoveBtn.setVisibility(View.GONE);
-                holder.bodyPinBtn.setVisibility(View.VISIBLE);
-                holder.body.setBackgroundColor(context.getResources().getColor(R.color.white));
+            holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
+            holder.tickFrame.setVisibility(View.GONE);
+            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.text_lighter_grey));
+            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+            holder.body.setVisibility(View.GONE);
+            drawerVisible = false;
+            holder.headDiscount.setVisibility(View.VISIBLE);
+            holder.bodyRemoveBtn.setVisibility(View.GONE);
+            holder.bodyPinBtn.setVisibility(View.VISIBLE);
+            holder.body.setBackgroundColor(context.getResources().getColor(R.color.white));
+            myOnSelect.onSelect(false, position);
             }
         });
     }

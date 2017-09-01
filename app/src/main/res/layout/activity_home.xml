@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:animateLayoutChanges="true"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HomeActivity">
+                                                 xmlns:tools="http://schemas.android.com/tools"
+                                                 android:animateLayoutChanges="true"
+                                                 android:layout_width="match_parent"
+                                                 android:layout_height="match_parent"
+                                                 tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HomeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -25,6 +25,7 @@
         android:id="@+id/navigation"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_gravity="bottom"/>
+        android:layout_gravity="bottom"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

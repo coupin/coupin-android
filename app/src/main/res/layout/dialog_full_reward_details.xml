@@ -1,0 +1,326 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:background="@color/white"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:minWidth="400dp"
+              android:orientation="vertical"
+              android:paddingTop="40dp">
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="@dimen/padding_sm"
+        android:text="@string/example_text_1"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="@dimen/large_text"
+        android:textStyle="bold"/>
+
+    <View
+        android:background="@color/lightGrey"
+        android:layout_height="2dp"
+        android:layout_margin="@dimen/margin_xs"
+        android:layout_width="match_parent"/>
+
+    <RelativeLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="@dimen/padding_sm">
+
+        <TextView
+            android:id="@+id/full_new_price"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:paddingRight="@dimen/padding_xs"
+            android:text="N5500"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/full_old_price"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@id/full_new_price"
+            android:layout_width="wrap_content"
+            android:paddingRight="@dimen/padding_xs"
+            android:text="N7500"
+            android:textColor="@color/text_lighter_grey"
+            android:textSize="@dimen/medium_text"/>
+
+        <TextView
+            android:id="@+id/full_percentage"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="10%"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/xxlarge_text"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+
+    <View
+        android:background="@color/lightGrey"
+        android:layout_height="2dp"
+        android:layout_margin="@dimen/margin_xs"
+        android:layout_width="match_parent"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:id="@+id/full_start_date"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_width="wrap_content"
+                android:text="Start Date"
+                android:textColor="@color/text_light_grey"
+                android:textSize="@dimen/medium_text"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="07 JUN 17"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/full_end_date"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_toRightOf="@id/full_start_date"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_width="wrap_content"
+                android:text="End Date"
+                android:textColor="@color/text_light_grey"
+                android:textSize="@dimen/medium_text"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="17 JUN 17"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/full_reusable"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_width="wrap_content"
+                android:text="Reusable"
+                android:textColor="@color/text_light_grey"
+                android:textSize="@dimen/medium_text"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="YES"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_sm"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:text="Applicable Days"
+            android:textColor="@color/text_light_grey"
+            android:textSize="@dimen/medium_text"/>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <TextView
+                android:background="@drawable/days_left_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="MON"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:background="@drawable/days_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="TUE"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:background="@drawable/days_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="WED"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:background="@drawable/days_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="THU"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:background="@drawable/days_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="FRI"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:background="@drawable/days_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="SAT"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:background="@drawable/days_right_background"
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="SUN"
+                android:textColor="@color/text_dark_grey"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/margin_sm"
+        android:layout_width="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:text="Description"
+            android:textColor="@color/text_light_grey"
+            android:textSize="@dimen/medium_text"/>
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/example_description"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="normal"/>
+
+    </LinearLayout>
+
+    <View
+        android:background="@color/lightGrey"
+        android:layout_height="2dp"
+        android:layout_margin="@dimen/margin_xs"
+        android:layout_width="match_parent"/>
+
+    <LinearLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal">
+
+        <Button
+            android:background="@drawable/round_edges_grey"
+            android:id="@+id/cancel"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/margin_xs"
+            android:layout_marginRight="@dimen/margin_xs"
+            android:layout_marginTop="@dimen/margin_xs"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:text="@string/dialog_cancel"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+        <Button
+            android:background="@drawable/round_edges_btn"
+            android:id="@+id/btn_pin"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/margin_xs"
+            android:layout_marginRight="@dimen/margin_xs"
+            android:layout_marginTop="@dimen/margin_xs"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:text="@string/pin_reward"
+            android:textColor="@color/white"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>

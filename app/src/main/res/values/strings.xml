@@ -38,8 +38,9 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
-    <!--<string name="base_url">http://192.168.8.100:5030</string>-->
-    <string name="base_url">http://172.16.25.155:5030</string>
+    <string name="base_url">http://192.168.8.101:5030</string>
+    <!--<string name="base_url">http://192.168.8.113:5030</string>-->
+    <!--<string name="base_url">http://172.16.25.155:5030</string>-->
     <string name="ep_get_merchants">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_register_user">/customer/register</string>
@@ -47,6 +48,16 @@
     <string name="ep_rewards_for_now">/api/reward/me/now</string>
     <string name="ep_rewards_for_later">/api/reward/me/later</string>
     <string name="ep_api_merchant">/api/merchant</string>
+
+
+    <!-- Coupin words and phrases -->
+    <string name="btn_save_later">Safe for Later</string>
+    <string name="btn_use_now">Use Now</string>
+    <string name="get_coupin">Get Coupin</string>
+    <string name="code">Code:</string>
+    <string name="coupin">Coupin</string>
+    <string name="pin_reward">Pin Reward</string>
+    <string name="save_select">Save Selection</string>
 
 
     <string name="logo_text">LOGO</string>
@@ -69,10 +80,7 @@
     <string name="title_activity_maps">Map</string>
     <string name="example_text_1">Discount 1</string>
     <string name="example_text_2">Text Example 2</string>
-    <string name="btn_use_now">Use Now</string>
-    <string name="btn_save_later">Safe for Later</string>
     <string name="testing">Testing</string>
-    <string name="coupin">Coupin</string>
     <string name="coupons">Coupons</string>
     <string name="search">Search</string>
     <string name="favourite">Favourites</string>
@@ -85,7 +93,11 @@
     <string name="empty_merchants">There are currently no places matching your search</string>
     <string name="searching">Searching for</string>
     <string name="white_logo">White Logo</string>
-    <string name="example_address_1">D4 Snoop Street, Off Rap Lane, Lagos.</string>
+    <string name="example_address_1">D4 Snoop Street, Off Rap Lane, Akoka, Lekki Phase 1, Lagos.</string>
     <string name="sample_details">when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries</string>
+    <string name="descr_steps">Button to Go to Place</string>
+    <string name="descr_favourite">Favourite Button</string>
+    <string name="descr_back">Back Button</string>
+    <string name="example_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet augue et tellus iaculis volutpat. Nulla imperdiet, sapien id bibendum maximus, odio leo fermentum lorem, sollicitudin varius lorem diam eu arcu. Nulla eleifend odio egestas, ullamcorper lacus vel, eleifend ex. In euismod sem quis consequat fringilla.</string>
     <!--192.168.8.100-->
 </resources>

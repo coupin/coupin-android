@@ -35,12 +35,18 @@
     <dimen name="padding_md">30dp</dimen>
     <dimen name="padding_lg">60dp</dimen>
 
+    <!-- Custom Padding -->
+    <dimen name="padding_code">20dp</dimen>
+
     <!-- Text -->
     <dimen name="button_text">16sp</dimen>
+    <dimen name="xxxlarge_text">21sp</dimen>
     <dimen name="xxlarge_text">19sp</dimen>
     <dimen name="xlarge_text">17sp</dimen>
     <dimen name="large_text">15sp</dimen>
     <dimen name="medium_text">13sp</dimen>
     <dimen name="small_text">11sp</dimen>
     <dimen name="merchant_address_text">16sp</dimen>
+    <dimen name="default_btbn_height">45dp</dimen>
+    <dimen name="default_btn_width">168dp</dimen>
 </resources>

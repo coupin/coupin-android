@@ -22,7 +22,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
@@ -32,21 +31,21 @@ import butterknife.ButterKnife;
 public class GeneratedCodeDialog extends Dialog implements View.OnClickListener {
     public Activity activity;
 
-    @BindView(R.id.code_loadingview)
+//    @BindView(R.id.code_loadingview)
     public AVLoadingIndicatorView loadingView;
-    @BindView(R.id.btn_dialog_ok)
+//    @BindView(R.id.btn_dialog_ok)
     public Button btnOk;
-    @BindView(R.id.btn_dialog_go)
+//    @BindView(R.id.btn_dialog_go)
     public Button btnGenCode;
-    @BindView(R.id.btn_dialog_verify)
+//    @BindView(R.id.btn_dialog_verify)
     public Button btnVerifyNumber;
-    @BindView(R.id.mobile_number_edittextview)
+//    @BindView(R.id.mobile_number_edittextview)
     public EditText mobileNumberView;
-    @BindView(R.id.mobile_view)
+//    @BindView(R.id.mobile_view)
     public LinearLayout mobileView;
-    @BindView(R.id.code_main)
+//    @BindView(R.id.code_main)
     public RelativeLayout mainView;
-    @BindView(R.id.generated_code_textview)
+//    @BindView(R.id.generated_code_textview)
     public TextView codeView;
 
     public Dialog dialog;
@@ -76,7 +75,7 @@ public class GeneratedCodeDialog extends Dialog implements View.OnClickListener 
         super.onCreate(savedInstance);
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.dialog_generated_code);
+        setContentView(R.layout.dialog_full_reward_details);
         ButterKnife.bind(this);
 
         String mobile = PreferenceMngr.getMobileNumber();
@@ -100,15 +99,15 @@ public class GeneratedCodeDialog extends Dialog implements View.OnClickListener 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_dialog_go:
-                navigate();
-                break;
-            case R.id.btn_dialog_ok:
-                dismiss();
-            break;
-            case R.id.btn_dialog_verify:
-                verifyNumber();
-                break;
+//            case R.id.btn_dialog_go:
+//                navigate();
+//                break;
+//            case R.id.btn_dialog_ok:
+//                dismiss();
+//            break;
+//            case R.id.btn_dialog_verify:
+//                verifyNumber();
+//                break;
             default:
                 dismiss();
         }

@@ -28,46 +28,177 @@
     <android.support.v7.widget.CardView
         android:background="@android:color/transparent"
         android:id="@+id/card"
-        android:layout_height="180dp"
+        android:layout_height="230dp"
         android:layout_width="match_parent"
         app:cardCornerRadius="@dimen/cardview_custom_radius"
         app:cardElevation="5dp"
         app:cardUseCompatPadding="true">
 
-        <RelativeLayout
-            android:background="@color/black"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="90dp">
+            android:layout_height="match_parent"
+            android:orientation="vertical">
 
-            <ImageView
-                android:alpha="0.5"
+            <RelativeLayout
+                android:background="@color/black"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/temp1"
-                android:scaleType="centerCrop" />
+                android:layout_height="90dp">
 
-            <ImageView
-                android:id="@+id/card_category"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_alignParentTop="true"
-                android:layout_height="50dp"
-                android:layout_margin="10dp"
-                android:layout_width="50dp"
-                android:src="@drawable/ic_lock_wh" />
+                <ImageView
+                    android:alpha="0.5"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/temp1"
+                    android:scaleType="centerCrop" />
 
-            <TextView
-                android:layout_alignParentBottom="true"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                <ImageView
+                    android:id="@+id/card_category"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_height="50dp"
+                    android:layout_marginBottom="@dimen/margin_sm"
+                    android:layout_marginTop="@dimen/margin_sm"
+                    android:layout_width="50dp"
+                    android:src="@drawable/ic_food" />
+
+                <TextView
+                    android:id="@+id/active_merchant_name"
+                    android:layout_alignParentBottom="true"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_sm"
+                    android:layout_width="wrap_content"
+                    android:text="Yakubu's Tea"
+                    android:textAllCaps="true"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/large_text"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_marginRight="@dimen/margin_sm"
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/ic_steps"/>
+
+                    <View
+                        android:background="@color/white"
+                        android:layout_height="28dp"
+                        android:layout_marginRight="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="1dp"/>
+
+                    <ImageView
+                        android:layout_height="30dp"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginRight="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="wrap_content"
+                        android:src="@drawable/ic_star"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <RelativeLayout
                 android:layout_width="wrap_content"
-                android:text="Yakubu's Tea"
-                android:textAllCaps="true"
-                android:textColor="@color/white"
-                android:textSize="20sp"
-                android:textStyle="bold" />
+                android:layout_height="wrap_content">
 
-        </RelativeLayout>
+                <RelativeLayout
+                    android:id="@+id/text_holder_1"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_sm"
+                    android:layout_width="match_parent">
+
+                    <TextView
+                        android:id="@+id/active_reward_1"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:maxLines="2"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginRight="30dp"
+                        android:text="Some text To know"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/medium_text"/>
+
+                    <TextView
+                        android:id="@+id/active_percent_1"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="wrap_content"
+                        android:text="100%"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/xlarge_text"/>
+
+                </RelativeLayout>
+
+                <View
+                    android:background="@color/lightGrey"
+                    android:id="@+id/divider"
+                    android:layout_below="@id/text_holder_1"
+                    android:layout_height="1dp"
+                    android:layout_width="match_parent" />
+
+                <RelativeLayout
+                    android:layout_below="@id/divider"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_md"
+                    android:layout_width="match_parent"
+                    android:padding="@dimen/padding_sm">
+
+                    <TextView
+                        android:id="@+id/active_reward_2"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:maxLines="2"
+                        android:layout_marginEnd="30dp"
+                        android:layout_marginRight="30dp"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/medium_text"/>
+
+                    <TextView
+                        android:id="@+id/active_percent_2"
+                        android:layout_alignParentEnd="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="wrap_content"
+                        android:textColor="@color/black"
+                        android:textSize="@dimen/xlarge_text"/>
+
+                </RelativeLayout>
+
+                <TextView
+                    android:background="@color/white_trans"
+                    android:id="@+id/active_code"
+                    android:layout_alignParentBottom="true"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="@dimen/padding_sm"
+                    android:text="Code: Testing"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/large_text"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </android.support.v7.widget.CardView>
 

@@ -1,6 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,8 +19,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVAdapter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.ListActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
@@ -29,7 +30,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +48,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     public RecyclerView recyclerView;
 
     public ArrayList<RewardListItem> nowList = new ArrayList<>();
-//    public RewardListAdapter adapter;
     public RequestQueue requestQueue;
     public RVAdapter rvAdapter;
     public String url;
@@ -74,12 +73,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(rvAdapter);
 
-
-//        adapter = new RewardListAdapter(getContext(), nowList);
-//        useNowListView.setAdapter(adapter);
-
-//        useNowListView.setOnItemClickListener(this);
-
         url = getString(R.string.base_url) + getString(R.string.ep_rewards_for_now);
 
         getRewardsForNow();
@@ -89,33 +82,38 @@ public class UseNowFragment extends Fragment implements MyOnClick {
 
     @Override
     public void onItemClick(int position) {
-        RewardInfoDialog dialog = new RewardInfoDialog(getContext(), nowList.get(position));
-        dialog.show();
+        Intent intent = new Intent(this.getActivity(), ListActivity.class);
+        intent.putExtra("coupin", nowList.get(position));
+        startActivity(intent);
     }
 
     private void getRewardsForNow() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.v("VolleyNow", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
-                    Log.v("VolleyNow", "length " + jsonArray.length());
                     for (int x = 0; x < jsonArray.length(); x++) {
                         JSONObject mainObject = jsonArray.getJSONObject(x);
-                        JSONObject merchantObject = mainObject.getJSONObject("merchant");
-                        JSONObject rewardObject = mainObject.getJSONObject("reward");
+                        JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");
+                        JSONArray rewardObjects = mainObject.getJSONArray("rewardId");
 
                         RewardListItem item = new RewardListItem();
 
-                        item.setBookingId(mainObject.getString("bookingId"));
+                        item.setBookingId(mainObject.getString("_id"));
                         item.setBookingShortCode(mainObject.getString("shortCode"));
-                        item.setExpiresDate(new Date(rewardObject.getLong("expirationDate")));
-                        item.setRewardName(rewardObject.getString("name"));
-                        item.setRewardDescription(rewardObject.getString("description"));
-                        item.setMerchantName(merchantObject.getString("name"));
+                        item.setMerchantName(merchantObject.getString("companyName"));
                         item.setMerchantAddress(merchantObject.getString("address"));
                         item.setMerchantLogo(merchantObject.getString("logo"));
+
+                        item.setRewardDetails(rewardObjects.toString());
+
+//                        for (int y = 0; y < count; y++) {
+//                            JSONObject rewardObject = rewardObjects.get(y);
+//                            item.setExpiresDate(new Date(rewardObject.getLong("expirationDate")));
+//                            item.setRewardName(rewardObject.getString("name"));
+//                            item.setRewardDescription(rewardObject.getString("description"));
+//                        }
 
                         nowList.add(item);
                     }

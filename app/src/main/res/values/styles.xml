@@ -8,6 +8,15 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
     
+    <style name="TransActionBar" parent="@style/Widget.AppCompat.ActionBar">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+
+        <!--Support Compatability-->
+        <item name="background">@android:color/transparent</item>
+        <item name="windowActionBarOverlay">true</item>
+    </style>
+    
     <style name="TwoWayView">
         <item name="android:orientation">horizontal</item>
     </style>

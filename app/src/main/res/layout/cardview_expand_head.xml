@@ -6,6 +6,7 @@
     android:orientation="horizontal">
     
     <LinearLayout
+        android:animateLayoutChanges="true"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
@@ -13,6 +14,7 @@
         android:layout_weight="4">
 
         <RelativeLayout
+            android:animateLayoutChanges="true"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:padding="@dimen/padding_sm">
@@ -63,7 +65,7 @@
             android:id="@+id/discount"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:paddingBottom="@dimen/padding_xxs"
+            android:paddingBottom="@dimen/padding_xs"
             android:paddingLeft="@dimen/padding_sm"
             android:paddingRight="@dimen/padding_sm"
             android:paddingTop="@dimen/padding_xxs">
