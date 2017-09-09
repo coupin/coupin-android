@@ -17,7 +17,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVExpandableAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
@@ -32,7 +35,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MerchantActivity extends Activity implements MyOnSelect {
+public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick {
     @BindView(R.id.selected_btn_pin)
     public Button selectedBtnPin;
     @BindView(R.id.selected_btn_save)
@@ -52,6 +55,7 @@ public class MerchantActivity extends Activity implements MyOnSelect {
     @BindView(R.id.selected_text)
     public TextView selectedText;
 
+    public RewardInfoDialog infoDialog;
     public RequestQueue requestQueue;
     String url;
 
@@ -69,6 +73,8 @@ public class MerchantActivity extends Activity implements MyOnSelect {
         Bundle extra = getIntent().getExtras();
         values = new ArrayList<>();
         selected = new ArrayList<>();
+
+        infoDialog = new RewardInfoDialog(this, this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         rvExpandableAdapter = new RVExpandableAdapter(values, this, this);
@@ -149,23 +155,49 @@ public class MerchantActivity extends Activity implements MyOnSelect {
             JSONArray resArray = res.getJSONArray("rewards");
             for (int x = 0; x < resArray.length(); x++) {
                 Reward reward = new Reward();
-                reward.setId(resArray.getJSONObject(x).getString("_id"));
-                reward.setTitle(resArray.getJSONObject(x).getString("name"));
-                reward.setDetails(resArray.getJSONObject(x).getString("description"));
-                if (resArray.getJSONObject(x).has("price")) {
+                JSONObject object = resArray.getJSONObject(x);
+                reward.setId(object.getString("_id"));
+                reward.setTitle(object.getString("name"));
+                reward.setDetails(object.getString("description"));
+
+                // Date
+                reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
+                reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
+
+                // Price Details
+                if (object.has("price")) {
                     reward.setIsDiscount(true);
-                    reward.setNewPrice(resArray.getJSONObject(x).getJSONObject("price").getInt("new"));
-                    reward.setOldPrice(resArray.getJSONObject(x).getJSONObject("price").getInt("old"));
+                    reward.setNewPrice(object.getJSONObject("price").getInt("new"));
+                    reward.setOldPrice(object.getJSONObject("price").getInt("old"));
                 } else {
                     reward.setIsDiscount(false);
                 }
-//                reward.setExpires(new Date(resArray.getJSONObject(x).getString("endDate")));
+
+                // Mutliple Use details
+                if (object.getJSONObject("multiple").getBoolean("status")) {
+                    reward.setMultiple(true);
+                } else {
+                    reward.setMultiple(false);
+                }
+
+                // Applicable days
+                reward.setDays(object.getJSONArray("applicableDays"));
+
                 values.add(reward);
             }
 
             rvExpandableAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (selected.size() > 0) {
+            infoDialog.show();
+        } else {
+            onBackPressed();
         }
     }
 
@@ -183,6 +215,15 @@ public class MerchantActivity extends Activity implements MyOnSelect {
             if (this.selected.size() == 0) {
                 selectedHolder.setVisibility(View.GONE);
             }
+        }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        if (position == 0) {
+            infoDialog.dismiss();
+        } else {
+            onBackPressed();
         }
     }
 }

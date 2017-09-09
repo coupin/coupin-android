@@ -1,5 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.models;
 
+import org.json.JSONArray;
+
 import java.io.Serializable;
 import java.util.Date;
 
@@ -9,14 +11,22 @@ import java.util.Date;
 
 public class Reward implements Serializable {
   private boolean isDiscount;
+  private boolean isMultiple;
+  private boolean isSelected = false;
   private Date expires;
+  private Date starting;
   private float newPrice;
   private float oldPrice;
+  private JSONArray days;
   private String details;
   private String id;
   private String title;
 
-  public void setDetails(String details) {
+    public void setDays(JSONArray days) {
+        this.days = days;
+    }
+
+    public void setDetails(String details) {
       this.details = details;
   }
 
@@ -32,7 +42,15 @@ public class Reward implements Serializable {
         isDiscount = discount;
     }
 
-  public void setNewPrice(int newPrice) {
+    public void setMultiple(boolean multiple) {
+        isMultiple = multiple;
+    }
+
+    public void setIsSelected(boolean isSelected) {
+        this.isSelected = isSelected;
+    }
+
+    public void setNewPrice(int newPrice) {
       this.newPrice = newPrice;
   }
 
@@ -40,11 +58,19 @@ public class Reward implements Serializable {
       this.oldPrice = oldPrice;
   }
 
-  public void setTitle(String title) {
+    public void setStarting(Date starting) {
+        this.starting = starting;
+    }
+
+    public void setTitle(String title) {
       this.title = title;
   }
 
-  public String getDetails() {
+    public JSONArray getDays() {
+        return days;
+    }
+
+    public String getDetails() {
       return details;
   }
 
@@ -60,6 +86,14 @@ public class Reward implements Serializable {
         return isDiscount;
     }
 
+    public boolean isSelected() {
+        return isSelected;
+    }
+
+  public boolean getMultiple() {
+      return isMultiple;
+  }
+
   public float getNewPrice() {
       return newPrice;
   }
@@ -68,7 +102,11 @@ public class Reward implements Serializable {
       return oldPrice;
   }
 
-  public String getTitle() {
+    public Date getStarting() {
+        return starting;
+    }
+
+    public String getTitle() {
         return title;
     }
 }

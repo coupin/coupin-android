@@ -6,10 +6,10 @@
         android:topLeftRadius="3dp"/>
 
     <stroke
-        android:color="@color/lighterGrey"
+        android:color="@color/lightGrey"
         android:width="2dp"/>
 
     <solid
-        android:color="@color/white"/>
+        android:color="@color/lighterGrey"/>
 
 </shape>

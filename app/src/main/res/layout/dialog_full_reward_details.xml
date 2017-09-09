@@ -8,6 +8,7 @@
               android:paddingTop="40dp">
 
     <TextView
+        android:id="@+id/full_header"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="@dimen/padding_sm"
@@ -93,9 +94,10 @@
                 android:textSize="@dimen/medium_text"/>
 
             <TextView
+                android:id="@+id/full_date_start"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="07 JUN 17"
+                android:text="@string/date_placeholder"
                 android:textColor="@color/text_dark_grey"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"/>
@@ -119,9 +121,10 @@
                 android:textSize="@dimen/medium_text"/>
 
             <TextView
+                android:id="@+id/full_date_end"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="17 JUN 17"
+                android:text="@string/date_placeholder"
                 android:textColor="@color/text_dark_grey"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"/>
@@ -129,7 +132,6 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/full_reusable"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_height="wrap_content"
@@ -146,9 +148,10 @@
                 android:textSize="@dimen/medium_text"/>
 
             <TextView
+                android:id="@+id/full_reusable"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="YES"
+                android:text="@string/na"
                 android:textColor="@color/text_dark_grey"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"/>
@@ -177,80 +180,87 @@
             android:orientation="horizontal">
 
             <TextView
-                android:background="@drawable/days_left_background"
+                android:background="@drawable/days_left_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day0"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="MON"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
             <TextView
-                android:background="@drawable/days_background"
+                android:background="@drawable/days_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day1"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="TUE"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
             <TextView
-                android:background="@drawable/days_background"
+                android:background="@drawable/days_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day2"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="WED"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
             <TextView
-                android:background="@drawable/days_background"
+                android:background="@drawable/days_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day3"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="THU"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
             <TextView
-                android:background="@drawable/days_background"
+                android:background="@drawable/days_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day4"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="FRI"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
             <TextView
-                android:background="@drawable/days_background"
+                android:background="@drawable/days_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day5"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="SAT"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
             <TextView
-                android:background="@drawable/days_right_background"
+                android:background="@drawable/days_right_background_default"
                 android:gravity="center"
+                android:id="@+id/full_day6"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="SUN"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_lighter_grey"
                 android:textStyle="bold"/>
 
         </LinearLayout>
@@ -272,6 +282,7 @@
             android:textSize="@dimen/medium_text"/>
 
         <TextView
+            android:id="@+id/full_description"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/example_description"
@@ -319,6 +330,21 @@
             android:text="@string/pin_reward"
             android:textColor="@color/white"
             android:textStyle="bold"/>
+
+        <Button
+            android:background="@drawable/round_edges_red_btn"
+            android:id="@+id/btn_remove"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginLeft="@dimen/margin_xs"
+            android:layout_marginRight="@dimen/margin_xs"
+            android:layout_marginTop="@dimen/margin_xs"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:text="@string/remove_reward"
+            android:textColor="@color/white"
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

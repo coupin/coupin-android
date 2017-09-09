@@ -5,12 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.DetailsDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
@@ -29,30 +29,17 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
     static public MyOnSelect myOnSelect;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
-        public Button bodyPinBtn;
-        public Button bodyRemoveBtn;
         public FrameLayout tickFrame;
         public RelativeLayout headDiscount;
-        public TextView bodyDetails;
-        public TextView bodyPriceOld;
-        public TextView bodyPriceNew;
         public TextView headDetails;
         public TextView headPercentage;
         public TextView headPriceNew;
         public TextView headPriceOld;
         public TextView headTitle;
         public View head;
-        public View body;
 
         public ViewHolder(View itemView) {
             super(itemView);
-
-            body = (View) itemView.findViewById(R.id.body);
-            bodyDetails = (TextView) body.findViewById(R.id.list_reward_full_details);
-            bodyPinBtn = (Button) body.findViewById(R.id.btn_pin);
-            bodyPriceNew = (TextView) body.findViewById(R.id.list_new_price);
-            bodyPriceOld = (TextView) body.findViewById(R.id.list_old_price);
-            bodyRemoveBtn = (Button) body.findViewById(R.id.btn_remove);
             head = (View) itemView.findViewById(R.id.head);
             headDiscount = (RelativeLayout) head.findViewById(R.id.discount);
             headDetails = (TextView) head.findViewById(R.id.list_reward_details);
@@ -80,10 +67,9 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
 
     @Override
     public void onBindViewHolder(final RVExpandableAdapter.ViewHolder holder, final int position) {
-        Reward reward = rewards.get(position);
+        final Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.getDetails());
-        holder.bodyDetails.setText(reward.getDetails());
         if (reward.getIsDiscount()) {
             float oldPrice = reward.getOldPrice();
             float newPrice = reward.getNewPrice();
@@ -91,8 +77,6 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
             holder.headPercentage.setText(String.valueOf((int) discount) + "%");
             holder.headPriceNew.setText("N" + String.valueOf(((int) newPrice)));
             holder.headPriceOld.setText("N" + String.valueOf((int) oldPrice));
-            holder.bodyPriceNew.setText("N" + String.valueOf(((int) newPrice)));
-            holder.bodyPriceOld.setText("N" + String.valueOf((int) oldPrice));
         }
 
         holder.headTitle.setText(String.valueOf(reward.getTitle()));
@@ -100,55 +84,33 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
         holder.head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//            if(drawerVisible) {
-//                holder.body.setVisibility(View.GONE);
-//                holder.headDiscount.setVisibility(View.VISIBLE);
-//                drawerVisible = false;
-//            } else {
-//                holder.headDiscount.setVisibility(View.GONE);
-//                holder.body.setVisibility(View.VISIBLE);
-//                drawerVisible = true;
-//            }
-                DetailsDialog detailsDialog = new DetailsDialog(context);
+                DetailsDialog detailsDialog = new DetailsDialog(context, reward);
+
+                detailsDialog.setClickListener(new MyOnClick() {
+                    @Override
+                    public void onItemClick(int place) {
+                        if (place == 0) {
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.tickFrame.setVisibility(View.VISIBLE);
+                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
+                            reward.setIsSelected(true);
+                            myOnSelect.onSelect(true, position);
+                        } else {
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            holder.tickFrame.setVisibility(View.GONE);
+                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.text_lighter_grey));
+                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            reward.setIsSelected(false);
+                            myOnSelect.onSelect(false, position);
+                        }
+                    }
+                });
                 detailsDialog.show();
-            }
-        });
-
-        holder.bodyPinBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-            holder.tickFrame.setVisibility(View.VISIBLE);
-            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
-            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
-            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
-            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
-            holder.body.setVisibility(View.GONE);
-            drawerVisible = false;
-            holder.headDiscount.setVisibility(View.VISIBLE);
-            holder.bodyPinBtn.setVisibility(View.GONE);
-            holder.bodyRemoveBtn.setVisibility(View.VISIBLE);
-            holder.body.setBackground(context.getResources().getDrawable(R.drawable.body_selected));
-            myOnSelect.onSelect(true, position);
-            }
-        });
-
-        holder.bodyRemoveBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-            holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
-            holder.tickFrame.setVisibility(View.GONE);
-            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.text_lighter_grey));
-            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-            holder.body.setVisibility(View.GONE);
-            drawerVisible = false;
-            holder.headDiscount.setVisibility(View.VISIBLE);
-            holder.bodyRemoveBtn.setVisibility(View.GONE);
-            holder.bodyPinBtn.setVisibility(View.VISIBLE);
-            holder.body.setBackgroundColor(context.getResources().getColor(R.color.white));
-            myOnSelect.onSelect(false, position);
             }
         });
     }

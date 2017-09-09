@@ -38,7 +38,7 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
-    <string name="base_url">http://192.168.8.101:5030</string>
+    <string name="base_url">http://192.168.8.102:5030</string>
     <!--<string name="base_url">http://192.168.8.113:5030</string>-->
     <!--<string name="base_url">http://172.16.25.155:5030</string>-->
     <string name="ep_get_merchants">/api/merchant</string>
@@ -99,5 +99,12 @@
     <string name="descr_favourite">Favourite Button</string>
     <string name="descr_back">Back Button</string>
     <string name="example_description">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum sit amet augue et tellus iaculis volutpat. Nulla imperdiet, sapien id bibendum maximus, odio leo fermentum lorem, sollicitudin varius lorem diam eu arcu. Nulla eleifend odio egestas, ullamcorper lacus vel, eleifend ex. In euismod sem quis consequat fringilla.</string>
+    <string name="na">N/A</string>
+    <string name="date_placeholder">D M Y</string>
+    <string name="remove_reward">Remove Reward</string>
+    <string name="discard_header">DISCARD REWARDS</string>
+    <string name="discard_body">All the rewards you selected will be lost. Are you sure you want to proceed?</string>
+    <string name="keep">KEEP SELECTION</string>
+    <string name="discard">YES, DISCARD</string>
     <!--192.168.8.100-->
 </resources>

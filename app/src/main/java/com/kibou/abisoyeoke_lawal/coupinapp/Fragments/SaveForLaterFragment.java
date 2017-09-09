@@ -17,8 +17,6 @@ import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,16 +57,16 @@ public class SaveForLaterFragment extends Fragment {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse.statusCode > 400 && error.networkResponse.statusCode < 500) {
-                    try {
-                        JSONObject object = new JSONObject(new String(error.networkResponse.data));
-                        Log.v("VolleyError", object.getString("message"));
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    Log.v("Volley Error", error.toString());
-                }
+//                if (error.networkResponse.statusCode > 400 && error.networkResponse.statusCode < 500) {
+//                    try {
+//                        JSONObject object = new JSONObject(new String(error.networkResponse.data));
+//                        Log.v("VolleyError", object.getString("message"));
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    Log.v("Volley Error", error.toString());
+//                }
             }
         }) {
             @Override
