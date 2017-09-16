@@ -1,13 +1,11 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true"
-    android:background="@drawable/back_sm"
+    android:background="@color/colorAccent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.SignUpActivity">
 
     <!-- Sign up progress -->
@@ -32,7 +30,7 @@
     <ScrollView
         android:id="@+id/sign_up_form"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <LinearLayout
             android:id="@+id/email_login_form"
@@ -43,115 +41,103 @@
             android:focusableInTouchMode="true"
             android:paddingTop="10dp">
 
-            <RelativeLayout
+            <TextView
+                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_height="100dp">
+                android:padding="@dimen/padding_sm"
+                android:text="@string/welcome_header"
+                android:textColor="@color/white"
+                android:textSize="@dimen/xxlarge_text"
+                android:textStyle="bold"/>
 
-                <ImageView
-                    android:contentDescription="@string/white_logo"
-                    android:layout_centerInParent="true"
-                    android:layout_width="270dp"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/logo_wh_bg" />
-
-            </RelativeLayout>
-
-            <LinearLayout
+            <TextView
+                android:gravity="center"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="@dimen/small_vertical_space">
+                android:padding="@dimen/padding_sm"
+                android:text="@string/welcome_header_signup"
+                android:textColor="@color/offAccent"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
 
-                <Button
-                    android:background="@drawable/facebook_button"
-                    android:id="@+id/facebook_sign_up_button"
-                    style="?android:textAppearanceSmall"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:text="@string/sign_up_w_facebook"
-                    android:textStyle="bold"
-                    android:textColor="@android:color/white"/>
-
-                <LinearLayout
-                    android:gravity="center_horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <View
-                        android:background="@android:color/white"
-                        android:layout_marginTop="10dp"
-                        android:layout_width="50dp"
-                        android:layout_height="1dp" />
-
-                    <TextView
-                        android:gravity="center_horizontal"
-                        android:layout_marginLeft="@dimen/activity_horizontal_margin"
-                        android:layout_marginStart="@dimen/activity_horizontal_margin"
-                        android:layout_marginEnd="@dimen/activity_horizontal_margin"
-                        android:layout_marginRight="@dimen/activity_horizontal_margin"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="@string/or"
-                        android:textColor="@android:color/white"
-                        android:textSize="15sp"/>
-
-                    <View
-                        android:background="@android:color/white"
-                        android:layout_marginTop="10dp"
-                        android:layout_width="50dp"
-                        android:layout_height="1dp"/>
-
-                </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_radius"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <android.support.design.widget.TextInputLayout
+                    android:layout_height="match_parent"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:textColorHint="@android:color/white">
+                    android:padding="@dimen/padding_sm"
+                    android:textColorHint="@color/text_med_grey">
 
                     <EditText
-                        android:background="@drawable/edit_text_back_gradient"
+                        android:background="@drawable/background_white"
                         android:id="@+id/name"
-                        android:drawableLeft="@drawable/ic_man_user_wh"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_name"
                         android:inputType="textCapWords"
                         android:maxLines="1"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@color/text_med_grey"
+                        android:textSize="@dimen/small_text"/>
 
                 </android.support.design.widget.TextInputLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_radius"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@android:color/white">
+                    android:padding="@dimen/padding_sm"
+                    android:textColorHint="@color/text_med_grey">
 
                     <EditText
-                        android:background="@drawable/edit_text_back_gradient"
-                        android:drawableLeft="@drawable/ic_envelope_wh"
+                        android:background="@drawable/background_white"
                         android:id="@+id/email"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/prompt_email"
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@color/text_med_grey"
+                        android:textSize="@dimen/small_text"/>
 
                 </android.support.design.widget.TextInputLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_radius"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@android:color/white">
+                    android:padding="@dimen/padding_sm"
+                    android:textColorHint="@color/text_med_grey">
 
                     <EditText
-                        android:background="@drawable/edit_text_back_gradient"
-                        android:drawableLeft="@drawable/ic_lock_wh"
+                        android:background="@drawable/background_white"
                         android:id="@+id/password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -161,18 +147,30 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@color/text_med_grey"
+                        android:textSize="@dimen/small_text"/>
 
                 </android.support.design.widget.TextInputLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_radius"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <android.support.design.widget.TextInputLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:textColorHint="@android:color/white">
+                    android:padding="@dimen/padding_sm"
+                    android:textColorHint="@color/text_med_grey">
 
                     <EditText
-                        android:background="@drawable/edit_text_back_gradient"
-                        android:drawableLeft="@drawable/ic_lock_wh"
+                        android:background="@drawable/background_white"
                         android:id="@+id/confirm_password"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -182,44 +180,109 @@
                         android:imeOptions="actionUnspecified"
                         android:inputType="textPassword"
                         android:maxLines="1"
-                        android:textColor="@android:color/white"/>
+                        android:textColor="@color/text_med_grey"
+                        android:textSize="@dimen/small_text"/>
 
                 </android.support.design.widget.TextInputLayout>
 
-                <LinearLayout
-                    android:background="@drawable/edit_text_back_gradient"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/activity_vertical_margin">
+            </android.support.v7.widget.CardView>
 
-                    <ImageView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/ic_mobile_wh"/>
-
-
-                    <Spinner
-                        android:layout_gravity="center_vertical"
-                        android:id="@+id/mobileNetwork"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-
-                </LinearLayout>
+            <android.support.v7.widget.CardView
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/activity_vertical_margin"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="16dp"
+                android:layout_width="match_parent"
+                app:cardCornerRadius="@dimen/default_radius"
+                app:cardElevation="5dp"
+                app:cardUseCompatPadding="true">
 
                 <Button
-                    android:background="@drawable/round_edges"
+                    android:background="@drawable/round_edges_cont"
                     android:id="@+id/email_sign_up_button"
-                    style="?android:textAppearanceSmall"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/activity_vertical_margin"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/title_activity_sign_up"
+                    android:text="@string/cont"
+                    android:textAllCaps="true"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"/>
+
+            </android.support.v7.widget.CardView>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+    <LinearLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <Button
+            android:background="@color/black_trans"
+            android:id="@+id/back_to_login"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="@dimen/padding_md"
+            android:text="@string/already_login"
+            android:textColor="@color/white"
+            android:textStyle="normal"/>
+
+        <LinearLayout
+            android:background="@color/white"
+            android:id="@+id/social_holder"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <TextView
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_sm"
+                android:text="@string/social_connect"
+                android:textColor="@color/text_light_grey"/>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:orientation="horizontal">
+
+                <Button
+                    android:background="@drawable/google_button"
+                    android:id="@+id/selected_btn_save"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_sm"
+                    android:layout_marginLeft="@dimen/margin_xs"
+                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:text="@string/save_select"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
+
+                <Button
+                    android:background="@drawable/facebook_button"
+                    android:id="@+id/selected_btn_pin"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_sm"
+                    android:layout_marginLeft="@dimen/margin_xs"
+                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_weight="2"
+                    android:layout_width="match_parent"
+                    android:text="@string/get_coupin"
+                    android:textColor="@color/white"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
         </LinearLayout>
-    </ScrollView>
-</LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

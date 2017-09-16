@@ -16,13 +16,6 @@
         app:cardUseCompatPadding="true"
         app:contentPadding="1dp">
 
-        <!--<View-->
-            <!--android:background="@drawable/round_edges_shadow"-->
-            <!--android:layout_width="70dp"-->
-            <!--android:layout_height="70dp"-->
-            <!--android:layout_marginLeft="6dp"-->
-            <!--android:layout_marginTop="6dp"/>-->
-
         <com.makeramen.roundedimageview.RoundedImageView
             android:background="@drawable/round_edges"
             android:id="@+id/icon"

@@ -3,7 +3,11 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <!--<color name="colorAccent">#FF4081</color>-->
-    <color name="colorAccent">#05AFE6</color>
+    <color name="colorAccent">#00CA9D</color>
+
+    <!-- General -->
+    <color name="cont">#F5A623</color>
+    <color name="offAccent">#48FFD6</color>
     <color name="darkGrey">#606060</color>
     <color name="editTextGradientStartEnd">#dadbdc</color>
     <color name="white">#FFFFFF</color>
@@ -29,10 +33,16 @@
 
     <!-- Text Colors -->
     <color name="text_dark_grey">#35343D</color>
+    <color name="text_med_grey">#5F5D70</color>
     <color name="text_light_grey">#9B99A9</color>
     <color name="text_lighter_grey">#BDBDBD</color>
 
     <!-- Card Colors -->
     <color name="ticked">#474556</color>
     <color name="white_trans">#CCFFFFFF</color>
+    <color name="black_trans">#80000000</color>
+
+    <!-- Interest Colors -->
+    <color name="interest_edge">#00BB92</color>
+    <color name="interest_tick">#B0E6DA</color>
 </resources>

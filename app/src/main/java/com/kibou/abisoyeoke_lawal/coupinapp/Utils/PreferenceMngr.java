@@ -30,22 +30,59 @@ public class PreferenceMngr {
         preferences = context.getSharedPreferences(context.getString(R.string.main_package), Context.MODE_PRIVATE);
     }
 
-    public static void setToken(String token) {
+    /**
+     * Method to set the token
+     * @param token
+     */
+    public static void setToken(String token, String uid) {
         preferences.edit().putString("token", token).apply();
+        preferences.edit().putString("uid", uid).apply();
+        preferences.edit().putBoolean("category" + uid, true).apply();
     }
 
-    public static String getMobileNumber() {
-        return preferences.getString("mobileNumber", null);
-    }
-
-    public static void setMobileNumber(String number) {
-        preferences.edit().putString("mobileNumber", number).apply();
-    }
+    /**
+     * Method to get the token
+     * @return token
+     */
 
     public static String getToken() {
         return preferences.getString("token", null);
     }
 
+    /**
+     * Get mobile number
+     * @return number
+     */
+    public static String getMobileNumber() {
+        return preferences.getString("mobileNumber", null);
+    }
+
+    /**
+     * Method to set the mobile number
+     * @param number
+     */
+    public static void setMobileNumber(String number) {
+        preferences.edit().putString("mobileNumber", number).apply();
+    }
+
+    /**
+     * Method to check if category has been picked
+     * @return
+     */
+    public static boolean categorySelected() {
+        String user = preferences.getString("uid", null);
+        return preferences.getBoolean("category" + user, false);
+    }
+
+    public static void setCategory(boolean value) {
+        String user = preferences.getString("uid", null);
+        preferences.edit().putBoolean("category" + user, value).apply();
+    }
+
+    /**
+     * Method to see if user is logged in
+     * @return true if logged and false otherwise
+     */
     public static boolean isLoggedIn() {
         if (getToken() != null) {
             return true;
@@ -54,6 +91,10 @@ public class PreferenceMngr {
         }
     }
 
+    /**
+     * Method to sign out
+     * @param activity
+     */
     public static void signOut(Activity activity) {
         preferences.edit().putString("token", null).apply();
         activity.startActivity(new Intent(activity, LandingActivity.class));

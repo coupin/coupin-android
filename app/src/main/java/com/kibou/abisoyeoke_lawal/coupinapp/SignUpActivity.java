@@ -13,7 +13,6 @@ import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -35,6 +34,8 @@ import butterknife.ButterKnife;
  * A login screen that offers login via email/password.
  */
 public class SignUpActivity extends AppCompatActivity {
+    @BindView(R.id.back_to_login)
+    public Button backToLogin;
     @BindView(R.id.name)
     public EditText nameView;
     @BindView(R.id.email)
@@ -43,8 +44,6 @@ public class SignUpActivity extends AppCompatActivity {
     public EditText passwordView;
     @BindView(R.id.confirm_password)
     public EditText confirmPasswordView;
-    @BindView(R.id.mobileNetwork)
-    public Spinner mobileNetworkView;
     @BindView(R.id.sign_up_form)
     public View mSignUpFormView;
     @BindView(R.id.sign_up_progress)
@@ -65,13 +64,20 @@ public class SignUpActivity extends AppCompatActivity {
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.networks, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        mobileNetworkView.setAdapter(adapter);
+//        mobileNetworkView.setAdapter(adapter);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_up_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptCreate();
+            }
+        });
+
+        backToLogin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
             }
         });
     }
@@ -93,7 +99,7 @@ public class SignUpActivity extends AppCompatActivity {
         final String email = emailView.getText().toString();
         final String password = passwordView.getText().toString();
         final String confirmPassword = confirmPasswordView.getText().toString();
-        final String mobileNetwork = mobileNetworkView.getSelectedItem().toString();
+//        final String mobileNetwork = mobileNetworkView.getSelectedItem().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -130,11 +136,11 @@ public class SignUpActivity extends AppCompatActivity {
             cancel = true;
         }
 
-        if (mobileNetworkView.getSelectedItemPosition() == 0) {
-            Toast.makeText(this, getString(R.string.error_invalid_network), Toast.LENGTH_SHORT).show();
-            focusView = mobileNetworkView;
-            cancel = true;
-        }
+//        if (mobileNetworkView.getSelectedItemPosition() == 0) {
+//            Toast.makeText(this, getString(R.string.error_invalid_network), Toast.LENGTH_SHORT).show();
+//            focusView = mobileNetworkView;
+//            cancel = true;
+//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -151,8 +157,8 @@ public class SignUpActivity extends AppCompatActivity {
                         JSONObject object = new JSONObject(response);
                         if (object.getBoolean("success")) {
                             PreferenceMngr.setContext(SignUpActivity.this);
-                            PreferenceMngr.setToken(object.getString("token"));
-                            startActivity(new Intent(SignUpActivity.this, HomeActivity.class));
+                            PreferenceMngr.setToken(object.getString("token"), object.getString("uid"));
+                            startActivity(new Intent(SignUpActivity.this, InterestsActivity.class));
                             finish();
                         } else {
                             showProgress(false);
@@ -179,7 +185,7 @@ public class SignUpActivity extends AppCompatActivity {
                     params.put("email", email);
                     params.put("password", password);
                     params.put("password2", confirmPassword);
-                    params.put("network", mobileNetwork);
+//                    params.put("network", mobileNetwork);
 
                     return params;
                 }

@@ -4,7 +4,9 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.AnimationDrawable;
+import android.location.Address;
 import android.location.Criteria;
+import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -22,6 +24,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,12 +47,12 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 
 import org.json.JSONArray;
@@ -57,8 +60,8 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
+import java.util.Locale;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,6 +79,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public RecyclerView iconListView;
     @BindView(R.id.map)
     public MapView mapView;
+    @BindView(R.id.spots_textview)
+    public TextView spots;
+    @BindView(R.id.street_textview)
+    public TextView street;
+
+    // TODO: Remove once done testing categories
+    @BindView(R.id.temp)
+    public LinearLayout temp;
+
 
     // Map Stuff
     public ViewGroup infoWindow;
@@ -84,10 +96,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public TextView address;
     public Button infoButton;
 
+    private Geocoder geocoder;
     private GoogleMap mGoogleMap;
     private GoogleMap.InfoWindowAdapter infoWindowAdapter;
     private LocationManager mLocationManager;
     private LinearLayoutManager mLinearLayoutManager;
+    private List<Address> addresses;
 
     private boolean isGPSEnabled;
     private boolean isNetworkEnabled;
@@ -145,6 +159,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         latLngBounds = new LatLngBounds.Builder();
         generatedCodeDialog = new GeneratedCodeDialog(HomeTab.this);
 
+        geocoder = new Geocoder(getContext(), Locale.getDefault());
+        addresses = new ArrayList<>();
+
         // Volley Queue Request and Url
         requestQueue = Volley.newRequestQueue(getContext());
         url = getString(R.string.base_url) + getString(R.string.ep_get_merchants);
@@ -156,6 +173,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout)rootView.findViewById(R.id.map_relative_layout);
 
         mapView.onCreate(savedInstanceState);
+
+        temp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(HomeTab.this.getActivity(), InterestsActivity.class));
+            }
+        });
 
 //        infoWindowTouchListener = new OnInfoWindowElemTouchListener(infoButton) {
 //            @Override
@@ -220,6 +244,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(true);
+
+                try {
+                    addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                    street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
 
                 // Place marker on current location
                 if (currentLocation != null) {
@@ -370,45 +401,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         return rootView;
     }
 
-    private void generateCode(final String id, final LatLng current) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, getString(R.string.base_url) + getString(R.string.ep_generate_code), new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject resObj = new JSONObject(response);
-                    lastOpened.hideInfoWindow();
-                    generatedCodeDialog.setCodeAndDirection(resObj.getString("code"), current);
-                    generatedCodeDialog.showCodeAndDirection();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("rewardId", id);
-
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
-    }
-
     private int getPixelsFromDp(Context context, int dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dp * scale + 0.5f);
@@ -457,6 +449,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             iconsList.add(item);
                             counter++;
                         }
+
+                        spots.setText(iconsList.size() + "  ");
 
                         setBounds();
 
@@ -572,6 +566,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             iconsList.add(item);
         }
 
+        spots.setText(iconsList.size() + " ");
 
         adapter.notifyDataSetChanged();
         isLoading = false;
@@ -639,6 +634,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         } else if (max.latitude < tempLat) {
             max = new LatLng(tempLat, tempLong);
         }
+
+        try {
+            addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+            street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -654,12 +656,5 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onProviderDisabled(String provider) {
 
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == 1001) {
-            generateCode(rewardId, direction);
-        }
     }
 }

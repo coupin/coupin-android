@@ -67,6 +67,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     // UI references.
     @BindView(R.id.email)
     public AutoCompleteTextView mEmailView;
+    @BindView(R.id.back_to_signup)
+    public Button backToSignUp;
     @BindView(R.id.password)
     public EditText mPasswordView;
     @BindView(R.id.login_form)
@@ -111,6 +113,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
+        backToSignUp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            }
+        });
     }
 
     private void populateAutoComplete() {
@@ -208,7 +216,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                         try {
                             JSONObject res = new JSONObject(response);
                             if(res.getBoolean("success")) {
-                                PreferenceMngr.setToken(res.getString("token"));
+                                PreferenceMngr.getInstance().setToken(res.getString("token"), res.getString("uid"));
                                 startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                                 finish();
                             } else {

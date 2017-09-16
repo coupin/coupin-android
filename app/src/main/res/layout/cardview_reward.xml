@@ -184,8 +184,9 @@
 
                 </RelativeLayout>
 
+                    <!--android:background="@drawable/background_white_gradient_inv"-->
                 <TextView
-                    android:background="@color/white_trans"
+                    android:background="#8FFF"
                     android:id="@+id/active_code"
                     android:layout_alignParentBottom="true"
                     android:layout_width="match_parent"

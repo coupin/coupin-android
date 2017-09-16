@@ -32,7 +32,9 @@
     <dimen name="padding_xxs">3dp</dimen>
     <dimen name="padding_xs">5dp</dimen>
     <dimen name="padding_sm">10dp</dimen>
+    <dimen name="padding_sm_plus">20dp</dimen>
     <dimen name="padding_md">30dp</dimen>
+    <dimen name="padding_md_plus">40dp</dimen>
     <dimen name="padding_lg">60dp</dimen>
 
     <!-- Custom Padding -->
@@ -49,4 +51,8 @@
     <dimen name="merchant_address_text">16sp</dimen>
     <dimen name="default_btbn_height">45dp</dimen>
     <dimen name="default_btn_width">168dp</dimen>
+    <dimen name="default_radius">3dp</dimen>
+    <dimen name="interest_icon">60dp</dimen>
+    <dimen name="radius_sm">5dp</dimen>
+    <dimen name="btn_float">60dp</dimen>
 </resources>

@@ -1,14 +1,15 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
-import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
-import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
+import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.SearchFragment;
@@ -18,7 +19,7 @@ import butterknife.ButterKnife;
 
 public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
-    public AHBottomNavigation bottomNavigationView;
+    public BottomNavigationViewEx bottomNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,36 +27,36 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        bottomNavigationView.addItem(new AHBottomNavigationItem("", R.drawable.tab_home));
-        bottomNavigationView.addItem(new AHBottomNavigationItem("", R.drawable.tab_coupon));
-        bottomNavigationView.addItem(new AHBottomNavigationItem("", R.drawable.tab_search));
-        bottomNavigationView.addItem(new AHBottomNavigationItem("", R.drawable.tab_favourite));
-        bottomNavigationView.addItem(new AHBottomNavigationItem("", R.drawable.tab_profile));
+        bottomNavigationView.enableItemShiftingMode(false);
+        bottomNavigationView.enableShiftingMode(false);
+        bottomNavigationView.enableAnimation(false);
+        bottomNavigationView.setTextVisibility(false);
 
-        bottomNavigationView.setDefaultBackgroundColor(Color.parseColor("#ffffff"));
-        bottomNavigationView.setAccentColor(Color.parseColor("#3498db"));
+        float d = getResources().getDisplayMetrics().density;
 
+        bottomNavigationView.setIconSize(50, 50);
         bottomNavigationView.setCurrentItem(0);
-
-        bottomNavigationView.setBehaviorTranslationEnabled(true);
         bottomNavigationView.setSaveEnabled(true);
+
+        bottomNavigationView.setItemHeight((int)(65 * d));
+        bottomNavigationView.setIconsMarginTop(15);
 
         final HomeTab homeTab = HomeTab.newInstance();
         final RewardsTab rewardsTab = RewardsTab.newInstance();
         final SearchFragment searchFragment = SearchFragment.newInstance();
 
-        bottomNavigationView.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public void onTabSelected(int position, boolean wasSelected) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 Fragment selectedFrag = null;
-                switch (position) {
-                    case 0:
+                switch (item.getItemId()) {
+                    case R.id.nav_home:
                         selectedFrag = homeTab;
                         break;
-                    case 1:
+                    case R.id.nav_reward:
                         selectedFrag = rewardsTab;
                         break;
-                    case 2:
+                    case R.id.nav_fav:
                         selectedFrag = searchFragment;
                         break;
                 }
@@ -63,6 +64,8 @@ public class HomeActivity extends AppCompatActivity {
                 FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, selectedFrag);
                 ft.commit();
+
+                return true;
             }
         });
 

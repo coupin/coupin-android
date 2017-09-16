@@ -105,7 +105,7 @@
     </ScrollView>
 
     <RelativeLayout
-        android:background="@drawable/background_white_gradient"
+        android:background="@drawable/background_white"
         android:layout_width="match_parent"
         android:layout_height="124dp">
 
