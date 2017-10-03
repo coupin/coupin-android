@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:icon="@drawable/ic_edit_true"
+        android:id="@+id/profile_edit_true"
+        android:title="Edit"
+        app:showAsAction="always"/>
+
+    <item
+        android:icon="@drawable/ic_edit_false"
+        android:id="@+id/profile_edit_false"
+        android:title="Done"
+        android:visible="false"
+        app:showAsAction="always"/>
+
+</menu>

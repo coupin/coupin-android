@@ -164,7 +164,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         // Volley Queue Request and Url
         requestQueue = Volley.newRequestQueue(getContext());
-        url = getString(R.string.base_url) + getString(R.string.ep_get_merchants);
+        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant);
 
         // Clear list if it exists
         iconsList.clear();
@@ -450,7 +450,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             counter++;
                         }
 
-                        spots.setText(iconsList.size() + "  ");
+                        spots.setText(iconsList.size() + " ");
 
                         setBounds();
 

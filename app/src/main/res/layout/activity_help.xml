@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HelpActivity">
+
+    <ScrollView
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/help_toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_sm"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_width="match_parent"
+                    android:text="@string/label_help_merchant"
+                    android:textColor="@color/text_med_grey"
+                    android:textSize="@dimen/large_text"/>
+
+                <EditText
+                    android:background="@drawable/background_edit_true"
+                    android:id="@+id/profile_help_merchant"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="@dimen/padding_sm"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/large_text"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_sm"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_width="match_parent"
+                    android:text="@string/label_help_coupin"
+                    android:textColor="@color/text_med_grey"
+                    android:textSize="@dimen/large_text"/>
+
+                <EditText
+                    android:background="@drawable/background_edit_true"
+                    android:id="@+id/profile_help_coupin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:maxLines="1"
+                    android:padding="@dimen/padding_sm"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/large_text"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_sm"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_width="match_parent"
+                    android:text="@string/label_help_message"
+                    android:textColor="@color/text_med_grey"
+                    android:textSize="@dimen/large_text"/>
+
+                <EditText
+                    android:background="@drawable/background_edit_true"
+                    android:id="@+id/profile_help_message"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="text"
+                    android:minLines="3"
+                    android:padding="@dimen/padding_sm"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/large_text"/>
+
+            </LinearLayout>
+
+            <Button
+                android:background="@drawable/round_edges_accept"
+                android:id="@+id/profile_password"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_sm"
+                android:layout_width="match_parent"
+                android:text="@string/submit"
+                android:textAllCaps="true"
+                android:textStyle="bold"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

@@ -34,9 +34,10 @@ public class PreferenceMngr {
      * Method to set the token
      * @param token
      */
-    public static void setToken(String token, String uid) {
+    public static void setToken(String token, String uid, String user) {
         preferences.edit().putString("token", token).apply();
         preferences.edit().putString("uid", uid).apply();
+        preferences.edit().putString("user", user).apply();
         preferences.edit().putBoolean("category" + uid, true).apply();
     }
 
@@ -77,6 +78,14 @@ public class PreferenceMngr {
     public static void setCategory(boolean value) {
         String user = preferences.getString("uid", null);
         preferences.edit().putBoolean("category" + user, value).apply();
+    }
+
+    public static String getUser() {
+        return preferences.getString("user", null);
+    }
+
+    public static void setUser(String user) {
+        preferences.edit().putString("user", user).apply();
     }
 
     /**

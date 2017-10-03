@@ -22,12 +22,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
-    <ListView
-        android:id="@+id/now_listview"
-        android:layout_height="match_parent"
-        android:layout_width="match_parent"
-        android:visibility="gone"/>
-
     <TextView
         android:id="@+id/now_empty"
         android:gravity="center"

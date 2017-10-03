@@ -9,6 +9,7 @@
     <color name="cont">#F5A623</color>
     <color name="offAccent">#48FFD6</color>
     <color name="darkGrey">#606060</color>
+    <color name="offGrey">#E0E0E0</color>
     <color name="editTextGradientStartEnd">#dadbdc</color>
     <color name="white">#FFFFFF</color>
     <color name="round_shadow">#60000000</color>
@@ -27,6 +28,10 @@
     <color name="book_loading_background">#ffffff</color>
     <color name="book_loading_book">#ff33b5e5</color>
     <color name="book_loading_page">#ffffff</color>
+
+    <!--General Colors-->
+    <color name="back_grey">#F7F7F7</color>
+    <color name="off_grey">#EBEBEB</color>
     <color name="off_white">#E5E5E5</color>
     <color name="lightGrey">#F2F2F2</color>
     <color name="lighterGrey">#F8F8F8</color>
@@ -35,6 +40,7 @@
     <color name="text_dark_grey">#35343D</color>
     <color name="text_med_grey">#5F5D70</color>
     <color name="text_light_grey">#9B99A9</color>
+    <color name="text_light_grey_plus">#BBBBBB</color>
     <color name="text_lighter_grey">#BDBDBD</color>
 
     <!-- Card Colors -->

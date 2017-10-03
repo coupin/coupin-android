@@ -1,14 +1,20 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
-import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -24,18 +30,20 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick {
+public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick {
     @BindView(R.id.selected_btn_pin)
     public Button selectedBtnPin;
     @BindView(R.id.selected_btn_save)
@@ -46,29 +54,37 @@ public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick 
     public LinearLayout selectedHolder;
     @BindView(R.id.rewards_recycler_view)
     public RecyclerView rvRewards;
-    @BindView(R.id.code)
-    public TextView code;
     @BindView(R.id.merchant_details_textview)
     public TextView merchantDetails;
     @BindView(R.id.merchant_name_textview)
     public TextView merchantName;
     @BindView(R.id.selected_text)
     public TextView selectedText;
+    @BindView(R.id.merchant_toolbar)
+    public Toolbar merchantToolbar;
 
     public RewardInfoDialog infoDialog;
     public RequestQueue requestQueue;
     String url;
 
-    public RVExpandableAdapter rvExpandableAdapter;
     public ArrayList<Reward> values;
     public ArrayList<String> selected;
+    public ArrayList<String> favourites;
+    public boolean favourite = false;
+    public JSONObject user;
+    public JSONArray userFavourites;
     public Merchant item;
+    public RVExpandableAdapter rvExpandableAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merchant);
         ButterKnife.bind(this);
+
+        setSupportActionBar(merchantToolbar);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle extra = getIntent().getExtras();
         values = new ArrayList<>();
@@ -93,12 +109,23 @@ public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick 
                     @Override
                     public void onResponse(String response) {
                         try {
-                            Log.v("VolleyResponse", response);
-                            JSONObject tempArray = new JSONObject(response);
-                            code.setText(tempArray.getString("shortCode"));
-                            selectedText.setVisibility(View.GONE);
-                            buttonHolder.setVisibility(View.GONE);
-                            code.setVisibility(View.VISIBLE);
+                            JSONObject object = new JSONObject(response);
+
+                            RewardListItem coupin = new RewardListItem();
+                            coupin.setBookingId(object.getString("_id"));
+                            coupin.setBookingShortCode(object.getString("shortCode"));
+                            coupin.setMerchantName(item.getTitle());
+                            coupin.setMerchantAddress(item.getAddress());
+                            // TODO: Sort out the merchant logo
+
+                            coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
+
+                            Log.v("VolleyCheck", response);
+
+                            Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
+                            intent.putExtra("coupin", coupin);
+                            startActivity(intent);
+
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
@@ -106,6 +133,48 @@ public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick 
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        error.printStackTrace();
+                    }
+                }){
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
+
+                        params.put("merchantId", item.getId());
+                        params.put("rewardId", selected.toString());
+
+                        return params;
+                    }
+
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Authorization", PreferenceMngr.getToken());
+
+                        return headers;
+                    }
+                };
+
+                requestQueue.add(stringRequest);
+            }
+        });
+
+        selectedBtnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_rewards_for_later);
+
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        // TODO: Show that it has been saved
+                        MerchantActivity.super.onBackPressed();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.v("VolleyError", error.toString());
+                        Log.v("VolleyStatue", "" + error.networkResponse.statusCode);
                         error.printStackTrace();
                     }
                 }){
@@ -147,6 +216,14 @@ public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick 
             item.setLongitude(res.getJSONObject("location").getDouble("long"));
             merchantName.setText(item.getTitle());
             merchantDetails.setText(item.getAddress());
+
+            user = new JSONObject(PreferenceMngr.getInstance().getUser());
+            userFavourites = user.getJSONArray("favourites");
+            String temp = userFavourites.toString();
+            favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
+            if (favourites.contains(item.getId())) {
+                favourite = true;
+            }
 
             if (res.get("picture").toString() != "null") {
 //                merchantImage.setImage
@@ -192,15 +269,27 @@ public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick 
         }
     }
 
+    /**
+     * Override onBackPressed to show dialog on first try
+     */
     @Override
     public void onBackPressed() {
         if (selected.size() > 0) {
             infoDialog.show();
         } else {
-            onBackPressed();
+            if (infoDialog != null && infoDialog.isShowing()) {
+                infoDialog.dismiss();
+            }
+            super.onBackPressed();
         }
     }
 
+    /**
+     * Custom on select being used for the recycler view that covers
+     * rewards selected and unselected
+     * @param selected
+     * @param index
+     */
     @Override
     public void onSelect(boolean selected, int index) {
         if (selected) {
@@ -218,12 +307,159 @@ public class MerchantActivity extends Activity implements MyOnSelect, MyOnClick 
         }
     }
 
+    /**
+     * Custom on item click
+     * @param position
+     */
     @Override
     public void onItemClick(int position) {
         if (position == 0) {
             infoDialog.dismiss();
         } else {
+            this.selected.clear();
             onBackPressed();
         }
+    }
+
+    /**
+     * Override on creation to make due for favourites
+     * @param menu
+     * @return
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.merchant_menu, menu);
+
+        MenuItem favTrue = menu.findItem(R.id.merchant_fav_yes);
+        MenuItem favFalse = menu.findItem(R.id.merchant_fav_no);
+
+        if (favourite) {
+            favTrue.setVisible(true);
+            favFalse.setVisible(false);
+        } else {
+            favTrue.setVisible(false);
+            favFalse.setVisible(true);
+        }
+
+        return true;
+    }
+
+    /**
+     * Override the listener for the menu items
+     * @param item
+     * @return
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                onBackPressed();
+                return  true;
+            case R.id.merchant_fav_yes:
+                makeFav(false);
+                return true;
+            case R.id.merchant_fav_no:
+                makeFav(true);
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    /**
+     * Carry out processes to add to or remove from favourites
+     * @param like a boolean that determines if the user has liked or not
+     */
+    private void makeFav(boolean like) {
+        if (like) {
+            addToFav(item.getId());
+            favourite = true;
+            invalidateOptionsMenu();
+        } else {
+            removeFromFav(item.getId());
+            favourite = false;
+            invalidateOptionsMenu();
+        }
+    }
+
+    /**
+     * Method for adding to favourite
+     * Persisting in the database
+     * @param id merchant id
+     */
+    private void addToFav(final String id) {
+        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                favourites.add(id);
+                Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.v("VolleyError", error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("merchantId", id);
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", PreferenceMngr.getToken());
+
+                return headers;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Method for removing from favourite
+     * Persisting in the database
+     * @param id
+     */
+    private void removeFromFav(final String id) {
+        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                favourites.add(id);
+                Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.v("VolleyError", error.toString());
+            }
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("merchantId", id);
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", PreferenceMngr.getToken());
+
+                return headers;
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
 }

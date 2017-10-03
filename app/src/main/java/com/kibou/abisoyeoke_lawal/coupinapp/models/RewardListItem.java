@@ -8,7 +8,10 @@ import java.util.Date;
  */
 
 public class RewardListItem implements Serializable {
+    public boolean fav = false;
+    public boolean later = false;
     public Date expiresDate;
+    public int rewardCount= 0;
     public String bookingId;
     public String bookingShortCode;
     public String merchantAddress;
@@ -28,6 +31,18 @@ public class RewardListItem implements Serializable {
 
     public Date getExpiresDate() {
         return expiresDate;
+    }
+
+    public boolean isLater() {
+        return later;
+    }
+
+    public boolean isFav() {
+        return fav;
+    }
+
+    public int getRewardCount() {
+        return rewardCount;
     }
 
     public String getMerchantAddress() {
@@ -66,6 +81,14 @@ public class RewardListItem implements Serializable {
         this.expiresDate = expiresDate;
     }
 
+    public void setFav(boolean fav) {
+        this.fav = fav;
+    }
+
+    public void setLater(boolean later) {
+        this.later = later;
+    }
+
     public void setMerchantAddress(String merchantAddress) {
         this.merchantAddress = merchantAddress;
     }
@@ -76,6 +99,10 @@ public class RewardListItem implements Serializable {
 
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
+    }
+
+    public void setRewardCount(int rewardCount) {
+        this.rewardCount = rewardCount;
     }
 
     public void setRewardDetails(String rewardDetails) {

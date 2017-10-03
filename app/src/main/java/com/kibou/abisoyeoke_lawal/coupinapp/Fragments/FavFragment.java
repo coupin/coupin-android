@@ -1,7 +1,5 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 
-
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,7 +16,6 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVAdapter;
-import com.kibou.abisoyeoke_lawal.coupinapp.CoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
@@ -35,21 +32,18 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-/**
- * A simple {@link Fragment} subclass.
- */
-public class UseNowFragment extends Fragment implements MyOnClick {
-    @BindView(R.id.now_loadingview)
-    public AVLoadingIndicatorView loadingView;
-    @BindView(R.id.now_recyclerview)
-    public RecyclerView recyclerView;
+public class FavFragment extends Fragment implements MyOnClick {
+    @BindView(R.id.fav_loadingview)
+    public AVLoadingIndicatorView favLoadingView;
+    @BindView(R.id.fav_recyclerview)
+    public RecyclerView favRecyclerView;
 
-    public ArrayList<RewardListItem> nowList = new ArrayList<>();
+    public ArrayList<RewardListItem> favList;
     public RequestQueue requestQueue;
     public RVAdapter rvAdapter;
     public String url;
 
-    public UseNowFragment() {
+    public FavFragment() {
         // Required empty public constructor
     }
 
@@ -58,32 +52,26 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_use_now, container, false);
-        ButterKnife.bind(this, rootView);
+        View root = inflater.inflate(R.layout.fragment_fav, container, false);
+        ButterKnife.bind(this, root);
+
+        favList = new ArrayList<>();
 
         requestQueue = Volley.newRequestQueue(getContext());
+        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new RVAdapter(nowList, this);
-        recyclerView.setLayoutManager(linearLayoutManager);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setAdapter(rvAdapter);
+        rvAdapter = new RVAdapter(favList, this);
+        favRecyclerView.setLayoutManager(linearLayoutManager);
+        favRecyclerView.setHasFixedSize(true);
+        favRecyclerView.setAdapter(rvAdapter);
 
-        url = getString(R.string.base_url) + getString(R.string.ep_rewards_for_now);
+        getFavourites();
 
-        getRewardsForNow();
-
-        return rootView;
+        return root;
     }
 
-    @Override
-    public void onItemClick(int position) {
-        Intent intent = new Intent(this.getActivity(), CoupinActivity.class);
-        intent.putExtra("coupin", nowList.get(position));
-        startActivity(intent);
-    }
-
-    private void getRewardsForNow() {
+    public void getFavourites() {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -91,24 +79,22 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int x = 0; x < jsonArray.length(); x++) {
                         JSONObject mainObject = jsonArray.getJSONObject(x);
-                        JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");
-                        JSONArray rewardObjects = mainObject.getJSONArray("rewardId");
+                        JSONObject merchantObject = mainObject.getJSONObject("merchantInfo");
+                        JSONArray rewardObjects = merchantObject.getJSONArray("rewards");
 
                         RewardListItem item = new RewardListItem();
 
-                        item.setBookingId(mainObject.getString("_id"));
-                        item.setBookingShortCode(mainObject.getString("shortCode"));
+                        item.setFav(true);
                         item.setMerchantName(merchantObject.getString("companyName"));
                         item.setMerchantAddress(merchantObject.getString("address"));
                         item.setMerchantLogo(merchantObject.getString("logo"));
-
-
                         item.setRewardDetails(rewardObjects.toString());
+                        item.setRewardCount(rewardObjects.length());
 
-                        nowList.add(item);
+                        favList.add(item);
                     }
-                    rvAdapter.notifyDataSetChanged();
 
+                    rvAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -129,5 +115,16 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onItemClick(int position) {
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
     }
 }

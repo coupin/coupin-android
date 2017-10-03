@@ -1,9 +1,11 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -22,7 +24,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class ListActivity extends AppCompatActivity implements MyOnClick {
+public class CoupinActivity extends AppCompatActivity implements MyOnClick {
     @BindView(R.id.list_back)
     public ImageButton listBack;
     @BindView(R.id.list_view)
@@ -55,6 +57,7 @@ public class ListActivity extends AppCompatActivity implements MyOnClick {
         try {
             JSONArray res = new JSONArray(coupin.getRewardDetails());
             listCode.setText(coupin.getBookingShortCode());
+            Log.v("VolleyCheck", coupin.getRewardDetails());
             for(int x = 0; x < res.length(); x++) {
                 JSONObject object = res.getJSONObject(x);
                 Reward reward = new Reward();
@@ -83,6 +86,11 @@ public class ListActivity extends AppCompatActivity implements MyOnClick {
                 onBackPressed();
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(CoupinActivity.this, HomeActivity.class));
     }
 
     @Override

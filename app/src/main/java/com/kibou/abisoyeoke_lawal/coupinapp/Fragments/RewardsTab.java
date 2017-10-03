@@ -51,11 +51,11 @@ public class RewardsTab extends Fragment {
 
     public void setupWithViewPager(ViewPager viewPager) {
         UseNowFragment useNowFragment = new UseNowFragment();
-        SaveForLaterFragment saveForLaterFragment = new SaveForLaterFragment();
+        SaveFragment saveFragment = new SaveFragment();
 
         RewardsTabAdapter adapter = new RewardsTabAdapter(getChildFragmentManager());
         adapter.addFragment(useNowFragment, "Active");
-        adapter.addFragment(saveForLaterFragment, "Saved");
+        adapter.addFragment(saveFragment, "Saved");
         viewPager.setAdapter(adapter);
         viewPager.setOffscreenPageLimit(1);
     }

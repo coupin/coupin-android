@@ -9,16 +9,33 @@
 
     <RelativeLayout
         android:background="@color/white"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:orientation="horizontal">
+        android:padding="@dimen/padding_sm">
+
+        <ImageView
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_height="@dimen/icon_sm"
+            android:layout_width="@dimen/icon_sm"
+            android:src="@drawable/ic_search_lg"/>
 
         <TextView
-            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
-            android:text="Coupins"
-            android:textColor="@color/black"/>
+            android:layout_height="wrap_content"
+            android:text="@string/coupins"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/xxlarge_text"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_height="@dimen/icon_sm"
+            android:layout_width="@dimen/icon_sm"
+            android:src="@drawable/ic_filter_lg"/>
 
     </RelativeLayout>
 

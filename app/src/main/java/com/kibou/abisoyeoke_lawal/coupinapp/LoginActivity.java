@@ -215,14 +215,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     public void onResponse(String response) {
                         try {
                             JSONObject res = new JSONObject(response);
-                            if(res.getBoolean("success")) {
-                                PreferenceMngr.getInstance().setToken(res.getString("token"), res.getString("uid"));
-                                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                                finish();
-                            } else {
-                                showProgress(false);
-                                Toast.makeText(LoginActivity.this, res.getString("message"), Toast.LENGTH_SHORT).show();
-                            }
+                            JSONObject object = res.getJSONObject("user");
+                            PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                            finish();
                         } catch (Exception e) {
                             showProgress(false);
                             e.printStackTrace();

@@ -39,17 +39,18 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
-    <string name="base_url">http://192.168.8.104:5030</string>
-    <!--<string name="base_url">http://192.168.8.113:5030</string>-->
-    <!--<string name="base_url">http://172.16.25.155:5030</string>-->
-    <string name="ep_get_merchants">/api/merchant</string>
+    <!--<string name="base_url">http://172.16.1.237:5030</string>-->
+    <!--<string name="base_url">http://192.168.8.103:5030</string>-->
+    <string name="base_url">http://10.0.30.87:5030</string>
+    <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
-    <string name="ep_register_user">/customer/register</string>
     <string name="ep_login_user">/customer/authenticate</string>
+    <string name="ep_register_user">/customer/register</string>
     <string name="ep_rewards_for_now">/api/reward/me/now</string>
     <string name="ep_rewards_for_later">/api/reward/me/later</string>
-    <string name="ep_api_merchant">/api/merchant</string>
+    <string name="ep_api_user">/api/user</string>
     <string name="ep_api_user_category">/api/user/category</string>
+    <string name="ep_api_user_favourite">/api/user/favourites</string>
 
 
     <!-- Coupin words and phrases -->
@@ -58,6 +59,7 @@
     <string name="get_coupin">Get Coupin</string>
     <string name="code">Code:</string>
     <string name="coupin">Coupin</string>
+    <string name="coupins">Coupins</string>
     <string name="pin_reward">Pin Reward</string>
     <string name="save_select">Save Selection</string>
 
@@ -117,5 +119,25 @@
     <string name="welcome_back_header_signin">Login Using Your Email</string>
     <string name="new_signin">Not a member? Sign Up</string>
     <string name="around">Rewards around you</string>
+    <string name="edit_profile">Edit My Profile</string>
+    <string name="edit_category">Change Category</string>
+    <string name="support">SUPPORT</string>
+    <string name="faq">FAQ</string>
+    <string name="feedback">Feedback/Redeem Reward</string>
+    <string name="about">About Coupin</string>
+    <string name="terms">Terms of Service</string>
+    <string name="version_header">App Version</string>
+    <string name="logout">Logout of Coupin</string>
+    <string name="label_firstname">First Name</string>
+    <string name="label_lastname">Last Name</string>
+    <string name="label_email">Email Address</string>
+    <string name="label_mobile">Mobile Number</string>
+    <string name="label_gender">Gender</string>
+    <string name="change_pass">Change Password</string>
+    <string name="label_help_merchant">Enter Merchant Name (Optional)</string>
+    <string name="label_help_coupin">Enter Coupin Code (Optional)</string>
+    <string name="label_help_message">Leave a message</string>
+    <string name="submit">Submit</string>
+    <string name="label_assist">How may we assist you?</string>
     <!--192.168.8.100-->
 </resources>

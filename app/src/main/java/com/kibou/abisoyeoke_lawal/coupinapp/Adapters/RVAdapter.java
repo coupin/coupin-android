@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
@@ -44,16 +45,37 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
         try {
             holder.merchantName.setText(reward.getMerchantName());
-            holder.code.setText("Code: " + reward.getBookingShortCode());
 
             JSONArray rewardArray = new JSONArray(reward.getRewardDetails());
-            JSONObject first = rewardArray.getJSONObject(0);
-            holder.rewardOne.setText(first.getString("description"));
 
-            if (rewardArray.length() > 1) {
-                JSONObject second = rewardArray.getJSONObject(1);
-                holder.rewardTwo.setText(second.getString("description"));
+            if (reward.isFav()) {
+                holder.favAddress.setText(reward.getMerchantAddress());
+                holder.activeRewardHolder.setVisibility(View.GONE);
+                holder.activeFavHolder.setVisibility(View.VISIBLE);
+                holder.activeRewardHolder2.setVisibility(View.GONE);
+
+                if (reward.getRewardCount() > 1) {
+                    holder.code.setText(reward.getRewardCount() + " REWARDS");
+                } else {
+                    holder.code.setText(rewardArray.getJSONObject(0).getString("name"));
+                }
+
+            } else {
+                if (reward.isLater()) {
+                    holder.code.setText("REDEEM REWARDS");
+                } else {
+                    holder.code.setText("Code: " + reward.getBookingShortCode());
+                }
+
+                JSONObject first = rewardArray.getJSONObject(0);
+                holder.rewardOne.setText(first.getString("description"));
+
+                if (rewardArray.length() > 1) {
+                    JSONObject second = rewardArray.getJSONObject(1);
+                    holder.rewardTwo.setText(second.getString("description"));
+                }
             }
+
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +91,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
 
         public CardView cardView;
+        public RelativeLayout activeFavHolder;
+        public RelativeLayout activeRewardHolder;
+        public RelativeLayout activeRewardHolder2;
         public TextView code;
+        public TextView favAddress;
         public TextView merchantName;
         public TextView rewardOne;
         public TextView rewardOnePercent;
@@ -79,7 +105,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
         public ItemViewHolder(View itemView) {
             super(itemView);
+            activeFavHolder = (RelativeLayout) itemView.findViewById(R.id.active_fav_address_holder);
+            activeRewardHolder = (RelativeLayout) itemView.findViewById(R.id.text_holder_1);
+            activeRewardHolder2 = (RelativeLayout) itemView.findViewById(R.id.text_holder_2);
             code = (TextView) itemView.findViewById(R.id.active_code);
+            favAddress = (TextView) itemView.findViewById(R.id.active_fav_address);
             merchantName = (TextView) itemView.findViewById(R.id.active_merchant_name);
             rewardOne = (TextView) itemView.findViewById(R.id.active_reward_1);
             rewardOnePercent = (TextView) itemView.findViewById(R.id.active_percent_1);

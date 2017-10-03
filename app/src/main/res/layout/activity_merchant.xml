@@ -16,100 +16,109 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:background="@color/darkGrey"
-                android:id="@+id/map_holder"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/merchant_toolbar"
                 android:layout_width="match_parent"
-                android:layout_height="220dp">
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/white"
+                android:elevation="4dp"
+                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <android.support.design.widget.FloatingActionButton
+                    android:background="@color/colorAccent"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="15dp"
+                    android:layout_marginTop="150dp"
+                    android:layout_height="64dp"
+                    android:layout_width="64dp"
+                    android:src="@drawable/ic_nav_arrow"
+                    app:backgroundTint="@color/colorAccent"
+                    app:elevation="10dp"
+                    app:rippleColor="@color/black"/>
 
 
-            </FrameLayout>
-
-            <android.support.v7.widget.CardView
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/card_space"
-                android:layout_width="match_parent">
-
-                <LinearLayout
+                <FrameLayout
+                    android:background="@color/darkGrey"
+                    android:id="@+id/banner_holder"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="@dimen/activity_vertical_margin">
+                    android:layout_height="180dp">
 
-                    <TextView
-                        android:id="@+id/merchant_name_textview"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:paddingBottom="10dp"
-                        android:text="@string/testing"
-                        android:textAllCaps="true"
-                        android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/logo_text"
-                        android:textStyle="bold"/>
+                </FrameLayout>
+
+                <android.support.v7.widget.CardView
+                    android:layout_below="@id/banner_holder"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/card_space"
+                    android:layout_width="match_parent">
 
                     <LinearLayout
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="10dp"
                         android:layout_width="match_parent"
-                        android:orientation="horizontal">
-
-                        <RatingBar
-                            android:layout_height="wrap_content"
-                            android:layout_marginRight="3dp"
-                            android:layout_width="wrap_content"
-                            style="@style/circleRating"/>
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="@dimen/activity_vertical_margin">
 
                         <TextView
+                            android:id="@+id/merchant_name_textview"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingBottom="10dp"
+                            android:text="@string/testing"
+                            android:textAllCaps="true"
+                            android:textColor="@color/text_dark_grey"
+                            android:textSize="@dimen/logo_text"
+                            android:textStyle="bold"/>
+
+                        <LinearLayout
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="10dp"
+                            android:layout_width="match_parent"
+                            android:orientation="horizontal">
+
+                            <RatingBar
+                                android:layout_height="wrap_content"
+                                android:layout_marginRight="3dp"
+                                android:layout_width="wrap_content"
+                                style="@style/circleRating"/>
+
+                            <TextView
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:text="4.2/5.0"
+                                android:textColor="@color/text_light_grey"
+                                android:textSize="@dimen/large_text"
+                                android:textStyle="normal"/>
+
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/merchant_details_textview"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="4.2/5.0"
-                            android:textColor="@color/text_light_grey"
-                            android:textSize="@dimen/large_text"
+                            android:paddingRight="@dimen/padding_md"
+                            android:textColor="@color/text_dark_grey"
+                            android:textSize="@dimen/medium_text"
                             android:textStyle="normal"/>
 
                     </LinearLayout>
 
-                    <TextView
-                        android:id="@+id/merchant_details_textview"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:paddingRight="@dimen/padding_md"
-                        android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/medium_text"
-                        android:textStyle="normal"/>
-
-                </LinearLayout>
-
-            </android.support.v7.widget.CardView>
+                </android.support.v7.widget.CardView>
+            </RelativeLayout>
 
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rewards_recycler_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
 
-            <android.support.design.widget.FloatingActionButton
-                android:background="@color/colorAccent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="15dp"
-                android:layout_marginTop="200dp"
-                android:layout_height="64dp"
-                android:layout_width="64dp"
-                android:src="@drawable/ic_nav_arrow"
-                app:elevation="10dp"
-                app:backgroundTint="@color/colorAccent"
-                app:rippleColor="@color/black"/>
-
         </LinearLayout>
 
     </ScrollView>
-
-    <RelativeLayout
-        android:background="@drawable/background_white"
-        android:layout_width="match_parent"
-        android:layout_height="124dp">
-
-    </RelativeLayout>
 
     <LinearLayout
         android:animateLayoutChanges="true"
@@ -120,21 +129,6 @@
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
-
-        <TextView
-            android:background="@color/colorAccent"
-            android:gravity="center_horizontal"
-            android:id="@+id/code"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:paddingBottom="@dimen/padding_md"
-            android:paddingTop="@dimen/padding_md"
-            android:text="example"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/xxxlarge_text"
-            android:textStyle="bold"
-            android:visibility="gone"/>
 
 
         <TextView

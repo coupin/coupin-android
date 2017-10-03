@@ -55,6 +55,9 @@ public class InterestsActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
+        Intent receivedIntent = getIntent();
+        Bundle extra = receivedIntent.getBundleExtra("interestBundle");
+
         for (int i = 0; i < categories.length; i++) {
             Interest item = new Interest();
             item.setIcon(categoryIcons[i]);
@@ -109,7 +112,9 @@ public class InterestsActivity extends AppCompatActivity {
             }
         });
 
-        PreferenceMngr.getInstance().setCategory(false);
+        if (!extra.getBoolean("fromProfile")) {
+            PreferenceMngr.getInstance().setCategory(false);
+        }
     }
 
     public void sendInterestInfo() {
@@ -117,8 +122,12 @@ public class InterestsActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PreferenceMngr.getInstance().setCategory(true);
-                startActivity(new Intent(InterestsActivity.this, HomeActivity.class));
+                if (PreferenceMngr.getInstance().categorySelected()) {
+                    onBackPressed();
+                } else {
+                    PreferenceMngr.getInstance().setCategory(true);
+                    startActivity(new Intent(InterestsActivity.this, HomeActivity.class));
+                }
             }
         }, new Response.ErrorListener() {
             @Override

@@ -4,7 +4,7 @@
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-                android:paddingBottom="@dimen/padding_md"
+                android:paddingBottom="@dimen/navbar_space"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab">
 
     <com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout
@@ -68,7 +68,7 @@
                         android:id="@+id/street_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="Adeola Odeku"
+                        android:text="@string/na"
                         android:textColor="@color/black"
                         android:textSize="@dimen/medium_text"
                         android:textStyle="bold"/>
@@ -82,20 +82,12 @@
                     android:orientation="horizontal">
 
                     <TextView
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:text="You have "
-                        android:textColor="@color/black"
-                        android:textSize="@dimen/medium_text"
-                        android:textStyle="normal"/>
-
-                    <TextView
                         android:id="@+id/spots_textview"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:text="7"
+                        android:text="@string/na"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/medium_text"
+                        android:textSize="@dimen/small_text"
                         android:textStyle="bold"/>
 
                     <TextView
@@ -103,7 +95,7 @@
                         android:layout_width="wrap_content"
                         android:text="@string/around"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/medium_text"
+                        android:textSize="@dimen/small_text"
                         android:textStyle="normal"/>
 
                 </LinearLayout>
@@ -154,14 +146,13 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="70dp"
+        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginRight="15dp"
         android:layout_width="wrap_content"
         android:src="@drawable/ic_location"
         app:borderWidth="0dp"
         app:elevation="10dp"
-        app:backgroundTint="@color/darkGrey"
-        app:rippleColor="@color/black"
-        app:fabSize="auto"/>
+        app:backgroundTint="@color/text_med_grey"
+        app:rippleColor="@color/black"/>
 
 </RelativeLayout>

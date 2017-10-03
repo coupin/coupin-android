@@ -154,16 +154,12 @@ public class SignUpActivity extends AppCompatActivity {
                 @Override
                 public void onResponse(String response) {
                     try {
-                        JSONObject object = new JSONObject(response);
-                        if (object.getBoolean("success")) {
-                            PreferenceMngr.setContext(SignUpActivity.this);
-                            PreferenceMngr.setToken(object.getString("token"), object.getString("uid"));
-                            startActivity(new Intent(SignUpActivity.this, InterestsActivity.class));
+                        JSONObject res = new JSONObject(response);
+                        PreferenceMngr.setContext(SignUpActivity.this);
+                        JSONObject object = res.getJSONObject("user");
+                        PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                        startActivity(new Intent(SignUpActivity.this, InterestsActivity.class));
                             finish();
-                        } else {
-                            showProgress(false);
-                            Toast.makeText(SignUpActivity.this, object.getString("message"), Toast.LENGTH_SHORT).show();
-                        }
                     } catch (Exception e) {
                         showProgress(false);
                         Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show();

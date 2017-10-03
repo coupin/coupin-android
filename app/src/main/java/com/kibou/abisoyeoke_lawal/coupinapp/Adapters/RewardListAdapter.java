@@ -63,33 +63,4 @@ public class RewardListAdapter extends BaseAdapter {
         return convertView;
     }
 
-
-//    @Override
-//    public View getChildView(int groupPosition, int childPosition, boolean isLastChild, View convertView, ViewGroup parent) {
-//        RewardListItem reward = itemList.get(groupPosition);
-//
-//        if (convertView == null) {
-//            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            convertView = inflater.inflate(R.layout.dialog_reward_info, null);
-//        }
-//
-//        TextView bookingShortCodeView = (TextView) convertView.findViewById(R.id.expandable_code);
-//        bookingShortCodeView.setText(reward.getBookingShortCode());
-//
-//        TextView rewardDetailsView = (TextView) convertView.findViewById(R.id.expandable_reward_detail);
-//        rewardDetailsView.setText(reward.getRewardDescription());
-//
-//        TextView nameView = (TextView) convertView.findViewById(R.id.expandable_merchant_name);
-//        nameView.setText(reward.getMerchantName());
-//
-//        TextView addressView = (TextView) convertView.findViewById(R.id.expandable_merchant_address);
-//        addressView.setText(reward.getMerchantAddress());
-//
-//        TextView expiresView = (TextView) convertView.findViewById(R.id.expandable_reward_expiration_date);
-//        DateFormat dateFormat = new SimpleDateFormat("EEE, MMM d, yyyy", Locale.US);
-//        expiresView.setText(dateFormat.format(reward.getExpiresDate()));
-//
-//        return convertView;
-//    }
-
 }
