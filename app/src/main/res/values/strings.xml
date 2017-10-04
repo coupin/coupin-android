@@ -41,7 +41,7 @@
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
     <!--<string name="base_url">http://172.16.1.237:5030</string>-->
     <!--<string name="base_url">http://192.168.8.103:5030</string>-->
-    <string name="base_url">http://10.0.30.87:5030</string>
+    <string name="base_url">http://172.20.1.146:5030</string>
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_login_user">/customer/authenticate</string>

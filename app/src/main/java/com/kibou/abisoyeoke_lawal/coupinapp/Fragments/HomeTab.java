@@ -47,6 +47,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
@@ -425,6 +426,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     double two = 0;
                     int counter = 0;
                     try {
+                        Merchant first = new Merchant();
+                        first.setPicture(R.drawable.hot);
+                        iconsList.add(first);
+
                         JSONArray resArr = new JSONArray(response);
                         for (int j = 0; j < resArr.length(); j++) {
                             JSONObject res = resArr.getJSONObject(j);
@@ -586,13 +591,17 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void OnClick(View view, int position) {
-        LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
-        CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
-        mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-        markers[position].setTitle("No");
-        markers[position].showInfoWindow();
-        lastOpened = markers[position];
-        onMarker = true;
+        if (position == 0) {
+            startActivity(new Intent(getActivity(), HotActivity.class));
+        } else {
+            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
+            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+            markers[position - 1].setTitle("No");
+            markers[position - 1].showInfoWindow();
+            lastOpened = markers[position + 1];
+            onMarker = true;
+        }
     }
 
     @Override

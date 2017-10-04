@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -20,7 +21,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -33,10 +33,12 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavFragment extends Fragment implements MyOnClick {
-    @BindView(R.id.fav_loadingview)
-    public AVLoadingIndicatorView favLoadingView;
     @BindView(R.id.fav_recyclerview)
     public RecyclerView favRecyclerView;
+    @BindView(R.id.fav_loadingview)
+    public RelativeLayout favLoadingView;
+    @BindView(R.id.main_fav)
+    public RelativeLayout mainFav;
 
     public ArrayList<RewardListItem> favList;
     public RequestQueue requestQueue;
@@ -95,6 +97,8 @@ public class FavFragment extends Fragment implements MyOnClick {
                     }
 
                     rvAdapter.notifyDataSetChanged();
+                    favLoadingView.setVisibility(View.GONE);
+                    mainFav.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
