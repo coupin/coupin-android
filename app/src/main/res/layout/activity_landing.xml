@@ -40,55 +40,68 @@
             android:layout_height="100dp"
             android:src="@drawable/logo_wh_bg" />
 
-        <LinearLayout
-            android:layout_alignParentBottom="true"
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/btn_grp"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:background="@color/signup"
+            android:id="@+id/sign_up_button"
+            android:layout_height="62dp"
+            android:layout_weight="1"
             android:layout_width="match_parent"
+            android:padding="@dimen/padding_xs"
+            android:text="@string/sign_up"
+            android:textAllCaps="true"
+            android:textColor="@color/text_signup"
+            android:textSize="@dimen/medium_text"/>
+
+        <Button
+            android:background="@color/signin"
+            android:id="@+id/sign_in_button"
+            android:layout_height="62dp"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:text="@string/sign_in"
+            android:textAllCaps="true"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/medium_text"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_above="@id/btn_grp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_xs"
+        android:orientation="vertical">
+
+        <com.synnapps.carouselview.CarouselView
+            android:id="@+id/carouselView"
+            android:layout_width="match_parent"
+            android:layout_height="85dp"
+            app:fillColor="#FFFFFFFF"
+            app:pageColor="#80FFFFFF"
+            app:radius="5dp"
+            app:slideInterval="5000"
+            app:strokeColor="#80FFFFFF"
+            app:strokeWidth="1dp"/>
+
+        <TextView
+            android:id="@+id/forgot_password"
+            android:gravity="center_horizontal"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:text="@string/already_user"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
 
-            <com.synnapps.carouselview.CarouselView
-                android:id="@+id/carouselView"
-                android:layout_width="match_parent"
-                android:layout_height="100dp"
-                app:fillColor="#FFFFFFFF"
-                app:pageColor="#80FFFFFF"
-                app:radius="5dp"
-                app:slideInterval="5000"
-                app:strokeColor="#80FFFFFF"
-                app:strokeWidth="1dp" />
-
-            <Button
-                android:background="@drawable/green_round_edges"
-                android:id="@+id/sign_up_button"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sign_up"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/button_text"/>
-
-            <TextView
-                android:id="@+id/forgot_password"
-                android:gravity="center_horizontal"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_width="match_parent"
-                android:text="@string/already_user"
-                android:textColor="@android:color/white"/>
-
-            <Button
-                android:background="@drawable/blue_round_edges"
-                android:id="@+id/sign_in_button"
-                android:layout_marginBottom="@dimen/activity_vertical_margin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:text="@string/sign_in"
-                android:textColor="@android:color/white"
-                android:textSize="@dimen/button_text"/>
-
-        </LinearLayout>
-
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>

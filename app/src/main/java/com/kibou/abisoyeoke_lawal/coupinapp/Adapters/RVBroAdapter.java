@@ -18,28 +18,28 @@ import org.json.JSONObject;
 import java.util.List;
 
 /**
- * Created by abisoyeoke-lawal on 7/27/17.
+ * Created by abisoyeoke-lawal on 10/9/17.
  */
 
-public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
+public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHolder> {
     public List<RewardListItem> rewardListItems;
 
     static public MyOnClick myOnClick;
 
     @Override
-    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RVBroAdapter.ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_reward, parent, false);
-        ItemViewHolder itemViewHolder = new ItemViewHolder(v);
+        RVBroAdapter.ItemViewHolder itemViewHolder = new RVBroAdapter.ItemViewHolder(v);
         return itemViewHolder;
     }
 
-    public RVAdapter(List<RewardListItem> rewardListItems, MyOnClick myOnClick) {
+    public RVBroAdapter(List<RewardListItem> rewardListItems, MyOnClick myOnClick) {
         this.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
     }
 
     @Override
-    public void onBindViewHolder(ItemViewHolder holder, int position) {
+    public void onBindViewHolder(RVBroAdapter.ItemViewHolder holder, int position) {
         // Add data here
         RewardListItem reward = rewardListItems.get(position);
 
@@ -128,10 +128,5 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 }
             });
         }
-    }
-
-    @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
-        super.onAttachedToRecyclerView(recyclerView);
     }
 }

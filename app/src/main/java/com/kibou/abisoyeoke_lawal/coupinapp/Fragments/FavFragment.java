@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
 import com.android.volley.Request;
@@ -33,12 +33,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavFragment extends Fragment implements MyOnClick {
+    @BindView(R.id.fav_empty)
+    public LinearLayout favEmpty;
+    @BindView(R.id.fav_error)
+    public LinearLayout favError;
     @BindView(R.id.fav_recyclerview)
     public RecyclerView favRecyclerView;
     @BindView(R.id.fav_loadingview)
     public RelativeLayout favLoadingView;
-    @BindView(R.id.main_fav)
-    public RelativeLayout mainFav;
 
     public ArrayList<RewardListItem> favList;
     public RequestQueue requestQueue;
@@ -97,8 +99,13 @@ public class FavFragment extends Fragment implements MyOnClick {
                     }
 
                     rvAdapter.notifyDataSetChanged();
-                    favLoadingView.setVisibility(View.GONE);
-                    mainFav.setVisibility(View.VISIBLE);
+                    if (jsonArray.length() == 0) {
+                        favLoadingView.setVisibility(View.GONE);
+                        favEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        favLoadingView.setVisibility(View.GONE);
+                        favRecyclerView.setVisibility(View.VISIBLE);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -106,7 +113,13 @@ public class FavFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                if (error.networkResponse.statusCode == 404) {
+                    favLoadingView.setVisibility(View.GONE);
+                    favEmpty.setVisibility(View.VISIBLE);
+                } else {
+                    favLoadingView.setVisibility(View.GONE);
+                    favError.setVisibility(View.VISIBLE);
+                }
             }
         }) {
             @Override

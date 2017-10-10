@@ -28,7 +28,7 @@
     <android.support.v7.widget.CardView
         android:background="@android:color/transparent"
         android:id="@+id/card"
-        android:layout_height="240dp"
+        android:layout_height="wrap_content"
         android:layout_width="match_parent"
         app:cardCornerRadius="@dimen/cardview_custom_radius"
         app:cardElevation="5dp"
@@ -113,6 +113,7 @@
                 android:layout_height="wrap_content">
 
                 <RelativeLayout
+                    android:gravity="center_vertical"
                     android:id="@+id/text_holder_1"
                     android:layout_height="wrap_content"
                     android:padding="@dimen/padding_sm"
@@ -125,8 +126,8 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:maxLines="2"
-                        android:layout_marginEnd="30dp"
-                        android:layout_marginRight="30dp"
+                        android:layout_marginEnd="@dimen/margin_xlg"
+                        android:layout_marginRight="@dimen/margin_xlg"
                         android:text="Some text To know"
                         android:textColor="@color/black"
                         android:textSize="@dimen/medium_text"/>
@@ -137,7 +138,6 @@
                         android:layout_alignParentRight="true"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginTop="@dimen/margin_xs"
                         android:layout_width="wrap_content"
                         android:text="100%"
                         android:textColor="@color/black"
@@ -167,8 +167,8 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:maxLines="2"
-                        android:layout_marginEnd="30dp"
-                        android:layout_marginRight="30dp"
+                        android:layout_marginEnd="@dimen/margin_xlg"
+                        android:layout_marginRight="@dimen/margin_xlg"
                         android:textColor="@color/black"
                         android:textSize="@dimen/medium_text"/>
 
@@ -188,6 +188,7 @@
             <RelativeLayout
                 android:id="@+id/active_fav_address_holder"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
                 android:layout_width="match_parent"
                 android:visibility="gone">
 
@@ -204,14 +205,30 @@
                     android:layout_marginStart="@dimen/margin_sm"
                     android:layout_marginTop="@dimen/margin_sm"
                     android:textColor="@color/text_dark_grey"
-                    android:textSize="@dimen/xlarge_text"
+                    android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
 
                 <View
                     android:background="@color/lightGrey"
+                    android:id="@+id/fav_divider"
                     android:layout_below="@id/active_fav_address"
                     android:layout_height="1dp"
                     android:layout_width="match_parent" />
+
+                <TextView
+                    android:background="#8FFF"
+                    android:gravity="center_vertical"
+                    android:id="@+id/fav_code"
+                    android:layout_alignParentBottom="true"
+                    android:layout_below="@id/fav_divider"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/padding_sm"
+                    android:paddingRight="@dimen/padding_sm"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:textColor="@color/colorAccent"
+                    android:textSize="@dimen/large_text"
+                    android:textStyle="bold"/>
 
             </RelativeLayout>
 

@@ -105,7 +105,8 @@ public class PreferenceMngr {
      * @param activity
      */
     public static void signOut(Activity activity) {
-        preferences.edit().putString("token", null).apply();
+        preferences.edit().clear().apply();
         activity.startActivity(new Intent(activity, LandingActivity.class));
+        activity.finish();
     }
 }

@@ -7,12 +7,15 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.EditActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.HelpActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.NotificationActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -21,12 +24,16 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class ProfileFragment extends Fragment implements View.OnClickListener {
+    @BindView(R.id.logout)
+    public Button logout;
     @BindView(R.id.profile_category)
     public TextView profileCategory;
     @BindView(R.id.profile_edit)
     public TextView profileEdit;
     @BindView(R.id.profile_feedback)
     public TextView profileFeedback;
+    @BindView(R.id.profile_notifications)
+    public TextView profileNotification;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -40,9 +47,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
 
+        logout.setOnClickListener(this);
         profileCategory.setOnClickListener(this);
         profileEdit.setOnClickListener(this);
         profileFeedback.setOnClickListener(this);
+        profileNotification.setOnClickListener(this);
 
         return root;
     }
@@ -50,6 +59,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.logout:
+                PreferenceMngr.signOut(getActivity());
+                break;
             case R.id.profile_category:
                 Intent intent = new Intent(getActivity(), InterestsActivity.class);
                 Bundle extra = new Bundle();
@@ -62,6 +74,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 break;
             case R.id.profile_feedback:
                 startActivity(new Intent(getActivity(), HelpActivity.class));
+                break;
+            case R.id.profile_notifications:
+                startActivity(new Intent(getActivity(), NotificationActivity.class));
                 break;
         }
     }

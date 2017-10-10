@@ -23,6 +23,13 @@
 
     <dimen name="design_fab_size_mini">70dp</dimen>
 
+    <!-- Icons -->
+    <dimen name="icon_xs">20dp</dimen>
+    <dimen name="icon_sm">32dp</dimen>
+    <dimen name="icon_mdplus">70dp</dimen>
+    <dimen name="icon_lg">100dp</dimen>
+    <dimen name="interest_icon">60dp</dimen>
+
     <!-- Margin -->
     <dimen name="margin_xxs">3dp</dimen>
     <dimen name="margin_xs">5dp</dimen>
@@ -57,12 +64,7 @@
     <dimen name="default_btbn_height">45dp</dimen>
     <dimen name="default_btn_width">168dp</dimen>
     <dimen name="default_radius">3dp</dimen>
-    <dimen name="interest_icon">60dp</dimen>
     <dimen name="radius_sm">5dp</dimen>
     <dimen name="btn_float">60dp</dimen>
-    <dimen name="icon_xs">20dp</dimen>
-    <dimen name="icon_sm">32dp</dimen>
     <dimen name="navbar_space">54dp</dimen>
-    <dimen name="icon_mdplus">70dp</dimen>
-    <dimen name="icon_lg">100dp</dimen>
 </resources>

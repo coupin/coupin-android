@@ -10,11 +10,9 @@
 
     <RelativeLayout
         android:background="@color/white"
-        android:id="@+id/main_fav"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:padding="@dimen/padding_sm"
-        android:visibility="gone">
+        android:padding="@dimen/padding_sm">
 
         <ImageView
             android:layout_alignParentLeft="true"
@@ -60,13 +58,51 @@
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fav_recyclerview"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-
-    <TextView
-        android:id="@+id/fav_empty"
-        android:gravity="center"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/fav_empty"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_height="90dp"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="90dp"
+            android:src="@drawable/empty_box"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_fav"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/fav_error"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_height="@dimen/icon_lg"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="@dimen/icon_lg"
+            android:src="@drawable/attention"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/error_now"
+            android:textSize="@dimen/large_text"/>
+
+    </LinearLayout>
 
 </LinearLayout>

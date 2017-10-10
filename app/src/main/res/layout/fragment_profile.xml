@@ -216,6 +216,7 @@
 
             <Button
                 android:background="@drawable/round_edges_light_grey"
+                android:id="@+id/logout"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_xxxlg"
                 android:layout_width="match_parent"

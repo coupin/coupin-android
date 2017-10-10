@@ -1,13 +1,16 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -15,7 +18,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVBroAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.CoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
@@ -38,12 +42,16 @@ import butterknife.ButterKnife;
 public class SaveFragment extends Fragment implements MyOnClick {
     @BindView(R.id.later_loadingview)
     public AVLoadingIndicatorView laterLoadingView;
+    @BindView(R.id.later_empty)
+    public LinearLayout laterEmpty;
+    @BindView(R.id.later_error)
+    public LinearLayout laterError;
     @BindView(R.id.later_recyclerview)
     public RecyclerView laterRecyclerView;
 
     public ArrayList<RewardListItem> laterList = new ArrayList<>();
     public RequestQueue requestQueue;
-    public RVAdapter rvAdapter;
+    public RVBroAdapter nowRvAdapter;
     public String url;
 
 
@@ -62,14 +70,16 @@ public class SaveFragment extends Fragment implements MyOnClick {
         requestQueue = Volley.newRequestQueue(getContext());
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new RVAdapter(laterList, this);
+        nowRvAdapter = new RVBroAdapter(laterList, this);
         laterRecyclerView.setLayoutManager(linearLayoutManager);
         laterRecyclerView.setHasFixedSize(true);
-        laterRecyclerView.setAdapter(rvAdapter);
+        laterRecyclerView.setAdapter(nowRvAdapter);
 
         url = getString(R.string.base_url) + getString(R.string.ep_rewards_for_later);
 
         getRewardsForLater();
+
+        Log.v("VolleySave", "" + getUserVisibleHint());
 
         return rootView;
     }
@@ -98,7 +108,14 @@ public class SaveFragment extends Fragment implements MyOnClick {
 
                         laterList.add(item);
                     }
-                    rvAdapter.notifyDataSetChanged();
+                    nowRvAdapter.notifyDataSetChanged();
+                    if (jsonArray.length() == 0) {
+                        laterLoadingView.setVisibility(View.GONE);
+                        laterEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        laterLoadingView.setVisibility(View.GONE);
+                        laterRecyclerView.setVisibility(View.VISIBLE);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -107,16 +124,15 @@ public class SaveFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-//                if (error.networkResponse.statusCode > 400 && error.networkResponse.statusCode < 500) {
-//                    try {
-//                        JSONObject object = new JSONObject(new String(error.networkResponse.data));
-//                        Log.v("VolleyError", object.getString("message"));
-//                    } catch (Exception e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    Log.v("Volley Error", error.toString());
-//                }
+                if (error != null) {
+                    if (error.networkResponse.statusCode == 404) {
+                        laterLoadingView.setVisibility(View.GONE);
+                        laterEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        laterLoadingView.setVisibility(View.GONE);
+                        laterError.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         }) {
             @Override
@@ -133,6 +149,8 @@ public class SaveFragment extends Fragment implements MyOnClick {
 
     @Override
     public void onItemClick(int position) {
-
+        Intent intent = new Intent(this.getActivity(), CoupinActivity.class);
+        intent.putExtra("coupin", laterList.get(position));
+        startActivity(intent);
     }
 }

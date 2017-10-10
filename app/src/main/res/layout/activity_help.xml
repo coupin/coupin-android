@@ -25,6 +25,62 @@
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="@string/reward"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/large_text"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="@string/problem_question"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="@string/call_support"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="@string/call_no"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/xxlarge_text"
+                android:textStyle="bold"/>
+
+            <View
+                android:background="@color/text_light_grey"
+                android:layout_gravity="center"
+                android:layout_height="1px"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginTop="@dimen/margin_sm"
+                android:layout_width="50dp"/>
+
+            <TextView
+                android:gravity="center"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_xs"
+                android:text="@string/feedback_s"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/large_text"
+                android:textStyle="bold"/>
+
             <LinearLayout
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"

@@ -10,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,6 +42,10 @@ import butterknife.ButterKnife;
 public class UseNowFragment extends Fragment implements MyOnClick {
     @BindView(R.id.now_loadingview)
     public AVLoadingIndicatorView loadingView;
+    @BindView(R.id.now_empty)
+    public LinearLayout nowEmpty;
+    @BindView(R.id.now_error)
+    public LinearLayout nowError;
     @BindView(R.id.now_recyclerview)
     public RecyclerView recyclerView;
 
@@ -72,6 +77,8 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         url = getString(R.string.base_url) + getString(R.string.ep_rewards_for_now);
 
         getRewardsForNow();
+
+        Log.v("VolleyNow", "" + getUserVisibleHint());
 
         return rootView;
     }
@@ -108,6 +115,13 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                         nowList.add(item);
                     }
                     rvAdapter.notifyDataSetChanged();
+                    if (jsonArray.length() == 0) {
+                        loadingView.setVisibility(View.GONE);
+                        nowEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        loadingView.setVisibility(View.GONE);
+                        recyclerView.setVisibility(View.VISIBLE);
+                    }
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -116,7 +130,15 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                if (error != null) {
+                    if (error.networkResponse.statusCode == 404) {
+                        loadingView.setVisibility(View.GONE);
+                        nowEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        loadingView.setVisibility(View.GONE);
+                        nowError.setVisibility(View.VISIBLE);
+                    }
+                }
             }
         }) {
             @Override

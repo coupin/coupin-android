@@ -14,8 +14,8 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
-    <string name="sign_up">Sign Up</string>
-    <string name="sign_in">Sign In</string>
+    <string name="sign_up">Create Account</string>
+    <string name="sign_in">Log In To Coupin</string>
     <string name="sign_in_w_facebook">Sign In with Facebook</string>
     <string name="forgot">Forgot Password?</string>
     <string name="title_activity_sign_up">Create an Account</string>
@@ -40,14 +40,15 @@
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
     <!--<string name="base_url">http://172.16.1.237:5030</string>-->
-    <!--<string name="base_url">http://192.168.8.103:5030</string>-->
-    <string name="base_url">http://172.20.1.146:5030</string>
+    <string name="base_url">http://192.168.1.18:5030</string>
+    <!--<string name="base_url">http://172.20.1.146:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_login_user">/customer/authenticate</string>
     <string name="ep_register_user">/customer/register</string>
     <string name="ep_rewards_for_now">/api/reward/me/now</string>
     <string name="ep_rewards_for_later">/api/reward/me/later</string>
+    <string name="ep_rewards_use_saved">/api/reward/me/use</string>
     <string name="ep_api_user">/api/user</string>
     <string name="ep_api_user_category">/api/user/category</string>
     <string name="ep_api_user_favourite">/api/user/favourites</string>
@@ -139,5 +140,17 @@
     <string name="label_help_message">Leave a message</string>
     <string name="submit">Submit</string>
     <string name="label_assist">How may we assist you?</string>
+    <string name="example_reward">12 Rewards Available</string>
+    <string name="reward">Redeem Rewards</string>
+    <string name="problem_question">Having problems redeeming rewards at merchant ?</string>
+    <string name="call_support">Call Customer Support:</string>
+    <string name="call_no">+2348056473382</string>
+    <string name="feedback_s">Feedback/Suggestions</string>
+    <string name="empty_fav">You have no favourites.</string>
+    <string name="empty_later">No coupins currently saved.</string>
+    <string name="empty_now">No coupins currently active</string>
+    <string name="error_now">An error occured while retrieving your details. Please try again</string>
+    <string name="receive_notifications">Would you like to receive notifications?</string>
+    <string name="receive_weekly">Receive on weekdays or weekends</string>
     <!--192.168.8.100-->
 </resources>

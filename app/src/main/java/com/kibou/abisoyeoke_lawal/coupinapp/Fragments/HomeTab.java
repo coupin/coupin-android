@@ -247,8 +247,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.setMyLocationEnabled(true);
 
                 try {
-                    addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                    street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+                    if (geocoder.isPresent()) {
+                        addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                        street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -411,13 +413,18 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Sets up the horizontal list
      */
     public void setUpList() {
-        BigDecimal longitude = new BigDecimal(currentLocation.getLongitude());
-        BigDecimal latitude = new BigDecimal(currentLocation.getLatitude());
-        longitude = longitude.setScale(6, BigDecimal.ROUND_HALF_UP);
-        latitude = latitude.setScale(6, BigDecimal.ROUND_HALF_UP);
+        if (currentLocation != null) {
+            BigDecimal longitude = new BigDecimal(currentLocation.getLongitude());
+            BigDecimal latitude = new BigDecimal(currentLocation.getLatitude());
+            longitude = longitude.setScale(6, BigDecimal.ROUND_HALF_UP);
+            latitude = latitude.setScale(6, BigDecimal.ROUND_HALF_UP);
 
-        url = url + "?longitude=" + longitude.doubleValue()
+            url = url + "?longitude=" + longitude.doubleValue()
                 +  "&latitude=" + latitude.doubleValue();
+        } else {
+            url = url + "?longitude=undefined&latitude=undefined";
+        }
+
         try {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
@@ -497,27 +504,27 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         for (int x = 0; x < iconsList.size(); x++) {
-//            if (tempLat == 0 && tempLong == 0) {
+            if (tempLat == 0 && tempLong == 0) {
                 tempLat = iconsList.get(x).getLatitude();
                 tempLong = iconsList.get(x).getLongitude();
-//            }
+            }
 
             latLngBounds.include(new LatLng(tempLat, tempLong));
 
-//            if (x == 0) {
-//                min = new LatLng(tempLat, tempLong);
-//                max = new LatLng(tempLat, tempLong);
-//            }
-//
-//            if (min.latitude > tempLat) {
-//                min = new LatLng(tempLat, tempLong);
-//            } else if (max.latitude < tempLat) {
-//                max = new LatLng(tempLat, tempLong);
-//            }
+            if (x == 0) {
+                min = new LatLng(tempLat, tempLong);
+                max = new LatLng(tempLat, tempLong);
+            }
+
+            if (min.latitude > tempLat) {
+                min = new LatLng(tempLat, tempLong);
+            } else if (max.latitude < tempLat) {
+                max = new LatLng(tempLat, tempLong);
+            }
         }
 
-//        latLngBounds.include(new LatLng(min.latitude, min.longitude));
-//        latLngBounds.include(new LatLng(max.latitude, max.longitude));
+        latLngBounds.include(new LatLng(min.latitude, min.longitude));
+        latLngBounds.include(new LatLng(max.latitude, max.longitude));
         LatLngBounds bounds = latLngBounds.build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 15));
         Log.v("VolleyPoint", "Done");
@@ -630,10 +637,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onLocationChanged(Location location) {
-//        if (!onMarker) {
-//            CameraPosition cameraPosition = new CameraPosition.Builder().zoom(17).target(new LatLng(location.getLatitude(), location.getLongitude())).build();
-//            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-//        }
         currentLocation = location;
         double tempLat = location.getLatitude();
         double tempLong = location.getLongitude();
@@ -646,7 +649,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         try {
             addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-            street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+            if (address != null) {
+                Log.v("VolleyString", address.toString());
+                street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
