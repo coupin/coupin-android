@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
+import java.util.Date;
+
 /**
  * Created by abisoyeoke-lawal on 4/22/17.
  */
@@ -75,15 +77,27 @@ public class PreferenceMngr {
         return preferences.getBoolean("category" + user, false);
     }
 
+    /**
+     * Method to know if user has set category at the signing up stage
+     * @param value
+     */
     public static void setCategory(boolean value) {
         String user = preferences.getString("uid", null);
         preferences.edit().putBoolean("category" + user, value).apply();
     }
 
+    /**
+     * Get user info
+     * @return user data in a string format
+     */
     public static String getUser() {
         return preferences.getString("user", null);
     }
 
+    /**
+     * Set the user info
+     * @param user
+     */
     public static void setUser(String user) {
         preferences.edit().putString("user", user).apply();
     }
@@ -98,6 +112,32 @@ public class PreferenceMngr {
         } else {
             return false;
         }
+    }
+
+    /**
+     * Get last checked date
+     * @return
+     */
+    public static Date getLastChecked() {
+        return new Date(preferences.getString("lastChecked", null));
+    }
+
+    /**
+     * Set last checked date
+     * @param notify
+     * @param weekend
+     */
+    public static void notificationSelection(boolean notify, boolean weekend) {
+        preferences.edit().putBoolean("notify", notify).apply();
+        preferences.edit().putBoolean("weekend", weekend).apply();
+    }
+
+    /**
+     * Get previous notification selection
+     * @return array of boolean values
+     */
+    public static boolean[] getNotificationSelection() {
+        return new boolean[]{preferences.getBoolean("notify", false), preferences.getBoolean("weekend", false)};
     }
 
     /**

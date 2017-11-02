@@ -74,7 +74,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public JSONObject user;
     public JSONArray userFavourites;
     public Merchant item;
+    public JSONArray resArray;
+    public JSONObject res;
     public RVExpandableAdapter rvExpandableAdapter;
+    public String rewardHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,6 +90,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         Bundle extra = getIntent().getExtras();
+        if (extra.getString("merchant", null) == null) {
+            try {
+                item = (Merchant) extra.getSerializable("object");
+                resArray = new JSONArray(item.getRewards());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         values = new ArrayList<>();
         selected = new ArrayList<>();
 
@@ -202,18 +213,20 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         });
 
         try {
-            JSONObject res = new JSONObject(extra.getBundle("info").getString("merchant"));
-            item = new Merchant();
-            item.setId(res.getString("_id"));
-            item.setPicture(R.drawable.slide1);
-            item.setAddress(res.getString("address"));
-            item.setDetails(res.getString("details"));
-            item.setEmail(res.getString("email"));
-            item.setMobile(res.getString("mobile"));
-            item.setTitle(res.getString("name"));
-            item.setRewards(res.getJSONArray("rewards"));
-            item.setLatitude(res.getJSONObject("location").getDouble("lat"));
-            item.setLongitude(res.getJSONObject("location").getDouble("long"));
+            if (item == null) {
+                res = new JSONObject(extra.getString("merchant"));
+                item = new Merchant();
+                item.setId(res.getString("_id"));
+                item.setPicture(R.drawable.slide1);
+                item.setAddress(res.getString("address"));
+                item.setDetails(res.getString("details"));
+                item.setEmail(res.getString("email"));
+                item.setMobile(res.getString("mobile"));
+                item.setTitle(res.getString("name"));
+                item.setRewards(res.getJSONArray("rewards").toString());
+                item.setLatitude(res.getJSONObject("location").getDouble("lat"));
+                item.setLongitude(res.getJSONObject("location").getDouble("long"));
+            }
             merchantName.setText(item.getTitle());
             merchantDetails.setText(item.getAddress());
 
@@ -225,11 +238,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 favourite = true;
             }
 
-            if (res.get("picture").toString() != "null") {
+//            if (res.get("picture").toString() != "null") {
 //                merchantImage.setImage
+//            }
+
+            if (resArray == null) {
+                resArray = res.getJSONArray("rewards");
             }
 
-            JSONArray resArray = res.getJSONArray("rewards");
             for (int x = 0; x < resArray.length(); x++) {
                 Reward reward = new Reward();
                 JSONObject object = resArray.getJSONObject(x);

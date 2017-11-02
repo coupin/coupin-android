@@ -130,8 +130,9 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                Log.v("VolleyError", error.toString());
                 if (error != null) {
-                    if (error.networkResponse.statusCode == 404) {
+                    if (error != null && error.networkResponse.statusCode == 404) {
                         loadingView.setVisibility(View.GONE);
                         nowEmpty.setVisibility(View.VISIBLE);
                     } else {

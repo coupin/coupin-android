@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
+    android:background="@color/back_grey"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity">
+
+    <LinearLayout
+        android:animateLayoutChanges="true"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:background="@color/white"
+            android:layout_height="150dp"
+            android:layout_width="match_parent"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:background="@drawable/background_search_white"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_sm"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:paddingBottom="@dimen/padding_sm_plus"
+                android:paddingLeft="@dimen/padding_sm"
+                android:paddingRight="@dimen/padding_sm"
+                android:paddingTop="@dimen/padding_sm_plus">
+
+                <ImageView
+                    android:id="@+id/search_back"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="24dp"
+                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_width="24dp"
+                    android:src="@drawable/ic_back_lg"
+                    android:tint="@color/text_dark_grey"/>
+
+                <android.support.design.widget.TextInputEditText
+                    android:background="@color/white"
+                    android:layout_gravity="center_vertical"
+                    android:id="@+id/search_edittext"
+                    android:hint="@string/search"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_sm"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_xs">
+
+                <ImageView
+                    android:id="@+id/search_pin"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:src="@drawable/ic_search_pin"
+                    android:visibility="gone"/>
+
+                <TextView
+                    android:ellipsize="end"
+                    android:id="@+id/search_street"
+                    android:layout_centerVertical="true"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_xs"
+                    android:layout_marginStart="@dimen/margin_xs"
+                    android:layout_toRightOf="@id/search_pin"
+                    android:layout_width="wrap_content"
+                    android:maxLines="1"
+                    android:paddingEnd="35dp"
+                    android:paddingRight="35dp"
+                    android:text="@string/example_near_me"
+                    android:textColor="@color/text_dark_grey"
+                    android:textSize="@dimen/xlarge_text"
+                    android:visibility="gone"/>
+
+                <ImageView
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="32dp"
+                    android:layout_width="32dp"
+                    android:src="@drawable/ic_filter_lg"/>
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <LinearLayout
+                android:gravity="center"
+                android:id="@+id/search_loading"
+                android:layout_centerInParent="true"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_sm"
+                android:layout_width="match_parent"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <com.wang.avi.AVLoadingIndicatorView
+                    style="?android:attr/progressBarStyleLarge"
+                    android:id="@+id/now_loadingview"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="@dimen/margin_xxs"
+                    android:layout_marginRight="@dimen/margin_xxs"
+                    android:layout_width="24dp"
+                    app:indicatorName="BallGridPulseIndicator"
+                    app:indicatorColor="@color/colorAccent" />
+
+            </LinearLayout>
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/search_recyclerview"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:minHeight="500dp"/>
+
+            <LinearLayout
+                android:gravity="center"
+                android:id="@+id/empty_search"
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="300dp"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_height="@dimen/icon_lg"
+                    android:layout_margin="@dimen/margin_sm"
+                    android:layout_width="@dimen/icon_lg"
+                    android:src="@drawable/empty_box"/>
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/empty_search"
+                    android:textSize="@dimen/large_text"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:gravity="center"
+                android:id="@+id/search_error"
+                android:layout_centerInParent="true"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_height="@dimen/icon_lg"
+                    android:layout_margin="@dimen/margin_sm"
+                    android:layout_width="@dimen/icon_lg"
+                    android:src="@drawable/attention"/>
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/error_search"
+                    android:textSize="@dimen/large_text"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</ScrollView>

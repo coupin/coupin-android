@@ -76,6 +76,7 @@ public class FavFragment extends Fragment implements MyOnClick {
     }
 
     public void getFavourites() {
+        favList.clear();
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -113,7 +114,7 @@ public class FavFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error.networkResponse.statusCode == 404) {
+                if (error != null && error.networkResponse.statusCode == 404) {
                     favLoadingView.setVisibility(View.GONE);
                     favEmpty.setVisibility(View.VISIBLE);
                 } else {

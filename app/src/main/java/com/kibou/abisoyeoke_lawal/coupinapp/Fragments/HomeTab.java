@@ -18,10 +18,13 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -46,12 +49,15 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.FilterDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
@@ -71,11 +77,16 @@ import cn.pedant.SweetAlert.SweetAlertDialog;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener {
+public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter {
+    private static final int SERVICE_ID = 1002;
     @BindView(R.id.btn_mylocation)
     public FloatingActionButton btnMyLocation;
     @BindView(R.id.icon_loading)
     public ImageView iconLoadingView;
+    @BindView(R.id.home_filter)
+    public ImageView homeFilterView;
+    @BindView(R.id.home_search)
+    public ImageView homeSearchView;
     @BindView(R.id.icon_list_view)
     public RecyclerView iconListView;
     @BindView(R.id.map)
@@ -149,11 +160,20 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+    public View onCreateView(LayoutInflater inflater, final ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_home_tab, container, false);
         ButterKnife.bind(this, rootView);
+
+        final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);
+        filterDialog.setInterface(this);
+//        filterDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        Window window = filterDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.width = getActivity().getWindow().getAttributes().width;
+        wlp.gravity = Gravity.TOP | Gravity.LEFT | Gravity.START;
+        wlp.windowAnimations = R.style.PauseDialogAnimation;
 
         // Handler for delay and bound for map view
         handler = new Handler();
@@ -182,35 +202,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
         });
 
-//        infoWindowTouchListener = new OnInfoWindowElemTouchListener(infoButton) {
-//            @Override
-//            protected void onClickConfirmed(View v, Marker marker) {
-//                try {
-//                    JSONObject res = new JSONObject(marker.getSnippet());
-//                    LatLng current = new LatLng(
-//                            res.getJSONObject("location").getDouble("lat"),
-//                            res.getJSONObject("location").getDouble("long")
-//                    );
-//                    rewardId = res.getJSONArray("rewards").getJSONObject(0).getString("_id");
-//                    direction = current;
-//                    generatedCodeDialog.show();
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        };
-
-//        infoWindowElemTouchListenerForImage = new OnInfoWindowElemTouchListener(banner) {
-//            @Override
-//            protected void onClickConfirmed(View v, Marker marker) {
-//                Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
-//                Bundle extra = new Bundle();
-//                extra.putString("merchant", marker.getSnippet().toString());
-//                merchantIntent.putExtra("info", extra);
-//                startActivity(merchantIntent);
-//            }
-//        };
-
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
 
@@ -232,6 +223,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
                     mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
+//                setBounds();
             }
         });
 
@@ -246,10 +238,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(true);
 
+                if (mGoogleMap.getMyLocation() != null) {
+                    currentLocation = mGoogleMap.getMyLocation();
+                }
+
                 try {
                     if (geocoder.isPresent()) {
                         addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                        street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+                        Log.v("VolleyAddress", addresses.toString());
+                        street.setText(addresses.get(0).getThoroughfare().toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -257,8 +254,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 // Place marker on current location
                 if (currentLocation != null) {
-//                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
-//                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
+                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
 
                 infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
@@ -307,11 +304,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 } else {
                                     infoButton.setText(reward.getJSONObject(0).getString("name"));
                                 }
-
-//                                infoWindowTouchListener.setMarker(marker1);
-//                                infoWindowTouchListenerForLater.setMarker(marker1);
-//
-//                                mapWrapperLayout.setMarkerWithInfoWindow(marker1, infoWindow);
                             }
                         }   catch (Exception e) {
                             e.printStackTrace();
@@ -329,12 +321,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        Log.v("VolleyIt", "was touched " + marker.getId().substring(1));
                         int index = Integer.valueOf(marker.getId().substring(1));
                         Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
                         Bundle extra = new Bundle();
                         extra.putString("merchant", marker.getSnippet().toString());
-                        merchantIntent.putExtra("info", extra);
+                        merchantIntent.putExtras(extra);
                         startActivity(merchantIntent);
                     }
                 });
@@ -401,6 +392,27 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
         });
 
+        homeFilterView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterDialog.show();
+            }
+        });
+
+        homeSearchView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                Bundle extra = new Bundle();
+                Log.v("VolleySearch", "" + currentLocation + " - " + currentLocation.getLongitude());
+                extra.putDouble("lat", currentLocation.getLatitude());
+                extra.putDouble("long", currentLocation.getLongitude());
+                extra.putString("street", street.getText().toString());
+                intent.putExtras(extra);
+                startActivity(intent);
+            }
+        });
+
         return rootView;
     }
 
@@ -420,9 +432,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             latitude = latitude.setScale(6, BigDecimal.ROUND_HALF_UP);
 
             url = url + "?longitude=" + longitude.doubleValue()
-                +  "&latitude=" + latitude.doubleValue();
+                +  "&latitude=" + latitude.doubleValue() + "&distance=1000";
         } else {
-            url = url + "?longitude=undefined&latitude=undefined";
+            url = url + "?longitude=undefined&latitude=undefined" + "&distance=1000";
         }
 
         try {
@@ -448,7 +460,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             item.setEmail(res.getString("email"));
                             item.setMobile(res.getString("mobile"));
                             item.setTitle(res.getString("name"));
-                            item.setRewards(res.getJSONArray("rewards"));
+                            item.setRewards(res.getJSONArray("rewards").toString());
                             item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                             item.setLongitude(res.getJSONObject("location").getDouble("long"));
                             markers[counter] = mGoogleMap.addMarker(new MarkerOptions()
@@ -464,7 +476,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                         spots.setText(iconsList.size() + " ");
 
-                        setBounds();
+                        // TODO: Set the bounds properly
+//                        setBounds();
 
                         adapter.setIconList(iconsList);
                         adapter.notifyDataSetChanged();
@@ -475,6 +488,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    spots.setText("0 ");
+
                     if (HomeTab.this.isVisible()) {
                         new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Error")
@@ -504,30 +519,29 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         for (int x = 0; x < iconsList.size(); x++) {
-            if (tempLat == 0 && tempLong == 0) {
+//            if (tempLat == 0 && tempLong == 0) {
                 tempLat = iconsList.get(x).getLatitude();
                 tempLong = iconsList.get(x).getLongitude();
-            }
+//            }
 
             latLngBounds.include(new LatLng(tempLat, tempLong));
 
-            if (x == 0) {
-                min = new LatLng(tempLat, tempLong);
-                max = new LatLng(tempLat, tempLong);
-            }
-
-            if (min.latitude > tempLat) {
-                min = new LatLng(tempLat, tempLong);
-            } else if (max.latitude < tempLat) {
-                max = new LatLng(tempLat, tempLong);
-            }
+//            if (x == 0) {
+//                min = new LatLng(tempLat, tempLong);
+//                max = new LatLng(tempLat, tempLong);
+//            }
+//
+//            if (min.latitude > tempLat) {
+//                min = new LatLng(tempLat, tempLong);
+//            } else if (max.latitude < tempLat) {
+//                max = new LatLng(tempLat, tempLong);
+//            }
         }
 
-        latLngBounds.include(new LatLng(min.latitude, min.longitude));
-        latLngBounds.include(new LatLng(max.latitude, max.longitude));
+//        latLngBounds.include(new LatLng(min.latitude, min.longitude));
+//        latLngBounds.include(new LatLng(max.latitude, max.longitude));
         LatLngBounds bounds = latLngBounds.build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 15));
-        Log.v("VolleyPoint", "Done");
     }
 
     /**
@@ -601,8 +615,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         if (position == 0) {
             startActivity(new Intent(getActivity(), HotActivity.class));
         } else {
-            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(15).build();
+//            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
+            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.000400, iconsList.get(position).getLongitude());
+            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(19).build();
             mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
             markers[position - 1].setTitle("No");
             markers[position - 1].showInfoWindow();
@@ -649,9 +664,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         try {
             addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-            if (address != null) {
-                Log.v("VolleyString", address.toString());
-                street.setText(addresses.get(0).getAddressLine(0).toString() + ", " + addresses.get(0).getAddressLine(1).toString());
+            Log.v("VolleyAddress", addresses.toString());
+            if (addresses != null) {
+                street.setText(addresses.get(0).getThoroughfare().toString());
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -671,5 +686,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onProviderDisabled(String provider) {
 
+    }
+
+    @Override
+    public void onFilterSelected(ArrayList<String> selection) {
+        Log.v("VolleySelection", selection.toString());
+        Toast.makeText(getActivity(), "Selection sent.", Toast.LENGTH_SHORT).show();
     }
 }

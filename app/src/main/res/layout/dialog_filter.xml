@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:background="@color/white"
+              android:orientation="vertical"
+              android:layout_height="match_parent"
+              android:layout_width="match_parent"
+              android:paddingBottom="@dimen/padding_md"
+              android:paddingEnd="@dimen/padding_sm"
+              android:paddingLeft="@dimen/padding_sm"
+              android:paddingRight="@dimen/padding_sm"
+              android:paddingStart="@dimen/padding_sm"
+              android:paddingTop="@dimen/padding_sm">
+
+    <RelativeLayout
+        android:background="@color/white"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_width="match_parent"
+        android:paddingBottom="@dimen/padding_xs"
+        android:paddingTop="@dimen/padding_xs">
+
+        <TextView
+            android:id="@+id/filter_cancel"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/dialog_cancel"
+            android:textColor="@color/text_light_grey"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/filters"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/xxlarge_text"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:id="@+id/filter_save"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/bt_save"
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="@dimen/padding_sm"
+        android:text="@string/distance"
+        android:textColor="@color/text_light_grey"
+        android:textSize="@dimen/medium_text"/>
+
+    <SeekBar
+        android:id="@+id/distance"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_width="match_parent"
+        android:padding="@dimen/padding_sm"/>
+
+    <TextView
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:padding="@dimen/padding_sm"
+        android:text="@string/interested"
+        android:textColor="@color/text_light_grey"
+        android:textSize="@dimen/medium_text"/>
+
+    <com.wefika.flowlayout.FlowLayout
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent">
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_ent"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_ent"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_ent"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_food"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_food"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_food"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_gadget"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_gadget"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_gadg"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_health"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_beauty"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_health"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_shopping"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_fashion"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_shopping"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_tickets"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_ticket"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_ticket"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_travel"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_travel"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_travel"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+    </com.wefika.flowlayout.FlowLayout>
+
+</LinearLayout>

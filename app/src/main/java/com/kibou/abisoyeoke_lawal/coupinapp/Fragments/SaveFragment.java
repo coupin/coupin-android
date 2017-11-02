@@ -125,7 +125,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
             @Override
             public void onErrorResponse(VolleyError error) {
                 if (error != null) {
-                    if (error.networkResponse.statusCode == 404) {
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
                         laterLoadingView.setVisibility(View.GONE);
                         laterEmpty.setVisibility(View.VISIBLE);
                     } else {

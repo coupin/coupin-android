@@ -46,7 +46,7 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
             holder.hotAddress.setText(hotItem.getMerchantAddress());
 
             if (hotItem.getRewardCount() > 1) {
-                holder.hotRewards.setText(hotItem.getRewardCount() + " REWWARDS");
+                holder.hotRewards.setText(hotItem.getRewardCount() + " REWARDS");
             } else {
                 holder.hotRewards.setText(rewardArray.getJSONObject(0).getString("name"));
             }

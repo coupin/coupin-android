@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HotActivity">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
     <RelativeLayout
         android:background="@color/red"
@@ -42,17 +48,34 @@
 
     </RelativeLayout>
 
+    <com.synnapps.carouselview.CarouselView
+        android:id="@+id/hot_carousel"
+        android:layout_width="match_parent"
+        android:layout_height="230dp"
+        app:fillColor="#FFFFFFFF"
+        app:indicatorMarginVertical="@dimen/margin_sm"
+        app:pageColor="#00000000"
+        app:radius="4dp"
+        app:slideInterval="3000"
+        app:strokeColor="@color/white"
+        app:strokeWidth="1dp"/>
 
-    <FrameLayout
-        android:background="@color/text_med_grey"
-        android:layout_height="200dp"
-        android:layout_width="match_parent">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_xs"
+            android:text="Hot Picks"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"/>
 
-    </FrameLayout>
+    <include layout="@layout/cardview_group_hotlist"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hot_recyclerview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"/>
 
-</LinearLayout>
+    </LinearLayout>
+
+</ScrollView>

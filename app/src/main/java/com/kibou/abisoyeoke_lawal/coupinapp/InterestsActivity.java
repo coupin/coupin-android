@@ -42,8 +42,8 @@ public class InterestsActivity extends AppCompatActivity {
         R.drawable.int_beauty, R.drawable.int_fashion, R.drawable.int_ticket, R.drawable.int_travel};
     public String[] categories = new String[]{"Entertainment", "Food & Drink", "Gadgets",
         "Health & Beauty", "Shopping", "Tickets", "Travel"};
-    public String[] categoryValues = new String[]{"\"entertainment\"", "\"foodNDrink\"", "\"gadgets\"",
-        "\"healthNBeauty\"", "\"shopping\"", "\"tickets\"", "\"travel\""};
+    public String[] categoryValues = new String[]{"\"entertainment\"", "\"foodndrink\"", "\"gadgets\"",
+        "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"", "\"travel\""};
 
     public RequestQueue requestQueue;
 

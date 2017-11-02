@@ -39,9 +39,9 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
-    <!--<string name="base_url">http://172.16.1.237:5030</string>-->
-    <string name="base_url">http://192.168.1.18:5030</string>
-    <!--<string name="base_url">http://172.20.1.146:5030</string>-->
+    <!--<string name="base_url">http://172.16.0.246:5030</string>-->
+    <string name="base_url">http://192.168.8.101:5030</string>
+    <!--<string name="base_url">http://10.0.30.87:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_login_user">/customer/authenticate</string>
@@ -52,6 +52,7 @@
     <string name="ep_api_user">/api/user</string>
     <string name="ep_api_user_category">/api/user/category</string>
     <string name="ep_api_user_favourite">/api/user/favourites</string>
+    <string name="ep_api_get_hot">/api/merchant/hot</string>
 
 
     <!-- Coupin words and phrases -->
@@ -149,8 +150,23 @@
     <string name="empty_fav">You have no favourites.</string>
     <string name="empty_later">No coupins currently saved.</string>
     <string name="empty_now">No coupins currently active</string>
-    <string name="error_now">An error occured while retrieving your details. Please try again</string>
+    <string name="error_now">An error occured. Please check your internet and try again</string>
     <string name="receive_notifications">Would you like to receive notifications?</string>
     <string name="receive_weekly">Receive on weekdays or weekends</string>
+    <string name="copyrite">Copyrite of Fire Flame.inc</string>
+    <string name="bt_save">Save</string>
+    <string name="example_near_me">Near Me - Adeola Odeku</string>
+    <string name="empty_search">Sorry, nothing was found matching your search.</string>
+    <string name="error_search">An error occurred. Please check your network and try again.</string>
+    <string name="filters">Filters</string>
+    <string name="distance">Distance from you?</string>
+    <string name="interested">What are you interested in?</string>
+    <string name="cat_ent">Entertainment</string>
+    <string name="cat_food">FoodNDrinks</string>
+    <string name="cat_gadg">Gadgets</string>
+    <string name="cat_health">HealthNBeauty</string>
+    <string name="cat_shopping">Shopping</string>
+    <string name="cat_ticket">Tickets</string>
+    <string name="cat_travel">Travel</string>
     <!--192.168.8.100-->
 </resources>

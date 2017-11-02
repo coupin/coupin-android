@@ -7,15 +7,10 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
-import com.victor.loading.book.BookLoading;
 
-import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SplashScreen extends Activity {
-    @BindView(R.id.splash_loadingview)
-    public BookLoading bookLoading;
-
     int count = 0;
 
     boolean check = false;
@@ -27,8 +22,6 @@ public class SplashScreen extends Activity {
         ButterKnife.bind(this);
 
         PreferenceMngr.setContext(getApplicationContext());
-
-        bookLoading.start();
 
         Handler handler = new Handler();
 

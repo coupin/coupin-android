@@ -14,7 +14,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.FavFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.ProfileFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab;
-import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.SearchFragment;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -47,7 +46,6 @@ public class HomeActivity extends AppCompatActivity {
         final HomeTab homeTab = HomeTab.newInstance();
         final ProfileFragment profileFragment = new ProfileFragment();
         final RewardsTab rewardsTab = RewardsTab.newInstance();
-        final SearchFragment searchFragment = SearchFragment.newInstance();
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override

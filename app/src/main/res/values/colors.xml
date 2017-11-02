@@ -43,6 +43,7 @@
     <color name="text_light_grey">#9B99A9</color>
     <color name="text_light_grey_plus">#BBBBBB</color>
     <color name="text_lighter_grey">#BDBDBD</color>
+    <color name="text_lightest_grey">#E0E0E0</color>
 
     <!-- Card Colors -->
     <color name="ticked">#474556</color>

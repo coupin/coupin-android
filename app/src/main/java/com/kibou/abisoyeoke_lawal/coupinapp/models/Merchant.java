@@ -1,12 +1,12 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.models;
 
-import org.json.JSONArray;
+import java.io.Serializable;
 
 /**
  * Created by abisoyeoke-lawal on 6/3/17.
  */
 
-public class Merchant {
+public class Merchant implements Serializable {
     public String id;
     public int picture;
     public String title;
@@ -14,7 +14,8 @@ public class Merchant {
     public String mobile;
     public String details;
     public String address;
-    public JSONArray rewards;
+    public String response;
+    public String rewards;
     public double latitude;
     public double longitude;
 
@@ -74,11 +75,11 @@ public class Merchant {
         this.mobile = mobile;
     }
 
-    public JSONArray getRewards() {
+    public String getRewards() {
         return rewards;
     }
 
-    public void setRewards(JSONArray rewards) {
+    public void setRewards(String rewards) {
         this.rewards = rewards;
     }
 
@@ -96,5 +97,13 @@ public class Merchant {
 
     public void setLongitude(double longitude) {
         this.longitude = longitude;
+    }
+
+    public String getResponse() {
+        return response;
+    }
+
+    public void setResponse(String response) {
+        this.response = response;
     }
 }
