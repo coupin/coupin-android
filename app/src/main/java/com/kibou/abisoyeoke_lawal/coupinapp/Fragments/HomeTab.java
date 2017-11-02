@@ -144,6 +144,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public GeneratedCodeDialog generatedCodeDialog;
     public String rewardId;
     public LatLng direction;
+    public int distance;
+    public String[] categories = new String[]{};
 
     public HomeTab() {
         // Required empty public constructor
@@ -168,7 +170,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);
         filterDialog.setInterface(this);
-//        filterDialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
         Window window = filterDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = getActivity().getWindow().getAttributes().width;
@@ -689,8 +690,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     }
 
     @Override
-    public void onFilterSelected(ArrayList<String> selection) {
+    public void onFilterSelected(ArrayList<String> selection, int distance) {
         Log.v("VolleySelection", selection.toString());
         Toast.makeText(getActivity(), "Selection sent.", Toast.LENGTH_SHORT).show();
+        categories = selection.toArray(new String[selection.size()]);
+        distance = distance;
     }
 }

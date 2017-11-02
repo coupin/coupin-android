@@ -63,12 +63,14 @@
         android:textColor="@color/text_light_grey"
         android:textSize="@dimen/medium_text"/>
 
-    <SeekBar
+    <com.kibou.abisoyeoke_lawal.coupinapp.Utils.DistanceSeekBar
         android:id="@+id/distance"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
         android:layout_width="match_parent"
-        android:padding="@dimen/padding_sm"/>
+        android:splitTrack="false"
+        android:thumb="@drawable/thumb"/>
 
     <TextView
         android:layout_height="wrap_content"

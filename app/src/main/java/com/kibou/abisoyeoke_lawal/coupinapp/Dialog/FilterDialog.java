@@ -15,6 +15,7 @@ import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DistanceSeekBar;
 
 import java.util.ArrayList;
 
@@ -26,6 +27,8 @@ import butterknife.ButterKnife;
  */
 
 public class FilterDialog extends Dialog implements View.OnClickListener {
+    @BindView(R.id.distance)
+    public DistanceSeekBar distanceSeekBar;
     @BindView(R.id.fil_ent)
     public LinearLayout fillEnt;
     @BindView(R.id.fil_food)
@@ -75,6 +78,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
         setContentView(R.layout.dialog_filter);
         ButterKnife.bind(this);
 
+        distanceSeekBar.setProgress(30);
         fillEnt.setOnClickListener(this);
         fillFood.setOnClickListener(this);
         fillGadget.setOnClickListener(this);
@@ -118,7 +122,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
     }
 
     private void filterMerchants() {
-        myFilter.onFilterSelected(selected);
+        myFilter.onFilterSelected(selected, distanceSeekBar.getProgress());
         dismiss();
     }
 

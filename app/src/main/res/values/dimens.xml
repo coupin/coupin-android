@@ -68,4 +68,5 @@
     <dimen name="radius_sm">5dp</dimen>
     <dimen name="btn_float">60dp</dimen>
     <dimen name="navbar_space">54dp</dimen>
+    <dimen name="thumbSize">68dp</dimen>
 </resources>
