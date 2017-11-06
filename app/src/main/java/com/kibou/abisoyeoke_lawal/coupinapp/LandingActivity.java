@@ -29,7 +29,7 @@ public class LandingActivity extends Activity {
     public MediaPlayer mediaPlayer;
 
     String[] quotes = new String[]{"If one is to know himself, he must first discover freedom",
-            "Tell a man what his dreams are and he will tell you your nightmares",
+            "Tell a man what your dreams are and he will be your nightmare",
             "Balley was once in town for Reni, now Balley is no more"};
 
     @Override
@@ -118,5 +118,16 @@ public class LandingActivity extends Activity {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.release();
+        }
+        finish();
     }
 }

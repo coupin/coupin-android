@@ -34,6 +34,8 @@ public class InterestsActivity extends AppCompatActivity {
     public GridView interestGrid;
     @BindView(R.id.interest_continue)
     public TextView interestContinue;
+    @BindView(R.id.interest_name)
+    public TextView interestName;
 
     public ArrayList<Interest> interests = new ArrayList<>();
     public ArrayList<String> selected = new ArrayList<>();
@@ -56,6 +58,12 @@ public class InterestsActivity extends AppCompatActivity {
         requestQueue = Volley.newRequestQueue(this);
 
         Intent receivedIntent = getIntent();
+
+        String name = receivedIntent.getStringExtra("name");
+        if (name != null && !name.isEmpty()) {
+            interestName.setText(name);
+        }
+
         Bundle extra = receivedIntent.getBundleExtra("interestBundle");
 
         for (int i = 0; i < categories.length; i++) {

@@ -84,12 +84,12 @@
         <com.synnapps.carouselview.CarouselView
             android:id="@+id/carouselView"
             android:layout_width="match_parent"
-            android:layout_height="85dp"
+            android:layout_height="100dp"
             app:fillColor="#FFFFFFFF"
-            app:pageColor="#80FFFFFF"
-            app:radius="5dp"
-            app:slideInterval="5000"
-            app:strokeColor="#80FFFFFF"
+            app:pageColor="#33FFFFFF"
+            app:radius="6dp"
+            app:slideInterval="3000"
+            app:strokeColor="#FFFFFF"
             app:strokeWidth="1dp"/>
 
         <TextView

@@ -26,6 +26,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -71,6 +72,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public Button backToSignUp;
     @BindView(R.id.password)
     public EditText mPasswordView;
+    @BindView(R.id.login_bottom)
+    public LinearLayout loginBottom;
     @BindView(R.id.login_form)
     public View mLoginFormView;
     @BindView(R.id.login_progress)
@@ -228,14 +231,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         showProgress(false);
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            if (error.networkResponse.statusCode == 401) {
-                                Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
-                            }
+                        if (error.toString().equals("com.android.volley.TimeoutError")) {
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
                         } else {
-                            Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                            if (error.networkResponse != null && error.networkResponse.data != null) {
+                                if (error.networkResponse.statusCode == 401) {
+                                    Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                                }
+                            } else {
+                                Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                            }
                         }
-//                        Log.e("Volley Error: ", error.networkResponse.toString());
                     }
                 }){
                     @Override
@@ -285,6 +291,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+                    loginBottom.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
 
@@ -301,6 +308,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // and hide the relevant UI components.
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            loginBottom.setVisibility(show ? View.GONE : View.VISIBLE);
         }
     }
 
@@ -356,6 +364,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        startActivity(new Intent(LoginActivity.this, LandingActivity.class));
+        finish();
     }
 }
 

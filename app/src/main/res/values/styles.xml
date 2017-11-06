@@ -41,6 +41,11 @@
         <item name="android:windowBackground">@null</item>
     </style>
 
+    <style name="Loading_Dialog" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowBackground">@null</item>
+    </style>
+
     <style name="PauseDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowAnimationStyle">@style/PauseDialogAnimation</item>
     </style>

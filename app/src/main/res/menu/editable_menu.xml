@@ -1,18 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:app="http://schemas.android.com/apk/res-auto">
+      xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".EditActivity">
 
     <item
-        android:icon="@drawable/ic_edit_true"
+        android:icon="@drawable/ic_edit_true_47"
         android:id="@+id/profile_edit_true"
         android:title="Edit"
-        app:showAsAction="always"/>
+        android:orderInCategory="100"
+        app:showAsAction="withText|always"/>
 
     <item
-        android:icon="@drawable/ic_edit_false"
+        android:icon="@drawable/ic_edit_false_47"
         android:id="@+id/profile_edit_false"
-        android:title="Done"
+        android:title="Save"
         android:visible="false"
-        app:showAsAction="always"/>
+        android:orderInCategory="100"
+        app:showAsAction="withText|always"/>
 
 </menu>

@@ -127,11 +127,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
 
     private void query() {
         Log.v("VolleyQuery", queryString);
-        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/" + queryString + "/search?lat="
-            + latitude + "&long=" + longitude;
+        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/search";
         companyInfos.clear();
 
-        StringRequest request = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -192,21 +191,22 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
             }
         }) {
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("long", longitude);
-                params.put("lat", latitude);
-
-                return params;
-            }
-
-            @Override
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", PreferenceMngr.getToken());
 
                 return headers;
+            }
+
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("long", longitude);
+                params.put("lat", latitude);
+                params.put("query", queryString);
+
+                return params;
             }
         };
 

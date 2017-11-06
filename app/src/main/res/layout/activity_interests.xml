@@ -14,24 +14,46 @@
             android:orientation="vertical"
             android:animateLayoutChanges="true">
 
-        <TextView
-            android:gravity="center"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:padding="@dimen/padding_sm"
-            android:text="@string/welcome_header"
-            android:textColor="@color/white"
-            android:textSize="@dimen/xxlarge_text"
-            android:textStyle="bold"/>
+            <RelativeLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/name_label"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_width="wrap_content"
+                    android:paddingBottom="@dimen/padding_sm"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:text="@string/hi"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/xxlarge_text"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:id="@+id/interest_name"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_toEndOf="@id/name_label"
+                    android:layout_toRightOf="@id/name_label"
+                    android:paddingBottom="@dimen/padding_xs"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:text="Ebuka"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/xxlarge_text"
+                    android:textStyle="bold"/>
+
+            </RelativeLayout>
 
         <TextView
             android:gravity="center"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm_plus"
             android:layout_width="match_parent"
-            android:padding="@dimen/padding_sm"
-            android:text="@string/welcome_header_signup"
+            android:text="@string/select_category"
             android:textColor="@color/offAccent"
-            android:textSize="@dimen/medium_text"
+            android:textSize="@dimen/large_text"
             android:textStyle="bold"/>
 
         <GridView

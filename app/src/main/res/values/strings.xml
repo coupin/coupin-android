@@ -39,8 +39,8 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
-    <!--<string name="base_url">http://172.16.0.246:5030</string>-->
-    <string name="base_url">http://192.168.8.101:5030</string>
+    <!--<string name="base_url">http://172.16.0.207:5030</string>-->
+    <string name="base_url">http://192.168.8.102:5030</string>
     <!--<string name="base_url">http://10.0.30.87:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
@@ -92,6 +92,7 @@
     <string name="favourite">Favourites</string>
     <string name="profile">Profile</string>
     <string name="unauthorized">Invalid email or password. Please try again</string>
+    <string name="duplicate">Duplicate Error. User already exists.</string>
     <string name="btn_ok">Ok</string>
     <string name="btn_navigate">Go Now</string>
     <string name="example_text_code">g24iou2</string>
@@ -168,5 +169,8 @@
     <string name="cat_shopping">Shopping</string>
     <string name="cat_ticket">Tickets</string>
     <string name="cat_travel">Travel</string>
+    <string name="select_category">Select your category of interest</string>
+    <string name="hi">Hi,</string>
+    <string name="network_error">Network connection error. Please check connection and try again.</string>
     <!--192.168.8.100-->
 </resources>

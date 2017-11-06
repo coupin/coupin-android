@@ -8,11 +8,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.android.volley.RequestQueue;
@@ -44,6 +46,8 @@ public class SignUpActivity extends AppCompatActivity {
     public EditText passwordView;
     @BindView(R.id.confirm_password)
     public EditText confirmPasswordView;
+    @BindView(R.id.signup_bottom)
+    public LinearLayout signupBottom;
     @BindView(R.id.sign_up_form)
     public View mSignUpFormView;
     @BindView(R.id.sign_up_progress)
@@ -158,7 +162,9 @@ public class SignUpActivity extends AppCompatActivity {
                         PreferenceMngr.setContext(SignUpActivity.this);
                         JSONObject object = res.getJSONObject("user");
                         PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
-                        startActivity(new Intent(SignUpActivity.this, InterestsActivity.class));
+                        Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
+                        nextIntent.putExtra("name", name);
+                        startActivity(nextIntent);
                             finish();
                     } catch (Exception e) {
                         showProgress(false);
@@ -171,6 +177,19 @@ public class SignUpActivity extends AppCompatActivity {
                 public void onErrorResponse(VolleyError error) {
                     showProgress(false);
                     error.printStackTrace();
+                    Log.v("VolleyError", error.toString());
+
+                    if (error.toString().equals("com.android.volley.TimeoutError")) {
+                        Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                    } else {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            if (error.networkResponse.statusCode == 409) {
+                                Toast.makeText(SignUpActivity.this, getString(R.string.duplicate), Toast.LENGTH_LONG).show();
+                            }
+                        } else {
+                            Toast.makeText(SignUpActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
                 }
             }){
                 @Override
@@ -208,7 +227,7 @@ public class SignUpActivity extends AppCompatActivity {
         // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
         // for very easy animations. If available, use these APIs to fade-in
         // the progress spinner.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
             int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
             mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
@@ -216,6 +235,7 @@ public class SignUpActivity extends AppCompatActivity {
                     show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
+                    signupBottom.setVisibility(show ? View.GONE : View.VISIBLE);
                     mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
                 }
             });
@@ -228,12 +248,21 @@ public class SignUpActivity extends AppCompatActivity {
                     mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
                 }
             });
-//        } else {
-            // The ViewPropertyAnimator APIs are not available, so simply show
-            // and hide the relevant UI components.
-//            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-//            mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-//        }
+        } else {
+//             The ViewPropertyAnimator APIs are not available, so simply show
+//             and hide the relevant UI components.
+            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            mSignUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            signupBottom.setVisibility(show ? View.GONE : View.VISIBLE);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
+        finish();
     }
 }
 

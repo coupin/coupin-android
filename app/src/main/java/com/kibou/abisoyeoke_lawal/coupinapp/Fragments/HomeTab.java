@@ -51,6 +51,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.FilterDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
@@ -60,6 +61,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 
 import org.json.JSONArray;
@@ -67,8 +69,10 @@ import org.json.JSONObject;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -144,8 +148,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public GeneratedCodeDialog generatedCodeDialog;
     public String rewardId;
     public LatLng direction;
-    public int distance;
-    public String[] categories = new String[]{};
+    public int distance = 3;
+    public ArrayList<String> categories = new ArrayList<>();
+
+    public BigDecimal longitude;
+    public BigDecimal latitude;
+
+    private final String TAG = "markers";
+
+    public LoadingDialog loadingDialog;
 
     public HomeTab() {
         // Required empty public constructor
@@ -167,6 +178,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_home_tab, container, false);
         ButterKnife.bind(this, rootView);
+
+        loadingDialog = new LoadingDialog(getActivity(), R.style.Loading_Dialog);
+        showDialog(true);
+
 
         final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);
         filterDialog.setInterface(this);
@@ -417,6 +432,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         return rootView;
     }
 
+    public void showDialog(boolean show) {
+        if (show) {
+            loadingDialog.show();
+        } else {
+            loadingDialog.dismiss();
+        }
+    }
+
     private int getPixelsFromDp(Context context, int dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dp * scale + 0.5f);
@@ -426,22 +449,33 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Sets up the horizontal list
      */
     public void setUpList() {
+        iconsList.clear();
+        adapter.notifyDataSetChanged();
+
+        String query = "";
+
         if (currentLocation != null) {
-            BigDecimal longitude = new BigDecimal(currentLocation.getLongitude());
-            BigDecimal latitude = new BigDecimal(currentLocation.getLatitude());
+            longitude = new BigDecimal(currentLocation.getLongitude());
+            latitude = new BigDecimal(currentLocation.getLatitude());
             longitude = longitude.setScale(6, BigDecimal.ROUND_HALF_UP);
             latitude = latitude.setScale(6, BigDecimal.ROUND_HALF_UP);
 
-            url = url + "?longitude=" + longitude.doubleValue()
-                +  "&latitude=" + latitude.doubleValue() + "&distance=1000";
-        } else {
-            url = url + "?longitude=undefined&latitude=undefined" + "&distance=1000";
+            try {
+                if (geocoder.isPresent()) {
+                    addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+                    Log.v("VolleyAddress", addresses.toString());
+                    street.setText(addresses.get(0).getThoroughfare().toString());
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
 
         try {
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
+                    Log.v("VolleyThink", response);
                     double one = 0;
                     double two = 0;
                     int counter = 0;
@@ -475,11 +509,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             counter++;
                         }
 
-                        spots.setText(iconsList.size() + " ");
+                        spots.setText(iconsList.size() - 1 + " ");
 
                         // TODO: Set the bounds properly
 //                        setBounds();
 
+                        showDialog(false);
                         adapter.setIconList(iconsList);
                         adapter.notifyDataSetChanged();
                     } catch (Exception e) {
@@ -490,15 +525,44 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     spots.setText("0 ");
+                    showDialog(false);
 
-                    if (HomeTab.this.isVisible()) {
-                        new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+                    if (error.toString().equals("com.android.volley.TimeoutError")) {
+                        Toast.makeText(getActivity(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                    } else {
+                        if (HomeTab.this.isVisible()) {
+                            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
                                 .setTitleText("Error")
-                                .setContentText(error.toString())
+                                .setContentText(error.getMessage())
                                 .show();
+                        }
                     }
                 }
-            });
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", PreferenceMngr.getToken());
+
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    if (longitude != null && latitude != null) {
+                        params.put("longitude", String.valueOf(longitude.doubleValue()));
+                        params.put("latitude", String.valueOf(latitude.doubleValue()));
+                    } else {
+                        params.put("longitude", "undefined");
+                        params.put("latitude", "undefined");
+                    }
+                    params.put("distance", String.valueOf(distance));
+                    params.put("categories", categories.toString());
+
+                    return params;
+                }
+            };
 
             requestQueue.add(stringRequest);
         } catch (Exception e) {
@@ -593,7 +657,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             iconsList.add(item);
         }
 
-        spots.setText(iconsList.size() + " ");
+        spots.setText(iconsList.size() - 1 + " ");
 
         adapter.notifyDataSetChanged();
         isLoading = false;
@@ -691,9 +755,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onFilterSelected(ArrayList<String> selection, int distance) {
-        Log.v("VolleySelection", selection.toString());
-        Toast.makeText(getActivity(), "Selection sent.", Toast.LENGTH_SHORT).show();
-        categories = selection.toArray(new String[selection.size()]);
-        distance = distance;
+        categories = selection;
+        this.distance = distance / 10;
+        setUpList();
     }
 }

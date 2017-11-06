@@ -215,6 +215,7 @@
     </ScrollView>
 
     <LinearLayout
+        android:id="@+id/signup_bottom"
         android:layout_alignParentBottom="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -228,6 +229,7 @@
             android:layout_width="match_parent"
             android:padding="@dimen/padding_md"
             android:text="@string/already_login"
+            android:textAllCaps="false"
             android:textColor="@color/white"
             android:textStyle="normal"/>
 
@@ -244,7 +246,7 @@
                 android:layout_width="match_parent"
                 android:padding="@dimen/padding_sm"
                 android:text="@string/social_connect"
-                android:textColor="@color/text_light_grey"/>
+                android:textColor="@color/text_med_grey"/>
 
             <LinearLayout
                 android:layout_height="wrap_content"
