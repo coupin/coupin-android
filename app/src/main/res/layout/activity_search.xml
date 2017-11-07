@@ -18,7 +18,7 @@
 
         <LinearLayout
             android:background="@color/white"
-            android:layout_height="150dp"
+            android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical">
 
@@ -39,25 +39,61 @@
                     android:layout_gravity="center_vertical"
                     android:layout_height="24dp"
                     android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_weight="1"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_back_lg"
                     android:tint="@color/text_dark_grey"/>
 
                 <android.support.design.widget.TextInputEditText
                     android:background="@color/white"
-                    android:layout_gravity="center_vertical"
-                    android:id="@+id/search_edittext"
                     android:hint="@string/search"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"/>
+                    android:id="@+id/search_edittext"
+                    android:layout_gravity="center_vertical"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="6"
+                    android:layout_width="match_parent"/>
+
+                <ImageView
+                    android:id="@+id/search_filter"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_height="32dp"
+                    android:layout_weight="1"
+                    android:layout_width="32dp"
+                    android:src="@drawable/ic_filter_lg"/>
 
             </LinearLayout>
+
+            <co.lujun.androidtagview.TagContainerLayout
+                android:id="@+id/filter_tags"
+                android:background="@color/white"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingBottom="@dimen/padding_xs"
+                android:paddingEnd="@dimen/padding_sm"
+                android:paddingLeft="@dimen/padding_sm"
+                android:paddingRight="@dimen/padding_sm"
+                android:paddingStart="@dimen/padding_sm"
+                android:paddingTop="@dimen/padding_xs"
+                app:container_background_color="@color/white"
+                app:container_border_color="@color/white"
+                app:container_enable_drag="false"
+                app:horizontal_interval="10dp"
+                app:tag_background_color="@color/colorAccent"
+                app:tag_border_color="@color/white"
+                app:tag_clickable="true"
+                app:tag_text_color="@color/white"
+                app:tag_theme="none"
+                app:vertical_interval="10dp">
+
+            </co.lujun.androidtagview.TagContainerLayout>
 
             <RelativeLayout
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_sm"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_xs">
+                android:padding="@dimen/padding_xs"
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/search_pin"
@@ -157,7 +193,7 @@
                 android:gravity="center"
                 android:id="@+id/search_error"
                 android:layout_centerInParent="true"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:orientation="vertical"
                 android:visibility="gone">

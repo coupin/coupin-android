@@ -9,7 +9,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -22,6 +25,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVSearchAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.FilterNoDistDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
@@ -35,12 +40,15 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import co.lujun.androidtagview.TagContainerLayout;
 
-public class SearchActivity extends AppCompatActivity implements MyOnClick {
+public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFilter {
     @BindView(R.id.search_edittext)
     public EditText searchTextView;
     @BindView(R.id.search_back)
     public ImageView back;
+    @BindView(R.id.search_filter)
+    public ImageView searchFilter;
     @BindView(R.id.empty_search)
     public LinearLayout emptySearchView;
     @BindView(R.id.search_error)
@@ -49,9 +57,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
     public LinearLayout loadingSearchView;
     @BindView(R.id.search_recyclerview)
     public RecyclerView searchRecyclerView;
+    @BindView(R.id.filter_tags)
+    public TagContainerLayout filterTags;
     @BindView(R.id.search_street)
     public TextView searchStreet;
 
+    public ArrayList<String> categories = new ArrayList<>();
     public String queryString;
     public String latitude;
     public String longitude;
@@ -76,6 +87,14 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
+
+        final FilterNoDistDialog filterDialog = new FilterNoDistDialog(this, R.style.Filter_Dialog);
+        filterDialog.setInterface(this);
+        Window window = filterDialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+        wlp.width = this.getWindow().getAttributes().width;
+        wlp.gravity = Gravity.TOP | Gravity.LEFT | Gravity.START;
+        wlp.windowAnimations = R.style.PauseDialogAnimation;
 
         Bundle extra = getIntent().getExtras();
         searchStreet.setText("Near Me - " + extra.getString("street"));
@@ -105,15 +124,22 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 //TODO: Nothing
-                loading(0);
             }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
+                    loading(0);
                     queryString = s.toString();
                     query();
                 }
+            }
+        });
+
+        searchFilter.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                filterDialog.show();
             }
         });
 
@@ -128,11 +154,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
     private void query() {
         Log.v("VolleyQuery", queryString);
         url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/search";
-        companyInfos.clear();
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                companyInfos.clear();
+                adapter.notifyDataSetChanged();
                 try {
                     JSONArray resArr = new JSONArray(response);
                     if (resArr.length() > 0) {
@@ -157,6 +184,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
                             }
                             companyInfos.add(item);
                         }
+                        Log.v("VolleyList", companyInfos.toString());
 
                         adapter.notifyDataSetChanged();
                         handler.postDelayed(new Runnable() {
@@ -188,6 +216,17 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.v("VolleyError", error.toString());
+                if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    loading(3);
+                } else {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        if (error.networkResponse.statusCode == 404) {
+                            loading(2);
+                        }
+                    } else {
+                        loading(3);
+                    }
+                }
             }
         }) {
             @Override
@@ -205,6 +244,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
                 params.put("long", longitude);
                 params.put("lat", latitude);
                 params.put("query", queryString);
+                params.put("categories", categories.toString());
 
                 return params;
             }
@@ -222,6 +262,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
         startActivity(merchantIntent);
     }
 
+    /**
+     * Showing the appropriate view after and before loading
+     * @param opt
+     */
     public void loading(int opt) {
         switch (opt) {
             case 0:
@@ -249,5 +293,17 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick {
                 loadingSearchView.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    /**
+     * After filer selection has been made
+     * @param selection
+     * @param distance
+     */
+    @Override
+    public void onFilterSelected(ArrayList<String> selection, int distance) {
+        categories = selection;
+        filterTags.setTags(categories);
+        query();
     }
 }

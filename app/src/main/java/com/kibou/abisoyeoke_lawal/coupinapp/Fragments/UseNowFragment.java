@@ -116,11 +116,9 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                     }
                     rvAdapter.notifyDataSetChanged();
                     if (jsonArray.length() == 0) {
-                        loadingView.setVisibility(View.GONE);
-                        nowEmpty.setVisibility(View.VISIBLE);
+                        loading(2);
                     } else {
-                        loadingView.setVisibility(View.GONE);
-                        recyclerView.setVisibility(View.VISIBLE);
+                        loading(1);
                     }
 
                 } catch (Exception e) {
@@ -131,14 +129,14 @@ public class UseNowFragment extends Fragment implements MyOnClick {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.v("VolleyError", error.toString());
-                if (error != null) {
-                    if (error != null && error.networkResponse.statusCode == 404) {
-                        loadingView.setVisibility(View.GONE);
-                        nowEmpty.setVisibility(View.VISIBLE);
+                if (error.networkResponse != null) {
+                    if (error.networkResponse.statusCode == 404) {
+                        loading(2);
                     } else {
-                        loadingView.setVisibility(View.GONE);
-                        nowError.setVisibility(View.VISIBLE);
+                        loading(3);
                     }
+                } else {
+                    loading(3);
                 }
             }
         }) {
@@ -152,5 +150,38 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Showing the appropriate view after and before loading
+     * @param opt
+     */
+    public void loading(int opt) {
+        switch (opt) {
+            case 0:
+                recyclerView.setVisibility(View.GONE);
+                nowEmpty.setVisibility(View.GONE);
+                nowError.setVisibility(View.GONE);
+                loadingView.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                loadingView.setVisibility(View.GONE);
+                recyclerView.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                loadingView.setVisibility(View.GONE);
+                nowEmpty.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                loadingView.setVisibility(View.GONE);
+                nowError.setVisibility(View.VISIBLE);
+                break;
+            default:
+                recyclerView.setVisibility(View.GONE);
+                nowEmpty.setVisibility(View.GONE);
+                nowError.setVisibility(View.GONE);
+                loadingView.setVisibility(View.VISIBLE);
+                break;
+        }
     }
 }

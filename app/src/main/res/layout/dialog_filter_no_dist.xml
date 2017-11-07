@@ -3,8 +3,8 @@
               android:animateLayoutChanges="true"
               android:background="@color/white"
               android:orientation="vertical"
-              android:layout_height="match_parent"
               android:layout_width="match_parent"
+              android:layout_height="match_parent"
               android:paddingBottom="@dimen/padding_md"
               android:paddingEnd="@dimen/padding_sm"
               android:paddingLeft="@dimen/padding_sm"
@@ -21,7 +21,7 @@
         android:paddingTop="@dimen/padding_xs">
 
         <TextView
-            android:id="@+id/filter_cancel"
+            android:id="@+id/filter_nd_cancel"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
             android:layout_centerVertical="true"
@@ -43,7 +43,7 @@
             android:textStyle="bold"/>
 
         <TextView
-            android:id="@+id/filter_save"
+            android:id="@+id/filter_nd_save"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
@@ -60,23 +60,6 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="@dimen/padding_sm"
-        android:text="@string/distance"
-        android:textColor="@color/text_light_grey"
-        android:textSize="@dimen/medium_text"/>
-
-    <com.kibou.abisoyeoke_lawal.coupinapp.Utils.DistanceSeekBar
-        android:id="@+id/distance"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm"
-        android:layout_width="match_parent"
-        android:splitTrack="false"
-        android:thumb="@drawable/thumb"/>
-
-    <TextView
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="@dimen/padding_sm"
         android:text="@string/interested"
         android:textColor="@color/text_light_grey"
         android:textSize="@dimen/medium_text"/>
@@ -87,7 +70,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_ent"
+            android:id="@+id/fil_nd_ent"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
@@ -113,7 +96,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_food"
+            android:id="@+id/fil_nd_food"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
@@ -139,7 +122,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_gadget"
+            android:id="@+id/fil_nd_gadget"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
@@ -165,7 +148,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_health"
+            android:id="@+id/fil_nd_health"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
@@ -191,7 +174,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_shopping"
+            android:id="@+id/fil_nd_shopping"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
@@ -217,7 +200,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_tickets"
+            android:id="@+id/fil_nd_tickets"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
@@ -243,7 +226,7 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_travel"
+            android:id="@+id/fil_nd_travel"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"

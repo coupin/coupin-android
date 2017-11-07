@@ -40,7 +40,7 @@
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
     <!--<string name="base_url">http://172.16.0.207:5030</string>-->
-    <string name="base_url">http://192.168.8.102:5030</string>
+    <string name="base_url">http://192.168.8.100:5030</string>
     <!--<string name="base_url">http://10.0.30.87:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>

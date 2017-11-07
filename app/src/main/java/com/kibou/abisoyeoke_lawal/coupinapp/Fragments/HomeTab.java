@@ -50,12 +50,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.FilterDialog;
-import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.GeneratedCodeDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Layouts.MapWrapperLayout;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
@@ -141,13 +139,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5};
-    public Marker markers[] = new Marker[100];
-    public LatLng min = new LatLng(0, 0);
-    public LatLng max = new LatLng(1, 1);
+    public ArrayList<Marker> markers = new ArrayList<>();
 
-    public GeneratedCodeDialog generatedCodeDialog;
-    public String rewardId;
-    public LatLng direction;
     public int distance = 3;
     public ArrayList<String> categories = new ArrayList<>();
 
@@ -193,8 +186,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         // Handler for delay and bound for map view
         handler = new Handler();
-        latLngBounds = new LatLngBounds.Builder();
-        generatedCodeDialog = new GeneratedCodeDialog(HomeTab.this);
 
         geocoder = new Geocoder(getContext(), Locale.getDefault());
         addresses = new ArrayList<>();
@@ -205,9 +196,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         // Clear list if it exists
         iconsList.clear();
-
-        // Map Wrapper
-        final MapWrapperLayout mapWrapperLayout = (MapWrapperLayout)rootView.findViewById(R.id.map_relative_layout);
 
         mapView.onCreate(savedInstanceState);
 
@@ -235,11 +223,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         btnMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currentLocation != null) {
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                }
-//                setBounds();
+                setBounds();
             }
         });
 
@@ -248,13 +232,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public void onMapReady(GoogleMap googleMap) {
                 mGoogleMap = googleMap;
 
-                // Default Marker Size is Height - 39, with 20 offset between edge and content
-                mapWrapperLayout.init(mGoogleMap, getPixelsFromDp(HomeTab.this.getContext(), 39 + 20));
-
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(true);
 
-                if (mGoogleMap.getMyLocation() != null) {
+                if (currentLocation == null && mGoogleMap.getMyLocation() != null) {
                     currentLocation = mGoogleMap.getMyLocation();
                 }
 
@@ -432,6 +413,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         return rootView;
     }
 
+    /**
+     * Show loading dialog
+     * @param show
+     */
     public void showDialog(boolean show) {
         if (show) {
             loadingDialog.show();
@@ -440,6 +425,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
     }
 
+    /**
+     * Used to set the position of the map
+     * @param context
+     * @param dp
+     * @return
+     */
     private int getPixelsFromDp(Context context, int dp) {
         final float scale = context.getResources().getDisplayMetrics().density;
         return (int)(dp * scale + 0.5f);
@@ -498,11 +489,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             item.setRewards(res.getJSONArray("rewards").toString());
                             item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                             item.setLongitude(res.getJSONObject("location").getDouble("long"));
-                            markers[counter] = mGoogleMap.addMarker(new MarkerOptions()
+                            markers.add(mGoogleMap.addMarker(new MarkerOptions()
                                     .title(res.getString("name"))
                                     .snippet(res.toString())
                                     .position(new LatLng(item.getLatitude(), item.getLongitude()))
-                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w)));
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
                             one = item.getLatitude();
                             two = item.getLongitude();
                             iconsList.add(item);
@@ -512,7 +503,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         spots.setText(iconsList.size() - 1 + " ");
 
                         // TODO: Set the bounds properly
-//                        setBounds();
+                        setBounds();
 
                         showDialog(false);
                         adapter.setIconList(iconsList);
@@ -527,7 +518,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     spots.setText("0 ");
                     showDialog(false);
 
-                    if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    if (error.networkResponse == null) {
                         Toast.makeText(getActivity(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                     } else {
                         if (HomeTab.this.isVisible()) {
@@ -577,36 +568,20 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         double tempLat = 0;
         double tempLong = 0;
 
+        latLngBounds = new LatLngBounds.Builder();
+
         if (currentLocation != null) {
             tempLat = currentLocation.getLatitude();
             tempLong = currentLocation.getLongitude();
             latLngBounds.include(new LatLng(tempLat, tempLong));
         }
 
-        for (int x = 0; x < iconsList.size(); x++) {
-//            if (tempLat == 0 && tempLong == 0) {
-                tempLat = iconsList.get(x).getLatitude();
-                tempLong = iconsList.get(x).getLongitude();
-//            }
-
-            latLngBounds.include(new LatLng(tempLat, tempLong));
-
-//            if (x == 0) {
-//                min = new LatLng(tempLat, tempLong);
-//                max = new LatLng(tempLat, tempLong);
-//            }
-//
-//            if (min.latitude > tempLat) {
-//                min = new LatLng(tempLat, tempLong);
-//            } else if (max.latitude < tempLat) {
-//                max = new LatLng(tempLat, tempLong);
-//            }
+        for (int x = 0; x < markers.size(); x++) {
+            latLngBounds.include(markers.get(x).getPosition());
         }
 
-//        latLngBounds.include(new LatLng(min.latitude, min.longitude));
-//        latLngBounds.include(new LatLng(max.latitude, max.longitude));
         LatLngBounds bounds = latLngBounds.build();
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 15));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
     /**
@@ -680,13 +655,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         if (position == 0) {
             startActivity(new Intent(getActivity(), HotActivity.class));
         } else {
+            // Show info window if it isn't the first icon, which is the hot zone icon
 //            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
             LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.000400, iconsList.get(position).getLongitude());
             CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(19).build();
             mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            markers[position - 1].setTitle("No");
-            markers[position - 1].showInfoWindow();
-            lastOpened = markers[position + 1];
+            markers.get(position - 1).setTitle("No");
+            markers.get(position - 1).showInfoWindow();
+            lastOpened = markers.get(position - 1);
             onMarker = true;
         }
     }
@@ -718,14 +694,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onLocationChanged(Location location) {
         currentLocation = location;
-        double tempLat = location.getLatitude();
-        double tempLong = location.getLongitude();
-
-        if (min.latitude > tempLat) {
-            min = new LatLng(tempLat, tempLong);
-        } else if (max.latitude < tempLat) {
-            max = new LatLng(tempLat, tempLong);
-        }
 
         try {
             addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
@@ -753,6 +721,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     }
 
+    /**
+     * Setup list again based on filer options
+     * @param selection
+     * @param distance
+     */
     @Override
     public void onFilterSelected(ArrayList<String> selection, int distance) {
         categories = selection;
