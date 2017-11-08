@@ -18,7 +18,8 @@
             android:layout_alignParentStart="true"
             android:layout_height="@dimen/icon_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_search_lg"/>
+            android:src="@drawable/ic_search_lg"
+            android:visibility="gone"/>
 
         <TextView
             android:layout_centerHorizontal="true"
@@ -35,7 +36,8 @@
             android:layout_alignParentRight="true"
             android:layout_height="@dimen/icon_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_filter_lg"/>
+            android:src="@drawable/ic_filter_lg"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

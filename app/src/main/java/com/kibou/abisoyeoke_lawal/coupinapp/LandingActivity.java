@@ -128,6 +128,7 @@ public class LandingActivity extends Activity {
             mediaPlayer.stop();
             mediaPlayer.release();
         }
+
         finish();
     }
 }

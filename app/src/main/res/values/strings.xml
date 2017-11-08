@@ -172,5 +172,6 @@
     <string name="select_category">Select your category of interest</string>
     <string name="hi">Hi,</string>
     <string name="network_error">Network connection error. Please check connection and try again.</string>
+    <string name="my_profile">My Profile</string>
     <!--192.168.8.100-->
 </resources>

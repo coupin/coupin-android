@@ -15,6 +15,8 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -42,41 +44,37 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
     public void onBindViewHolder(RVBroAdapter.ItemViewHolder holder, int position) {
         // Add data here
         RewardListItem reward = rewardListItems.get(position);
+        Date temp = new Date();
 
         try {
             holder.merchantName.setText(reward.getMerchantName());
 
             JSONArray rewardArray = new JSONArray(reward.getRewardDetails());
 
-            if (reward.isFav()) {
-                holder.favAddress.setText(reward.getMerchantAddress());
-                holder.activeRewardHolder.setVisibility(View.GONE);
-                holder.activeFavHolder.setVisibility(View.VISIBLE);
-                holder.activeRewardHolder2.setVisibility(View.GONE);
-                holder.code.setVisibility(View.GONE);
+            holder.code.setText("REDEEM REWARDS");
 
-                if (reward.getRewardCount() > 1) {
-                    holder.favCode.setText(reward.getRewardCount() + " REWARDS");
+            for (int x = 0 ; x < reward.getRewardCount(); x++) {
+                if (x == 0) {
+                    temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
                 } else {
-                    holder.favCode.setText(rewardArray.getJSONObject(0).getString("name"));
-                }
-
-            } else {
-                if (reward.isLater()) {
-                    holder.code.setText("REDEEM REWARDS");
-                } else {
-                    holder.code.setText("Code: " + reward.getBookingShortCode());
-                }
-
-                JSONObject first = rewardArray.getJSONObject(0);
-                holder.rewardOne.setText(first.getString("description"));
-
-                if (rewardArray.length() > 1) {
-                    JSONObject second = rewardArray.getJSONObject(1);
-                    holder.rewardTwo.setText(second.getString("description"));
+                    if (temp.after(new Date(rewardArray.getJSONObject(x).getString("endDate")))) {
+                        temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
+                    }
                 }
             }
 
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+            holder.activeExpiration.setText(simpleDateFormat.format(temp));
+
+            JSONObject first = rewardArray.getJSONObject(0);
+            holder.rewardOne.setText(first.getString("description"));
+
+            if (rewardArray.length() > 1) {
+                JSONObject second = rewardArray.getJSONObject(1);
+                holder.rewardTwo.setText(second.getString("description"));
+            } else {
+                holder.activeRewardHolder2.setVisibility(View.GONE);
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -95,6 +93,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
         public RelativeLayout activeFavHolder;
         public RelativeLayout activeRewardHolder;
         public RelativeLayout activeRewardHolder2;
+        public TextView activeExpiration;
         public TextView code;
         public TextView favAddress;
         public TextView favCode;
@@ -111,6 +110,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             activeRewardHolder = (RelativeLayout) itemView.findViewById(R.id.text_holder_1);
             activeRewardHolder2 = (RelativeLayout) itemView.findViewById(R.id.text_holder_2);
             code = (TextView) itemView.findViewById(R.id.active_code);
+            activeExpiration = (TextView) itemView.findViewById(R.id.active_expiration);
             favAddress = (TextView) itemView.findViewById(R.id.active_fav_address);
             favCode = (TextView) itemView.findViewById(R.id.fav_code);
             merchantName = (TextView) itemView.findViewById(R.id.active_merchant_name);

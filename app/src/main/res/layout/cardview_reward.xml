@@ -177,7 +177,7 @@
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginBottom="@dimen/margin_xxs"
                         android:layout_marginTop="@dimen/margin_xs"
                         android:layout_width="wrap_content"
                         android:textColor="@color/black"
@@ -185,56 +185,59 @@
 
                 </RelativeLayout>
 
-            <RelativeLayout
-                android:id="@+id/active_fav_address_holder"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_xs"
-                android:layout_width="match_parent"
-                android:visibility="gone">
-
-                <TextView
-                    android:id="@+id/active_fav_address"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+                <RelativeLayout
+                    android:id="@+id/active_fav_address_holder"
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_md"
-                    android:layout_marginEnd="@dimen/margin_sm"
-                    android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_sm"
-                    android:layout_marginStart="@dimen/margin_sm"
-                    android:layout_marginTop="@dimen/margin_sm"
-                    android:textColor="@color/text_dark_grey"
-                    android:textSize="@dimen/medium_text"
-                    android:textStyle="bold"/>
-
-                <View
-                    android:background="@color/lightGrey"
-                    android:id="@+id/fav_divider"
-                    android:layout_below="@id/active_fav_address"
-                    android:layout_height="1dp"
-                    android:layout_width="match_parent" />
-
-                <TextView
-                    android:background="#8FFF"
-                    android:gravity="center_vertical"
-                    android:id="@+id/fav_code"
-                    android:layout_alignParentBottom="true"
-                    android:layout_below="@id/fav_divider"
+                    android:layout_marginBottom="@dimen/margin_xxs"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="@dimen/padding_sm"
-                    android:paddingRight="@dimen/padding_sm"
-                    android:paddingTop="@dimen/padding_sm"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/large_text"
-                    android:textStyle="bold"/>
+                    android:visibility="gone">
 
-            </RelativeLayout>
+                    <TextView
+                        android:id="@+id/active_fav_address"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_md"
+                        android:layout_marginEnd="@dimen/margin_sm"
+                        android:layout_marginLeft="@dimen/margin_sm"
+                        android:layout_marginRight="@dimen/margin_sm"
+                        android:layout_marginStart="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_sm"
+                        android:textColor="@color/text_dark_grey"
+                        android:textSize="@dimen/medium_text"
+                        android:textStyle="bold"/>
+
+                    <View
+                        android:background="@color/lightGrey"
+                        android:id="@+id/fav_divider"
+                        android:layout_below="@id/active_fav_address"
+                        android:layout_height="1dp"
+                        android:layout_width="match_parent" />
+
+                    <TextView
+                        android:background="#8FFF"
+                        android:gravity="center_vertical"
+                        android:id="@+id/fav_code"
+                        android:layout_alignParentBottom="true"
+                        android:layout_below="@id/fav_divider"
+                        android:layout_height="wrap_content"
+                        android:layout_width="match_parent"
+                        android:paddingBottom="@dimen/padding_xs"
+                        android:paddingLeft="@dimen/padding_sm"
+                        android:paddingRight="@dimen/padding_sm"
+                        android:paddingTop="@dimen/padding_sm"
+                        android:textColor="@color/colorAccent"
+                        android:textSize="@dimen/large_text"
+                        android:textStyle="bold"/>
+
+                </RelativeLayout>
 
                     <!--android:background="@drawable/background_white_gradient_inv"-->
                 <LinearLayout
                     android:background="#80FFFFFF"
+                    android:layout_below="@+id/text_holder_2"
+                    android:layout_alignWithParentIfMissing="true"
                     android:layout_alignParentBottom="true"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
@@ -246,8 +249,8 @@
                     <RelativeLayout
                         android:id="@+id/expiry_label"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_marginBottom="@dimen/margin_xxs"
+                        android:layout_marginTop="@dimen/margin_xxs"
                         android:layout_width="match_parent">
 
                         <TextView
@@ -281,7 +284,7 @@
                         android:drawableRight="@drawable/ic_right_angle"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_marginTop="@dimen/margin_sm"
                         android:layout_width="match_parent"
                         android:text="Code: Testing"
                         android:textColor="@color/colorAccent"

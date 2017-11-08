@@ -3,15 +3,12 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -32,9 +29,15 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+    @BindView(R.id.edit_back)
+    public ImageView editBack;
     @BindView(R.id.profile_gender)
     public Spinner profileGender;
+    @BindView(R.id.edit_false)
+    public TextView editFalse;
+    @BindView(R.id.edit_true)
+    public TextView editTrue;
     @BindView(R.id.profile_email)
     public TextView profileEmail;
     @BindView(R.id.profile_firstname)
@@ -45,8 +48,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     public TextView profileMobile;
     @BindView(R.id.profile_password)
     public TextView profilePassword;
-    @BindView(R.id.edit_toolbar)
-    public Toolbar editToolbar;
 
     public boolean editMode = false;
     public String url;
@@ -64,12 +65,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user);
         requestQueue = Volley.newRequestQueue(this);
 
-        editToolbar.setTitle("Edit");
-
-        setSupportActionBar(editToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
-
         profileGender.setOnItemSelectedListener(this);
 
         genders = new ArrayList<>();
@@ -82,6 +77,9 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         profileGender.setAdapter(adapter);
 
         setupDetails();
+
+        editFalse.setOnClickListener(this);
+        editTrue.setOnClickListener(this);
     }
 
     private void setupDetails() {
@@ -125,42 +123,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.editable_menu, menu);
-
-        MenuItem editTrue = menu.findItem(R.id.profile_edit_true);
-        MenuItem editFalse = menu.findItem(R.id.profile_edit_false);
-
-        if (editMode) {
-            editTrue.setVisible(false);
-            editFalse.setVisible(true);
-        } else {
-            editTrue.setVisible(true);
-            editFalse.setVisible(false);
-        }
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case android.R.id.home:
-                onBackPressed();
-                return  true;
-            case R.id.profile_edit_true:
-                makeEditable(true);
-                return true;
-            case R.id.profile_edit_false:
-                makeEditable(false);
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
     private void makeEditable(boolean editable) {
         if (editable) {
             editMode = true;
@@ -192,6 +154,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setFocusable(false);
             profileMobile .setFocusableInTouchMode(false);
             profileGender.setEnabled(false);
+            saveUser();
         }
 
         // Check if no view has focus:
@@ -201,8 +164,13 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0);
 //        }
+    }
 
-        invalidateOptionsMenu();
+    /**
+     * Do call to save user details
+     */
+    private void saveUser() {
+
     }
 
     @Override
@@ -213,5 +181,24 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
         // TODO: Nothing
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.edit_true:
+                makeEditable(true);
+                editTrue.setVisibility(View.GONE);
+                editFalse.setVisibility(View.VISIBLE);
+                break;
+            case R.id.edit_false:
+                makeEditable(false);
+                editFalse.setVisibility(View.GONE);
+                editTrue.setVisibility(View.VISIBLE);
+                break;
+            case R.id.edit_back:
+                onBackPressed();
+                break;
+        }
     }
 }

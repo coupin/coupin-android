@@ -16,6 +16,9 @@ import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.NotificationActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.StringUtils;
+
+import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -32,8 +35,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView profileEdit;
     @BindView(R.id.profile_feedback)
     public TextView profileFeedback;
+    @BindView(R.id.profile_name)
+    public TextView profileName;
     @BindView(R.id.profile_notifications)
     public TextView profileNotification;
+
+    public JSONObject userArray;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -46,6 +53,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
+
+        try {
+            userArray = new JSONObject(PreferenceMngr.getUser());
+
+            profileName.setText(StringUtils.capitalize(userArray.getString("name")));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         logout.setOnClickListener(this);
         profileCategory.setOnClickListener(this);

@@ -2,7 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +15,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -65,25 +65,23 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                     holder.favCode.setText(reward.getRewardCount() + " REWARDS");
                 } else {
                     holder.favCode.setText(rewardArray.getJSONObject(0).getString("name"));
+                    holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
             } else {
-                if (reward.isLater()) {
-                    holder.code.setText("REDEEM REWARDS");
-                } else {
-                    Log.v("VolleyDate", "testing" + temp.toLocaleString());
-                    for (int x = 0 ; x < reward.getRewardCount(); x++) {
-                        if (x == 0) {
+                holder.code.setText("Code: " + reward.getBookingShortCode());
+
+                for (int x = 0 ; x < reward.getRewardCount(); x++) {
+                    if (x == 0) {
+                        temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
+                    } else {
+                        if (temp.after(new Date(rewardArray.getJSONObject(x).getString("endDate")))) {
                             temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
-                        } else {
-                            if (temp.after(new Date(rewardArray.getJSONObject(x).getString("endDate")))) {
-                                temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
-                            }
                         }
                     }
-
-                    holder.activeExpiration.setText(temp.toLocaleString());
-                    holder.code.setText("Code: " + reward.getBookingShortCode());
                 }
+
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+                holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
                 JSONObject first = rewardArray.getJSONObject(0);
                 holder.rewardOne.setText(first.getString("description"));
@@ -91,6 +89,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 if (rewardArray.length() > 1) {
                     JSONObject second = rewardArray.getJSONObject(1);
                     holder.rewardTwo.setText(second.getString("description"));
+                } else {
+                    holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
             }
 
