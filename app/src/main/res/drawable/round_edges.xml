@@ -3,11 +3,11 @@
 
     <solid
         android:color="#FFFFFF"/>
+        <!--android:color="#FFFFFF"/>-->
 
     <corners android:bottomLeftRadius="@dimen/rounded_edge"
         android:bottomRightRadius="@dimen/rounded_edge"
         android:topLeftRadius="@dimen/rounded_edge"
         android:topRightRadius="@dimen/rounded_edge"/>
-
 
 </shape>

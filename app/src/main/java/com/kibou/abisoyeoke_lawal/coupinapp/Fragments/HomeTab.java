@@ -656,14 +656,18 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             startActivity(new Intent(getActivity(), HotActivity.class));
         } else {
             // Show info window if it isn't the first icon, which is the hot zone icon
+            if (markers.get(position - 1).isInfoWindowShown()) {
+                markers.get(position - 1).hideInfoWindow();
+            } else {
 //            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
-            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.000400, iconsList.get(position).getLongitude());
-            CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(19).build();
-            mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-            markers.get(position - 1).setTitle("No");
-            markers.get(position - 1).showInfoWindow();
-            lastOpened = markers.get(position - 1);
-            onMarker = true;
+                LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.000400, iconsList.get(position).getLongitude());
+                CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(19).build();
+                mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
+                markers.get(position - 1).setTitle("No");
+                markers.get(position - 1).showInfoWindow();
+                lastOpened = markers.get(position - 1);
+                onMarker = true;
+            }
         }
     }
 
