@@ -73,23 +73,25 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
 
         @Override
         public void onClick(View v) {
-            ImageView x = (ImageView) v.findViewById(R.id.icon_x);
-            FrameLayout y = (FrameLayout) v.findViewById(R.id.image_frame);
+            if (getAdapterPosition() != 0) {
+                ImageView x = (ImageView) v.findViewById(R.id.icon_x);
+                FrameLayout y = (FrameLayout) v.findViewById(R.id.image_frame);
 
-            if (previousView != null && previousPosition != getAdapterPosition()) {
-                ((ImageView) previousView.findViewById(R.id.icon_x)).setVisibility(View.GONE);
-                ((FrameLayout) previousView.findViewById(R.id.image_frame)).setBackgroundColor(parent.getResources().getColor(android.R.color.transparent));
-                previousView = null;
-            }
+                if (previousView != null && previousPosition != getAdapterPosition()) {
+                    ((ImageView) previousView.findViewById(R.id.icon_x)).setVisibility(View.GONE);
+                    ((FrameLayout) previousView.findViewById(R.id.image_frame)).setBackgroundColor(parent.getResources().getColor(android.R.color.transparent));
+                    previousView = null;
+                }
 
-            if (x.getVisibility() != View.VISIBLE) {
-                x.setVisibility(View.VISIBLE);
-                y.setBackgroundColor(parent.getResources().getColor(R.color.colorAccent));
-                previousView = v;
-                previousPosition = getAdapterPosition();
-            } else {
-                x.setVisibility(View.GONE);
-                y.setBackgroundColor(parent.getResources().getColor(android.R.color.transparent));
+                if (x.getVisibility() != View.VISIBLE) {
+                    x.setVisibility(View.VISIBLE);
+                    y.setBackground(parent.getResources().getDrawable(R.drawable.round_edges_active));
+                    previousView = v;
+                    previousPosition = getAdapterPosition();
+                } else {
+                    x.setVisibility(View.GONE);
+                    y.setBackgroundColor(parent.getResources().getColor(android.R.color.transparent));
+                }
             }
 
             if (mClickListener != null) {

@@ -1,5 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -22,6 +23,8 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     public BottomNavigationViewEx bottomNavigationView;
 
+    final HomeTab homeTab = HomeTab.newInstance();;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,7 +46,6 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setIconsMarginTop(15);
 
         final FavFragment favFragment = new FavFragment();
-        final HomeTab homeTab = HomeTab.newInstance();
         final ProfileFragment profileFragment = new ProfileFragment();
         final RewardsTab rewardsTab = RewardsTab.newInstance();
 
@@ -77,5 +79,19 @@ public class HomeActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
         ft.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        homeTab.onActivityResult(requestCode, resultCode, data);
+
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
+        homeTab.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

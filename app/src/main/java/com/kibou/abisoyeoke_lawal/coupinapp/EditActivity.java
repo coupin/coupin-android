@@ -80,6 +80,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
         editFalse.setOnClickListener(this);
         editTrue.setOnClickListener(this);
+        editBack.setOnClickListener(this);
     }
 
     private void setupDetails() {

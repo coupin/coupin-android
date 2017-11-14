@@ -50,7 +50,7 @@
         android:orientation="horizontal">
 
         <Button
-            android:background="@color/signup"
+            android:background="@color/white"
             android:id="@+id/sign_up_button"
             android:layout_height="62dp"
             android:layout_weight="1"
@@ -58,8 +58,9 @@
             android:padding="@dimen/padding_xs"
             android:text="@string/sign_up"
             android:textAllCaps="true"
-            android:textColor="@color/text_signup"
-            android:textSize="@dimen/medium_text"/>
+            android:textColor="@color/colorAccent"
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
 
         <Button
             android:background="@color/signin"
@@ -70,7 +71,8 @@
             android:text="@string/sign_in"
             android:textAllCaps="true"
             android:textColor="@android:color/white"
-            android:textSize="@dimen/medium_text"/>
+            android:textSize="@dimen/medium_text"
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

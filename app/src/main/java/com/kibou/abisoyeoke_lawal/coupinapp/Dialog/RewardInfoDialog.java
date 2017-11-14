@@ -11,8 +11,6 @@ import android.widget.Button;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
-import butterknife.ButterKnife;
-
 /**
  * Created by abisoyeoke-lawal on 7/22/17.
  */
@@ -43,7 +41,6 @@ public class RewardInfoDialog extends Dialog implements View.OnClickListener {
 
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_exiting_merchant);
-        ButterKnife.bind(this);
 
         btnDiscard = (Button) findViewById(R.id.cancel);
         btnKeep = (Button) findViewById(R.id.btn_keep);

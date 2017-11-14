@@ -141,7 +141,8 @@
                         android:layout_width="wrap_content"
                         android:text="100%"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/xlarge_text"/>
+                        android:textSize="@dimen/xlarge_text"
+                        android:textStyle="bold"/>
 
                 </RelativeLayout>
 
@@ -181,7 +182,8 @@
                         android:layout_marginTop="@dimen/margin_xs"
                         android:layout_width="wrap_content"
                         android:textColor="@color/black"
-                        android:textSize="@dimen/xlarge_text"/>
+                        android:textSize="@dimen/xlarge_text"
+                        android:textStyle="bold"/>
 
                 </RelativeLayout>
 
@@ -205,7 +207,7 @@
                         android:layout_marginStart="@dimen/margin_sm"
                         android:layout_marginTop="@dimen/margin_sm"
                         android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/medium_text"
+                        android:textSize="@dimen/large_text"
                         android:textStyle="bold"/>
 
                     <View
@@ -258,7 +260,7 @@
                             android:layout_alignParentStart="true"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="EXPIRY DATE"
+                            android:text="@string/expiry"
                             android:textColor="@color/text_dark_grey"
                             android:textSize="@dimen/large_text"
                             android:textStyle="bold"/>

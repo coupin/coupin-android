@@ -2,16 +2,19 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Dialog;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
@@ -26,6 +29,10 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public Button cancel;
     public Button fullPin;
     public Button fullRemove;
+    public ImageView photo1;
+    public ImageView photo2;
+    public ImageView photo3;
+    public LinearLayout buttonHolder;
     public TextView fullDateEnd;
     public TextView fullDateStart;
     public TextView fullDescription;
@@ -37,12 +44,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
     public MyOnClick myOnClick;
 
+    private Context context;
     private Reward reward;
 
     // Applicable days
     public int applicableDays[] = new int[]{R.id.full_day0, R.id.full_day1,
         R.id.full_day2, R.id.full_day3, R.id.full_day4, R.id.full_day5,
         R.id.full_day6};
+    public boolean hideButton = false;
 
     public DetailsDialog(@NonNull Context context) {
         super(context);
@@ -58,6 +67,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
     public DetailsDialog(@NonNull Context context, Reward reward) {
         super(context);
+        this.context = context;
         this. reward = reward;
     }
 
@@ -78,6 +88,12 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullRemove = (Button) findViewById(R.id.btn_remove);
         fullRemove.setOnClickListener(this);
 
+        photo1 = (ImageView) findViewById(R.id.photo_1);
+        photo2 = (ImageView) findViewById(R.id.photo_2);
+        photo3 = (ImageView) findViewById(R.id.photo_3);
+
+        buttonHolder = (LinearLayout) findViewById(R.id.details_button_group);
+
         fullDateEnd = (TextView) findViewById(R.id.full_date_end);
         fullDateStart = (TextView) findViewById(R.id.full_date_start);
         fullDescription = (TextView) findViewById(R.id.full_description);
@@ -90,6 +106,8 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullDescription.setText(reward.getDetails());
         fullHeader.setText(reward.getTitle());
 
+        fullOldPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+
         // Discount
         if (reward.getIsDiscount()) {
             float oldPrice = reward.getOldPrice();
@@ -100,12 +118,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullOldPrice.setText("N" + String.valueOf((int) oldPrice));
         }
 
+        Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
+        Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
+        Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
+
         if (reward.isSelected()) {
-            Log.v("VolleyTime", "Is Selected");
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);
         } else {
-            Log.v("VolleyTime", "Is Not Selected");
             fullRemove.setVisibility(View.GONE);
             fullPin.setVisibility(View.VISIBLE);
         }
@@ -120,6 +140,10 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullReusable.setText("YES");
         } else {
             fullReusable.setText("NO");
+        }
+
+        if (hideButton) {
+            buttonHolder.setVisibility(View.GONE);
         }
 
         for (int x = 0; x < reward.getDays().length(); x++) {
@@ -145,6 +169,10 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             }
         }
 
+    }
+
+    public void hideButtonGroup() {
+        hideButton = true;
     }
 
     @Override

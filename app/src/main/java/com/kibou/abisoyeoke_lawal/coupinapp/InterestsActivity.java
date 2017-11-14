@@ -121,7 +121,7 @@ public class InterestsActivity extends AppCompatActivity {
         });
 
         if (!extra.getBoolean("fromProfile")) {
-            PreferenceMngr.getInstance().setCategory(false);
+            PreferenceMngr.setCategory(false);
         }
     }
 

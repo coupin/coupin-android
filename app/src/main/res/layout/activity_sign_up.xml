@@ -85,7 +85,7 @@
                         android:inputType="textCapWords"
                         android:maxLines="1"
                         android:textColor="@color/text_med_grey"
-                        android:textSize="@dimen/small_text"/>
+                        android:textSize="@dimen/medium_text"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -115,7 +115,7 @@
                         android:inputType="textEmailAddress"
                         android:maxLines="1"
                         android:textColor="@color/text_med_grey"
-                        android:textSize="@dimen/small_text"/>
+                        android:textSize="@dimen/medium_text"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -148,7 +148,7 @@
                         android:inputType="textPassword"
                         android:maxLines="1"
                         android:textColor="@color/text_med_grey"
-                        android:textSize="@dimen/small_text"/>
+                        android:textSize="@dimen/medium_text"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -181,7 +181,7 @@
                         android:inputType="textPassword"
                         android:maxLines="1"
                         android:textColor="@color/text_med_grey"
-                        android:textSize="@dimen/small_text"/>
+                        android:textSize="@dimen/medium_text"/>
 
                 </android.support.design.widget.TextInputLayout>
 
@@ -222,7 +222,7 @@
         android:orientation="vertical">
 
         <Button
-            android:background="@color/black_trans"
+            android:background="@color/almost_trans"
             android:id="@+id/back_to_login"
             android:gravity="center"
             android:layout_height="wrap_content"
@@ -231,6 +231,7 @@
             android:text="@string/already_login"
             android:textAllCaps="false"
             android:textColor="@color/white"
+            android:textSize="@dimen/large_text"
             android:textStyle="normal"/>
 
         <LinearLayout
@@ -263,7 +264,8 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
-                    android:text="@string/save_select"
+                    android:text="@string/google"
+                    android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textStyle="bold"/>
 
@@ -277,7 +279,8 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_weight="2"
                     android:layout_width="match_parent"
-                    android:text="@string/get_coupin"
+                    android:text="@string/facebook"
+                    android:textAllCaps="false"
                     android:textColor="@color/white"
                     android:textStyle="bold"/>
 

@@ -1,37 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-                android:background="@android:color/transparent"
+    android:background="@android:color/transparent"
     android:layout_height="wrap_content"
-    android:layout_marginBottom="@dimen/icon_space"
-    android:layout_marginTop="@dimen/icon_space"
-    android:layout_width="100dp">
+    android:layout_width="94dp">
 
     <android.support.v7.widget.CardView
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/icon_space_horizontal"
-        android:layout_marginRight="@dimen/icon_space_horizontal"
+        android:layout_marginLeft="1dp"
+        android:layout_marginTop="@dimen/margin_xs"
         android:layout_width="wrap_content"
         app:cardBackgroundColor="@android:color/transparent"
         app:cardCornerRadius="10dp"
-        app:cardElevation="10dp"
+        app:cardElevation="2dp"
         app:cardUseCompatPadding="true">
-
-        <FrameLayout
-            android:background="@android:color/transparent"
-            android:id="@+id/image_frame"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_xxs">
 
         <com.makeramen.roundedimageview.RoundedImageView
             android:background="@drawable/round_edges"
             android:id="@+id/icon"
             android:layout_height="60dp"
             android:layout_width="60dp"
+            android:scaleType="centerCrop"
             app:riv_border_color="#80000000"
-            app:riv_corner_radius="10dp" />
+            app:riv_corner_radius="10dp"/>
+
+        <FrameLayout
+            android:background="@android:color/transparent"
+            android:id="@+id/image_frame"
+            android:layout_width="60dp"
+            android:layout_height="60dp"
+            android:padding="@dimen/padding_xxs">
 
         </FrameLayout>
 
@@ -43,8 +43,7 @@
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_height="30dp"
-        android:layout_marginRight="@dimen/margin_xs"
-        android:layout_marginTop="@dimen/margin_xs"
+        android:layout_marginRight="@dimen/margin_sm_plus"
         android:layout_width="30dp"
         android:src="@drawable/ic_icon_cancel"
         android:visibility="gone"/>

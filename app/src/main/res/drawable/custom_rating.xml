@@ -11,6 +11,6 @@
 
     <item
         android:id="@android:id/progress"
-        android:drawable="@drawable/ic_rating_blue" />
+        android:drawable="@drawable/ic_icon_yes" />
 
 </layer-list>

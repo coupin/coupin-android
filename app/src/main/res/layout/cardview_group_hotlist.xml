@@ -26,22 +26,23 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/padding_sm">
 
-                <android.support.v7.widget.CardView
-                    android:background="@color/black"
-                    android:layout_gravity="top|start"
-                    android:layout_height="70dp"
-                    android:layout_width="70dp"
-                    app:cardCornerRadius="@dimen/cardview_custom_radius"
-                    app:cardElevation="5dp"
-                    app:contentPadding="3dp"
-                    app:cardUseCompatPadding="true">
+                <!--<android.support.v7.widget.CardView-->
+                    <!--android:background="@color/black"-->
+                    <!--android:layout_gravity="top|start"-->
+                    <!--android:layout_height="70dp"-->
+                    <!--android:layout_width="70dp"-->
+                    <!--app:cardCornerRadius="@dimen/cardview_custom_radius"-->
+                    <!--app:cardElevation="5dp"-->
+                    <!--app:contentPadding="3dp"-->
+                    <!--app:cardUseCompatPadding="true">-->
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:background="@drawable/round_edges_corner_grey"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/slide1"/>
 
-                </android.support.v7.widget.CardView>
+                <!--</android.support.v7.widget.CardView>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -52,7 +53,9 @@
                         android:id="@+id/hot_title_1"
                         android:layout_alignParentBottom="true"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginLeft="@dimen/margin_sm"
+                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
                         android:text="Yakubu's Tea"
                         android:textAllCaps="true"
@@ -102,6 +105,7 @@
                     android:ellipsize="marquee"
                     android:id="@+id/hot_rewards_1"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_lg"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_toEndOf="@id/hot_visited_1"
@@ -110,7 +114,7 @@
                     android:text="@string/example_reward"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/xlarge_text"
+                    android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
 
                 <ImageView
@@ -154,22 +158,23 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/padding_sm">
 
-                <android.support.v7.widget.CardView
-                    android:background="@color/black"
-                    android:layout_gravity="top|start"
-                    android:layout_height="70dp"
-                    android:layout_width="70dp"
-                    app:cardCornerRadius="@dimen/cardview_custom_radius"
-                    app:cardElevation="5dp"
-                    app:contentPadding="3dp"
-                    app:cardUseCompatPadding="true">
+                <!--<android.support.v7.widget.CardView-->
+                    <!--android:background="@color/black"-->
+                    <!--android:layout_gravity="top|start"-->
+                    <!--android:layout_height="70dp"-->
+                    <!--android:layout_width="70dp"-->
+                    <!--app:cardCornerRadius="@dimen/cardview_custom_radius"-->
+                    <!--app:cardElevation="5dp"-->
+                    <!--app:contentPadding="3dp"-->
+                    <!--app:cardUseCompatPadding="true">-->
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:background="@drawable/round_edges_corner_grey"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/slide1"/>
 
-                </android.support.v7.widget.CardView>
+                <!--</android.support.v7.widget.CardView>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -180,7 +185,9 @@
                         android:id="@+id/hot_title_2"
                         android:layout_alignParentBottom="true"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginLeft="@dimen/margin_sm"
+                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
                         android:text="Yakubu's Tea"
                         android:textAllCaps="true"
@@ -230,6 +237,7 @@
                     android:ellipsize="marquee"
                     android:id="@+id/hot_rewards_2"
                     android:layout_centerVertical="true"
+                    android:layout_marginLeft="@dimen/margin_lg"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:layout_toEndOf="@id/hot_visited_2"
@@ -238,7 +246,7 @@
                     android:text="@string/example_reward"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/xlarge_text"
+                    android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
 
                 <ImageView
@@ -282,22 +290,23 @@
                 android:orientation="horizontal"
                 android:padding="@dimen/padding_sm">
 
-                <android.support.v7.widget.CardView
-                    android:background="@color/black"
-                    android:layout_gravity="top|start"
-                    android:layout_height="70dp"
-                    android:layout_width="70dp"
-                    app:cardCornerRadius="@dimen/cardview_custom_radius"
-                    app:cardElevation="5dp"
-                    app:contentPadding="3dp"
-                    app:cardUseCompatPadding="true">
+                <!--<android.support.v7.widget.CardView-->
+                    <!--android:background="@color/black"-->
+                    <!--android:layout_gravity="top|start"-->
+                    <!--android:layout_height="70dp"-->
+                    <!--android:layout_width="70dp"-->
+                    <!--app:cardCornerRadius="@dimen/cardview_custom_radius"-->
+                    <!--app:cardElevation="5dp"-->
+                    <!--app:contentPadding="3dp"-->
+                    <!--app:cardUseCompatPadding="true">-->
 
                     <ImageView
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
+                        android:background="@drawable/round_edges_corner_grey"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
                         android:src="@drawable/slide1"/>
 
-                </android.support.v7.widget.CardView>
+                <!--</android.support.v7.widget.CardView>-->
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -308,7 +317,9 @@
                         android:id="@+id/hot_title_3"
                         android:layout_alignParentBottom="true"
                         android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginLeft="@dimen/margin_sm"
+                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
                         android:text="Yakubu's Tea"
                         android:textAllCaps="true"
@@ -359,6 +370,7 @@
                     android:id="@+id/hot_rewards_3"
                     android:layout_centerVertical="true"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_lg"
                     android:layout_width="wrap_content"
                     android:layout_toEndOf="@id/hot_visited_3"
                     android:layout_toRightOf="@id/hot_visited_3"
@@ -366,7 +378,7 @@
                     android:text="@string/example_reward"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/xlarge_text"
+                    android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
 
                 <ImageView

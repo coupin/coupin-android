@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.EditActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.HelpActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
@@ -22,6 +23,7 @@ import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,6 +31,8 @@ import butterknife.ButterKnife;
 public class ProfileFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.logout)
     public Button logout;
+    @BindView(R.id.profile_picture)
+    public CircleImageView profilePicture;
     @BindView(R.id.profile_category)
     public TextView profileCategory;
     @BindView(R.id.profile_edit)
@@ -61,6 +65,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510417817/profile_lziaj4.jpg").into(profilePicture);
 
         logout.setOnClickListener(this);
         profileCategory.setOnClickListener(this);

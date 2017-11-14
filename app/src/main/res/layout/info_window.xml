@@ -8,8 +8,8 @@
     android:orientation="vertical">
 
     <RelativeLayout
-        android:layout_width="300dp"
-        android:layout_height="230dp"
+        android:layout_width="350dp"
+        android:layout_height="240dp"
         android:background="@android:color/transparent">
 
         <android.support.v7.widget.CardView
@@ -19,15 +19,17 @@
             android:layout_centerVertical="true"
             app:cardCornerRadius="5dp"
             app:cardElevation="5dp"
+            app:cardPreventCornerOverlap="true"
             app:cardUseCompatPadding="true">
 
             <LinearLayout
-                android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_width="match_parent"
                 android:gravity="center|bottom"
                 android:orientation="vertical">
 
-                <LinearLayout
+                <RelativeLayout
                     android:id="@+id/info_main"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -35,27 +37,35 @@
                     android:orientation="horizontal">
 
                     <FrameLayout
-                        android:layout_width="50dp"
+                        android:background="@drawable/round_edges_grey"
+                        android:id="@+id/cat_img"
+                        android:layout_centerVertical="true"
                         android:layout_height="50dp"
-                        android:layout_marginEnd="10dp"
-                        android:layout_marginLeft="10dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@drawable/round_edges_grey">
+                        android:layout_marginEnd="@dimen/margin_sm_plus"
+                        android:layout_marginLeft="@dimen/margin_sm_plus"
+                        android:layout_marginRight="@dimen/margin_sm_plus"
+                        android:layout_marginStart="@dimen/margin_sm_plus"
+                        android:layout_width="50dp">
 
                         <ImageView
                             android:id="@+id/marker_category"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
                             android:layout_gravity="center"
                             android:src="@drawable/ic_mobile_wh" />
 
                     </FrameLayout>
 
                     <LinearLayout
-                        android:layout_width="match_parent"
+                        android:gravity="clip_horizontal"
+                        android:layout_centerVertical="true"
                         android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                        android:layout_width="wrap_content"
+                        android:layout_toEndOf="@id/cat_img"
+                        android:layout_toRightOf="@id/cat_img"
+                        android:orientation="vertical"
+                        android:paddingEnd="@dimen/padding_sm_plus"
+                        android:paddingRight="@dimen/padding_sm_plus">
 
                         <TextView
                             android:id="@+id/discount_1"
@@ -65,28 +75,28 @@
                             android:text="@string/example_text_1"
                             android:textAllCaps="true"
                             android:textColor="@color/text_dark_grey"
-                            android:textSize="@dimen/info_window_title"
+                            android:textSize="@dimen/xlarge_text"
                             android:textStyle="bold" />
 
                         <TextView
                             android:id="@+id/discount_2"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/activity_vertical_margin"
+                            android:layout_marginBottom="@dimen/margin_xs"
                             android:text="@string/example_address_1"
                             android:textColor="@color/text_dark_grey"
-                            android:textSize="@dimen/info_window_address"
+                            android:textSize="@dimen/large_text"
                             android:textStyle="normal" />
 
                     </LinearLayout>
 
-                </LinearLayout>
+                </RelativeLayout>
 
                 <View
-                    android:layout_width="280dp"
+                    android:layout_width="330dp"
                     android:layout_height="2dp"
                     android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="3dp"
+                    android:layout_marginBottom="@dimen/margin_xxs"
                     android:background="@color/lightGrey" />
 
                 <Button
@@ -98,12 +108,12 @@
                     android:layout_gravity="start"
                     android:layout_height="wrap_content"
                     android:layout_width="match_parent"
-                    android:paddingLeft="10dp"
+                    android:paddingLeft="15dp"
                     android:paddingRight="10dp"
                     android:text="Reward Title"
                     android:textAlignment="viewStart"
                     android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/info_window_address"
+                    android:textSize="@dimen/large_text"
                     android:textStyle="bold" />
 
             </LinearLayout>
@@ -122,6 +132,7 @@
             app:cardUseCompatPadding="true">
 
             <ImageView
+                android:id="@+id/info_cat"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:src="@drawable/ic_down_angle" />
@@ -130,22 +141,24 @@
 
         <android.support.v7.widget.CardView
             android:background="@drawable/round_edges_shadow"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_marginBottom="0dp"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
             app:cardCornerRadius="10dp"
-            app:cardElevation="5dp"
-            app:cardUseCompatPadding="true"
-            android:elevation="5dp">
+            app:cardElevation="7dp"
+            app:contentPadding="1dp"
+            app:cardPreventCornerOverlap="true"
+            app:cardUseCompatPadding="true">
 
-            <ImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 android:background="@drawable/round_edges"
                 android:id="@+id/marker_banner"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:src="@drawable/slide1" />
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/slide3"
+                app:riv_border_color="#80000000"
+                app:riv_corner_radius="10dp" />
 
         </android.support.v7.widget.CardView>
 

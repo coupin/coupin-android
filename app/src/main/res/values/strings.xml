@@ -4,7 +4,7 @@
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_pass">Password</string>
-    <string name="prompt_password">Password (optional)</string>
+    <string name="prompt_password">Password</string>
     <string name="action_sign_in">Sign in or register</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
@@ -24,6 +24,8 @@
     <string name="error_confirm_password">Password is not the same, please reenter password</string>
     <string name="error_full_name_required">Full name is required</string>
     <string name="error_invalid_network">Invalid Network Provider</string>
+    <string name="error_connection_title">Connection Error</string>
+    <string name="error_connection_detail">We encountered an error while trying to connect.</string>
 
     <string-array name="networks">
         <item>Select Mobile Network</item>
@@ -40,7 +42,8 @@
     <!-- URls -->
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
     <!--<string name="base_url">http://172.16.0.207:5030</string>-->
-    <string name="base_url">http://192.168.8.104:5030</string>
+    <!--<string name="base_url">http://172.16.1.37:5030</string>-->
+    <string name="base_url">http://192.168.8.102:5030</string>
     <!--<string name="base_url">http://10.0.30.87:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
@@ -173,5 +176,12 @@
     <string name="hi">Hi,</string>
     <string name="network_error">Network connection error. Please check connection and try again.</string>
     <string name="my_profile">My Profile</string>
+    <string name="reward_det">Reward Details</string>
+    <string name="ongoing">ONGOING REWARDS</string>
+    <string name="sort">Sort By</string>
+    <string name="expiry">EXPIRY DATE:</string>
+    <string name="example_date">25 JAN 2017</string>
+    <string name="facebook">Facebook</string>
+    <string name="google">Google</string>
     <!--192.168.8.100-->
 </resources>

@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid
+        android:color="@android:color/transparent"/>
 
-    <corners android:bottomLeftRadius="@dimen/rounded_edge"
-             android:bottomRightRadius="@dimen/rounded_edge"
-             android:topLeftRadius="@dimen/rounded_edge"
-             android:topRightRadius="@dimen/rounded_edge"/>
+    <corners android:bottomLeftRadius="8dp"
+             android:bottomRightRadius="8dp"
+             android:topLeftRadius="8dp"
+             android:topRightRadius="8dp"/>
 
     <stroke
         android:color="@color/colorAccent"

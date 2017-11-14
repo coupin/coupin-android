@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -20,6 +19,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
@@ -66,7 +66,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(
-            coupinRewards, this);
+            coupinRewards, this, this);
         listView.setLayoutManager(layoutManager);
         listView.setHasFixedSize(true);
         listView.setAdapter(rvAdapter);
@@ -79,13 +79,15 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
         try {
             JSONArray res = new JSONArray(coupin.getRewardDetails());
             listCode.setText(coupin.getBookingShortCode());
-            Log.v("VolleyCheck", coupin.getRewardDetails());
+
             for(int x = 0; x < res.length(); x++) {
                 JSONObject object = res.getJSONObject(x);
+
                 Reward reward = new Reward();
                 reward.setId(object.getString("_id"));
                 reward.setTitle(object.getString("name"));
                 reward.setDetails(object.getString("description"));
+
                 if (object.has("price")) {
                     reward.setIsDiscount(true);
                     reward.setNewPrice(object.getJSONObject("price").getInt("new"));
@@ -93,6 +95,19 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
                 } else {
                     reward.setIsDiscount(false);
                 }
+
+                reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
+                reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
+
+                // Multiple Use details
+                if (object.getJSONObject("multiple").getBoolean("status")) {
+                    reward.setMultiple(true);
+                } else {
+                    reward.setMultiple(false);
+                }
+
+                // Applicable days
+                reward.setDays(object.getJSONArray("applicableDays"));
 
                 coupinRewards.add(reward);
             }
@@ -153,7 +168,6 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
                 requestQueue.add(stringRequest);
             }
         });
-
     }
 
     @Override

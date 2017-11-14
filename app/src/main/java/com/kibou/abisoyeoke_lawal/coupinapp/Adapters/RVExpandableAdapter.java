@@ -1,6 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,6 +16,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 /**
@@ -32,6 +34,7 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
         public FrameLayout tickFrame;
         public RelativeLayout headDiscount;
         public TextView headDetails;
+        public TextView headExpiry;
         public TextView headPercentage;
         public TextView headPriceNew;
         public TextView headPriceOld;
@@ -43,6 +46,7 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
             head = (View) itemView.findViewById(R.id.head);
             headDiscount = (RelativeLayout) head.findViewById(R.id.discount);
             headDetails = (TextView) head.findViewById(R.id.list_reward_details);
+            headExpiry = (TextView) head.findViewById(R.id.expiry_text);
             headPercentage = (TextView) head.findViewById(R.id.list_reward_percent);
             headPriceNew = (TextView) head.findViewById(R.id.list_new_price);
             headPriceOld = (TextView) head.findViewById(R.id.list_old_price);
@@ -77,9 +81,13 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
             holder.headPercentage.setText(String.valueOf((int) discount) + "%");
             holder.headPriceNew.setText("N" + String.valueOf(((int) newPrice)));
             holder.headPriceOld.setText("N" + String.valueOf((int) oldPrice));
+            holder.headPriceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
         }
 
         holder.headTitle.setText(String.valueOf(reward.getTitle()));
+
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+        holder.headExpiry.setText(simpleDateFormat.format(reward.getExpires()));
 
         holder.head.setOnClickListener(new View.OnClickListener() {
             @Override

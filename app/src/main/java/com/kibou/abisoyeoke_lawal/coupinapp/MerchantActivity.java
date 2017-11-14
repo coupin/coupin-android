@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,6 +23,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVExpandableAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
@@ -48,6 +50,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public Button selectedBtnPin;
     @BindView(R.id.selected_btn_save)
     public Button selectedBtnSave;
+    @BindView(R.id.banner_holder)
+    public ImageView bannerHolder;
+    @BindView(R.id.photo_1)
+    public ImageView photo1;
+    @BindView(R.id.photo_2)
+    public ImageView photo2;
+    @BindView(R.id.photo_3)
+    public ImageView photo3;
     @BindView(R.id.button_holder)
     public LinearLayout buttonHolder;
     @BindView(R.id.selected_holder)
@@ -88,6 +98,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         setSupportActionBar(merchantToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         Bundle extra = getIntent().getExtras();
         if (extra.getString("merchant", null) == null) {
@@ -238,6 +249,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 favourite = true;
             }
 
+            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(bannerHolder);
+            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
+            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
+            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
+
 //            if (res.get("picture").toString() != "null") {
 //                merchantImage.setImage
 //            }
@@ -266,7 +282,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     reward.setIsDiscount(false);
                 }
 
-                // Mutliple Use details
+                // Multiple Use details
                 if (object.getJSONObject("multiple").getBoolean("status")) {
                     reward.setMultiple(true);
                 } else {

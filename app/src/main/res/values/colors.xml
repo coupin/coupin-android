@@ -49,6 +49,7 @@
     <color name="ticked">#474556</color>
     <color name="white_trans">#CCFFFFFF</color>
     <color name="black_trans">#80000000</color>
+    <color name="almost_trans">#33000000</color>
 
     <!-- Interest Colors -->
     <color name="interest_edge">#00BB92</color>

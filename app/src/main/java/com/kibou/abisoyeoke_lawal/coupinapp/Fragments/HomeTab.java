@@ -1,8 +1,11 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -13,8 +16,12 @@ import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -37,6 +44,16 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -51,6 +68,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.FilterDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.LoadingDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.NetworkErrorDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
@@ -59,6 +77,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.NetworkGPSUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 
@@ -74,12 +93,14 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import cn.pedant.SweetAlert.SweetAlertDialog;
+
+//import com.google.android.gms.location.LocationListener;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter {
+public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter, GoogleApiClient.ConnectionCallbacks,
+    GoogleApiClient.OnConnectionFailedListener{
     private static final int SERVICE_ID = 1002;
     @BindView(R.id.btn_mylocation)
     public FloatingActionButton btnMyLocation;
@@ -97,6 +118,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public TextView spots;
     @BindView(R.id.street_textview)
     public TextView street;
+
+    private GoogleApiClient googleApiClient;
+    final private int REQUEST_CHECK_SETTINGS_GPS = 0x1;
+    final private int REQUEST_ID_MUTLIPLE_PERMISSIONS = 0x2;
 
     // TODO: Remove once done testing categories
     @BindView(R.id.temp)
@@ -150,6 +175,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private final String TAG = "markers";
 
     public LoadingDialog loadingDialog;
+    public NetworkErrorDialog networkErrorDialog;
 
     public HomeTab() {
         // Required empty public constructor
@@ -172,10 +198,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         final View rootView = inflater.inflate(R.layout.fragment_home_tab, container, false);
         ButterKnife.bind(this, rootView);
 
+        // Loading Dialog
         loadingDialog = new LoadingDialog(getActivity(), R.style.Loading_Dialog);
+        loadingDialog.setCancelable(false);
         showDialog(true);
 
+        // Error Dialog
+        networkErrorDialog = new NetworkErrorDialog(getContext());
 
+        // Filter Dialog
         final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);
         filterDialog.setInterface(this);
         Window window = filterDialog.getWindow();
@@ -207,18 +238,24 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         });
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
 
-        isGPSEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        isNetworkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+        if (!NetworkGPSUtils.isConnected(getContext())) {
+            //TODO: Show Dialog about network
+            networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        getActivity().finish();
+                    }
+                });
+            networkErrorDialog.show();
+        } else if (!NetworkGPSUtils.isLocationAvailable(getContext())) {
+            setUpClientG();
+        } else {
+            setLastKnownLocation();
+        }
 
         mapView.onResume();
-
-        // Get Current Location
-        LocationManager locationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
-        Criteria criteria = new Criteria();
-
-        currentLocation = locationManager.getLastKnownLocation(locationManager.getBestProvider(criteria, false));
 
         btnMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -240,19 +277,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 }
 
                 try {
-                    if (geocoder.isPresent()) {
+                    if (geocoder.isPresent() && currentLocation != null) {
                         addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
                         Log.v("VolleyAddress", addresses.toString());
                         street.setText(addresses.get(0).getThoroughfare().toString());
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
-                }
-
-                // Place marker on current location
-                if (currentLocation != null) {
-                    CameraPosition cameraPosition = new CameraPosition.Builder().target(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude())).zoom(15).build();
-                    mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
                 }
 
                 infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
@@ -295,6 +326,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));
+                                // Set icon
+//                                banner.setImageResource(getResources().getDrawable(icons[]));
                                 if (reward.length() > 1) {
                                     String temp = reward.length() + " Rewards Available";
                                     infoButton.setText(temp);
@@ -366,7 +399,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         iconListView.setLayoutManager(mLinearLayoutManager);
 
-        setUpList();
 
 //        implementOnScrollListener();
 
@@ -400,17 +432,43 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
-                Bundle extra = new Bundle();
-                Log.v("VolleySearch", "" + currentLocation + " - " + currentLocation.getLongitude());
-                extra.putDouble("lat", currentLocation.getLatitude());
-                extra.putDouble("long", currentLocation.getLongitude());
-                extra.putString("street", street.getText().toString());
-                intent.putExtras(extra);
+//                Bundle extra = new Bundle();
+//                extra.putDouble("lat", currentLocation.getLatitude());
+//                extra.putDouble("long", currentLocation.getLongitude());
+//                extra.putString("street", street.getText().toString());
+//                intent.putExtras(extra);
                 startActivity(intent);
             }
         });
 
         return rootView;
+    }
+
+    /**
+     * Set last known location
+     */
+    private void setLastKnownLocation() {
+        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+
+        if (gpsEnabled) {
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
+        } else {
+            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, this);
+        }
+
+        currentLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), false));
+
+        // Get Current Location
+        if (currentLocation != null) {
+            setUpList();
+        } else {
+            if (googleApiClient == null) {
+                setUpClientG();
+            } else {
+                getMyLocation();
+            }
+        }
+
     }
 
     /**
@@ -426,22 +484,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     }
 
     /**
-     * Used to set the position of the map
-     * @param context
-     * @param dp
-     * @return
-     */
-    private int getPixelsFromDp(Context context, int dp) {
-        final float scale = context.getResources().getDisplayMetrics().density;
-        return (int)(dp * scale + 0.5f);
-    }
-
-    /**
      * Sets up the horizontal list
      */
     public void setUpList() {
-        iconsList.clear();
-        adapter.notifyDataSetChanged();
+        if (iconsList.size() > 0) {
+            iconsList.clear();
+            adapter.notifyDataSetChanged();
+        }
+
+        Log.v("VolleySetup", "Entered Setup");
 
         String query = "";
 
@@ -466,7 +517,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.v("VolleyThink", response);
                     double one = 0;
                     double two = 0;
                     int counter = 0;
@@ -522,10 +572,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         Toast.makeText(getActivity(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
                     } else {
                         if (HomeTab.this.isVisible()) {
-                            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-                                .setTitleText("Error")
-                                .setContentText(error.getMessage())
-                                .show();
+//                            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
+//                                .setTitleText("Error")
+//                                .setContentText(error.getMessage())
+//                                .show();
                         }
                     }
                 }
@@ -697,7 +747,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onLocationChanged(Location location) {
-        currentLocation = location;
+        if (currentLocation == null) {
+            currentLocation = location;
+            setUpList();
+        } else {
+            currentLocation = location;
+        }
 
         try {
             addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
@@ -708,20 +763,22 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        setUpList();
     }
 
     @Override
-    public void onStatusChanged(String provider, int status, Bundle extras) {
+    public void onStatusChanged(String s, int i, Bundle bundle) {
 
     }
 
     @Override
-    public void onProviderEnabled(String provider) {
+    public void onProviderEnabled(String s) {
 
     }
 
     @Override
-    public void onProviderDisabled(String provider) {
+    public void onProviderDisabled(String s) {
 
     }
 
@@ -735,5 +792,139 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         categories = selection;
         this.distance = distance / 10;
         setUpList();
+    }
+
+    private synchronized void setUpClientG() {
+        googleApiClient = new GoogleApiClient.Builder(getActivity())
+            .enableAutoManage(getActivity(), 0, this)
+            .addConnectionCallbacks(this)
+            .addApi(LocationServices.API)
+            .build();
+        googleApiClient.connect();
+    }
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        checkPermission();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        //TODO: Display Dialog
+        networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+            getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    checkPermission();
+                }
+            });
+        networkErrorDialog.show();
+    }
+
+    public void checkPermission() {
+        int permissionLocation = ContextCompat.checkSelfPermission(getActivity(),
+            Manifest.permission.ACCESS_FINE_LOCATION);
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.ACCESS_FINE_LOCATION);
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(getActivity(), listPermissionsNeeded.toArray(
+                    new String[listPermissionsNeeded.size()]), REQUEST_ID_MUTLIPLE_PERMISSIONS);
+            }
+        } else {
+            getMyLocation();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
+        int permissionLocation = ContextCompat.checkSelfPermission(getActivity(),
+            Manifest.permission.ACCESS_FINE_LOCATION);
+        if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+            getMyLocation();
+        }
+    }
+
+    // Get location
+    public void getMyLocation() {
+        if (googleApiClient != null) {
+            if (googleApiClient.isConnected()) {
+                int permissionLocation = ContextCompat.checkSelfPermission(getActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION);
+                if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+                    // Location request
+                    LocationRequest locationRequest = new LocationRequest();
+                    locationRequest.setInterval(1000);
+                    locationRequest.setFastestInterval(1000);
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+                    LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                        .addLocationRequest(locationRequest);
+                    builder.setAlwaysShow(true);
+                    LocationServices.FusedLocationApi.requestLocationUpdates(googleApiClient, locationRequest, new com.google.android.gms.location.LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            if (currentLocation == null) {
+                                currentLocation = location;
+                                setUpList();
+                            } else {
+                                currentLocation = location;
+                            }
+                        }
+                    });
+
+                    currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+
+                    if (currentLocation != null) {
+                        setUpList();
+                    }
+
+                    PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
+                        .checkLocationSettings(googleApiClient, builder.build());
+                    result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+                        @Override
+                        public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                            final Status status = locationSettingsResult.getStatus();
+
+                            switch (status.getStatusCode()) {
+                                case LocationSettingsStatusCodes.SUCCESS:
+                                    currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                                    setUpList();
+                                    break;
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                    try {
+                                        status.startResolutionForResult(getActivity(), REQUEST_CHECK_SETTINGS_GPS);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode){
+            case REQUEST_CHECK_SETTINGS_GPS:
+                if (resultCode == Activity.RESULT_OK) {
+                    getMyLocation();
+                    break;
+                } else {
+                    getActivity().finish();
+                    break;
+                }
+        }
     }
 }

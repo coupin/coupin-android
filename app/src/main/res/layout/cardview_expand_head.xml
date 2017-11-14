@@ -71,13 +71,26 @@
             android:paddingTop="@dimen/padding_xxs">
 
             <TextView
-                android:id="@+id/list_old_price"
+                android:id="@+id/expiry_label"
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text=""
-                android:textColor="@color/colorAccent"
+                android:text="@string/expiry"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/expiry_text"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_sm"
+                android:layout_toEndOf="@id/expiry_label"
+                android:layout_toRightOf="@id/expiry_label"
+                android:layout_width="wrap_content"
+                android:text="@string/na"
+                android:textAllCaps="true"
+                android:textColor="@color/text_dark_grey"
                 android:textSize="@dimen/medium_text"/>
 
             <TextView
@@ -86,7 +99,17 @@
                 android:layout_alignParentRight="true"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text=""
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/list_old_price"
+                android:layout_toLeftOf="@id/list_new_price"
+                android:layout_toStartOf="@id/list_new_price"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/margin_sm"
+                android:layout_width="wrap_content"
                 android:textColor="@color/text_lighter_grey"
                 android:textSize="@dimen/medium_text" />
 
