@@ -1,16 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:animateLayoutChanges="true"
-              android:background="@color/white"
-              android:orientation="vertical"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-              android:paddingBottom="@dimen/padding_md"
-              android:paddingEnd="@dimen/padding_sm"
-              android:paddingLeft="@dimen/padding_sm"
-              android:paddingRight="@dimen/padding_sm"
-              android:paddingStart="@dimen/padding_sm"
-              android:paddingTop="@dimen/padding_sm">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animateLayoutChanges="true"
+    android:background="@color/white"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:paddingBottom="@dimen/padding_md"
+    android:paddingEnd="@dimen/padding_sm"
+    android:paddingLeft="@dimen/padding_sm"
+    android:paddingRight="@dimen/padding_sm"
+    android:paddingStart="@dimen/padding_sm"
+    android:paddingTop="@dimen/padding_sm">
 
     <RelativeLayout
         android:background="@color/white"
@@ -64,14 +65,16 @@
         android:textColor="@color/text_light_grey"
         android:textSize="@dimen/medium_text"/>
 
-    <com.kibou.abisoyeoke_lawal.coupinapp.Utils.DistanceSeekBar
+    <com.kibou.abisoyeoke_lawal.coupinapp.CustomViews.DistanceSeekBar
         android:id="@+id/distance"
-        android:layout_height="wrap_content"
+        android:layout_height="80dp"
         android:layout_marginBottom="@dimen/margin_sm"
         android:layout_marginTop="@dimen/margin_sm"
         android:layout_width="match_parent"
+        android:progressDrawable="@drawable/distance_seekbar_progress"
         android:splitTrack="false"
-        android:thumb="@drawable/thumb"/>
+        android:thumb="@drawable/ic_thumb"/>
+        <!--android:thumb="@drawable/distance_seekbar_thumb"/>-->
 
     <TextView
         android:layout_height="wrap_content"
@@ -93,7 +96,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -119,7 +122,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -145,7 +148,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -171,7 +174,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -197,7 +200,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -223,7 +226,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -249,7 +252,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"

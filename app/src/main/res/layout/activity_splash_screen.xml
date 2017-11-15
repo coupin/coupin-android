@@ -43,7 +43,7 @@
         android:layout_width="wrap_content"
         android:text="@string/copyrite"/>
 
-    <!--<com.kibou.abisoyeoke_lawal.coupinapp.Utils.AnimatedView-->
+    <!--<com.kibou.abisoyeoke_lawal.coupinapp.CustomViews.AnimatedView-->
         <!--android:id="@+id/anim_view"-->
         <!--android:layout_centerInParent="true"-->
         <!--android:layout_width="match_parent"-->

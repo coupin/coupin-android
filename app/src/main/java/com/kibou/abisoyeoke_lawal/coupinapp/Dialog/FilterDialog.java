@@ -13,9 +13,9 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.kibou.abisoyeoke_lawal.coupinapp.CustomViews.DistanceSeekBar;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DistanceSeekBar;
 
 import java.util.ArrayList;
 

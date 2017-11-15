@@ -1,4 +1,4 @@
-package com.kibou.abisoyeoke_lawal.coupinapp.Utils;
+package com.kibou.abisoyeoke_lawal.coupinapp.CustomViews;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -41,7 +41,7 @@ public class DistanceSeekBar extends AppCompatSeekBar {
         mThumbSize = getResources().getDimensionPixelSize(R.dimen.thumbSize);
 
         mTextPaint = new TextPaint();
-        mTextPaint.setColor(getResources().getColor(R.color.colorAccent));
+        mTextPaint.setColor(getResources().getColor(R.color.text_med_grey));
         mTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.small_text));
         mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
