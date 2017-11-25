@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content">
 
                 <android.support.design.widget.FloatingActionButton
-                    android:background="@color/colorAccent"
+                    android:background="@color/text_med_grey"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
@@ -54,7 +54,7 @@
                     android:layout_height="64dp"
                     android:layout_width="64dp"
                     android:src="@drawable/ic_nav_arrow"
-                    app:backgroundTint="@color/colorAccent"
+                    app:backgroundTint="@color/text_med_grey"
                     app:elevation="10dp"
                     app:rippleColor="@color/black"/>
 
@@ -114,15 +114,18 @@
                         <TextView
                             android:id="@+id/merchant_details_textview"
                             android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
+                            android:layout_width="300dp"
                             android:paddingLeft="@dimen/padding_xs"
                             android:paddingRight="@dimen/padding_md"
+                            android:paddingStart="@dimen/padding_xs"
                             android:textColor="@color/text_dark_grey"
                             android:textSize="@dimen/large_text"
-                            android:textStyle="bold"/>
+                            android:textStyle="normal"/>
                         
                         <LinearLayout
                             android:layout_height="wrap_content"
+                            android:layout_marginBottom="@dimen/margin_sm"
+                            android:layout_marginTop="@dimen/margin_sm"
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:padding="@dimen/padding_sm">
@@ -132,6 +135,7 @@
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
                                 android:layout_marginRight="@dimen/margin_xs"
+                                android:layout_weight="1"
                                 android:layout_width="80dp"
                                 android:scaleType="centerCrop"/>
 
@@ -140,6 +144,7 @@
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
                                 android:layout_marginRight="@dimen/margin_xs"
+                                android:layout_weight="1"
                                 android:layout_width="80dp"
                                 android:scaleType="centerCrop"/>
 
@@ -148,6 +153,7 @@
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
                                 android:layout_marginRight="@dimen/margin_xs"
+                                android:layout_weight="1"
                                 android:layout_width="80dp"
                                 android:scaleType="centerCrop"/>
 
@@ -155,6 +161,7 @@
                                 android:id="@+id/photo_4"
                                 android:background="@color/lightGrey"
                                 android:layout_height="80dp"
+                                android:layout_weight="1"
                                 android:layout_width="80dp">
                                 
                                 <ImageView
@@ -255,15 +262,22 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="match_parent"
+            android:paddingBottom="@dimen/padding_xxs"
+            android:paddingEnd="@dimen/padding_xs"
+            android:paddingLeft="@dimen/padding_xs"
+            android:paddingRight="@dimen/padding_xs"
+            android:paddingStart="@dimen/padding_xs"
+            android:paddingTop="@dimen/padding_xxs"
             android:text="10 Selected"
             android:textColor="@color/text_dark_grey"
-            android:textSize="@dimen/small_text"/>
+            android:textSize="@dimen/medium_text"/>
 
         <LinearLayout
             android:id="@+id/button_holder"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
 
             <Button
                 android:background="@drawable/round_edges_grey"

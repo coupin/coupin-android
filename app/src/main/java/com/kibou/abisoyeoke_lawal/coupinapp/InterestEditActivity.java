@@ -1,7 +1,5 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
-import android.content.Intent;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -11,6 +9,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -18,7 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.InterestAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.InterestEditAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 
@@ -29,13 +28,13 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class InterestsActivity extends AppCompatActivity {
-    @BindView(R.id.interests_grid)
-    public GridView interestGrid;
-    @BindView(R.id.interest_continue)
-    public TextView interestContinue;
-    @BindView(R.id.interest_name)
-    public TextView interestName;
+public class InterestEditActivity extends AppCompatActivity {
+    @BindView(R.id.interests_edit_grid)
+    public GridView interestEditGrid;
+    @BindView(R.id.interest_edit_back)
+    public ImageView interestEditBack;
+    @BindView(R.id.interest_save)
+    public TextView interestSave;
 
     public ArrayList<Interest> interests = new ArrayList<>();
     public ArrayList<String> selected = new ArrayList<>();
@@ -52,19 +51,11 @@ public class InterestsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_interests);
+        setContentView(R.layout.activity_interest_edit);
         ButterKnife.bind(this);
 
         requestQueue = Volley.newRequestQueue(this);
-
-        Intent receivedIntent = getIntent();
-
-        String name = receivedIntent.getStringExtra("name");
-        if (name != null && !name.isEmpty()) {
-            interestName.setText(name);
-        }
-
-        Bundle extra = receivedIntent.getBundleExtra("interestBundle");
+        selected = PreferenceMngr.getUserInterests();
 
         for (int i = 0; i < categories.length; i++) {
             Interest item = new Interest();
@@ -75,11 +66,11 @@ public class InterestsActivity extends AppCompatActivity {
             interests.add(item);
         }
 
-        InterestAdapter interestAdapter = new InterestAdapter(this, interests);
+        InterestEditAdapter interestAdapter = new InterestEditAdapter(this, interests);
 
-        interestGrid.setAdapter(interestAdapter);
+        interestEditGrid.setAdapter(interestAdapter);
 
-        interestGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        interestEditGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 LinearLayout holder = (LinearLayout) view.findViewById(R.id.interest_holder);
@@ -90,46 +81,48 @@ public class InterestsActivity extends AppCompatActivity {
                 Interest interest = interests.get(position);
 
                 if (interest.isSelected()) {
-                    holder.setBackground(getResources().getDrawable(R.drawable.interest_default));
-                    icon.setColorFilter(Color.argb(255, 255, 255, 255));
-                    label.setTextColor(getResources().getColor(R.color.white));
+                    holder.setBackground(getResources().getDrawable(R.drawable.interest_edit_default));
                     tick.setVisibility(View.GONE);
                     interest.setSelected(false);
                     selected.remove(interest.getValue());
                 } else {
-                    holder.setBackground(getResources().getDrawable(R.drawable.interest_selected));
-                    icon.setColorFilter(Color.argb(255, 0, 202, 157));
-                    label.setTextColor(getResources().getColor(R.color.colorAccent));
+                    holder.setBackground(getResources().getDrawable(R.drawable.interest_default));
                     tick.setVisibility(View.VISIBLE);
                     interest.setSelected(true);
                     selected.add(interest.getValue());
                 }
 
                 if (selected.size() > 0) {
-                    interestContinue.setVisibility(View.VISIBLE);
+                    interestSave.setVisibility(View.VISIBLE);
                 } else {
-                    interestContinue.setVisibility(View.GONE);
+                    interestSave.setVisibility(View.GONE);
                 }
             }
         });
 
-        interestContinue.setOnClickListener(new View.OnClickListener() {
+        interestEditBack.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                sendInterestInfo();
+            public void onClick(View view) {
+                onBackPressed();
             }
         });
 
-        PreferenceMngr.setInterests(false);
+        interestSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                sendInterestInfo();
+            }
+        });
     }
 
     public void sendInterestInfo() {
         String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_category);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PreferenceMngr.getInstance().setInterests(true);
-                startActivity(new Intent(InterestsActivity.this, HomeActivity.class));
+                Toast.makeText(InterestEditActivity.this, "Your interests have been updated.", Toast.LENGTH_SHORT).show();
+                PreferenceMngr.setUser(response);
+                onBackPressed();
             }
         }, new Response.ErrorListener() {
             @Override

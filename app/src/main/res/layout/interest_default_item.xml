@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:animateLayoutChanges="true"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:padding="@dimen/padding_sm">
+
+    <LinearLayout
+        android:background="@drawable/interest_default"
+        android:id="@+id/interest_holder"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/padding_md_plus"
+        android:paddingLeft="@dimen/padding_md"
+        android:paddingRight="@dimen/padding_md"
+        android:paddingTop="@dimen/padding_md_plus"
+        android:animateLayoutChanges="true">
+
+        <ImageView
+            android:id="@+id/interest_img"
+            android:layout_height="@dimen/interest_icon"
+            android:layout_width="@dimen/interest_icon"
+            android:src="@drawable/ic_mobile_wh"
+            android:tint="@color/white"/>
+
+        <TextView
+            android:id="@+id/interest_text"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/example_text_1"
+            android:textColor="@color/white"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/interest_tick"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_height="20dp"
+        android:layout_marginRight="@dimen/margin_sm"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:layout_width="20dp"
+        android:src="@drawable/ic_tick"
+        android:visibility="gone"/>
+
+</RelativeLayout>

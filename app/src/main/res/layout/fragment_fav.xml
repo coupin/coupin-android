@@ -41,9 +41,42 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/fav_loadingview"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_md"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:paddingEnd="@dimen/padding_sm_plus"
+        android:paddingLeft="@dimen/padding_sm_plus"
+        android:paddingRight="@dimen/padding_sm_plus"
+        android:paddingStart="@dimen/padding_sm_plus">
+
+        <TextView
+            android:id="@+id/fav_total"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:textColor="@color/text_lighter_grey"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="LAST WEEK"
+            android:textColor="@color/text_lighter_grey"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/fav_loadingview"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
 
         <com.wang.avi.AVLoadingIndicatorView
             style="?android:attr/progressBarStyleLarge"
@@ -57,8 +90,12 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/fav_recyclerview"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:paddingEnd="@dimen/padding_sm"
+        android:paddingLeft="@dimen/padding_sm"
+        android:paddingRight="@dimen/padding_sm"
+        android:paddingStart="@dimen/padding_sm"
         android:visibility="gone"/>
 
     <LinearLayout

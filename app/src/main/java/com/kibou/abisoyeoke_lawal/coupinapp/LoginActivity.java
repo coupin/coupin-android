@@ -36,6 +36,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -59,6 +65,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
      * Id to identity READ_CONTACTS permission request.
      */
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int RC_SIGNIN_GOOGLE = 10005;
 
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
@@ -70,6 +77,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public AutoCompleteTextView mEmailView;
     @BindView(R.id.back_to_signup)
     public Button backToSignUp;
+    @BindView(R.id.google_login)
+    public Button googleLogin;
     @BindView(R.id.password)
     public EditText mPasswordView;
     @BindView(R.id.login_bottom)
@@ -81,7 +90,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     public View focusView;
 
     public RequestQueue requestQueue;
+    public String socialUrl;
     public String url;
+
+    public GoogleSignInClient gsc;
+    public GoogleSignInOptions gso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +109,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         requestQueue = Volley.newRequestQueue(this);
         url = getString(R.string.base_url) + getString(R.string.ep_login_user);
+        socialUrl = getResources().getString(R.string.base_url) +
+            getResources().getString(R.string.socialAut);
 
         mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -122,6 +137,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
             }
         });
+
+        // Configure request for email, id and basic profile
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestId()
+            .requestProfile()
+            .build();
+
+        gsc = GoogleSignIn.getClient(this, gso);
+
+        googleLogin.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptGoogleLogin();
+            }
+        });
+
     }
 
     private void populateAutoComplete() {
@@ -155,6 +187,108 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
+     * Social login
+     * @param email
+     * @param id
+     */
+    private void socialLoginUser(final String email, final String id) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, socialUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject res = new JSONObject(response);
+                    JSONObject object = res.getJSONObject("user");
+                    PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                    finish();
+                } catch (Exception e) {
+                    showProgress(false);
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showProgress(false);
+                if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                } else {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        if (error.networkResponse.statusCode == 401) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("email", email);
+                params.put("password", id);
+
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Normal login
+     * @param email
+     * @param password
+     */
+    private void loginUser(final String email, final String password) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject res = new JSONObject(response);
+                    JSONObject object = res.getJSONObject("user");
+                    PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                    finish();
+                } catch (Exception e) {
+                    showProgress(false);
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showProgress(false);
+                if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                } else {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        if (error.networkResponse.statusCode == 401) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("email", email);
+                params.put("password", password);
+
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
+    /**
      * Callback received when a permissions request has been completed.
      */
     @Override
@@ -167,9 +301,27 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         }
     }
 
+    /**
+     * Handles activity requests
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RC_SIGNIN_GOOGLE:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleGoogleSignInResult(task);
+                break;
+        }
+    }
+
 
     /**
-     * Attempts to sign in or register the account specified by the login form.
+     * Attempts to sign in the account specified by the login form.
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
@@ -213,54 +365,35 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // perform the user login attempt.
             showProgress(true);
             try {
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject res = new JSONObject(response);
-                            JSONObject object = res.getJSONObject("user");
-                            PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
-                            startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                            finish();
-                        } catch (Exception e) {
-                            showProgress(false);
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        showProgress(false);
-                        if (error.toString().equals("com.android.volley.TimeoutError")) {
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
-                        } else {
-                            if (error.networkResponse != null && error.networkResponse.data != null) {
-                                if (error.networkResponse.statusCode == 401) {
-                                    Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
-                                }
-                            } else {
-                                Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                            }
-                        }
-                    }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<>();
-
-                        params.put("email", mEmailView.getEditableText().toString());
-                        params.put("password", mPasswordView.getEditableText().toString());
-
-                        return params;
-                    }
-                };
-
-                requestQueue.add(stringRequest);
+                loginUser(mEmailView.getEditableText().toString() ,mPasswordView.getEditableText().toString());
             } catch (Exception e) {
                 Log.v("VolleyError", e.toString());
                 showProgress(false);
                 e.printStackTrace();
             }
+        }
+    }
+
+    /**
+     * Attemps to sign in using google
+     */
+    private void attemptGoogleLogin() {
+        Intent signInIntend = gsc.getSignInIntent();
+        startActivityForResult(signInIntend, RC_SIGNIN_GOOGLE);
+    }
+
+    /**
+     * Handles the returned account details
+     * @param completedTask
+     */
+    public void handleGoogleSignInResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+
+            socialLoginUser(account.getEmail(), account.getId());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

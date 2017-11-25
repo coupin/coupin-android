@@ -209,7 +209,10 @@
 
                 <Button
                     android:background="@drawable/google_button"
-                    android:id="@+id/selected_btn_save"
+                    android:drawableLeft="@drawable/ic_google"
+                    android:drawableStart="@drawable/ic_google"
+                    android:gravity="center"
+                    android:id="@+id/google_login"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_sm"
                     android:layout_marginLeft="@dimen/margin_xs"
@@ -224,7 +227,10 @@
 
                 <Button
                     android:background="@drawable/facebook_button"
-                    android:id="@+id/selected_btn_pin"
+                    android:drawableLeft="@drawable/ic_facebook_w"
+                    android:drawableStart="@drawable/ic_facebook_w"
+                    android:gravity="center"
+                    android:id="@+id/facebook_login"
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="@dimen/margin_sm"
                     android:layout_marginLeft="@dimen/margin_xs"

@@ -146,6 +146,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private boolean isNetworkEnabled;
     private boolean isLoading = false;
     private boolean onMarker = false;
+    private boolean retrievingData = false;
 
     private AnimationDrawable mAnimationDrawable;
     public IconListAdapter adapter;
@@ -432,11 +433,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
-//                Bundle extra = new Bundle();
-//                extra.putDouble("lat", currentLocation.getLatitude());
-//                extra.putDouble("long", currentLocation.getLongitude());
-//                extra.putString("street", street.getText().toString());
-//                intent.putExtras(extra);
                 startActivity(intent);
             }
         });
@@ -555,6 +551,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         // TODO: Set the bounds properly
                         setBounds();
 
+                        retrievingData = false;
                         showDialog(false);
                         adapter.setIconList(iconsList);
                         adapter.notifyDataSetChanged();
@@ -569,13 +566,22 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     showDialog(false);
 
                     if (error.networkResponse == null) {
-                        Toast.makeText(getActivity(), getResources().getString(R.string.network_error), Toast.LENGTH_SHORT).show();
+                        networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                            getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    getActivity().finish();
+                                }
+                            });
                     } else {
                         if (HomeTab.this.isVisible()) {
-//                            new SweetAlertDialog(getActivity(), SweetAlertDialog.ERROR_TYPE)
-//                                .setTitleText("Error")
-//                                .setContentText(error.getMessage())
-//                                .show();
+                            networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                                error.getMessage(), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        getActivity().finish();
+                                    }
+                                });
                         }
                     }
                 }
@@ -605,7 +611,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 }
             };
 
-            requestQueue.add(stringRequest);
+            if (!retrievingData) {
+                retrievingData = true;
+                requestQueue.add(stringRequest);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -631,7 +640,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         LatLngBounds bounds = latLngBounds.build();
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
     }
 
     /**

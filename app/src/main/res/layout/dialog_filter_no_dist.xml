@@ -76,7 +76,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -102,7 +102,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -128,7 +128,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -154,7 +154,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -180,7 +180,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -206,7 +206,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"
@@ -232,7 +232,7 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_xs">
+            android:padding="@dimen/padding_sm">
 
             <ImageView
                 android:layout_height="20dp"

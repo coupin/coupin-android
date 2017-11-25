@@ -17,50 +17,62 @@
         <RelativeLayout
             android:background="@color/text_dark_grey"
             android:layout_height="180dp"
-            android:layout_width="match_parent"
-            android:paddingBottom="@dimen/padding_md"
-            android:paddingEnd="@dimen/padding_sm"
-            android:paddingLeft="@dimen/padding_sm"
-            android:paddingRight="@dimen/padding_sm"
-            android:paddingStart="@dimen/padding_sm">
-            
+            android:layout_width="match_parent">
+
             <ImageView
-                android:background="@color/white"
-                android:id="@+id/list_logo"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:layout_height="70dp"
-                android:layout_marginLeft="@dimen/margin_md"
-                android:layout_marginRight="@dimen/margin_sm"
-                android:layout_width="70dp"/>
-
-            <LinearLayout
-                android:layout_alignParentBottom="true"
-                android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/list_logo"
-                android:layout_toRightOf="@id/list_logo"
+                android:id="@+id/coupin_banner"
+                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:orientation="vertical">
+                android:scaleType="centerCrop"/>
 
-                <TextView
-                    android:id="@+id/list_merchant_name"
+            <RelativeLayout
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:paddingBottom="@dimen/padding_md"
+                android:paddingEnd="@dimen/padding_sm"
+                android:paddingLeft="@dimen/padding_sm"
+                android:paddingRight="@dimen/padding_sm"
+                android:paddingStart="@dimen/padding_sm">
+            
+                <ImageView
+                    android:background="@color/white"
+                    android:id="@+id/list_logo"
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_height="70dp"
+                    android:layout_marginLeft="@dimen/margin_md"
+                    android:layout_marginRight="@dimen/margin_sm"
+                    android:layout_width="70dp"/>
+
+                <LinearLayout
+                    android:layout_alignParentBottom="true"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_width="wrap_content"
-                    android:text="@string/example_text_1"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/medium_text"/>
+                    android:layout_toEndOf="@id/list_logo"
+                    android:layout_toRightOf="@id/list_logo"
+                    android:layout_width="match_parent"
+                    android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/list_merchant_address"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="@string/example_address_1"
-                    android:textColor="@color/white"
-                    android:textSize="@dimen/medium_text"/>
+                    <TextView
+                        android:id="@+id/list_merchant_name"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_width="wrap_content"
+                        android:text="@string/example_text_1"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/medium_text"/>
 
-            </LinearLayout>
+                    <TextView
+                        android:id="@+id/list_merchant_address"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:text="@string/example_address_1"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/medium_text"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
@@ -69,13 +81,24 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_md"
             android:layout_width="match_parent"
-            android:text="ACTIVE REWARDS - 13"/>
+            android:paddingEnd="@dimen/padding_sm"
+            android:paddingLeft="@dimen/padding_sm"
+            android:paddingRight="@dimen/padding_sm"
+            android:paddingStart="@dimen/padding_sm"
+            android:text=""
+            android:textColor="@color/text_med_grey"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_view"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
-            android:paddingBottom="@dimen/padding_code"/>
+            android:paddingBottom="@dimen/padding_code"
+            android:paddingEnd="@dimen/padding_xs"
+            android:paddingLeft="@dimen/padding_xs"
+            android:paddingRight="@dimen/padding_xs"
+            android:paddingStart="@dimen/padding_xs"/>
 
     </LinearLayout>
 
@@ -151,7 +174,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/code"
-            android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="normal"/>
@@ -192,16 +214,16 @@
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
-        android:background="@color/colorAccent"
+        android:background="@color/text_med_grey"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="160dp"
+        android:layout_marginTop="145dp"
         android:layout_height="64dp"
         android:layout_width="64dp"
         android:src="@drawable/ic_nav_arrow"
         app:elevation="10dp"
-        app:backgroundTint="@color/colorAccent"
+        app:backgroundTint="@color/text_med_grey"
         app:rippleColor="@color/black"/>
 
 </RelativeLayout>

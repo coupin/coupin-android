@@ -19,7 +19,8 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_margin="@dimen/margin_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_search_lg"/>
+            android:src="@drawable/ic_search_lg"
+            android:visibility="gone"/>
 
         <de.hdodenhof.circleimageview.CircleImageView
             android:id="@+id/profile_picture"

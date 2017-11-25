@@ -3,6 +3,9 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,6 +32,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public Button cancel;
     public Button fullPin;
     public Button fullRemove;
+    public ImageView fullHeaderImage;
     public ImageView photo1;
     public ImageView photo2;
     public ImageView photo3;
@@ -98,6 +102,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullDateStart = (TextView) findViewById(R.id.full_date_start);
         fullDescription = (TextView) findViewById(R.id.full_description);
         fullHeader = (TextView) findViewById(R.id.full_header);
+        fullHeaderImage = (ImageView) findViewById(R.id.full_header_tick);
         fullNewPrice = (TextView) findViewById(R.id.full_new_price);
         fullOldPrice = (TextView) findViewById(R.id.full_old_price);
         fullPercentage = (TextView) findViewById(R.id.full_percentage);
@@ -123,9 +128,15 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
 
         if (reward.isSelected()) {
+            fullHeader.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+            fullHeaderImage.setColorFilter(context.getResources().getColor(R.color.white));
+            fullHeader.setTextColor(context.getResources().getColor(R.color.white));
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);
         } else {
+            fullHeader.setBackgroundColor(context.getResources().getColor(R.color.white));
+            fullHeaderImage.setColorFilter(context.getResources().getColor(R.color.white));
+            fullHeader.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
             fullRemove.setVisibility(View.GONE);
             fullPin.setVisibility(View.VISIBLE);
         }
@@ -169,6 +180,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             }
         }
 
+    }
+
+    private void setTextViewDrawableColor(TextView textView, int color) {
+        for (Drawable drawable : textView.getCompoundDrawables()) {
+            if (drawable != null) {
+                drawable.setColorFilter(new PorterDuffColorFilter(context.getResources().getColor(color), PorterDuff.Mode.SRC_IN));
+            }
+        }
     }
 
     public void hideButtonGroup() {

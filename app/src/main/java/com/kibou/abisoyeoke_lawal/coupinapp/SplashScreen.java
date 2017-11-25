@@ -29,8 +29,8 @@ public class SplashScreen extends Activity {
             @Override
             public void run() {
                 if (PreferenceMngr.getInstance().isLoggedIn()) {
-                    Log.v("VolleyOPref", "" + PreferenceMngr.getInstance().categorySelected());
-                    if (PreferenceMngr.getInstance().categorySelected()) {
+                    Log.v("VolleyOPref", "" + PreferenceMngr.getInstance().interestsSelected());
+                    if (PreferenceMngr.getInstance().interestsSelected()) {
                         startActivity(new Intent(SplashScreen.this, HomeActivity.class));
                         finish();
                     } else {

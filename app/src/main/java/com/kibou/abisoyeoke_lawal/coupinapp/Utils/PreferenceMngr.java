@@ -8,6 +8,10 @@ import android.content.SharedPreferences;
 import com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -72,7 +76,7 @@ public class PreferenceMngr {
      * Method to check if category has been picked
      * @return
      */
-    public static boolean categorySelected() {
+    public static boolean interestsSelected() {
         String user = preferences.getString("uid", null);
         return preferences.getBoolean("category" + user, false);
     }
@@ -81,9 +85,32 @@ public class PreferenceMngr {
      * Method to know if user has set category at the signing up stage
      * @param value
      */
-    public static void setCategory(boolean value) {
+    public static void setInterests(boolean value) {
         String user = preferences.getString("uid", null);
         preferences.edit().putBoolean("category" + user, value).apply();
+    }
+
+    /**
+     * Convert User interest to arraylist and return it
+     * @return User Interests
+     */
+    public static ArrayList<String> getUserInterests() {
+        try {
+            ArrayList<String> temp = new ArrayList<>();
+
+            JSONObject user = new JSONObject(PreferenceMngr.getUser());
+            JSONArray userInterests = user.getJSONArray("interests");
+
+            for (int i = 0; i < userInterests.length(); i++) {
+                temp.add("\"" + userInterests.getString(i) + "\"");
+            }
+
+            return temp;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 
     /**

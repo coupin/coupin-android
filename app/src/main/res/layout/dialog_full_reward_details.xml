@@ -4,23 +4,44 @@
               android:layout_height="match_parent"
               android:layout_width="match_parent"
               android:minWidth="400dp"
-              android:orientation="vertical"
-              android:paddingTop="@dimen/padding_sm">
+              android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/full_header"
+    <RelativeLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="@dimen/padding_sm"
-        android:text="@string/example_text_1"
-        android:textColor="@color/text_dark_grey"
-        android:textSize="@dimen/large_text"
-        android:textStyle="bold"/>
+        android:layout_width="match_parent">
+
+        <TextView
+            android:id="@+id/full_header"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="@dimen/padding_sm_plus"
+            android:text="@string/example_text_1"
+            android:textColor="@color/text_dark_grey"
+            android:textSize="@dimen/large_text"
+            android:textStyle="bold"/>
+
+        <ImageView
+            android:id="@+id/full_header_tick"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/margin_md"
+            android:layout_marginRight="@dimen/margin_md"
+            android:layout_width="wrap_content"
+            android:src="@drawable/ic_done_tick"
+            android:tint="@android:color/transparent"/>
+
+    </RelativeLayout>
 
     <View
         android:background="@color/lightGrey"
         android:layout_height="2dp"
-        android:layout_margin="@dimen/margin_xs"
+        android:layout_marginEnd="@dimen/margin_xs"
+        android:layout_marginLeft="@dimen/margin_xs"
+        android:layout_marginRight="@dimen/margin_xs"
+        android:layout_marginStart="@dimen/margin_xs"
+        android:layout_marginBottom="@dimen/margin_xs"
         android:layout_width="match_parent"/>
 
     <RelativeLayout

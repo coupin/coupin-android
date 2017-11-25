@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/white"
     android:layout_height="match_parent"
@@ -71,14 +72,35 @@
                     android:visibility="gone"/>
 
             </RelativeLayout>
-            
-            <ImageView
+
+            <RelativeLayout
                 android:layout_gravity="center_horizontal"
-                android:layout_height="@dimen/icon_lg"
-                android:layout_width="@dimen/icon_lg"
-                android:paddingBottom="@dimen/padding_sm"
-                android:paddingTop="@dimen/padding_sm"
-                android:src="@drawable/slide1"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:layout_height="@dimen/icon_lg"
+                    android:layout_width="@dimen/icon_lg"
+                    android:paddingBottom="@dimen/padding_sm"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:src="@drawable/slide1"
+                    app:civ_border_color="@android:color/transparent"
+                    app:civ_border_overlay="false"
+                    app:civ_border_width="1dp"/>
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/edit_picture"
+                    android:layout_height="@dimen/icon_lg"
+                    android:layout_width="@dimen/icon_lg"
+                    android:padding="@dimen/padding_sm"
+                    android:src="@drawable/ic_camera_w"
+                    app:civ_border_color="@android:color/transparent"
+                    android:visibility="gone"
+                    app:civ_border_overlay="false"
+                    app:civ_border_width="1dp"
+                    app:civ_fill_color="@color/almost_trans"/>
+
+            </RelativeLayout>
 
             <LinearLayout
                 android:layout_height="wrap_content"

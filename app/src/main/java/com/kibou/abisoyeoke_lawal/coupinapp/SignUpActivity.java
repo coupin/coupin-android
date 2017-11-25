@@ -22,6 +22,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -38,6 +44,10 @@ import butterknife.ButterKnife;
 public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.back_to_login)
     public Button backToLogin;
+    @BindView(R.id.facebook_signup)
+    public Button facebookSignUp;
+    @BindView(R.id.google_signup)
+    public Button googleSignUp;
     @BindView(R.id.name)
     public EditText nameView;
     @BindView(R.id.email)
@@ -53,9 +63,14 @@ public class SignUpActivity extends AppCompatActivity {
     @BindView(R.id.sign_up_progress)
     public View mProgressView;
 
+    private static final int RC_SIGNUP_GOOGLE = 10006;
+
     // Voley Variables
     RequestQueue reqQueue = null;
     String url = "";
+
+    public GoogleSignInClient gsc;
+    public GoogleSignInOptions gso;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +99,173 @@ public class SignUpActivity extends AppCompatActivity {
                 startActivity(new Intent(SignUpActivity.this, LoginActivity.class));
             }
         });
+
+        // Configure request for email, id and basic profile
+        gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestEmail()
+            .requestId()
+            .requestProfile()
+            .build();
+
+        gsc = GoogleSignIn.getClient(this, gso);
+
+        googleSignUp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                attemptGoogleSignUp();
+            }
+        });
+    }
+
+    /**
+     * Handles activity requests
+     * @param requestCode
+     * @param resultCode
+     * @param data
+     */
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        switch (requestCode) {
+            case RC_SIGNUP_GOOGLE:
+                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                handleGoogleSignUpResult(task);
+                break;
+        }
+    }
+
+    /**
+     * Register through social means
+     * @param name
+     * @param email
+     * @param id
+     * @param isGoogle
+     */
+    public void registerUser(final String name, final String email, final String id,
+                             final boolean isGoogle, final String pictureUrl) {
+        StringRequest stringRequest = new StringRequest(StringRequest.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject res = new JSONObject(response);
+                    PreferenceMngr.setContext(SignUpActivity.this);
+                    JSONObject object = res.getJSONObject("user");
+                    PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
+                    nextIntent.putExtra("name", name);
+                    startActivity(nextIntent);
+                    finish();
+                } catch (Exception e) {
+                    showProgress(false);
+                    Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showProgress(false);
+                error.printStackTrace();
+                Log.v("VolleyError", error.toString());
+
+                if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                } else {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        if (error.networkResponse.statusCode == 409) {
+                            Toast.makeText(SignUpActivity.this, getString(R.string.duplicate), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(SignUpActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put("name", name);
+                params.put("email", email);
+
+                if (isGoogle) {
+                    params.put("googleId", id);
+                } else {
+                    params.put("facebookId", id);
+                }
+
+                if (pictureUrl != null) {
+                    params.put("pictureUrl", pictureUrl);
+                }
+
+                return params;
+            }
+        };
+        reqQueue.add(stringRequest);
+    }
+
+    /**
+     * Register through normal means
+     * @param name
+     * @param email
+     * @param password
+     * @param confirmPassword
+     */
+    private void registerUser(final String name,final String email, final String password,
+                              final String confirmPassword) {
+        StringRequest stringRequest = new StringRequest(StringRequest.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject res = new JSONObject(response);
+                    PreferenceMngr.setContext(SignUpActivity.this);
+                    JSONObject object = res.getJSONObject("user");
+                    PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
+                    nextIntent.putExtra("name", name);
+                    startActivity(nextIntent);
+                    finish();
+                } catch (Exception e) {
+                    showProgress(false);
+                    Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showProgress(false);
+                error.printStackTrace();
+                Log.v("VolleyError", error.toString());
+
+                if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                } else {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        if (error.networkResponse.statusCode == 409) {
+                            Toast.makeText(SignUpActivity.this, getString(R.string.duplicate), Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        Toast.makeText(SignUpActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                HashMap<String, String> params = new HashMap<>();
+
+                params.put("name", name);
+                params.put("email", email);
+                params.put("password", password);
+                params.put("password2", confirmPassword);
+//                    params.put("network", mobileNetwork);
+
+                return params;
+            }
+        };
+        reqQueue.add(stringRequest);
     }
 
     /**
@@ -99,10 +281,10 @@ public class SignUpActivity extends AppCompatActivity {
         confirmPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        final String name = nameView.getText().toString();
-        final String email = emailView.getText().toString();
-        final String password = passwordView.getText().toString();
-        final String confirmPassword = confirmPasswordView.getText().toString();
+        String name = nameView.getText().toString();
+        String email = emailView.getText().toString();
+        String password = passwordView.getText().toString();
+        String confirmPassword = confirmPasswordView.getText().toString();
 //        final String mobileNetwork = mobileNetworkView.getSelectedItem().toString();
 
         boolean cancel = false;
@@ -154,58 +336,31 @@ public class SignUpActivity extends AppCompatActivity {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            StringRequest stringRequest = new StringRequest(StringRequest.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONObject res = new JSONObject(response);
-                        PreferenceMngr.setContext(SignUpActivity.this);
-                        JSONObject object = res.getJSONObject("user");
-                        PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
-                        Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
-                        nextIntent.putExtra("name", name);
-                        startActivity(nextIntent);
-                            finish();
-                    } catch (Exception e) {
-                        showProgress(false);
-                        Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    showProgress(false);
-                    error.printStackTrace();
-                    Log.v("VolleyError", error.toString());
+            registerUser(name, email, password, confirmPassword);
+        }
+    }
 
-                    if (error.toString().equals("com.android.volley.TimeoutError")) {
-                        Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
-                    } else {
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            if (error.networkResponse.statusCode == 409) {
-                                Toast.makeText(SignUpActivity.this, getString(R.string.duplicate), Toast.LENGTH_LONG).show();
-                            }
-                        } else {
-                            Toast.makeText(SignUpActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                }
-            }){
-                @Override
-                protected Map<String, String> getParams() {
-                    HashMap<String, String> params = new HashMap<>();
+    /**
+     * Google Signup
+     */
+    private void attemptGoogleSignUp() {
+        Intent signInIntend = gsc.getSignInIntent();
+        startActivityForResult(signInIntend, RC_SIGNUP_GOOGLE);
+    }
 
-                    params.put("name", name);
-                    params.put("email", email);
-                    params.put("password", password);
-                    params.put("password2", confirmPassword);
-//                    params.put("network", mobileNetwork);
+    /**
+     * Handles the returned account details
+     * @param completedTask
+     */
+    public void handleGoogleSignUpResult(Task<GoogleSignInAccount> completedTask) {
+        try {
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
 
-                    return params;
-                }
-            };
-            reqQueue.add(stringRequest);
+            registerUser(account.getDisplayName(), account.getEmail(), account.getId(), true,
+                account.getPhotoUrl().toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

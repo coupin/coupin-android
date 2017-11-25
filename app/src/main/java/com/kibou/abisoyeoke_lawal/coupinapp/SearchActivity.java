@@ -64,8 +64,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
 
     public ArrayList<String> categories = new ArrayList<>();
     public String queryString;
-    public String latitude;
-    public String longitude;
     public String url;
     public RequestQueue requestQueue;
 
@@ -95,12 +93,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         wlp.width = this.getWindow().getAttributes().width;
         wlp.gravity = Gravity.TOP | Gravity.LEFT | Gravity.START;
         wlp.windowAnimations = R.style.PauseDialogAnimation;
-
-        Bundle extra = getIntent().getExtras();
-        searchStreet.setText("Near Me - " + extra.getString("street"));
-
-        latitude = String.valueOf(extra.getDouble("lat"));
-        longitude = String.valueOf(extra.getDouble("long"));
 
         companyInfos = new ArrayList<>();
         requestQueue = Volley.newRequestQueue(this);
@@ -241,8 +233,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("long", longitude);
-                params.put("lat", latitude);
                 params.put("query", queryString);
                 params.put("categories", categories.toString());
 

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -41,6 +42,8 @@ public class FavFragment extends Fragment implements MyOnClick {
     public RecyclerView favRecyclerView;
     @BindView(R.id.fav_loadingview)
     public RelativeLayout favLoadingView;
+    @BindView(R.id.fav_total)
+    public TextView favTotal;
 
     public ArrayList<RewardListItem> favList;
     public RequestQueue requestQueue;
@@ -82,7 +85,10 @@ public class FavFragment extends Fragment implements MyOnClick {
             public void onResponse(String response) {
                 try {
                     JSONArray jsonArray = new JSONArray(response);
-                    for (int x = 0; x < jsonArray.length(); x++) {
+                    int total = jsonArray.length();
+                    favTotal.setText("MERCHANTS - " + total);
+
+                    for (int x = 0; x < total; x++) {
                         JSONObject mainObject = jsonArray.getJSONObject(x);
                         JSONObject merchantObject = mainObject.getJSONObject("merchantInfo");
                         JSONArray rewardObjects = merchantObject.getJSONArray("rewards");

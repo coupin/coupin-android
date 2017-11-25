@@ -24,7 +24,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVExpandableAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
@@ -86,7 +86,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public Merchant item;
     public JSONArray resArray;
     public JSONObject res;
-    public RVExpandableAdapter rvExpandableAdapter;
+    public RVPopUpAdapter rvPopUpAdapter;
     public String rewardHolder;
 
     @Override
@@ -115,10 +115,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         infoDialog = new RewardInfoDialog(this, this);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
-        rvExpandableAdapter = new RVExpandableAdapter(values, this, this);
+        rvPopUpAdapter = new RVPopUpAdapter(values, this, this);
         rvRewards.setLayoutManager(linearLayoutManager);
         rvRewards.setHasFixedSize(true);
-        rvRewards.setAdapter(rvExpandableAdapter);
+        rvRewards.setAdapter(rvPopUpAdapter);
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -295,7 +295,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 values.add(reward);
             }
 
-            rvExpandableAdapter.notifyDataSetChanged();
+            rvPopUpAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -326,13 +326,13 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public void onSelect(boolean selected, int index) {
         if (selected) {
             this.selected.add(values.get(index).getId());
-            selectedText.setText(this.selected.size() + " Selected");
+            selectedText.setText(this.selected.size() + " Items Selected");
             if (selectedHolder.getVisibility() == View.GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
         } else {
             this.selected.remove(values.get(index).getId());
-            selectedText.setText(this.selected.size() + " Selected");
+            selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
                 selectedHolder.setVisibility(View.GONE);
             }

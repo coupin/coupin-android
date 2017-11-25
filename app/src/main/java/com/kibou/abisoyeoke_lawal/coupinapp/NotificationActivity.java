@@ -6,10 +6,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
@@ -25,16 +25,18 @@ import butterknife.ButterKnife;
 public class NotificationActivity extends AppCompatActivity {
     @BindView(R.id.btn_save_notification)
     public Button notificationButton;
+    @BindView(R.id.notification_back)
+    public ImageView notificationBack;
     @BindView(R.id.frequency_title)
     public TextView frequencyTitle;
-    @BindView(R.id.toggle_receive)
-    public ToggleButton toggleReceive;
     @BindView(R.id.toggle_weekly)
     public ToggleButton toggleWeekly;
     @BindView(R.id.toggle_receive_text)
     public TextView toggleReceiveText;
     @BindView(R.id.toggle_weekly_text)
     public TextView toggleWeeklyText;
+    @BindView(R.id.toggle_receive)
+    public ToggleButton toggleReceive;
 
     public boolean changes = false;
     public boolean def = false;
@@ -48,7 +50,13 @@ public class NotificationActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         previousSelection = PreferenceMngr.getNotificationSelection();
-        Log.v("VolleyPrevious", "" + previousSelection[0]);
+
+        notificationBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onBackPressed();
+            }
+        });
 
         if (previousSelection[0]) {
             def = true;

@@ -28,8 +28,11 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+    @BindView(R.id.edit_picture)
+    public CircleImageView editPicture;
     @BindView(R.id.edit_back)
     public ImageView editBack;
     @BindView(R.id.profile_gender)
@@ -140,6 +143,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setFocusable(true);
             profileMobile .setFocusableInTouchMode(true);
             profileGender.setEnabled(true);
+            editPicture.setVisibility(View.VISIBLE);
         } else {
             editMode = false;
             profileEmail.setBackground(getResources().getDrawable(R.drawable.background_edit_false));
@@ -155,6 +159,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setFocusable(false);
             profileMobile .setFocusableInTouchMode(false);
             profileGender.setEnabled(false);
+            editPicture.setVisibility(View.GONE);
             saveUser();
         }
 

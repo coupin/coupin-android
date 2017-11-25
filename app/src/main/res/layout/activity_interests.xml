@@ -2,10 +2,10 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:animateLayoutChanges="true"
     android:background="@color/colorAccent"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:animateLayoutChanges="true"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity">
 
         <LinearLayout

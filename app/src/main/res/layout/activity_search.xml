@@ -24,6 +24,8 @@
 
             <LinearLayout
                 android:background="@drawable/background_search_white"
+                android:descendantFocusability="beforeDescendants"
+                android:focusableInTouchMode="true"
                 android:gravity="center_horizontal"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_sm"
@@ -55,8 +57,6 @@
 
                 <ImageView
                     android:id="@+id/search_filter"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
                     android:layout_height="32dp"
                     android:layout_weight="1"
                     android:layout_width="32dp"

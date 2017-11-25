@@ -23,7 +23,7 @@ import java.util.ArrayList;
  * Created by abisoyeoke-lawal on 8/13/17.
  */
 
-public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapter.ViewHolder> {
+public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHolder> {
     public ArrayList<Reward> rewards;
     public Context context;
     public boolean drawerVisible = false;
@@ -35,6 +35,7 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
         public RelativeLayout headDiscount;
         public TextView headDetails;
         public TextView headExpiry;
+        public TextView headExpiryLabel;
         public TextView headPercentage;
         public TextView headPriceNew;
         public TextView headPriceOld;
@@ -47,6 +48,7 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
             headDiscount = (RelativeLayout) head.findViewById(R.id.discount);
             headDetails = (TextView) head.findViewById(R.id.list_reward_details);
             headExpiry = (TextView) head.findViewById(R.id.expiry_text);
+            headExpiryLabel = (TextView) head.findViewById(R.id.expiry_label);
             headPercentage = (TextView) head.findViewById(R.id.list_reward_percent);
             headPriceNew = (TextView) head.findViewById(R.id.list_new_price);
             headPriceOld = (TextView) head.findViewById(R.id.list_old_price);
@@ -55,22 +57,22 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
         }
     }
 
-    public RVExpandableAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect) {
+    public RVPopUpAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect) {
         this.context = context;
         this.myOnSelect = myOnSelect;
         this.rewards = rewards;
     }
 
     @Override
-    public RVExpandableAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public RVPopUpAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.cardview_expand_item, parent, false);
 
-        RVExpandableAdapter.ViewHolder viewHolder = new ViewHolder(v);
+        RVPopUpAdapter.ViewHolder viewHolder = new ViewHolder(v);
         return viewHolder;
     }
 
     @Override
-    public void onBindViewHolder(final RVExpandableAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(final RVPopUpAdapter.ViewHolder holder, final int position) {
         final Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.getDetails());
@@ -101,6 +103,8 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.tickFrame.setVisibility(View.VISIBLE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
@@ -110,8 +114,10 @@ public class RVExpandableAdapter extends RecyclerView.Adapter<RVExpandableAdapte
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
                             holder.tickFrame.setVisibility(View.GONE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
                             holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.text_lighter_grey));
+                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
                             holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
                             reward.setIsSelected(false);
                             myOnSelect.onSelect(false, position);

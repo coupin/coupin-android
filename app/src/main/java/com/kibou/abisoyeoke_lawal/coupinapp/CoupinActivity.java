@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -17,6 +18,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
@@ -37,6 +39,8 @@ import butterknife.ButterKnife;
 public class CoupinActivity extends AppCompatActivity implements MyOnClick {
     @BindView(R.id.list_back)
     public ImageButton listBack;
+    @BindView(R.id.coupin_banner)
+    public ImageView coupinBanner;
     @BindView(R.id.coupin_activate_holder)
     public LinearLayout activateHolder;
     @BindView(R.id.coupin_code_holder)
@@ -47,6 +51,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
     public RelativeLayout listToolbar;
     @BindView(R.id.list_code)
     public TextView listCode;
+    @BindView(R.id.list_count)
+    public TextView listCount;
 
     ArrayList<Reward> coupinRewards;
     RewardListItem coupin;
@@ -64,6 +70,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
         coupin = (RewardListItem) getIntent().getSerializableExtra("coupin");
         coupinRewards = new ArrayList<>();
 
+        Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(coupinBanner);
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(
             coupinRewards, this, this);
@@ -80,7 +88,11 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
             JSONArray res = new JSONArray(coupin.getRewardDetails());
             listCode.setText(coupin.getBookingShortCode());
 
-            for(int x = 0; x < res.length(); x++) {
+            int total = res.length();
+
+            listCount.setText("ACTIVE REWARDS - " + total);
+
+            for(int x = 0; x < total; x++) {
                 JSONObject object = res.getJSONObject(x);
 
                 Reward reward = new Reward();

@@ -1,6 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,25 +12,29 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 
 import java.util.ArrayList;
 
 /**
- * Created by abisoyeoke-lawal on 9/10/17.
+ * Created by abisoyeoke-lawal on 11/17/17.
  */
 
-public class InterestAdapter extends BaseAdapter {
+public class InterestEditAdapter extends BaseAdapter {
     public ImageView icon;
     public LinearLayout interestHolder;
     public TextView label;
 
     public Context context;
     public ArrayList<Interest> interests;
+    public ArrayList<String> previouslySelected = new ArrayList<>();
 
-    public InterestAdapter(Context context, ArrayList<Interest> interests) {
+    public InterestEditAdapter(Context context, ArrayList<Interest> interests) {
         this.context = context;
         this.interests = interests;
+        previouslySelected = PreferenceMngr.getUserInterests();
+        Log.v("VolleyPrevious", previouslySelected.toString());
     }
 
     @Override
@@ -49,13 +54,15 @@ public class InterestAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        View root = LayoutInflater.from(context).inflate(R.layout.interest_default_item, parent, false);
+        View root = LayoutInflater.from(context).inflate(R.layout.interest_edit_item, parent, false);
 
         final Interest interest = interests.get(position);
 
+        LinearLayout holder = (LinearLayout) root.findViewById(R.id.interest_holder);
         icon = (ImageView) root.findViewById(R.id.interest_img);
         interestHolder = (LinearLayout) root.findViewById(R.id.interest_holder);
         label = (TextView) root.findViewById(R.id.interest_text);
+        ImageView tick = (ImageView) root.findViewById(R.id.interest_tick);
 
         icon.setImageResource(interest.getIcon());
         label.setText(interest.getLabel());
@@ -65,6 +72,12 @@ public class InterestAdapter extends BaseAdapter {
             float d = context.getResources().getDisplayMetrics().density;
             params.setMargins(0, 0, 0, (int)(70* d));
             interestHolder.setLayoutParams(params);
+        }
+
+        if (previouslySelected.contains(interest.getValue())) {
+            holder.setBackground(context.getResources().getDrawable(R.drawable.interest_default));
+            tick.setVisibility(View.VISIBLE);
+            interest.setSelected(true);
         }
 
         return root;

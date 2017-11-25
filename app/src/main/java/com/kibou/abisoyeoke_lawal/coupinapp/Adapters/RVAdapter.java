@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -59,6 +60,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 holder.code.setVisibility(View.GONE);
                 holder.activeExpiration.setVisibility(View.GONE);
                 holder.expiryLabel.setVisibility(View.GONE);
+                holder.expiryHolder.setVisibility(View.GONE);
 
 
                 if (reward.getRewardCount() > 1) {
@@ -109,6 +111,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
 
         public CardView cardView;
+        public LinearLayout expiryHolder;
         public RelativeLayout activeFavHolder;
         public RelativeLayout activeRewardHolder;
         public RelativeLayout activeRewardHolder2;
@@ -131,6 +134,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             activeRewardHolder2 = (RelativeLayout) itemView.findViewById(R.id.text_holder_2);
             activeExpiration = (TextView) itemView.findViewById(R.id.active_expiration);
             code = (TextView) itemView.findViewById(R.id.active_code);
+            expiryHolder = (LinearLayout) itemView.findViewById(R.id.expiry_holder);
             expiryLabel = (RelativeLayout) itemView.findViewById(R.id.expiry_label);
             favAddress = (TextView) itemView.findViewById(R.id.active_fav_address);
             favCode = (TextView) itemView.findViewById(R.id.fav_code);

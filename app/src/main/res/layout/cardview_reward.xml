@@ -243,6 +243,7 @@
                     <!--android:background="@drawable/background_white_gradient_inv"-->
                 <LinearLayout
                     android:background="@drawable/background_gradient_card"
+                    android:id="@+id/expiry_holder"
                     android:layout_below="@+id/text_holder_1"
                     android:layout_alignWithParentIfMissing="true"
                     android:layout_alignParentBottom="true"

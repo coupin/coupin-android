@@ -52,20 +52,7 @@ public class LandingActivity extends Activity {
             }
         });
 
-        try {
-            backVideo.setRawData(R.raw.back);
-            backVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mediaPlayer = mp;
-                    mediaPlayer.seekTo(5000);
-                    mediaPlayer.setLooping(true);
-                    mediaPlayer.start();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        play();
 
         carouselView.setPageCount(quotes.length);
         carouselView.setViewListener(viewListener);
@@ -85,6 +72,23 @@ public class LandingActivity extends Activity {
         });
     }
 
+    public void play() {
+        try {
+            backVideo.setRawData(R.raw.back);
+            backVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mediaPlayer = mp;
+                    mediaPlayer.seekTo(5000);
+                    mediaPlayer.setLooping(true);
+                    mediaPlayer.start();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     ViewListener viewListener = new ViewListener() {
         @Override
         public View setViewForPosition(int position) {
@@ -97,38 +101,14 @@ public class LandingActivity extends Activity {
 
     @Override
     public void onResume() {
+        play();
         super.onResume();
-        if (mediaPlayer != null) {
-            mediaPlayer.start();
-        }
     }
 
     @Override
     public void onPause() {
+        mediaPlayer.stop();
+        mediaPlayer.reset();
         super.onPause();
-        if (mediaPlayer != null) {
-            mediaPlayer.pause();
-        }
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.release();
-        }
-
-        finish();
     }
 }
