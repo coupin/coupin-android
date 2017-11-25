@@ -1,6 +1,10 @@
 <resources>
     <string name="app_name">CoupinApp</string>
 
+    <!-- Keys -->
+    <string name="facebook_app_id">134058260630791</string>
+    <string name="fb_login_protocol_scheme">fb134058260630791</string>
+
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
     <string name="prompt_pass">Password</string>
@@ -43,7 +47,7 @@
     <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
     <!--<string name="base_url">http://172.16.0.242:5030</string>-->
     <!--<string name="base_url">http://172.16.1.37:5030</string>-->
-    <string name="base_url">http://192.168.8.103:5030</string>
+    <string name="base_url">http://192.168.8.102:5030</string>
     <!--<string name="base_url">http://10.0.30.87:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>

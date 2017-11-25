@@ -22,6 +22,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInClient;
@@ -32,6 +39,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import org.json.JSONObject;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -41,7 +49,7 @@ import butterknife.ButterKnife;
 /**
  * A login screen that offers login via email/password.
  */
-public class SignUpActivity extends AppCompatActivity {
+public class SignUpActivity extends AppCompatActivity implements FacebookCallback<LoginResult> {
     @BindView(R.id.back_to_login)
     public Button backToLogin;
     @BindView(R.id.facebook_signup)
@@ -69,6 +77,7 @@ public class SignUpActivity extends AppCompatActivity {
     RequestQueue reqQueue = null;
     String url = "";
 
+    public CallbackManager callbackManager;
     public GoogleSignInClient gsc;
     public GoogleSignInOptions gso;
 
@@ -84,6 +93,10 @@ public class SignUpActivity extends AppCompatActivity {
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.networks, R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 //        mobileNetworkView.setAdapter(adapter);
+
+        callbackManager = CallbackManager.Factory.create();
+        final LoginManager loginManager = LoginManager.getInstance();
+        loginManager.registerCallback(callbackManager, SignUpActivity.this);
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_up_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener() {
@@ -109,6 +122,13 @@ public class SignUpActivity extends AppCompatActivity {
 
         gsc = GoogleSignIn.getClient(this, gso);
 
+        facebookSignUp.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                loginManager.logInWithReadPermissions(SignUpActivity.this, Arrays.asList(new String[]{"public_profile", "email"}));
+            }
+        });
+
         googleSignUp.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -131,6 +151,9 @@ public class SignUpActivity extends AppCompatActivity {
             case RC_SIGNUP_GOOGLE:
                 Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
                 handleGoogleSignUpResult(task);
+                break;
+            default:
+                callbackManager.onActivityResult(requestCode, resultCode, data);
                 break;
         }
     }
@@ -418,6 +441,40 @@ public class SignUpActivity extends AppCompatActivity {
 
         startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
         finish();
+    }
+
+    @Override
+    public void onSuccess(LoginResult loginResult) {
+        GraphRequest request = GraphRequest.newMeRequest(loginResult.getAccessToken(), new GraphRequest.GraphJSONObjectCallback() {
+            @Override
+            public void onCompleted(JSONObject jsonObject, GraphResponse graphResponse) {
+                try {
+                    String url = null;
+                    if (jsonObject.has("picture")) {
+                        url = jsonObject.getJSONObject("picture").getJSONObject("data").getString("url");
+                    }
+                    registerUser(jsonObject.getString("name"), jsonObject.getString("email"), jsonObject.get("id").toString(), false,
+                        url);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Bundle parameters = new Bundle();
+        parameters.putString("fields", "id, name, email, gender, picture");
+        request.setParameters(parameters);
+        request.executeAsync();
+    }
+
+    @Override
+    public void onCancel() {
+
+    }
+
+    @Override
+    public void onError(FacebookException e) {
+        Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }
 

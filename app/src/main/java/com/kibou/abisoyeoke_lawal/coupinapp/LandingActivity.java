@@ -107,8 +107,10 @@ public class LandingActivity extends Activity {
 
     @Override
     public void onPause() {
-        mediaPlayer.stop();
-        mediaPlayer.reset();
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
         super.onPause();
     }
 }
