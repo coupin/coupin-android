@@ -153,7 +153,7 @@
                     android:layout_marginEnd="@dimen/margin_xxs"
                     android:layout_marginRight="@dimen/margin_xxs"
                     android:layout_width="24dp"
-                    app:indicatorName="BallGridPulseIndicator"
+                    app:indicatorName="BallPulseIndicator"
                     app:indicatorColor="@color/colorAccent" />
 
             </LinearLayout>

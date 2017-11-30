@@ -19,10 +19,12 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.InterestAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.NotificationUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -121,6 +123,11 @@ public class InterestsActivity extends AppCompatActivity {
         });
 
         PreferenceMngr.setInterests(false);
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_WEEK, 6);
+        calendar.set(Calendar.HOUR, 11);
+        NotificationUtils.setReminder(InterestsActivity.this, getApplicationContext(), true, calendar);
+        PreferenceMngr.notificationSelection(true, true);
     }
 
     public void sendInterestInfo() {

@@ -155,6 +155,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public LatLngBounds.Builder latLngBounds;
     public Location currentLocation = null;
     public Marker lastOpened;
+    public Marker myPosition;
 
     public String url;
     public RequestQueue requestQueue;
@@ -168,6 +169,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public ArrayList<Marker> markers = new ArrayList<>();
 
     public int distance = 3;
+    public int page = 0;
     public ArrayList<String> categories = new ArrayList<>();
 
     public BigDecimal longitude;
@@ -198,6 +200,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         // Inflate the layout for this fragment
         final View rootView = inflater.inflate(R.layout.fragment_home_tab, container, false);
         ButterKnife.bind(this, rootView);
+        MapsInitializer.initialize(getActivity().getApplicationContext());
 
         // Loading Dialog
         loadingDialog = new LoadingDialog(getActivity(), R.style.Loading_Dialog);
@@ -271,11 +274,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap = googleMap;
 
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mGoogleMap.setMyLocationEnabled(true);
+                mGoogleMap.setMyLocationEnabled(false);
 
-                if (currentLocation == null && mGoogleMap.getMyLocation() != null) {
-                    currentLocation = mGoogleMap.getMyLocation();
-                }
+//                if (currentLocation == null && mGoogleMap.getMyLocation() != null) {
+//                    Log.v("Get it", "Another" + currentLocation.toString());
+//                    currentLocation = mGoogleMap.getMyLocation();
+//                }
 
                 try {
                     if (geocoder.isPresent() && currentLocation != null) {
@@ -291,6 +295,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     @Override
                     public View getInfoWindow(Marker marker) {
                         final Marker marker1 = marker;
+
+                        if (marker.getTitle().toString().equals("Hello!")) {
+                            return infoWindow;
+                        }
 
                         try {
                             JSONObject res = new JSONObject(marker.getSnippet());
@@ -366,7 +374,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
                     @Override
                     public boolean onMarkerClick(Marker marker) {
-                        marker.setTitle("Yes");
+                        if (!marker.getTitle().toString().equals("Hello!")) {
+                            marker.setTitle("Yes");
+                        }
                         marker.showInfoWindow();
                         return false;
 
@@ -401,7 +411,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         iconListView.setLayoutManager(mLinearLayoutManager);
 
 
-//        implementOnScrollListener();
+        implementOnScrollListener();
 
         rootView.setFocusableInTouchMode(true);
         rootView.setOnKeyListener(new View.OnKeyListener() {
@@ -521,6 +531,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         first.setPicture(R.drawable.hot);
                         iconsList.add(first);
 
+                        if (currentLocation != null && myPosition == null) {
+                            markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
+                                .title("Hello!")
+                                .snippet("You are here")
+                                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                        }
+
                         JSONArray resArr = new JSONArray(response);
                         for (int j = 0; j < resArr.length(); j++) {
                             JSONObject res = resArr.getJSONObject(j);
@@ -551,6 +569,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         // TODO: Set the bounds properly
                         setBounds();
 
+                        page++;
                         retrievingData = false;
                         showDialog(false);
                         adapter.setIconList(iconsList);
@@ -672,7 +691,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            addIcons();
+                            loadMore();
                         }
                     }, 2000);
                 }
@@ -681,21 +700,110 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     }
 
     /**
-     * Temporarily be able to add icons
+     * Load more merchants
      */
-    private void addIcons() {
-        for (int i = 0; i < 5; i++) {
-            Merchant item = new Merchant();
-            item.setId(String.valueOf(i));
-            item.setPicture(icons[i]);
-            iconsList.add(item);
+    private void loadMore() {
+        try {
+            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONArray resArr = new JSONArray(response);
+                        for (int j = 0; j < resArr.length(); j++) {
+                            JSONObject res = resArr.getJSONObject(j);
+                            Merchant item = new Merchant();
+                            item.setId(res.getString("_id"));
+                            item.setPicture(icons[j]);
+                            item.setAddress(res.getString("address"));
+                            item.setDetails(res.getString("details"));
+                            item.setEmail(res.getString("email"));
+                            item.setMobile(res.getString("mobile"));
+                            item.setTitle(res.getString("name"));
+                            item.setRewards(res.getJSONArray("rewards").toString());
+                            item.setLatitude(res.getJSONObject("location").getDouble("lat"));
+                            item.setLongitude(res.getJSONObject("location").getDouble("long"));
+                            markers.add(mGoogleMap.addMarker(new MarkerOptions()
+                                .title(res.getString("name"))
+                                .snippet(res.toString())
+                                .position(new LatLng(item.getLatitude(), item.getLongitude()))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
+                            iconsList.add(item);
+                        }
+
+                        spots.setText(iconsList.size() - 1 + " ");
+
+                        // TODO: Set the bounds properly
+                        setBounds();
+
+                        retrievingData = false;
+                        isLoading = false;
+                        loading();
+                        adapter.notifyDataSetChanged();
+                        page++;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    isLoading = false;
+                    loading();
+
+                    if (error.networkResponse == null) {
+                        networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                            getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    getActivity().finish();
+                                }
+                            });
+                    } else {
+                        if (HomeTab.this.isVisible()) {
+                            networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                                error.getMessage(), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        getActivity().finish();
+                                    }
+                                });
+                        }
+                    }
+                }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", PreferenceMngr.getToken());
+
+                    return headers;
+                }
+
+                @Override
+                protected Map<String, String> getParams() {
+                    Map<String, String> params = new HashMap<>();
+                    if (longitude != null && latitude != null) {
+                        params.put("longitude", String.valueOf(longitude.doubleValue()));
+                        params.put("latitude", String.valueOf(latitude.doubleValue()));
+                    } else {
+                        params.put("longitude", "undefined");
+                        params.put("latitude", "undefined");
+                    }
+                    params.put("distance", String.valueOf(distance));
+                    params.put("categories", categories.toString());
+                    params.put("page", String.valueOf(page));
+
+                    return params;
+                }
+            };
+
+            if (!retrievingData) {
+                retrievingData = true;
+                requestQueue.add(stringRequest);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-        spots.setText(iconsList.size() - 1 + " ");
-
-        adapter.notifyDataSetChanged();
-        isLoading = false;
-        loading();
     }
 
     /**
@@ -715,16 +823,16 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             startActivity(new Intent(getActivity(), HotActivity.class));
         } else {
             // Show info window if it isn't the first icon, which is the hot zone icon
-            if (markers.get(position - 1).isInfoWindowShown()) {
-                markers.get(position - 1).hideInfoWindow();
+            if (markers.get(position).isInfoWindowShown()) {
+                markers.get(position).hideInfoWindow();
             } else {
 //            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
                 LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.000400, iconsList.get(position).getLongitude());
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(19).build();
                 mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
-                markers.get(position - 1).setTitle("No");
-                markers.get(position - 1).showInfoWindow();
-                lastOpened = markers.get(position - 1);
+                markers.get(position).setTitle("No");
+                markers.get(position).showInfoWindow();
+                lastOpened = markers.get(position);
                 onMarker = true;
             }
         }
@@ -756,6 +864,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onLocationChanged(Location location) {
+        Log.v("VolleyChange", "It changed");
         if (currentLocation == null) {
             currentLocation = location;
             setUpList();

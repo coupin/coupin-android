@@ -1,9 +1,5 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -11,10 +7,9 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.Services.NotificationService;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.NotificationUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import java.util.Calendar;
@@ -112,9 +107,8 @@ public class NotificationActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Context context = getApplicationContext();
-
                 Calendar calendar = Calendar.getInstance();
+                calendar.set(Calendar.HOUR, 11);
                 boolean weekend = false;
                 if (toggleWeekly.isChecked()) {
                     weekend = true;
@@ -124,17 +118,7 @@ public class NotificationActivity extends AppCompatActivity {
                     calendar.set(Calendar.DAY_OF_WEEK, 2);
                 }
 
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(ALARM_SERVICE);
-//                long interval = 1000 * 60 * 1440;
-                long interval = 1000 * 60 * 60 * 24 * 7;
-
-                Intent serviceIntent = new Intent(context, NotificationService.class);
-                serviceIntent.putExtra("weekend", weekend);
-                PendingIntent servicePendingIntent = PendingIntent.getService(context, NotificationService.SERVICE_ID, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), interval, servicePendingIntent);
-
-                Toast.makeText(NotificationActivity.this, "Notification Settings have been saved!", Toast.LENGTH_SHORT).show();
+                NotificationUtils.setReminder(NotificationActivity.this, getApplicationContext(), weekend, calendar);
                 PreferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekly.isChecked());
 
                 onBackPressed();

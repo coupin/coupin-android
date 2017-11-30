@@ -12,9 +12,9 @@
         style="?android:attr/progressBarStyleLarge"
         android:id="@+id/now_loadingview"
         android:layout_centerInParent="true"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        app:indicatorName="BallGridPulseIndicator"
+        android:layout_width="250dp"
+        android:layout_height="250dp"
+        app:indicatorName="BallScaleMultipleIndicator"
         app:indicatorColor="@color/colorAccent" />
 
     <android.support.v7.widget.RecyclerView

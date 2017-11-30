@@ -22,7 +22,7 @@
             android:layout_height="200dp"
             android:layout_marginBottom="8dp"
             android:visibility="visible"
-            app:indicatorName="BallGridPulseIndicator"
+            app:indicatorName="BallScaleMultipleIndicator"
             app:indicatorColor="@color/white" />
 
     </RelativeLayout>

@@ -60,16 +60,27 @@
         app:strokeColor="@color/white"
         app:strokeWidth="1dp"/>
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/padding_xs"
-            android:text="Hot Picks"
-            android:textColor="@color/text_dark_grey"
-            android:textSize="@dimen/large_text"
-            android:textStyle="bold"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_md"
+        android:padding="@dimen/padding_xs"
+        android:text="@string/featured"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="@dimen/large_text"
+        android:textStyle="bold"/>
 
     <include layout="@layout/cardview_group_hotlist"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/margin_sm"
+        android:padding="@dimen/padding_xs"
+        android:text="@string/recommend"
+        android:textColor="@color/text_dark_grey"
+        android:textSize="@dimen/large_text"
+        android:textStyle="bold"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hot_recyclerview"

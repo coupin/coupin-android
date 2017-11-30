@@ -44,11 +44,11 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <!--<string name="base_url">https://coupin.herokuapp.com</string>-->
+    <string name="base_url">https://coupin.herokuapp.com</string>
     <!--<string name="base_url">http://172.16.0.242:5030</string>-->
     <!--<string name="base_url">http://172.16.1.37:5030</string>-->
-    <string name="base_url">http://192.168.8.102:5030</string>
-    <!--<string name="base_url">http://10.0.30.87:5030</string>-->
+    <!--<string name="base_url">http://192.168.8.102:5030</string>-->
+    <!--<string name="base_url">http://10.75.111.91:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_login_user">/customer/authenticate</string>
@@ -219,4 +219,6 @@
         Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur
     </string>
     <string name="socialAut">/customer/authenticate/social</string>
+    <string name="featured">Featured</string>
+    <string name="recommend">Recommended</string>
 </resources>

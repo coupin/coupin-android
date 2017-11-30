@@ -22,6 +22,7 @@
         <!--android:background="#A6FFFFFF"-->
     <LinearLayout
         android:background="@drawable/background_white_gradient_fade"
+        android:id="@+id/top_holder"
         android:layout_alignParentTop="true"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
@@ -139,17 +140,18 @@
 
         </RelativeLayout>
 
-        <ImageView
-            android:adjustViewBounds="true"
-            android:background="@drawable/loading"
-            android:id="@+id/icon_loading"
-            android:layout_height="3dp"
-            android:layout_marginLeft="@dimen/icon_space_horizontal"
-            android:layout_marginRight="@dimen/icon_space_horizontal"
-            android:layout_width="match_parent"
-            android:visibility="gone"/>
-
     </LinearLayout>
+
+    <ImageView
+        android:adjustViewBounds="true"
+        android:background="@drawable/loading"
+        android:layout_below="@id/top_holder"
+        android:id="@+id/icon_loading"
+        android:layout_height="10dp"
+        android:layout_marginLeft="@dimen/icon_space_horizontal"
+        android:layout_marginRight="@dimen/icon_space_horizontal"
+        android:layout_width="match_parent"
+        android:visibility="gone"/>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/btn_mylocation"
