@@ -221,4 +221,6 @@
     <string name="socialAut">/customer/authenticate/social</string>
     <string name="featured">Featured</string>
     <string name="recommend">Recommended</string>
+    <string name="empty_more_title">No More Merchants</string>
+    <string name="empty_more_details">Sorry, there are no more merchants around you :\'(</string>
 </resources>

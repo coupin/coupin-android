@@ -9,6 +9,7 @@ import android.support.annotation.StyleRes;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -19,9 +20,11 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
 public class NetworkErrorDialog extends Dialog {
     private Button closeButton;
+    private ImageView errorImage;
     private TextView errorBody;
     private TextView errorHeader;
 
+    int image;
     String body;
     String title;
 
@@ -45,24 +48,28 @@ public class NetworkErrorDialog extends Dialog {
         setContentView(R.layout.dialog_error);
 
         closeButton = (Button) findViewById(R.id.exit);
+        errorImage = (ImageView) findViewById(R.id.error_image);
         errorBody = (TextView) findViewById(R.id.error_body);
         errorHeader = (TextView) findViewById(R.id.error_header);
 
-        errorHeader.setText(title);
         errorBody.setText(body);
+        errorImage.setImageResource(image);
+        errorHeader.setText(title);
 
         closeButton.setOnClickListener(resolve);
     }
 
     /**
      * Set options for dialog
-     * @param title
      * @param body
+     * @param image
+     * @param title
      * @param resolve
      */
-    public void setOptions(String title, String body, View.OnClickListener resolve) {
+    public void setOptions(int image, String title, String body, View.OnClickListener resolve) {
         this.body = body;
-        this.title = title;
+        this.image = image;
         this.resolve = resolve;
+        this.title = title;
     }
 }

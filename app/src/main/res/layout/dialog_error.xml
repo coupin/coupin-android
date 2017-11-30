@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/white"
     android:layout_height="match_parent"
-    android:layout_width="match_parent"
+    android:layout_width="300dp"
     android:orientation="vertical"
     app:cardCornerRadius="@dimen/rounded_edge"
     app:cardElevation="5dp"
@@ -26,25 +26,23 @@
             android:textSize="@dimen/xlarge_text"
             android:textStyle="bold"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:background="@color/white"
-            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_width="match_parent"
+            android:orientation="vertical"
             android:padding="@dimen/padding_sm_plus">
 
             <ImageView
                 android:id="@+id/error_image"
-                android:layout_centerInParent="true"
                 android:layout_height="48dp"
                 android:layout_marginBottom="@dimen/margin_xs"
-                android:layout_width="48dp"
-                android:src="@drawable/attention"/>
+                android:layout_width="48dp"/>
 
             <TextView
                 android:gravity="center_horizontal"
                 android:id="@+id/error_body"
-                android:layout_below="@id/error_image"
-                android:layout_centerHorizontal="true"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/margin_md"
                 android:layout_width="match_parent"
@@ -53,16 +51,15 @@
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"/>
 
-        </RelativeLayout>
+        </LinearLayout>
 
         <Button
             android:background="@drawable/round_edges_grey"
-            android:layout_centerInParent="true"
             android:id="@+id/exit"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="match_parent"
-            android:text="@string/dialog_cancel"
+            android:text="@string/dialog_ok"
             android:textColor="@color/white"
             android:textStyle="bold"/>
 

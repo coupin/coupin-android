@@ -245,7 +245,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         if (!NetworkGPSUtils.isConnected(getContext())) {
             //TODO: Show Dialog about network
-            networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                 getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -585,7 +585,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     showDialog(false);
 
                     if (error.networkResponse == null) {
-                        networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                        networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                             getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
@@ -594,7 +594,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             });
                     } else {
                         if (HomeTab.this.isVisible()) {
-                            networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                                 error.getMessage(), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -709,6 +709,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 public void onResponse(String response) {
                     try {
                         JSONArray resArr = new JSONArray(response);
+
                         for (int j = 0; j < resArr.length(); j++) {
                             JSONObject res = resArr.getJSONObject(j);
                             Merchant item = new Merchant();
@@ -751,16 +752,24 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     loading();
 
                     if (error.networkResponse == null) {
-                        networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                        networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                             getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
                                 @Override
                                 public void onClick(View view) {
                                     getActivity().finish();
                                 }
                             });
+                    } else if (error.networkResponse.statusCode == 404) {
+                        networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_more_title),
+                            getResources().getString(R.string.empty_more_details), new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    networkErrorDialog.dismiss();
+                                }
+                            });
                     } else {
                         if (HomeTab.this.isVisible()) {
-                            networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                                 error.getMessage(), new View.OnClickListener() {
                                     @Override
                                     public void onClick(View view) {
@@ -769,6 +778,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 });
                         }
                     }
+
+                    networkErrorDialog.show();
                 }
             }) {
                 @Override
@@ -934,7 +945,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         //TODO: Display Dialog
-        networkErrorDialog.setOptions(getResources().getString(R.string.error_connection_title),
+        networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
             getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
