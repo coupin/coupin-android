@@ -142,6 +142,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private LinearLayoutManager mLinearLayoutManager;
     private List<Address> addresses;
 
+    private boolean filter;
     private boolean isGPSEnabled;
     private boolean isNetworkEnabled;
     private boolean isLoading = false;
@@ -170,12 +171,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     public int distance = 3;
     public int page = 0;
+    public int screenWidth;
+    public double maxLat;
     public ArrayList<String> categories = new ArrayList<>();
 
     public BigDecimal longitude;
     public BigDecimal latitude;
 
     private final String TAG = "markers";
+    public final int EQUATOR_LENGTH = 40075;
 
     public LoadingDialog loadingDialog;
     public NetworkErrorDialog networkErrorDialog;
@@ -216,6 +220,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         Window window = filterDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = getActivity().getWindow().getAttributes().width;
+        screenWidth = wlp.width;
         wlp.gravity = Gravity.TOP | Gravity.LEFT | Gravity.START;
         wlp.windowAnimations = R.style.PauseDialogAnimation;
 
@@ -275,11 +280,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(false);
-
-//                if (currentLocation == null && mGoogleMap.getMyLocation() != null) {
-//                    Log.v("Get it", "Another" + currentLocation.toString());
-//                    currentLocation = mGoogleMap.getMyLocation();
-//                }
 
                 try {
                     if (geocoder.isPresent() && currentLocation != null) {
@@ -450,6 +450,34 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         return rootView;
     }
 
+
+    /**
+     * Get the marker location furthest away from current location
+     * @return max furthest location
+     */
+    private float calculateFurthestMarker() {
+        float max = 0;
+
+        for (int x = 0; x < markers.size(); x++) {
+            Location temp = new Location("");
+            temp.setLatitude(markers.get(x).getPosition().latitude);
+            temp.setLongitude(markers.get(x).getPosition().longitude);
+            float z = currentLocation.distanceTo(temp);
+            if (max < z) {
+                max = z;
+                maxLat = temp.getLatitude();
+            }
+        }
+
+        return max;
+    }
+
+    private double getZoomLevel(double desiredMeters, double latitude) {
+        final double latitudinalAdjustement = Math.cos(Math.PI * latitude / 180);
+        final double arg = EQUATOR_LENGTH * screenWidth * latitudinalAdjustement/(desiredMeters*256);
+        return Math.log(arg)/Math.log(2);
+    }
+
     /**
      * Set last known location
      */
@@ -493,9 +521,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Sets up the horizontal list
      */
     public void setUpList() {
-        if (iconsList.size() > 0) {
+        if (iconsList.size() > 0 && filter) {
             iconsList.clear();
             adapter.notifyDataSetChanged();
+            filter = false;
+        } else if (iconsList.size() > 0 && !filter) {
+            return;
         }
 
         Log.v("VolleySetup", "Entered Setup");
@@ -648,10 +679,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         latLngBounds = new LatLngBounds.Builder();
 
-        if (currentLocation != null) {
-            tempLat = currentLocation.getLatitude();
-            tempLong = currentLocation.getLongitude();
-            latLngBounds.include(new LatLng(tempLat, tempLong));
+        if (myPosition != null) {
+            latLngBounds.include(myPosition.getPosition());
         }
 
         for (int x = 0; x < markers.size(); x++) {
@@ -660,11 +689,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         LatLngBounds bounds = latLngBounds.build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
+//        float zoomLevel = (float)((float)getZoomLevel(calculateFurthestMarker(), maxLat) - 0.3);
+//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), zoomLevel));
     }
 
     /**
      * To recenter the view to the bound created
      */
+    //TODO: Delete once confirmed that it isn't needed
     private void recenterView() {
         LatLngBounds bounds = latLngBounds.build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 30));
@@ -875,17 +907,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.v("VolleyChange", "It changed");
-        if (currentLocation == null) {
-            currentLocation = location;
-            setUpList();
-        } else {
-            currentLocation = location;
-        }
+        myPosition.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
 
         try {
-            addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-            Log.v("VolleyAddress", addresses.toString());
+            addresses = geocoder.getFromLocation(myPosition.getPosition().latitude, myPosition.getPosition().longitude, 1);
             if (addresses != null) {
                 street.setText(addresses.get(0).getThoroughfare().toString());
             }
@@ -920,6 +945,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public void onFilterSelected(ArrayList<String> selection, int distance) {
         categories = selection;
         this.distance = distance / 10;
+        filter = true;
         setUpList();
     }
 

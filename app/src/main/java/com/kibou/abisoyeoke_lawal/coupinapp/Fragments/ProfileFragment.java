@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -78,9 +79,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
             profileName.setText(StringUtils.capitalize(userObject.getString("name")));
 
-            if (userObject.has("picture")) {
+            if (userObject.has("picture") && !userObject.get("picture").toString().equals("null")) {
                 pictureUrl = userObject.getString("picture");
             }
+
+            Log.v("VolleyPicture", pictureUrl);
 
             Glide.with(this).load(pictureUrl).into(profilePicture);
         } catch (Exception e) {

@@ -50,6 +50,8 @@
     <!--<string name="base_url">http://192.168.8.102:5030</string>-->
     <!--<string name="base_url">http://10.75.111.91:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
+    <string name="ep_api_merchant_new">/api/merchant/recent</string>
+    <string name="ep_api_merchant_recent">/api/merchant/recent</string>
     <string name="ep_generate_code">/api/reward/coupin</string>
     <string name="ep_login_user">/customer/authenticate</string>
     <string name="ep_register_user">/customer/register</string>
@@ -161,6 +163,10 @@
     <string name="error_now">An error occured. Please check your internet and try again</string>
     <string name="receive_notifications">Would you like to receive notifications?</string>
     <string name="receive_weekly">Receive on weekdays or weekends</string>
+    <string name="receive_weekdays">Receive notifications every weekday.</string>
+    <string name="receive_weekdays_small">(Receive notifications every monday.)</string>
+    <string name="receive_weekends">Receive notifications every weekend.</string>
+    <string name="receive_weekends_small">Receive notifications every friday.</string>
     <string name="copyrite">Copyrite of Fire Flame.inc</string>
     <string name="bt_save">Save</string>
     <string name="example_near_me">Near Me - Adeola Odeku</string>

@@ -25,6 +25,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,11 +44,12 @@ public class InterestsActivity extends AppCompatActivity {
     public ArrayList<String> selected = new ArrayList<>();
 
     public int[] categoryIcons = new int[]{R.drawable.int_ent, R.drawable.int_food, R.drawable.int_gadget,
-        R.drawable.int_beauty, R.drawable.int_fashion, R.drawable.int_ticket, R.drawable.int_travel};
-    public String[] categories = new String[]{"Entertainment", "Food & Drink", "Gadgets",
+        R.drawable.int_groceries, R.drawable.int_beauty, R.drawable.int_fashion, R.drawable.int_ticket,
+        R.drawable.int_travel};
+    public String[] categories = new String[]{"Entertainment", "Food & Drink", "Gadgets", "Groceries",
         "Health & Beauty", "Shopping", "Tickets", "Travel"};
     public String[] categoryValues = new String[]{"\"entertainment\"", "\"foodndrink\"", "\"gadgets\"",
-        "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"", "\"travel\""};
+        "\"groceries\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"", "\"travel\""};
 
     public RequestQueue requestQueue;
 
@@ -127,9 +129,13 @@ public class InterestsActivity extends AppCompatActivity {
         calendar.set(Calendar.DAY_OF_WEEK, 6);
         calendar.set(Calendar.HOUR, 11);
         NotificationUtils.setReminder(InterestsActivity.this, getApplicationContext(), true, calendar);
-        PreferenceMngr.notificationSelection(true, true);
+        PreferenceMngr.notificationSelection(true, true, false);
+        PreferenceMngr.setLastChecked((new Date()).toString());
     }
 
+    /**
+     * Persist user interest info
+     */
     public void sendInterestInfo() {
         String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_category);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {

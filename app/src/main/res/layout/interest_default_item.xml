@@ -13,10 +13,10 @@
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/padding_md_plus"
+        android:paddingBottom="@dimen/padding_md"
         android:paddingLeft="@dimen/padding_md"
         android:paddingRight="@dimen/padding_md"
-        android:paddingTop="@dimen/padding_md_plus"
+        android:paddingTop="@dimen/padding_md"
         android:animateLayoutChanges="true">
 
         <ImageView
@@ -27,9 +27,11 @@
             android:tint="@color/white"/>
 
         <TextView
+            android:ellipsize="marquee"
             android:id="@+id/interest_text"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:singleLine="true"
             android:text="@string/example_text_1"
             android:textColor="@color/white"
             android:textSize="@dimen/large_text"

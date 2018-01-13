@@ -12,7 +12,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Created by abisoyeoke-lawal on 4/22/17.
@@ -145,8 +144,12 @@ public class PreferenceMngr {
      * Get last checked date
      * @return
      */
-    public static Date getLastChecked() {
-        return new Date(preferences.getString("lastChecked", null));
+    public static String getLastChecked() {
+        return preferences.getString("lastChecked", null);
+    }
+
+    public static void setLastChecked(String dateString) {
+        preferences.edit().putString("lastChecked", dateString).apply();
     }
 
     /**
@@ -154,9 +157,10 @@ public class PreferenceMngr {
      * @param notify
      * @param weekend
      */
-    public static void notificationSelection(boolean notify, boolean weekend) {
+    public static void notificationSelection(boolean notify, boolean weekend, boolean weekday) {
         preferences.edit().putBoolean("notify", notify).apply();
         preferences.edit().putBoolean("weekend", weekend).apply();
+        preferences.edit().putBoolean("weekday", weekday).apply();
     }
 
     /**
@@ -164,7 +168,7 @@ public class PreferenceMngr {
      * @return array of boolean values
      */
     public static boolean[] getNotificationSelection() {
-        return new boolean[]{preferences.getBoolean("notify", false), preferences.getBoolean("weekend", false)};
+        return new boolean[]{preferences.getBoolean("notify", false), preferences.getBoolean("weekend", false), preferences.getBoolean("weekday", false)};
     }
 
     /**

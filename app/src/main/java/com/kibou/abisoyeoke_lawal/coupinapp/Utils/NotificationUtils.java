@@ -29,4 +29,13 @@ public class NotificationUtils {
         alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), interval, servicePendingIntent);
         Toast.makeText(activity, "Notification Settings have been saved!", Toast.LENGTH_SHORT).show();
     }
+
+    public static void cancelReminder(Activity activity, Context appContext) {
+        Context context = appContext.getApplicationContext();
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
+
+        Intent serviceIntent = new Intent(context, NotificationService.class);
+        PendingIntent servicePendingIntent = PendingIntent.getService(context, NotificationService.SERVICE_ID, serviceIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        alarmManager.cancel(servicePendingIntent);
+    }
 }
