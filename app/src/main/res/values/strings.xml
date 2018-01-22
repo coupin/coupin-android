@@ -46,8 +46,8 @@
     <!-- URls -->
     <string name="base_url">https://coupin.herokuapp.com</string>
     <!--<string name="base_url">http://172.16.0.242:5030</string>-->
-    <!--<string name="base_url">http://172.16.1.37:5030</string>-->
-    <!--<string name="base_url">http://192.168.8.102:5030</string>-->
+    <!--<string name="base_url">http://172.16.1.176:5030</string>-->
+    <!--<string name="base_url">http://192.168.8.101:5030</string>-->
     <!--<string name="base_url">http://10.75.111.91:5030</string>-->
     <string name="ep_api_merchant">/api/merchant</string>
     <string name="ep_api_merchant_new">/api/merchant/recent</string>
@@ -130,7 +130,7 @@
     <string name="welcome_back_header">Hi, Welcome Back</string>
     <string name="welcome_back_header_signin">Login Using Your Email</string>
     <string name="new_signin">Not a member? Sign Up</string>
-    <string name="around">Rewards around you</string>
+    <string name="around">around you</string>
     <string name="edit_profile">Edit My Profile</string>
     <string name="edit_category">Change Category</string>
     <string name="support">SUPPORT</string>
@@ -164,9 +164,9 @@
     <string name="receive_notifications">Would you like to receive notifications?</string>
     <string name="receive_weekly">Receive on weekdays or weekends</string>
     <string name="receive_weekdays">Receive notifications every weekday.</string>
-    <string name="receive_weekdays_small">(Receive notifications every monday.)</string>
+    <string name="receive_weekdays_small">(Receive notifications every Monday)</string>
     <string name="receive_weekends">Receive notifications every weekend.</string>
-    <string name="receive_weekends_small">Receive notifications every friday.</string>
+    <string name="receive_weekends_small">(Receive notifications every Friday)</string>
     <string name="copyrite">Copyrite of Fire Flame.inc</string>
     <string name="bt_save">Save</string>
     <string name="example_near_me">Near Me - Adeola Odeku</string>
@@ -197,6 +197,21 @@
     <string name="cat">Category</string>
     <string name="aboutus">About Coupin</string>
     <string name="terms_of_service_title">Terms Of Service</string>
+
+    <string-array name="genders">
+        <item>Select Gender</item>
+        <item>Male</item>
+        <item>Female</item>
+    </string-array>
+
+    <string-array name="age_range">
+        <item>Select Age Range</item>
+        <item>Under 15</item>
+        <item>15 - 25</item>
+        <item>25 - 35</item>
+        <item>35 - 45</item>
+        <item>Above 45</item>
+    </string-array>
 
 
     <string name="about_us">
@@ -229,4 +244,16 @@
     <string name="recommend">Recommended</string>
     <string name="empty_more_title">No More Merchants</string>
     <string name="empty_more_details">Sorry, there are no more merchants around you :\'(</string>
+    <string name="gender_text">Please enter the details below to allow us better customise your rewards experience</string>
+    <string name="prompt_phone">Phone Number</string>
+    <string name="dialog_continue">Continue</string>
+    <string name="other">Better Experience</string>
+    <string name="hot_list">Hot List</string>
+    <string name="select_age_prompt">Please select age range</string>
+    <string name="select_gender_prompt">Please select gender</string>
+    <string name="gender_thanks">Your info has been saved. Thank you and enjoy your coupin :)</string>
+    <string name="error_general">An error occured. Please try again.</string>
+    <string name="error_firstname">First name must be at least 2 letters.</string>
+    <string name="error_lastname">Last name must be at least 2 letters.</string>
+    <string name="error_phone_number">Invalid Phone Number e.g. 08012345678</string>
 </resources>

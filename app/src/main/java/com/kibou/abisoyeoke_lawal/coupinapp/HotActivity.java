@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.ImageView;
 
 import com.android.volley.Request;
@@ -18,9 +19,11 @@ import com.synnapps.carouselview.ImageListener;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class HotActivity extends AppCompatActivity {
+public class HotActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.hot_carousel)
     public CarouselView hotCarousel;
+    @BindView(R.id.hot_back)
+    public ImageView hotBack;
     @BindView(R.id.hot_recyclerview)
     public RecyclerView hotRecyclerView;
 
@@ -40,6 +43,8 @@ public class HotActivity extends AppCompatActivity {
         hotCarousel.setImageListener(imageListener);
 
         getHotList();
+
+        hotBack.setOnClickListener(this);
     }
 
     ImageListener imageListener = new ImageListener() {
@@ -65,5 +70,12 @@ public class HotActivity extends AppCompatActivity {
         });
 
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onClick(View view) {
+        if (view.getId() == R.id.hot_back) {
+            onBackPressed();
+        }
     }
 }

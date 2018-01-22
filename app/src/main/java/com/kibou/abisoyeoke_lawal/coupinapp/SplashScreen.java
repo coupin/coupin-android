@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
@@ -26,6 +28,10 @@ public class SplashScreen extends Activity {
         AppEventsLogger.activateApp(this);
 
         PreferenceMngr.setContext(getApplicationContext());
+        if (PreferenceMngr.getInstance().getRequestQueue() == null) {
+            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            PreferenceMngr.getInstance().setRequestQueue(requestQueue);
+        }
 
         Handler handler = new Handler();
 

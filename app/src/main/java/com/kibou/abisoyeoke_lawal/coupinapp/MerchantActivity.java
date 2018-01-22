@@ -25,7 +25,9 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVPopUpAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.ExperienceDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnArraySelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
@@ -45,7 +47,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick {
+public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, MyOnArraySelect {
     @BindView(R.id.selected_btn_pin)
     public Button selectedBtnPin;
     @BindView(R.id.selected_btn_save)
@@ -73,6 +75,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     @BindView(R.id.merchant_toolbar)
     public Toolbar merchantToolbar;
 
+    public ExperienceDialog experienceDialog;
     public RewardInfoDialog infoDialog;
     public RequestQueue requestQueue;
     String url;
@@ -81,11 +84,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public ArrayList<String> selected;
     public ArrayList<String> favourites;
     public boolean favourite = false;
-    public JSONObject user;
+    public boolean requestGenderNumber = false;
     public JSONArray userFavourites;
     public Merchant item;
     public JSONArray resArray;
     public JSONObject res;
+    public JSONObject user;
     public RVPopUpAdapter rvPopUpAdapter;
     public String rewardHolder;
 
@@ -125,59 +129,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
-
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject object = new JSONObject(response);
-
-                            RewardListItem coupin = new RewardListItem();
-                            coupin.setBookingId(object.getString("_id"));
-                            coupin.setBookingShortCode(object.getString("shortCode"));
-                            coupin.setMerchantName(item.getTitle());
-                            coupin.setMerchantAddress(item.getAddress());
-                            // TODO: Sort out the merchant logo
-
-                            coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
-
-                            Log.v("VolleyCheck", response);
-
-                            Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
-                            intent.putExtra("coupin", coupin);
-                            startActivity(intent);
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-
-                        params.put("merchantId", item.getId());
-                        params.put("rewardId", selected.toString());
-
-                        return params;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", PreferenceMngr.getToken());
-
-                        return headers;
-                    }
-                };
-
-                requestQueue.add(stringRequest);
+                if (requestGenderNumber) {
+                    experienceDialog.show();
+                } else {
+                    generatePin();
+                }
             }
         });
 
@@ -243,6 +199,16 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
             user = new JSONObject(PreferenceMngr.getInstance().getUser());
             userFavourites = user.getJSONArray("favourites");
+
+            Log.v("VolleyMerchant", String.valueOf(PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id"))));
+
+            // Show Mobile and Gender Dialog
+            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
+                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
+                experienceDialog = new ExperienceDialog(this, this, user);
+                requestGenderNumber = true;
+            }
+
             String temp = userFavourites.toString();
             favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
             if (favourites.contains(item.getId())) {
@@ -347,9 +313,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public void onItemClick(int position) {
         if (position == 0) {
             infoDialog.dismiss();
-        } else {
+        } else if (position == 1) {
             this.selected.clear();
             onBackPressed();
+        } else {
+            generatePin();
         }
     }
 
@@ -413,6 +381,72 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             favourite = false;
             invalidateOptionsMenu();
         }
+    }
+
+    /**
+     * Gnerate coupin pin
+     */
+    private void generatePin() {
+        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object = new JSONObject(response);
+
+                    RewardListItem coupin = new RewardListItem();
+                    coupin.setBookingId(object.getString("_id"));
+                    coupin.setBookingShortCode(object.getString("shortCode"));
+                    coupin.setMerchantName(item.getTitle());
+                    coupin.setMerchantAddress(item.getAddress());
+                    // TODO: Sort out the merchant logo
+
+                    coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
+
+                    PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"));
+
+                    Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
+                    intent.putExtra("coupin", coupin);
+                    startActivity(intent);
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                if (error.getMessage() != null) {
+                    Toast.makeText(MerchantActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                } else if (error.networkResponse != null && error.networkResponse.statusCode == 409 ) {
+                    Toast.makeText(MerchantActivity.this, "This coupin has already been created.", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(MerchantActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
+                }
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("merchantId", item.getId());
+                params.put("rewardId", selected.toString());
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", PreferenceMngr.getToken());
+
+                return headers;
+            }
+        };
+
+        requestQueue.add(stringRequest);
     }
 
     /**
@@ -493,5 +527,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    @Override
+    public void onArraySelected(String[] array) {
+
     }
 }

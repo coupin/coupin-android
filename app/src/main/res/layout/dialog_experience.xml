@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:animateLayoutChanges="true"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:background="@color/lightGrey"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="@dimen/padding_md"
+            android:text="@string/other"
+            android:textColor="@color/text_dark_grey"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:animateLayoutChanges="true"
+            android:id="@+id/experience_main"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:padding="@dimen/padding_sm_plus">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/gender_text"/>
+
+            <Spinner
+                android:id="@+id/age"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_width="match_parent"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:id="@+id/age_error"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_sm_plus"
+                android:layout_width="match_parent"
+                android:text="@string/select_age_prompt"
+                android:textAlignment="center"
+                android:textColor="@color/red"
+                android:textSize="@dimen/small_text"
+                android:visibility="gone"/>
+
+            <android.support.design.widget.TextInputLayout
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_sm"
+                android:textColorHint="@color/text_med_grey">
+
+                <AutoCompleteTextView
+                    android:id="@+id/phone_number"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/prompt_phone"
+                    android:inputType="textPhonetic"
+                    android:maxLines="1"
+                    android:maxLength="11"
+                    android:textColor="@color/text_med_grey"
+                    android:textSize="@dimen/medium_text"/>
+
+            </android.support.design.widget.TextInputLayout>
+
+            <Button
+                android:background="@drawable/round_edges_grey"
+                android:id="@+id/experience_continue"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:text="@string/dialog_continue"
+                android:textColor="@color/white"
+                android:textStyle="bold"
+                android:visibility="visible"/>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                android:id="@+id/experience_loading"
+                android:layout_gravity="center"
+                android:layout_height="50dp"
+                android:layout_width="50dp"
+                app:indicatorName="BallScaleMultipleIndicator"
+                app:indicatorColor="@color/colorAccent"
+                android:visibility="gone"/>
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:id="@+id/experience_success"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_centerInParent="true"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_sm_plus"
+                android:orientation="vertical">
+
+                <ImageView
+                    android:layout_gravity="center"
+                    android:layout_height="70dp"
+                    android:layout_marginBottom="@dimen/margin_md"
+                    android:layout_marginTop="@dimen/margin_sm"
+                    android:layout_width="70dp"
+                    android:src="@drawable/ic_tick_dark"/>
+
+                <TextView
+                    android:gravity="center_horizontal"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_md"
+                    android:layout_width="match_parent"
+                    android:text="@string/gender_thanks"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/experience_close"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/margin_xs"
+        android:layout_marginStart="@dimen/margin_xs"
+        android:layout_marginTop="@dimen/margin_xs"
+        android:layout_width="wrap_content"
+        android:padding="@dimen/padding_xs"
+        android:text="X"/>
+
+</RelativeLayout>

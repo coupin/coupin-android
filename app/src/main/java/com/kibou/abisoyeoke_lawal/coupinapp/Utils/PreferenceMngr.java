@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
+import com.android.volley.RequestQueue;
 import com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
@@ -21,6 +22,7 @@ public class PreferenceMngr {
     private static PreferenceMngr ourInstance = new PreferenceMngr();
     private static SharedPreferences preferences = null;
     private static Context currentContext = null;
+    private RequestQueue requestQueue;
 
     public static PreferenceMngr getInstance() {
         if(ourInstance == null) {
@@ -44,6 +46,24 @@ public class PreferenceMngr {
         preferences.edit().putString("uid", uid).apply();
         preferences.edit().putString("user", user).apply();
         preferences.edit().putBoolean("category" + uid, true).apply();
+    }
+
+    /**
+     * Add to total number of coupins generated
+     * @param uid
+     */
+    public static void addToTotalCoupinsGenerated(String uid) {
+        int total = preferences.getInt("totalCoupins" + uid, 0);
+        preferences.edit().putInt("totalCoupins" + uid, total + 1).apply();
+    }
+
+    /**
+     * Get total number of coupins generated
+     * @param uid
+     * @return
+     */
+    public static int getToTotalCoupinsGenerated(String uid) {
+        return preferences.getInt("totalCoupins" + uid, 0);
     }
 
     /**
@@ -116,6 +136,14 @@ public class PreferenceMngr {
      * Get user info
      * @return user data in a string format
      */
+    public String getUserId() {
+        return preferences.getString("uid", null);
+    }
+
+    /**
+     * Get user info
+     * @return user data in a string format
+     */
     public static String getUser() {
         return preferences.getString("user", null);
     }
@@ -169,6 +197,14 @@ public class PreferenceMngr {
      */
     public static boolean[] getNotificationSelection() {
         return new boolean[]{preferences.getBoolean("notify", false), preferences.getBoolean("weekend", false), preferences.getBoolean("weekday", false)};
+    }
+
+    public void setRequestQueue(RequestQueue requestQueue) {
+        this.requestQueue = requestQueue;
+    }
+
+    public RequestQueue getRequestQueue() {
+        return this.requestQueue;
     }
 
     /**

@@ -33,6 +33,7 @@
     <!-- Margin -->
     <dimen name="margin_xxs">3dp</dimen>
     <dimen name="margin_xs">5dp</dimen>
+    <dimen name="margin_xs_plus">7dp</dimen>
     <dimen name="margin_sm">10dp</dimen>
     <dimen name="margin_sm_plus">15dp</dimen>
     <dimen name="margin_md">20dp</dimen>

@@ -36,8 +36,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -61,8 +61,10 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.IconListAdapter;
@@ -85,6 +87,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -122,6 +125,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private GoogleApiClient googleApiClient;
     final private int REQUEST_CHECK_SETTINGS_GPS = 0x1;
     final private int REQUEST_ID_MUTLIPLE_PERMISSIONS = 0x2;
+    /** The default socket timeout in milliseconds */
+    public static final int DEFAULT_TIMEOUT_MS = 2500;
+
+    /** The default number of retries */
+    public static final int DEFAULT_MAX_RETRIES = 0;
+
+    /** The default backoff multiplier */
+    public static final float DEFAULT_BACKOFF_MULT = 1f;
 
     // TODO: Remove once done testing categories
     @BindView(R.id.temp)
@@ -157,6 +168,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public Location currentLocation = null;
     public Marker lastOpened;
     public Marker myPosition;
+    public Marker closestMarker;
 
     public String url;
     public RequestQueue requestQueue;
@@ -173,6 +185,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public int page = 0;
     public int screenWidth;
     public double maxLat;
+    private double tempDist;
     public ArrayList<String> categories = new ArrayList<>();
 
     public BigDecimal longitude;
@@ -269,7 +282,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         btnMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setBounds();
+                center();
             }
         });
 
@@ -278,8 +291,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public void onMapReady(GoogleMap googleMap) {
                 mGoogleMap = googleMap;
 
+                mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(false);
+                mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(6.517693, 3.378371), 20));
 
                 try {
                     if (geocoder.isPresent() && currentLocation != null) {
@@ -311,18 +326,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 tempView.measure(0, 0);
                                 float initWidth =  tempView.getMeasuredWidth();
                                 tempView.setText(res.getString("name"));
-                                tempView.measure(0, 0);
-                                float finalWidth =  tempView.getMeasuredWidth();
 
-                                if ((finalWidth / 2) > initWidth) {
-                                    finalWidth = (finalWidth - initWidth) / 100;
-                                } else if (finalWidth > initWidth) {
-                                    finalWidth = finalWidth / 100;
-                                } else {
-                                    finalWidth = (initWidth + finalWidth) / 100;
-                                }
-
-                                marker1.setInfoWindowAnchor(finalWidth, 0.95f);
+                                marker1.setInfoWindowAnchor(2.5f, 0.85f);
                             } else {
                                 // Info window details
                                 infoWindow = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.info_window, null);
@@ -377,6 +382,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         if (!marker.getTitle().toString().equals("Hello!")) {
                             marker.setTitle("Yes");
                         }
+
+                        lastOpened = marker;
+                        onMarker = true;
+                        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(marker.getPosition(), 17));
                         marker.showInfoWindow();
                         return false;
 
@@ -426,7 +435,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         onMarker = false;
                         return true;
                     }
-                    Toast.makeText(getActivity(), "Press back one more time to Exit.", Toast.LENGTH_SHORT).show();
                 }
                 return false;
             }
@@ -450,32 +458,35 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         return rootView;
     }
 
-
     /**
-     * Get the marker location furthest away from current location
-     * @return max furthest location
+     * Calculate the distance between to points using latitude and longitude
+     * @param StartP
+     * @param EndP
+     * @return
      */
-    private float calculateFurthestMarker() {
-        float max = 0;
+    public double CalculationByDistance(LatLng StartP, LatLng EndP) {
+        int Radius = 6371;// radius of earth in Km
+        double lat1 = StartP.latitude;
+        double lat2 = EndP.latitude;
+        double lon1 = StartP.longitude;
+        double lon2 = EndP.longitude;
+        double dLat = Math.toRadians(lat2 - lat1);
+        double dLon = Math.toRadians(lon2 - lon1);
+        double a = Math.sin(dLat / 2) * Math.sin(dLat / 2)
+            + Math.cos(Math.toRadians(lat1))
+            * Math.cos(Math.toRadians(lat2)) * Math.sin(dLon / 2)
+            * Math.sin(dLon / 2);
+        double c = 2 * Math.asin(Math.sqrt(a));
+        double valueResult = Radius * c;
+        double km = valueResult / 1;
+        DecimalFormat newFormat = new DecimalFormat("####");
+        int kmInDec = Integer.valueOf(newFormat.format(km));
+        double meter = valueResult % 1000;
+        int meterInDec = Integer.valueOf(newFormat.format(meter));
+        Log.i("Radius Value", "" + valueResult + "   KM  " + kmInDec
+            + " Meter   " + meterInDec);
 
-        for (int x = 0; x < markers.size(); x++) {
-            Location temp = new Location("");
-            temp.setLatitude(markers.get(x).getPosition().latitude);
-            temp.setLongitude(markers.get(x).getPosition().longitude);
-            float z = currentLocation.distanceTo(temp);
-            if (max < z) {
-                max = z;
-                maxLat = temp.getLatitude();
-            }
-        }
-
-        return max;
-    }
-
-    private double getZoomLevel(double desiredMeters, double latitude) {
-        final double latitudinalAdjustement = Math.cos(Math.PI * latitude / 180);
-        final double arg = EQUATOR_LENGTH * screenWidth * latitudinalAdjustement/(desiredMeters*256);
-        return Math.log(arg)/Math.log(2);
+        return Radius * c;
     }
 
     /**
@@ -494,6 +505,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         // Get Current Location
         if (currentLocation != null) {
+            Log.v("VolleySetup", "In set last known");
             setUpList();
         } else {
             if (googleApiClient == null) {
@@ -595,16 +607,16 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             counter++;
                         }
 
-                        spots.setText(iconsList.size() - 1 + " ");
+                        spots.setText(iconsList.size() - 1 + " Rewards ");
 
                         // TODO: Set the bounds properly
                         setBounds();
 
                         page++;
-                        retrievingData = false;
                         showDialog(false);
                         adapter.setIconList(iconsList);
                         adapter.notifyDataSetChanged();
+                        retrievingData = false;
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -612,7 +624,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
-                    spots.setText("0 ");
+                    spots.setText("0 Rewards ");
                     showDialog(false);
 
                     if (error.networkResponse == null) {
@@ -656,13 +668,16 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     }
                     params.put("distance", String.valueOf(distance));
                     params.put("categories", categories.toString());
+                    params.put("limit", "5");
 
                     return params;
                 }
             };
 
-            if (!retrievingData) {
+            if (!retrievingData && iconsList.size() == 0) {
                 retrievingData = true;
+                DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+                stringRequest.setRetryPolicy(retryPolicy);
                 requestQueue.add(stringRequest);
             }
         } catch (Exception e) {
@@ -674,8 +689,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Set the bounds for the view
      */
     private void setBounds() {
-        double tempLat = 0;
-        double tempLong = 0;
+        tempDist = 0;
+
+        closestMarker = markers.get(1);
+        tempDist = CalculationByDistance(myPosition.getPosition(), closestMarker.getPosition());
 
         latLngBounds = new LatLngBounds.Builder();
 
@@ -683,14 +700,44 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             latLngBounds.include(myPosition.getPosition());
         }
 
-        for (int x = 0; x < markers.size(); x++) {
+        for (int x = 1; x < markers.size(); x++) {
+            double temp = CalculationByDistance(closestMarker.getPosition(), markers.get(x).getPosition());
+
+            if (temp < tempDist) {
+                tempDist = temp;
+                closestMarker = markers.get(x);
+            }
+
             latLngBounds.include(markers.get(x).getPosition());
         }
 
         LatLngBounds bounds = latLngBounds.build();
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
-//        float zoomLevel = (float)((float)getZoomLevel(calculateFurthestMarker(), maxLat) - 0.3);
-//        mGoogleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), zoomLevel));
+    }
+
+    /**
+     * Center on button
+     */
+    private void center() {
+        LatLngBounds.Builder tempBounds = new LatLngBounds.Builder();
+        CircleOptions circleOptions = new CircleOptions();
+        circleOptions.center(myPosition.getPosition());
+        circleOptions.radius(tempDist);
+        Log.v("VolleyDistance", String.valueOf(tempDist));
+
+//        tempBounds.include(myPosition.getPosition());
+//        tempBounds.include(closestMarker.getPosition());
+//        LatLngBounds bounds = tempBounds.build();
+
+        if (onMarker) {
+            if (lastOpened != null && lastOpened.isInfoWindowShown()) {
+                lastOpened.hideInfoWindow();
+            }
+            onMarker = false;
+        }
+
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), 17));
+//        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(circleOptions.get, 100));
     }
 
     /**
@@ -710,23 +757,23 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         iconListView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                if (isLoading)
-                    return;
+            super.onScrolled(recyclerView, dx, dy);
+            if (isLoading)
+                return;
 
-                int visibleItemCount = mLinearLayoutManager.getChildCount();
-                int totalItemCount = mLinearLayoutManager.getItemCount();
-                int pastVisibleItems = mLinearLayoutManager.findFirstVisibleItemPosition();
-                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
-                    isLoading = true;
-                    loading();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            loadMore();
-                        }
-                    }, 2000);
-                }
+            int visibleItemCount = mLinearLayoutManager.getChildCount();
+            int totalItemCount = mLinearLayoutManager.getItemCount();
+            int pastVisibleItems = mLinearLayoutManager.findFirstVisibleItemPosition();
+            if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                isLoading = true;
+                loading();
+                handler.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        loadMore();
+                    }
+                }, 2000);
+            }
             }
         });
     }
@@ -763,7 +810,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             iconsList.add(item);
                         }
 
-                        spots.setText(iconsList.size() - 1 + " ");
+                        spots.setText(iconsList.size() - 1 + " Rewards ");
 
                         // TODO: Set the bounds properly
                         setBounds();
@@ -907,18 +954,18 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onLocationChanged(Location location) {
-        myPosition.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
-
         try {
-            addresses = geocoder.getFromLocation(myPosition.getPosition().latitude, myPosition.getPosition().longitude, 1);
-            if (addresses != null) {
-                street.setText(addresses.get(0).getThoroughfare().toString());
+            if (myPosition != null) {
+                myPosition.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
+                addresses = geocoder.getFromLocation(myPosition.getPosition().latitude, myPosition.getPosition().longitude, 1);
+
+                if (addresses != null) {
+                    street.setText(addresses.get(0).getThoroughfare().toString());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-
-        setUpList();
     }
 
     @Override
@@ -1026,6 +1073,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         @Override
                         public void onLocationChanged(Location location) {
                             if (currentLocation == null) {
+                                Log.v("VolleySetup", "In location services");
                                 currentLocation = location;
                                 setUpList();
                             } else {
@@ -1034,9 +1082,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         }
                     });
 
-                    currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-
-                    if (currentLocation != null) {
+                    if (currentLocation == null) {
+                        currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                        Log.v("VolleySetup", "In Current null");
                         setUpList();
                     }
 
@@ -1050,6 +1098,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             switch (status.getStatusCode()) {
                                 case LocationSettingsStatusCodes.SUCCESS:
                                     currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                                    Log.v("VolleySetup", "In location success");
                                     setUpList();
                                     break;
                                 case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:

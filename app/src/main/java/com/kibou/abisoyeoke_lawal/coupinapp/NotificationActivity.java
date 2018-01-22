@@ -84,6 +84,11 @@ public class NotificationActivity extends AppCompatActivity {
         toggleWeekends.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (toggleWeekdays.isChecked()) {
+                    toggleWeekdays.setChecked(false);
+                }
+
+                toggleWeekends.setChecked(isChecked);
                 notificationButton.setVisibility(View.VISIBLE);
             }
         });
@@ -91,6 +96,11 @@ public class NotificationActivity extends AppCompatActivity {
         toggleWeekdays.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (toggleWeekends.isChecked()) {
+                    toggleWeekends.setChecked(false);
+                }
+
+                toggleWeekdays.setChecked(isChecked);
                 notificationButton.setVisibility(View.VISIBLE);
             }
         });

@@ -248,6 +248,17 @@
                     android:textColor="@color/black"
                     android:textSize="@dimen/large_text"/>
 
+                <TextView
+                    android:id="@+id/gender_error"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_width="match_parent"
+                    android:text="@string/select_gender_prompt"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/large_text"
+                    android:visibility="gone"/>
+
             </LinearLayout>
 
             <Button

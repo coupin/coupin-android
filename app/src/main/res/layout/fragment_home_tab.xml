@@ -147,9 +147,10 @@
         android:background="@drawable/loading"
         android:layout_below="@id/top_holder"
         android:id="@+id/icon_loading"
-        android:layout_height="10dp"
+        android:layout_height="5dp"
         android:layout_marginLeft="@dimen/icon_space_horizontal"
         android:layout_marginRight="@dimen/icon_space_horizontal"
+        android:layout_marginTop="0dp"
         android:layout_width="match_parent"
         android:visibility="gone"/>
 
