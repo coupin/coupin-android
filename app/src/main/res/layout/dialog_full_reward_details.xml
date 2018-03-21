@@ -321,25 +321,37 @@
 
         <ImageView
             android:id="@+id/photo_1"
-            android:background="@color/text_dark_grey"
+            android:background="@android:color/transparent"
             android:layout_height="80dp"
             android:layout_marginRight="@dimen/margin_xs"
+            android:layout_weight="1"
             android:layout_width="80dp"
             android:scaleType="centerCrop"/>
 
         <ImageView
             android:id="@+id/photo_2"
-            android:background="@color/text_dark_grey"
+            android:background="@android:color/transparent"
             android:layout_height="80dp"
             android:layout_marginRight="@dimen/margin_xs"
+            android:layout_weight="1"
             android:layout_width="80dp"
             android:scaleType="centerCrop"/>
 
         <ImageView
             android:id="@+id/photo_3"
-            android:background="@color/text_dark_grey"
+            android:background="@android:color/transparent"
             android:layout_height="80dp"
             android:layout_marginRight="@dimen/margin_xs"
+            android:layout_weight="1"
+            android:layout_width="80dp"
+            android:scaleType="centerCrop"/>
+
+        <ImageView
+            android:id="@+id/photo_4"
+            android:background="@android:color/transparent"
+            android:layout_height="80dp"
+            android:layout_marginRight="@dimen/margin_xs"
+            android:layout_weight="1"
             android:layout_width="80dp"
             android:scaleType="centerCrop"/>
 

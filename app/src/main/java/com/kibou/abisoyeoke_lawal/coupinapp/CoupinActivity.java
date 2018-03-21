@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -70,7 +71,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
         coupin = (RewardListItem) getIntent().getSerializableExtra("coupin");
         coupinRewards = new ArrayList<>();
 
-        Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(coupinBanner);
+        Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(coupinBanner);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(
@@ -90,10 +91,11 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
 
             int total = res.length();
 
+                Log.v("VolleyCheck", coupin.getRewardDetails());
             listCount.setText("ACTIVE REWARDS - " + total);
 
             for(int x = 0; x < total; x++) {
-                JSONObject object = res.getJSONObject(x);
+                JSONObject object = res.getJSONObject(x).getJSONObject("id");
 
                 Reward reward = new Reward();
                 reward.setId(object.getString("_id"));
@@ -139,10 +141,9 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
         activateHolder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_rewards_use_saved)
-                    + "?id=" + coupin.getBookingId();
+                String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_rewards_use_saved).replace("id", coupin.getBookingId());
 
-                StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         try {

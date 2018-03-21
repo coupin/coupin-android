@@ -14,6 +14,7 @@ public class Merchant implements Serializable {
     public String mobile;
     public String details;
     public String address;
+    public String logo;
     public String response;
     public String rewards;
     public double latitude;
@@ -49,6 +50,14 @@ public class Merchant implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public String getLogo() {
+        return logo;
+    }
+
+    public void setLogo(String logo) {
+        this.logo = logo;
     }
 
     public String getDetails() {

@@ -4,7 +4,9 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,6 +76,20 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
 
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(getActivity()).clearMemory();
+            }
+        }, 0);
+
+        AsyncTask.execute(new Runnable() {
+            @Override
+            public void run() {
+                Glide.get(getActivity()).clearDiskCache();
+            }
+        });
+
         try {
             userObject = new JSONObject(PreferenceMngr.getUser());
 
@@ -85,7 +101,9 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
             Log.v("VolleyPicture", pictureUrl);
 
-            Glide.with(this).load(pictureUrl).into(profilePicture);
+            Glide.with(this)
+                .load(pictureUrl)
+                .into(profilePicture);
         } catch (Exception e) {
             e.printStackTrace();
         }

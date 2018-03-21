@@ -50,6 +50,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
     public RecyclerView laterRecyclerView;
 
     public ArrayList<RewardListItem> laterList = new ArrayList<>();
+    public int page = 0;
     public RequestQueue requestQueue;
     public RVBroAdapter nowRvAdapter;
     public String url;
@@ -75,7 +76,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
         laterRecyclerView.setHasFixedSize(true);
         laterRecyclerView.setAdapter(nowRvAdapter);
 
-        url = getString(R.string.base_url) + getString(R.string.ep_rewards_for_later);
+        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?saved=true";
 
         getRewardsForLater();
 
@@ -85,7 +86,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
     }
 
     private void getRewardsForLater() {
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url + "&page=" + page, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {

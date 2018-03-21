@@ -18,6 +18,7 @@ public class Reward implements Serializable {
   private float newPrice;
   private float oldPrice;
   private JSONArray days;
+  private JSONArray pictures;
   private String details;
   private String id;
   private String title;
@@ -30,15 +31,15 @@ public class Reward implements Serializable {
       this.details = details;
   }
 
-  public void setExpires(Date expires) {
+    public void setExpires(Date expires) {
         this.expires = expires;
     }
 
-  public void setId(String id) {
+    public void setId(String id) {
     this.id = id;
   }
 
-  public void setIsDiscount(boolean discount) {
+    public void setIsDiscount(boolean discount) {
         isDiscount = discount;
     }
 
@@ -54,9 +55,13 @@ public class Reward implements Serializable {
       this.newPrice = newPrice;
   }
 
-  public void setOldPrice(int oldPrice) {
+    public void setOldPrice(int oldPrice) {
       this.oldPrice = oldPrice;
   }
+
+    public void setPictures(JSONArray pictures) {
+        this.pictures = pictures;
+    }
 
     public void setStarting(Date starting) {
         this.starting = starting;
@@ -100,6 +105,10 @@ public class Reward implements Serializable {
 
   public float getOldPrice() {
       return oldPrice;
+  }
+
+  public JSONArray getPictures() {
+      return pictures;
   }
 
     public Date getStarting() {

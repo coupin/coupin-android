@@ -92,6 +92,7 @@
         android:id="@+id/fav_recyclerview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
+        android:paddingBottom="@dimen/padding_md_plus"
         android:paddingEnd="@dimen/padding_sm"
         android:paddingLeft="@dimen/padding_sm"
         android:paddingRight="@dimen/padding_sm"

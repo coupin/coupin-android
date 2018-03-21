@@ -1,7 +1,11 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.content.Context;
+import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -13,6 +17,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -20,12 +25,16 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.cloudinary.android.MediaManager;
+import com.cloudinary.android.callback.ErrorInfo;
+import com.cloudinary.android.callback.UploadCallback;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.StringUtils;
 
 import org.json.JSONObject;
 
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +45,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     @BindView(R.id.edit_picture)
     public CircleImageView editPicture;
+    @BindView(R.id.profile_picture)
+    public CircleImageView profilePicture;
     @BindView(R.id.edit_back)
     public ImageView editBack;
     @BindView(R.id.profile_gender)
@@ -57,6 +68,9 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     @BindView(R.id.profile_password)
     public TextView profilePassword;
 
+    private final int IMAGE_SELECTION = 1004;
+    private Toast toast;
+
     private String email;
     private String gender;
     private String mobileNumber;
@@ -64,11 +78,15 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     private String picture;
 
     private boolean editMode = false;
+    private boolean saveToast = false;
+    private boolean uploaded = false;
     private String url;
+    private String uploadedUrl;
 
     private PreferenceMngr preferenceMngr;
     private RequestQueue requestQueue;
     private LoadingDialog loadingDialog;
+    private JSONObject user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +96,8 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
         requestQueue = Volley.newRequestQueue(this);
         preferenceMngr = PreferenceMngr.getInstance();
-        loadingDialog = new LoadingDialog(this);
+        loadingDialog = new LoadingDialog(this, R.style.Loading_Dialog);
+        loadingDialog.setCancelable(false);
 
 
         profileGender.setOnItemSelectedListener(this);
@@ -104,6 +123,17 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         editFalse.setOnClickListener(this);
         editTrue.setOnClickListener(this);
         editBack.setOnClickListener(this);
+        editPicture.setOnClickListener(this);
+    }
+
+    /**
+     * Select image from Gallery
+     */
+    private void selectImageFromGallery() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Select Image"), IMAGE_SELECTION);
     }
 
     /**
@@ -112,7 +142,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     private void setupDetails() {
         try {
             Log.v("User", PreferenceMngr.getUser());
-            JSONObject user = new JSONObject(PreferenceMngr.getUser());
+            user = new JSONObject(PreferenceMngr.getUser());
 
             String temp = user.getString("name");
             String names[] = temp.split(" ");
@@ -132,7 +162,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
             if (user.has("picture")) {
                 String url = user.getString("picture");
-                Glide.with(this).load(url).into(editPicture);
+                Glide.with(this).load(url).into(profilePicture);
             }
 
         } catch (Exception e) {
@@ -226,7 +256,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile .setFocusableInTouchMode(false);
             profileGender.setEnabled(false);
             editPicture.setVisibility(View.GONE);
-            saveUser();
         }
 
         // Check if no view has focus:
@@ -252,7 +281,8 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 makeEditable(false);
                 editFalse.setVisibility(View.GONE);
                 editTrue.setVisibility(View.VISIBLE);
-                Toast.makeText(EditActivity.this, "Profile updated successfully.", Toast.LENGTH_SHORT).show();
+                result("Profile updated successfully.");
+                saveToast = true;
             }
         }, new Response.ErrorListener() {
             @Override
@@ -261,10 +291,11 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 loadingDialog.dismiss();
 
                 if (error.getMessage() != null) {
-                    Toast.makeText(EditActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
+                    result(error.getMessage());
                 } else {
-                    Toast.makeText(EditActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
+                    result(getString(R.string.error_general));
                 }
+                saveToast = true;
             }
         }){
             @Override
@@ -275,6 +306,9 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 params.put("mobileNumber", mobileNumber);
                 params.put("email", email);
                 params.put("sex", gender);
+                if (uploaded) {
+                    params.put("picture", uploadedUrl);
+                }
 
                 return params;
             }
@@ -288,7 +322,12 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             }
         };
 
-        preferenceMngr.getRequestQueue().add(stringRequest);
+        DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
+        preferenceMngr.getRequestQueue().add(stringRequest).setRetryPolicy(retryPolicy);
+    }
+
+    private void result(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -315,6 +354,76 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.edit_back:
                 onBackPressed();
                 break;
+            case R.id.edit_picture:
+                selectImageFromGallery();
+                break;
         }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == IMAGE_SELECTION && resultCode == RESULT_OK && data != null) {
+            Uri selectedImage = data.getData();
+            String id = selectedImage.getPath();
+            id = id.split(":")[1];
+
+            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
+                MediaStore.Images.Media._ID + " = ? ", new String[]{id}, null);
+            cursor.moveToFirst();
+
+            String picturePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            cursor.close();
+
+            Upload(picturePath);
+        }
+    }
+
+    private void Upload(String picturePath) {
+        Timestamp time = new Timestamp(System.currentTimeMillis());
+        Log.v("VolleyTime", String.valueOf(time.getTime()));
+        String requestId = MediaManager.get()
+            .upload(picturePath)
+            .option("invalidate", String.valueOf(true))
+            .option("public_id", PreferenceMngr.getInstance().getUserId())
+            .option("timestamp", PreferenceMngr.getTimestamp())
+            .callback(new UploadCallback() {
+            @Override
+            public void onStart(String requestId) {
+                loadingDialog.show();
+            }
+
+            @Override
+            public void onProgress(String requestId, long bytes, long totalBytes) {
+
+            }
+
+            @Override
+            public void onSuccess(String requestId, Map resultData) {
+                try {
+                    Toast.makeText(EditActivity.this, "Uploaded successfully.", Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
+                    uploaded = true;
+                    uploadedUrl = resultData.get("url").toString();
+                    user.put("picture", resultData.get("url").toString());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            public void onError(String requestId, ErrorInfo error) {
+                Log.v("VolleyPictureError", error.getDescription());
+                Toast.makeText(EditActivity.this, error.getDescription(), Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+            }
+
+            @Override
+            public void onReschedule(String requestId, ErrorInfo error) {
+                Toast.makeText(EditActivity.this, error.getDescription(), Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
+            }
+        }).dispatch();
     }
 }

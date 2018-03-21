@@ -73,8 +73,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 holder.code.setText("Code: " + reward.getBookingShortCode());
 
                 for (int x = 0 ; x < reward.getRewardCount(); x++) {
+                    JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
                     if (x == 0) {
-                        temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
+                        temp = new Date(object.getString("endDate"));
                     } else {
                         if (temp.after(new Date(rewardArray.getJSONObject(x).getString("endDate")))) {
                             temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
@@ -85,11 +86,11 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
                 holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
-                JSONObject first = rewardArray.getJSONObject(0);
+                JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");
                 holder.rewardOne.setText(first.getString("description"));
 
                 if (rewardArray.length() > 1) {
-                    JSONObject second = rewardArray.getJSONObject(1);
+                    JSONObject second = rewardArray.getJSONObject(1).getJSONObject("id");
                     holder.rewardTwo.setText(second.getString("description"));
                 } else {
                     holder.activeRewardHolder2.setVisibility(View.GONE);

@@ -1,5 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.CustomClickListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
@@ -20,6 +22,7 @@ import java.util.ArrayList;
 
 public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconListViewHolder> {
     public ArrayList<Merchant> iconList = new ArrayList<>();
+    private Context context;
     private CustomClickListener.OnItemClickListener mClickListener;
     private int previousPosition;
     private View parent;
@@ -31,6 +34,12 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
 
     public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener) {
         iconList = items;
+        this.mClickListener = mClickListener;
+    }
+
+    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener, Context context) {
+        iconList = items;
+        this.context = context;
         this.mClickListener = mClickListener;
     }
 
@@ -46,7 +55,11 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
 
     @Override
     public void onBindViewHolder(IconListViewHolder holder, int position) {
-        holder.iconView.setImageResource(iconList.get(position).getPicture());
+        if (iconList.get(position).getLogo() != null) {
+            Glide.with(context).load(iconList.get(position).getLogo()).into(holder.iconView);
+        } else {
+            holder.iconView.setImageResource(iconList.get(position).getPicture());
+        }
     }
 
     public void setClickListener(CustomClickListener.OnItemClickListener callback) {

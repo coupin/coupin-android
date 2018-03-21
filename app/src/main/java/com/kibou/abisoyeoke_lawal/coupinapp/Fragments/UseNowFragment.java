@@ -74,7 +74,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(rvAdapter);
 
-        url = getString(R.string.base_url) + getString(R.string.ep_rewards_for_now);
+        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards);
 
         getRewardsForNow();
 
@@ -94,6 +94,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
+                Log.v("VolleyInsideNow", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int x = 0; x < jsonArray.length(); x++) {

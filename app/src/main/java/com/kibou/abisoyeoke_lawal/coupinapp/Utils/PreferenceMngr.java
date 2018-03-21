@@ -76,6 +76,15 @@ public class PreferenceMngr {
     }
 
     /**
+     * Method to get the token
+     * @return token
+     */
+
+    public static String getTimestamp() {
+        return preferences.getString("timestamp", null);
+    }
+
+    /**
      * Get mobile number
      * @return number
      */
@@ -89,6 +98,14 @@ public class PreferenceMngr {
      */
     public static void setMobileNumber(String number) {
         preferences.edit().putString("mobileNumber", number).apply();
+    }
+
+    /**
+     * Method to set the mobile number
+     * @param timestamp
+     */
+    public static void setTimestamp(String timestamp) {
+        preferences.edit().putString("timestamp", timestamp).apply();
     }
 
     /**

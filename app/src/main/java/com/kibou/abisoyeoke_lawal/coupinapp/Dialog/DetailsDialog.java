@@ -22,6 +22,8 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 
+import org.json.JSONArray;
+
 import java.text.SimpleDateFormat;
 
 /**
@@ -36,6 +38,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public ImageView photo1;
     public ImageView photo2;
     public ImageView photo3;
+    public ImageView photo4;
     public LinearLayout buttonHolder;
     public TextView fullDateEnd;
     public TextView fullDateStart;
@@ -95,6 +98,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         photo1 = (ImageView) findViewById(R.id.photo_1);
         photo2 = (ImageView) findViewById(R.id.photo_2);
         photo3 = (ImageView) findViewById(R.id.photo_3);
+        photo4 = (ImageView) findViewById(R.id.photo_4);
 
         buttonHolder = (LinearLayout) findViewById(R.id.details_button_group);
 
@@ -123,9 +127,23 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullOldPrice.setText("N" + String.valueOf((int) oldPrice));
         }
 
-        Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
-        Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
-        Glide.with(context).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
+        JSONArray pictures = reward.getPictures();
+        ImageView holders[] = new ImageView[]{photo1, photo2, photo3, photo4};
+
+        if (pictures != null) {
+            try {
+                for (int x = 0; x < pictures.length(); x++) {
+                    Glide.with(context).load(pictures.getJSONObject(x).getString("url")).into(holders[x]);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
+            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
+            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
+            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo4);
+        }
 
         if (reward.isSelected()) {
             fullHeader.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));

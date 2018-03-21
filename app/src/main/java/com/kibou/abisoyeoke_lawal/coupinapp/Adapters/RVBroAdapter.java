@@ -55,10 +55,10 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
 
             for (int x = 0 ; x < reward.getRewardCount(); x++) {
                 if (x == 0) {
-                    temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
+                    temp = new Date(rewardArray.getJSONObject(0).getJSONObject("id").getString("endDate"));
                 } else {
-                    if (temp.after(new Date(rewardArray.getJSONObject(x).getString("endDate")))) {
-                        temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
+                    if (temp.after(new Date(rewardArray.getJSONObject(x).getJSONObject("id").getString("endDate")))) {
+                        temp = new Date(rewardArray.getJSONObject(0).getJSONObject("id").getString("endDate"));
                     }
                 }
             }
@@ -66,11 +66,11 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
             holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
-            JSONObject first = rewardArray.getJSONObject(0);
+            JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");
             holder.rewardOne.setText(first.getString("description"));
 
             if (rewardArray.length() > 1) {
-                JSONObject second = rewardArray.getJSONObject(1);
+                JSONObject second = rewardArray.getJSONObject(1).getJSONObject("id");
                 holder.rewardTwo.setText(second.getString("description"));
             } else {
                 holder.activeRewardHolder2.setVisibility(View.GONE);

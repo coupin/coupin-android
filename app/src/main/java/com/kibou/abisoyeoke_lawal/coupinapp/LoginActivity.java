@@ -237,9 +237,11 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     if (error.networkResponse != null && error.networkResponse.data != null) {
                         if (error.networkResponse.statusCode == 401) {
                             Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                        } else if (error.networkResponse.statusCode == 404) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, "An Error occured while trying to log you in. Please try again.", Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -288,6 +290,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     if (error.networkResponse != null && error.networkResponse.data != null) {
                         if (error.networkResponse.statusCode == 401) {
                             Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                        } else if (error.networkResponse.statusCode == 404) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();

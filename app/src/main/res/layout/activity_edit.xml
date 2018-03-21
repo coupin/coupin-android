@@ -79,6 +79,7 @@
                 android:layout_height="wrap_content">
 
                 <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/profile_picture"
                     android:layout_height="@dimen/icon_lg"
                     android:layout_width="@dimen/icon_lg"
                     android:paddingBottom="@dimen/padding_sm"

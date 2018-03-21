@@ -140,7 +140,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_rewards_for_later);
+                url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
 
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
@@ -162,6 +162,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                         params.put("merchantId", item.getId());
                         params.put("rewardId", selected.toString());
+                        params.put("useNow", String.valueOf(false));
 
                         return params;
                     }
@@ -215,10 +216,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 favourite = true;
             }
 
-            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(bannerHolder);
-            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
-            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
-            Glide.with(this).load("http://res.cloudinary.com/mybookingngtest/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
+            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(bannerHolder);
+            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
+            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
+            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
 
 //            if (res.get("picture").toString() != "null") {
 //                merchantImage.setImage
@@ -257,6 +258,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                 // Applicable days
                 reward.setDays(object.getJSONArray("applicableDays"));
+
+                if (object.has("pictures")) {
+                    reward.setPictures(object.getJSONArray("pictures"));
+                }
 
                 values.add(reward);
             }
@@ -466,6 +471,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.v("VolleyError", error.toString());
+                favourite = false;
+                invalidateOptionsMenu();
+                Toast.makeText(MerchantActivity.this, "Added Unsuccessfully.", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override

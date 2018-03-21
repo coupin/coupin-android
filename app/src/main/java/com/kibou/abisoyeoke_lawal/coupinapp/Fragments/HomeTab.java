@@ -61,7 +61,6 @@ import com.google.android.gms.maps.MapsInitializer;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
-import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
@@ -184,7 +183,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public int distance = 3;
     public int page = 0;
     public int screenWidth;
-    public double maxLat;
+    public float minZoom = 1;
     private double tempDist;
     public ArrayList<String> categories = new ArrayList<>();
 
@@ -413,7 +412,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
-        adapter = new IconListAdapter(new ArrayList<Merchant>(), HomeTab.this);
+        adapter = new IconListAdapter(new ArrayList<Merchant>(), HomeTab.this, getActivity());
 
         iconListView.setAdapter(adapter);
 
@@ -581,13 +580,18 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
                         }
+                        Log.v("VolleyCheck", response);
 
                         JSONArray resArr = new JSONArray(response);
                         for (int j = 0; j < resArr.length(); j++) {
                             JSONObject res = resArr.getJSONObject(j);
                             Merchant item = new Merchant();
                             item.setId(res.getString("_id"));
-                            item.setPicture(icons[j]);
+                            if (res.has("logo") && res.getString("logo") != "null") {
+                                item.setLogo(res.getString("logo"));
+                            } else {
+                                item.setPicture(icons[j]);
+                            }
                             item.setAddress(res.getString("address"));
                             item.setDetails(res.getString("details"));
                             item.setEmail(res.getString("email"));
@@ -693,6 +697,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         closestMarker = markers.get(1);
         tempDist = CalculationByDistance(myPosition.getPosition(), closestMarker.getPosition());
+        Log.v("VolleyDist", String.valueOf(tempDist));
 
         latLngBounds = new LatLngBounds.Builder();
 
@@ -701,12 +706,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         for (int x = 1; x < markers.size(); x++) {
-            double temp = CalculationByDistance(closestMarker.getPosition(), markers.get(x).getPosition());
+            double temp = CalculationByDistance(myPosition.getPosition(), markers.get(x).getPosition());
 
             if (temp < tempDist) {
                 tempDist = temp;
                 closestMarker = markers.get(x);
             }
+
+            Log.v("VolleyPoint" + x, String.valueOf(tempDist));
 
             latLngBounds.include(markers.get(x).getPosition());
         }
@@ -715,14 +722,20 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
     }
 
+    public double getZoomForMetersWide(double desiredMeters, double latitude) {
+        final double latitudinalAdjustment = Math.cos(Math.PI * latitude / 180);
+        final double arg = (EQUATOR_LENGTH * this.getView().getMeasuredWidth() * latitudinalAdjustment) / (desiredMeters * 256);
+        return Math.log(arg) / Math.log(2);
+    }
+
     /**
      * Center on button
      */
     private void center() {
         LatLngBounds.Builder tempBounds = new LatLngBounds.Builder();
-        CircleOptions circleOptions = new CircleOptions();
-        circleOptions.center(myPosition.getPosition());
-        circleOptions.radius(tempDist);
+//        CircleOptions circleOptions = new CircleOptions();
+//        circleOptions.center(myPosition.getPosition());
+//        circleOptions.radius(tempDist);
         Log.v("VolleyDistance", String.valueOf(tempDist));
 
 //        tempBounds.include(myPosition.getPosition());
@@ -736,8 +749,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             onMarker = false;
         }
 
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), 17));
-//        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(circleOptions.get, 100));
+        float zoom = (float)getZoomForMetersWide(tempDist * 10, (float)closestMarker.getPosition().latitude);
+        Log.v("VolleyZoom", String.valueOf(zoom));
+
+        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), zoom));
+
+        Log.v("VolleyMin", String.valueOf(closestMarker.isVisible()));
+//        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
     }
 
     /**
