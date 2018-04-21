@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Coupin</string>
+    <string name="app_link">https://play.google.com/store/apps/details?id=com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- Keys -->
     <string name="facebook_app_id">134058260630791</string>
@@ -45,8 +46,10 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <string name="base_url_v1">https://coupin.herokuapp.com/api/v1</string>
-    <string name="base_url">http://c9a64ea4.ngrok.io/api/v1</string>
+    <!--<string name="base_url_v1">https://coupin.herokuapp.com/api/v1</string>-->
+    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
+    <string name="base_url">https://fe77dd00.ngrok.io/api/v1</string>
+    <!--<string name="base_url">https://154ec2cb.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">http://172.16.3.62:5030/api/v1</string>-->
     <!--<string name="base_url">http://172.16.2.193:5030/api/v1</string>-->
     <!--<string name="base_url">http://192.168.8.101:5030/api/v1</string>-->
@@ -286,4 +289,8 @@
     <!--PRO-->
     <string name="google_maps_key_pro" templateMergeStrategy="preserve" translatable="false">AIzaSyC_mcnWhw-J9NdVPBItY7rlEuGqXY3Ehh4</string>
     <string name="cloudinary_api_key">254821729494622</string>
+    <string name="update_now">Update Now</string>
+    <string name="no_thank_you">Not Now</string>
+    <string name="update_header">New Update!</string>
+    <string name="update_body">A new update is available. would you like to update now?</string>
 </resources>

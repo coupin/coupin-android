@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -17,6 +18,9 @@ import com.cloudinary.android.signed.Signature;
 import com.cloudinary.android.signed.SignatureProvider;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.UpdateDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
+import com.kibou.abisoyeoke_lawal.coupinapp.Services.UpdateService;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
 import java.sql.Timestamp;
@@ -25,10 +29,12 @@ import java.util.Map;
 
 import butterknife.ButterKnife;
 
-public class SplashScreen extends Activity {
+public class SplashScreen extends Activity implements MyOnSelect {
+    boolean check = false;
     int count = 0;
 
-    boolean check = false;
+    Handler handler = new Handler();
+    UpdateDialog updateDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,8 +60,9 @@ public class SplashScreen extends Activity {
                 MediaManager.init(getApplicationContext(), new SignatureProvider() {
                     @Override
                     public Signature provideSignature(Map options) {
-                        PreferenceMngr.setTimestamp(String.valueOf(timestamp.getTime()));
-                        return new Signature(response, getString(R.string.cloudinary_api_key), timestamp.getTime());
+                        long temp = timestamp.getTime();
+                        PreferenceMngr.setTimestamp(String.valueOf(temp));
+                        return new Signature(response, getString(R.string.cloudinary_api_key), temp);
                     }
 
                     @Override
@@ -81,9 +88,6 @@ public class SplashScreen extends Activity {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<>();
-
-                params.put("invalidate", String.valueOf(true));
-                params.put("public_id", PreferenceMngr.getInstance().getUserId());
                 params.put("timestamp", String.valueOf(timestamp.getTime()));
 
                 return params;
@@ -92,13 +96,22 @@ public class SplashScreen extends Activity {
 
         requestQueue1.add(stringRequest);
 
-        Handler handler = new Handler();
+        startService(new Intent(getApplicationContext(), UpdateService.class));
 
+        if (PreferenceMngr.updateAvailable()) {
+            updateDialog = new UpdateDialog(this, this);
+            updateDialog.show();
+        } else {
+            proceed();
+        }
+
+    }
+
+    public void proceed() {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
                 if (PreferenceMngr.getInstance().isLoggedIn()) {
-                    Log.v("VolleyOPref", "" + PreferenceMngr.getInstance().interestsSelected());
                     if (PreferenceMngr.getInstance().interestsSelected()) {
                         startActivity(new Intent(SplashScreen.this, HomeActivity.class));
                         finish();
@@ -112,6 +125,16 @@ public class SplashScreen extends Activity {
                 }
             }
         }, 2000);
+    }
 
+    @Override
+    public void onSelect(boolean selected, int version) {
+        if (!selected) {
+            PreferenceMngr.setUpdate(false);
+            PreferenceMngr.setLastUpdate(version);
+            proceed();
+        } else {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_link))));
+        }
     }
 }

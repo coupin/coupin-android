@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 
 import org.json.JSONArray;
@@ -74,16 +76,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
                 for (int x = 0 ; x < reward.getRewardCount(); x++) {
                     JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
+                    Log.v("VolleyDate", object.getString("endDate"));
                     if (x == 0) {
-                        temp = new Date(object.getString("endDate"));
+                        temp = DateTimeUtils.convertZString(object.getString("endDate"));
                     } else {
-                        if (temp.after(new Date(rewardArray.getJSONObject(x).getString("endDate")))) {
-                            temp = new Date(rewardArray.getJSONObject(0).getString("endDate"));
+                        if (temp.after(DateTimeUtils.convertZString(object.getString("endDate")))) {
+                            temp = DateTimeUtils.convertZString(object.getString("endDate"));
                         }
                     }
                 }
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yy");
                 holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
                 JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");

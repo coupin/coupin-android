@@ -94,7 +94,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.v("VolleyInsideNow", response);
                 try {
                     JSONArray jsonArray = new JSONArray(response);
                     for (int x = 0; x < jsonArray.length(); x++) {
@@ -112,6 +111,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
 
 
                         item.setRewardDetails(rewardObjects.toString());
+                        item.setRewardCount(rewardObjects.length());
 
                         nowList.add(item);
                     }

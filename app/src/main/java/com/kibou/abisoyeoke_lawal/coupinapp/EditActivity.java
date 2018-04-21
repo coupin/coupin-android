@@ -71,11 +71,11 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     private final int IMAGE_SELECTION = 1004;
     private Toast toast;
 
+    private JSONObject picture = new JSONObject();
     private String email;
     private String gender;
     private String mobileNumber;
     private String name;
-    private String picture;
 
     private boolean editMode = false;
     private boolean saveToast = false;
@@ -161,8 +161,8 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileGender.setEnabled(false);
 
             if (user.has("picture")) {
-                String url = user.getString("picture");
-                Glide.with(this).load(url).into(profilePicture);
+                JSONObject object = user.getJSONObject("picture");
+                Glide.with(this).load(object.getString("url")).into(profilePicture);
             }
 
         } catch (Exception e) {
@@ -306,8 +306,9 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 params.put("mobileNumber", mobileNumber);
                 params.put("email", email);
                 params.put("sex", gender);
+                Log.v("Testing", picture.toString());
                 if (uploaded) {
-                    params.put("picture", uploadedUrl);
+                    params.put("picture", picture.toString());
                 }
 
                 return params;
@@ -385,8 +386,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         Log.v("VolleyTime", String.valueOf(time.getTime()));
         String requestId = MediaManager.get()
             .upload(picturePath)
-            .option("invalidate", String.valueOf(true))
-            .option("public_id", PreferenceMngr.getInstance().getUserId())
+//            .option("invalidate", String.valueOf(true))
             .option("timestamp", PreferenceMngr.getTimestamp())
             .callback(new UploadCallback() {
             @Override
@@ -405,8 +405,14 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                     Toast.makeText(EditActivity.this, "Uploaded successfully.", Toast.LENGTH_SHORT).show();
                     loadingDialog.dismiss();
                     uploaded = true;
+                    Log.v("VolleyPicture", resultData.toString());
+                    String publicId = resultData.get("public_id").toString();
                     uploadedUrl = resultData.get("url").toString();
-                    user.put("picture", resultData.get("url").toString());
+                    picture.put("id", publicId);
+                    picture.put("url", uploadedUrl);
+                    user.put("picture", picture);
+                    Glide.with(EditActivity.this).load(uploadedUrl).into(profilePicture);
+                    updateInfo();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

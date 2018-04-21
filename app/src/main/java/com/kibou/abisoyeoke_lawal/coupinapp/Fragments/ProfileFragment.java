@@ -61,7 +61,6 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView profileVersion;
 
     public JSONObject userObject;
-
     public String pictureUrl = "http://res.cloudinary.com/mybookingngtest/image/upload/v1510417817/profile_lziaj4.jpg";
 
     public ProfileFragment() {
@@ -96,7 +95,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             profileName.setText(StringUtils.capitalize(userObject.getString("name")));
 
             if (userObject.has("picture") && !userObject.get("picture").toString().equals("null")) {
-                pictureUrl = userObject.getString("picture");
+                pictureUrl = userObject.getJSONObject("picture").getString("url");
             }
 
             Log.v("VolleyPicture", pictureUrl);
@@ -128,6 +127,24 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         }
 
         return root;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        try {
+            userObject = new JSONObject(PreferenceMngr.getUser());
+            if (userObject.has("picture") && !userObject.get("picture").toString().equals(pictureUrl)) {
+                pictureUrl = userObject.getJSONObject("picture").getString("url");
+                Glide.with(this)
+                    .load(pictureUrl)
+                    .into(profilePicture);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

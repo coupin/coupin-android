@@ -174,6 +174,30 @@ public class PreferenceMngr {
     }
 
     /**
+     * Set the updateAvailable based on if update is available or not
+     * @param isAvaialble
+     */
+    public static void setUpdate(boolean isAvaialble) {
+        preferences.edit().putBoolean("updateAvailable", isAvaialble).apply();
+    }
+
+    public static void setLastUpdate(int update) {
+        preferences.edit().putInt("lastUpdateAttempt", update).apply();
+    }
+
+    /**
+     * Check if update is available
+     * @return true if update is available and false otherwise
+     */
+    public static boolean updateAvailable() {
+        return preferences.getBoolean("updateAvailable", false);
+    }
+
+    public static int getLastAttempt() {
+        return preferences.getInt("lastUpdateAttempt", 0);
+    }
+
+    /**
      * Method to see if user is logged in
      * @return true if logged and false otherwise
      */

@@ -140,6 +140,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                toggleClickableButtons(true);
                 url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
 
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -151,6 +152,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        toggleClickableButtons(false);
                         Log.v("VolleyError", error.toString());
                         Log.v("VolleyStatue", "" + error.networkResponse.statusCode);
                         error.printStackTrace();
@@ -388,10 +390,21 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         }
     }
 
+    private void toggleClickableButtons(boolean isLoading) {
+        if (isLoading) {
+            selectedBtnPin.setClickable(false);
+            selectedBtnSave.setClickable(false);
+        } else {
+            selectedBtnPin.setClickable(true);
+            selectedBtnSave.setClickable(true);
+        }
+    }
+
     /**
      * Gnerate coupin pin
      */
     private void generatePin() {
+        toggleClickableButtons(true);
         url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
@@ -422,6 +435,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                toggleClickableButtons(false);
                 error.printStackTrace();
                 if (error.getMessage() != null) {
                     Toast.makeText(MerchantActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();

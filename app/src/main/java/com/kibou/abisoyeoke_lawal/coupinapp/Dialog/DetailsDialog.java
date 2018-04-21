@@ -50,6 +50,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public TextView fullReusable;
 
     public MyOnClick myOnClick;
+    private GalleryDialog imageDialog;
 
     private Context context;
     private Reward reward;
@@ -59,6 +60,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         R.id.full_day2, R.id.full_day3, R.id.full_day4, R.id.full_day5,
         R.id.full_day6};
     public boolean hideButton = false;
+    private JSONArray pictures;
 
     public DetailsDialog(@NonNull Context context) {
         super(context);
@@ -99,6 +101,10 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         photo2 = (ImageView) findViewById(R.id.photo_2);
         photo3 = (ImageView) findViewById(R.id.photo_3);
         photo4 = (ImageView) findViewById(R.id.photo_4);
+        photo1.setOnClickListener(this);
+        photo2.setOnClickListener(this);
+        photo3.setOnClickListener(this);
+        photo4.setOnClickListener(this);
 
         buttonHolder = (LinearLayout) findViewById(R.id.details_button_group);
 
@@ -127,7 +133,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullOldPrice.setText("N" + String.valueOf((int) oldPrice));
         }
 
-        JSONArray pictures = reward.getPictures();
+        pictures = reward.getPictures();
         ImageView holders[] = new ImageView[]{photo1, photo2, photo3, photo4};
 
         if (pictures != null) {
@@ -212,9 +218,32 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         hideButton = true;
     }
 
+    public void showImageDialog(int position) {
+        try {
+            if (pictures.length() > 0) {
+                imageDialog = new GalleryDialog(context, pictures.getJSONObject(position).getString("url"));
+                imageDialog.show();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.photo_1:
+                showImageDialog(0);
+                break;
+            case R.id.photo_2:
+                showImageDialog(1);
+                break;
+            case R.id.photo_3:
+                showImageDialog(2);
+                break;
+            case R.id.photo_4:
+                showImageDialog(3);
+                break;
             case R.id.btn_pin:
                 myOnClick.onItemClick(0);
                 dismiss();

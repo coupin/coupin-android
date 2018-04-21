@@ -221,7 +221,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         // Loading Dialog
         loadingDialog = new LoadingDialog(getActivity(), R.style.Loading_Dialog);
         loadingDialog.setCancelable(false);
-        showDialog(true);
 
         // Error Dialog
         networkErrorDialog = new NetworkErrorDialog(getContext());
@@ -532,6 +531,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Sets up the horizontal list
      */
     public void setUpList() {
+        showDialog(true);
         if (iconsList.size() > 0 && filter) {
             iconsList.clear();
             adapter.notifyDataSetChanged();

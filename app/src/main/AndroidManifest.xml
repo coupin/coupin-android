@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.kibou.abisoyeoke_lawal.coupinapp"
-          android:versionCode="7"
-          android:versionName="0.0.7">
+          android:versionCode="9"
+          android:versionName="0.0.9">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -58,6 +58,9 @@
             </intent-filter>
         </activity>
         <!-- For Facebook Login -->
+
+        <service android:name=".Services.UpdateService"
+                 android:exported="false"/>
 
         <service
             android:name=".Services.NotificationService"

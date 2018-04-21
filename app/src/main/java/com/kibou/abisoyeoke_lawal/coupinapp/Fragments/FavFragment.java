@@ -1,5 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -19,6 +20,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
@@ -49,6 +51,7 @@ public class FavFragment extends Fragment implements MyOnClick {
     public RequestQueue requestQueue;
     public RVAdapter rvAdapter;
     public String url;
+    public ArrayList<String> responses = new ArrayList<>();
 
     public FavFragment() {
         // Required empty public constructor
@@ -90,15 +93,16 @@ public class FavFragment extends Fragment implements MyOnClick {
 
                     for (int x = 0; x < total; x++) {
                         JSONObject mainObject = jsonArray.getJSONObject(x);
-                        JSONObject merchantObject = mainObject.getJSONObject("merchantInfo");
-                        JSONArray rewardObjects = merchantObject.getJSONArray("rewards");
+                        responses.add(mainObject.toString());
+                        JSONArray rewardObjects = mainObject.getJSONArray("rewards");
 
                         RewardListItem item = new RewardListItem();
 
                         item.setFav(true);
-                        item.setMerchantName(merchantObject.getString("companyName"));
-                        item.setMerchantAddress(merchantObject.getString("address"));
-                        item.setMerchantLogo(merchantObject.getString("logo"));
+                        item.setMerchantName(mainObject.getString("name"));
+                        item.setMerchantAddress(mainObject.getString("address"));
+                        item.setMerchantLogo(mainObject.getString("logo"));
+                        item.setMerchantPhone(mainObject.getString("mobile"));
                         item.setRewardDetails(rewardObjects.toString());
                         item.setRewardCount(rewardObjects.length());
 
@@ -143,12 +147,10 @@ public class FavFragment extends Fragment implements MyOnClick {
 
     @Override
     public void onItemClick(int position) {
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
+        Intent intent = new Intent(getActivity(), MerchantActivity.class);
+        Bundle extra = new Bundle();
+        extra.putString("merchant", responses.get(position));
+        intent.putExtras(extra);
+        startActivity(intent);
     }
 }
