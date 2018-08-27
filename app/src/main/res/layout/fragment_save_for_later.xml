@@ -68,4 +68,17 @@
 
     </LinearLayout>
 
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/save_loading"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="24dp"
+        android:layout_marginEnd="@dimen/margin_xxs"
+        android:layout_marginRight="@dimen/margin_xxs"
+        android:layout_width="24dp"
+        app:indicatorName="BallPulseIndicator"
+        app:indicatorColor="@color/colorAccent"
+        android:visibility="gone"/>
+
 </RelativeLayout>

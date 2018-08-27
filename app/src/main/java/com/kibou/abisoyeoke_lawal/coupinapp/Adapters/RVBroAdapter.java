@@ -68,10 +68,24 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
 
             JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");
             holder.rewardOne.setText(first.getString("description"));
+            if (first.has("price") && first.getJSONObject("price").has("old") &&
+                first.getJSONObject("price").has("new")) {
+                float oldPrice = first.getJSONObject("price").getInt("old");
+                float newPrice = first.getJSONObject("price").getInt("new");
+                float discount = ((oldPrice - newPrice) / oldPrice) * 100;
+                holder.rewardOnePercent.setText(String.valueOf((int) discount) + "%");
+            }
 
             if (rewardArray.length() > 1) {
                 JSONObject second = rewardArray.getJSONObject(1).getJSONObject("id");
                 holder.rewardTwo.setText(second.getString("description"));
+                if (second.has("price") && second.getJSONObject("price").has("old") &&
+                    second.getJSONObject("price").has("new")) {
+                    float oldPrice = second.getJSONObject("price").getInt("old");
+                    float newPrice = second.getJSONObject("price").getInt("new");
+                    float discount = ((oldPrice - newPrice) / oldPrice) * 100;
+                    holder.rewardTwoPercent.setText(String.valueOf((int) discount) + "%");
+                }
             } else {
                 holder.activeRewardHolder2.setVisibility(View.GONE);
             }

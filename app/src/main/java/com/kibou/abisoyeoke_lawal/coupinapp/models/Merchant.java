@@ -9,14 +9,18 @@ import java.io.Serializable;
 public class Merchant implements Serializable {
     public String id;
     public int picture;
+    public int rating;
+    public int rewardsCount;
     public String title;
     public String email;
     public String mobile;
     public String details;
     public String address;
+    public String banner;
     public String logo;
     public String response;
     public String rewards;
+    public String reward;
     public double latitude;
     public double longitude;
 
@@ -30,6 +34,26 @@ public class Merchant implements Serializable {
 
     public int getPicture() {
         return picture;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public int getRewardsCount() {
+        return rewardsCount;
+    }
+
+    public void setRewardsCount(int rewardsCount) {
+        this.rewardsCount = rewardsCount;
+    }
+
+    public String getReward() {
+        return reward;
+    }
+
+    public void setReward(String reward) {
+        this.reward = reward;
     }
 
     public void setPicture(int picture) {
@@ -52,12 +76,24 @@ public class Merchant implements Serializable {
         this.address = address;
     }
 
+    public String getBanner() {
+        return banner;
+    }
+
+    public void setBanner(String banner) {
+        this.banner = banner;
+    }
+
     public String getLogo() {
         return logo;
     }
 
     public void setLogo(String logo) {
         this.logo = logo;
+    }
+
+    public void setRating(int rating) {
+        this.rating = rating;
     }
 
     public String getDetails() {

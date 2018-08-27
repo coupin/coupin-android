@@ -46,24 +46,25 @@
 
                 <android.support.design.widget.FloatingActionButton
                     android:background="@color/text_med_grey"
+                    android:id="@+id/merchant_navigation"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
                     android:layout_alignParentTop="true"
                     android:layout_marginRight="15dp"
-                    android:layout_marginTop="150dp"
-                    android:layout_height="64dp"
-                    android:layout_width="64dp"
+                    android:layout_marginTop="111dp"
+                    android:layout_height="54dp"
+                    android:layout_width="54dp"
                     android:src="@drawable/ic_nav_arrow"
                     app:backgroundTint="@color/text_med_grey"
                     app:elevation="10dp"
+                    app:useCompatPadding="true"
                     app:rippleColor="@color/black"/>
-
 
                 <ImageView
                     android:background="@color/darkGrey"
                     android:id="@+id/banner_holder"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="166dp"
                     android:scaleType="centerCrop"/>
 
                 <android.support.v7.widget.CardView
@@ -96,12 +97,14 @@
                             android:orientation="horizontal">
 
                             <RatingBar
+                                android:id="@+id/merchant_rating"
                                 android:layout_height="wrap_content"
                                 android:layout_marginRight="3dp"
                                 android:layout_width="wrap_content"
                                 style="@style/circleRating"/>
 
                             <TextView
+                                android:id="@+id/rating_text"
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
                                 android:text="4.2/5.0"
@@ -112,12 +115,25 @@
                         </LinearLayout>
 
                         <TextView
-                            android:id="@+id/merchant_details_textview"
+                            android:id="@+id/merchant_address_textview"
                             android:layout_height="wrap_content"
                             android:layout_width="300dp"
                             android:paddingLeft="@dimen/padding_xs"
                             android:paddingRight="@dimen/padding_md"
                             android:paddingStart="@dimen/padding_xs"
+                            android:textColor="@color/text_dark_grey"
+                            android:textSize="@dimen/large_text"
+                            android:textStyle="normal"/>
+
+                        <TextView
+                            android:clickable="true"
+                            android:id="@+id/merchant_phone_textview"
+                            android:layout_height="wrap_content"
+                            android:layout_width="300dp"
+                            android:paddingLeft="@dimen/padding_xs"
+                            android:paddingRight="@dimen/padding_md"
+                            android:paddingStart="@dimen/padding_xs"
+                            android:inputType="phone"
                             android:textColor="@color/text_dark_grey"
                             android:textSize="@dimen/large_text"
                             android:textStyle="normal"/>
@@ -236,11 +252,22 @@
 
             </RelativeLayout>
 
+            <com.wang.avi.AVLoadingIndicatorView
+                style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/rewards_loadingview"
+                android:layout_gravity="center_horizontal"
+                android:layout_height="100dp"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_width="100dp"
+                app:indicatorName="BallScaleMultipleIndicator"
+                app:indicatorColor="@color/colorAccent" />
+
             <android.support.v7.widget.RecyclerView
                 android:id="@+id/rewards_recycler_view"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:minHeight="500dp"/>
+                android:minHeight="500dp"
+                android:visibility="gone"/>
 
         </LinearLayout>
 
@@ -310,5 +337,18 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/rewards_loading"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="24dp"
+        android:layout_marginEnd="@dimen/margin_xxs"
+        android:layout_marginRight="@dimen/margin_xxs"
+        android:layout_width="24dp"
+        app:indicatorName="BallPulseIndicator"
+        app:indicatorColor="@color/colorAccent"
+        android:visibility="gone"/>
 
 </RelativeLayout>

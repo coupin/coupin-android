@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
@@ -15,6 +16,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.FavFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.ProfileFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -23,7 +25,12 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     public BottomNavigationViewEx bottomNavigationView;
 
-    final HomeTab homeTab = HomeTab.newInstance();;
+    private FragmentManager fm;
+    private FragmentTransaction ft;
+    private MyOnClick myOnClick;
+    private String tag;
+    final HomeTab homeTab = HomeTab.newInstance();
+    Fragment selectedFrag;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +59,34 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                Fragment selectedFrag = null;
                 switch (item.getItemId()) {
                     case R.id.nav_home:
-                        selectedFrag = homeTab;
+                        if (tag == "home") {
+                            selectedFrag = homeTab;
+                            tag = "home";
+                        } else {
+                            selectedFrag = HomeTab.newInstance();
+                        }
                         break;
                     case R.id.nav_reward:
                         selectedFrag = rewardsTab;
+                        tag = "rewards";
                         break;
                     case R.id.nav_fav:
                         selectedFrag = favFragment;
+                        tag = "fav";
                         break;
                     case R.id.nav_profile:
                         selectedFrag = profileFragment;
+                        tag = "profile";
                         break;
                 }
 
+                Log.v("VolleyTake", "" + tag);
+
                 FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, selectedFrag);
+                FragmentTransaction ft = fm.beginTransaction();
+                ft.replace(R.id.tab_fragment_container, selectedFrag);
                 ft.commit();
 
                 return true;
@@ -79,6 +96,22 @@ public class HomeActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
         ft.commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (selectedFrag != homeTab) {
+            bottomNavigationView.setCurrentItem(0);
+            fm = getSupportFragmentManager();
+            ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
+            ft.commit();
+        } else {
+            this.finish();
+        }
+    }
+
+    public void setListener(MyOnClick myOnClick) {
+        this.myOnClick = myOnClick;
     }
 
     @Override

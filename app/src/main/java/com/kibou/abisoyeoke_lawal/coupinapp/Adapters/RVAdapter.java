@@ -1,15 +1,17 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
+import android.content.Context;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
@@ -27,6 +29,7 @@ import java.util.List;
  */
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
+    public Context context;
     public List<RewardListItem> rewardListItems;
 
     static public MyOnClick myOnClick;
@@ -38,7 +41,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
         return itemViewHolder;
     }
 
-    public RVAdapter(List<RewardListItem> rewardListItems, MyOnClick myOnClick) {
+    public RVAdapter(List<RewardListItem> rewardListItems, MyOnClick myOnClick, Context context) {
+        this.context = context;
         this.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
     }
@@ -53,6 +57,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
             JSONArray rewardArray = new JSONArray(reward.getRewardDetails());
             Date temp = new Date();
+            Glide.with(context).load(reward.getMerchantLogo()).into(holder.favLogo);
+            Glide.with(context).load(reward.getMerchantBanner()).into(holder.favBanner);
 
             if (reward.isFav()) {
                 holder.favAddress.setText(reward.getMerchantAddress());
@@ -76,7 +82,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
                 for (int x = 0 ; x < reward.getRewardCount(); x++) {
                     JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
-                    Log.v("VolleyDate", object.getString("endDate"));
                     if (x == 0) {
                         temp = DateTimeUtils.convertZString(object.getString("endDate"));
                     } else {
@@ -91,10 +96,24 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
                 JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");
                 holder.rewardOne.setText(first.getString("description"));
+                if (first.has("price") && first.getJSONObject("price").has("old") &&
+                    first.getJSONObject("price").has("new")) {
+                    float oldPrice = first.getJSONObject("price").getInt("old");
+                    float newPrice = first.getJSONObject("price").getInt("new");
+                    float discount = ((oldPrice - newPrice) / oldPrice) * 100;
+                    holder.rewardOnePercent.setText(String.valueOf((int) discount) + "%");
+                }
 
                 if (rewardArray.length() > 1) {
                     JSONObject second = rewardArray.getJSONObject(1).getJSONObject("id");
                     holder.rewardTwo.setText(second.getString("description"));
+                    if (second.has("price") && second.getJSONObject("price").has("old") &&
+                        second.getJSONObject("price").has("new")) {
+                        float oldPrice = second.getJSONObject("price").getInt("old");
+                        float newPrice = second.getJSONObject("price").getInt("new");
+                        float discount = ((oldPrice - newPrice) / oldPrice) * 100;
+                        holder.rewardTwoPercent.setText(String.valueOf((int) discount) + "%");
+                    }
                 } else {
                     holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
@@ -115,6 +134,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
 
         public CardView cardView;
+        public ImageView favBanner;
+        public ImageView favLogo;
         public LinearLayout expiryHolder;
         public RelativeLayout activeFavHolder;
         public RelativeLayout activeRewardHolder;
@@ -141,7 +162,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             expiryHolder = (LinearLayout) itemView.findViewById(R.id.expiry_holder);
             expiryLabel = (RelativeLayout) itemView.findViewById(R.id.expiry_label);
             favAddress = (TextView) itemView.findViewById(R.id.active_fav_address);
+            favBanner = (ImageView) itemView.findViewById(R.id.fav_banner);
             favCode = (TextView) itemView.findViewById(R.id.fav_code);
+            favLogo = (ImageView) itemView.findViewById(R.id.fav_logo);
             merchantName = (TextView) itemView.findViewById(R.id.active_merchant_name);
             rewardOne = (TextView) itemView.findViewById(R.id.active_reward_1);
             rewardOnePercent = (TextView) itemView.findViewById(R.id.active_percent_1);

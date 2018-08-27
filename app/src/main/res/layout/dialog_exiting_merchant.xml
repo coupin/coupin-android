@@ -16,60 +16,60 @@
         android:layout_height="match_parent"
         android:orientation="vertical">
 
-    <TextView
-        android:background="@color/lightGrey"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="@dimen/padding_md"
-        android:text="@string/discard_header"
-        android:textColor="@color/text_dark_grey"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:background="@color/white"
-        android:gravity="center"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="@dimen/padding_md"
-        android:text="@string/discard_body"
-        android:textColor="@color/text_dark_grey"
-        android:textStyle="bold"/>
-
-    <LinearLayout
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal">
-
-        <Button
-            android:background="@drawable/round_edges_grey"
-            android:id="@+id/cancel"
+        <TextView
+            android:background="@color/lightGrey"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_sm"
-            android:layout_marginLeft="@dimen/margin_xs"
-            android:layout_marginRight="@dimen/margin_xs"
-            android:layout_marginTop="@dimen/margin_xs"
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:text="@string/discard"
-            android:textColor="@color/white"
+            android:padding="@dimen/padding_md"
+            android:text="@string/discard_header"
+            android:textColor="@color/text_dark_grey"
             android:textStyle="bold"/>
 
-        <Button
-            android:background="@drawable/round_edges_btn"
-            android:id="@+id/btn_keep"
+        <TextView
+            android:background="@color/white"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_sm"
-            android:layout_marginLeft="@dimen/margin_xs"
-            android:layout_marginRight="@dimen/margin_xs"
-            android:layout_marginTop="@dimen/margin_xs"
-            android:layout_weight="1"
             android:layout_width="match_parent"
-            android:text="@string/keep"
-            android:textColor="@color/white"
+            android:padding="@dimen/padding_md"
+            android:text="@string/discard_body"
+            android:textColor="@color/text_dark_grey"
             android:textStyle="bold"/>
 
-    </LinearLayout>
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal">
+
+            <Button
+                android:background="@drawable/round_edges_grey"
+                android:id="@+id/cancel"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_xs"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="@string/discard"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <Button
+                android:background="@drawable/round_edges_btn"
+                android:id="@+id/btn_keep"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_xs"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="@string/keep"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 

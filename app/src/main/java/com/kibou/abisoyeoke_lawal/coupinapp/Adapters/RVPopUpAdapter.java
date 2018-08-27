@@ -41,6 +41,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         public TextView headPriceOld;
         public TextView headTitle;
         public View head;
+        public View rewardDivider;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -53,6 +54,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             headPriceNew = (TextView) head.findViewById(R.id.list_new_price);
             headPriceOld = (TextView) head.findViewById(R.id.list_old_price);
             headTitle = (TextView) head.findViewById(R.id.list_reward_title);
+            rewardDivider = (View) head.findViewById(R.id.reward_divider);
             tickFrame = (FrameLayout) head.findViewById(R.id.tick_frame);
         }
     }
@@ -100,7 +102,8 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                     @Override
                     public void onItemClick(int place) {
                         if (place == 0) {
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_med_grey));
+                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                             holder.tickFrame.setVisibility(View.VISIBLE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
@@ -112,6 +115,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             myOnSelect.onSelect(true, position);
                         } else {
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
                             holder.tickFrame.setVisibility(View.GONE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
                             holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_dark_grey));

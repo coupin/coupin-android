@@ -37,7 +37,7 @@ public class AnimatedView extends android.support.v7.widget.AppCompatImageView {
     };
 
     protected void onDraw(Canvas c) {
-        BitmapDrawable ball = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.logo);
+        BitmapDrawable ball = (BitmapDrawable) mContext.getResources().getDrawable(R.drawable.ic_clogo);
 
         if ( x < 0 && y < 0) {
             x = this.getWidth()/2;

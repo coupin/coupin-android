@@ -63,6 +63,7 @@ public class InterestsActivity extends AppCompatActivity {
 
         Intent receivedIntent = getIntent();
 
+        //TODO: Change to actual name
         String name = receivedIntent.getStringExtra("name");
         if (name != null && !name.isEmpty()) {
             interestName.setText(name);

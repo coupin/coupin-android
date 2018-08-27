@@ -3,10 +3,10 @@ package com.kibou.abisoyeoke_lawal.coupinapp.Fragments;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +42,8 @@ import butterknife.ButterKnife;
 public class UseNowFragment extends Fragment implements MyOnClick {
     @BindView(R.id.now_loadingview)
     public AVLoadingIndicatorView loadingView;
+    @BindView(R.id.active_loading)
+    public AVLoadingIndicatorView bottomLoadingView;
     @BindView(R.id.now_empty)
     public LinearLayout nowEmpty;
     @BindView(R.id.now_error)
@@ -49,10 +51,14 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     @BindView(R.id.now_recyclerview)
     public RecyclerView recyclerView;
 
-    public ArrayList<RewardListItem> nowList = new ArrayList<>();
-    public RequestQueue requestQueue;
-    public RVAdapter rvAdapter;
-    public String url;
+    private ArrayList<RewardListItem> nowList = new ArrayList<>();
+    private boolean isLoading = false;
+    private int page = 0;
+    private Handler handler;
+    private LinearLayoutManager linearLayoutManager;
+    private RequestQueue requestQueue;
+    private RVAdapter rvAdapter;
+    private String url;
 
     public UseNowFragment() {
         // Required empty public constructor
@@ -67,18 +73,16 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         ButterKnife.bind(this, rootView);
 
         requestQueue = Volley.newRequestQueue(getContext());
+        handler = new Handler();
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new RVAdapter(nowList, this);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        rvAdapter = new RVAdapter(nowList, this, getContext());
         recyclerView.setLayoutManager(linearLayoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.setAdapter(rvAdapter);
 
-        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards);
-
         getRewardsForNow();
-
-        Log.v("VolleyNow", "" + getUserVisibleHint());
+        implementOnScrollListener();
 
         return rootView;
     }
@@ -91,6 +95,8 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     }
 
     private void getRewardsForNow() {
+        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?page=" + page;
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
@@ -107,13 +113,18 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                         item.setBookingShortCode(mainObject.getString("shortCode"));
                         item.setMerchantName(merchantObject.getString("companyName"));
                         item.setMerchantAddress(merchantObject.getString("address"));
-                        item.setMerchantLogo(merchantObject.getString("logo"));
+                        item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
+                        item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
 
 
                         item.setRewardDetails(rewardObjects.toString());
                         item.setRewardCount(rewardObjects.length());
 
                         nowList.add(item);
+                    }
+                    isLoading = false;
+                    if (page > 0) {
+                        loading(5);
                     }
                     rvAdapter.notifyDataSetChanged();
                     if (jsonArray.length() == 0) {
@@ -129,7 +140,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                isLoading = false;
                 if (error.networkResponse != null) {
                     if (error.networkResponse.statusCode == 404) {
                         loading(2);
@@ -138,6 +149,10 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                     }
                 } else {
                     loading(3);
+                }
+
+                if (page > 0) {
+                    loading(5);
                 }
             }
         }) {
@@ -151,6 +166,36 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Implements scroll listener for the active list
+     * Using it to load new coupins
+     */
+    private void implementOnScrollListener() {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isLoading || (nowList.size() % 7) != 0 || nowList.size() < 7)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    isLoading = true;
+                    loading(4);
+                    page = nowList.size() / 7;
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getRewardsForNow();
+                        }
+                    }, 2000);
+                }
+            }
+        });
     }
 
     /**
@@ -176,6 +221,12 @@ public class UseNowFragment extends Fragment implements MyOnClick {
             case 3:
                 loadingView.setVisibility(View.GONE);
                 nowError.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                bottomLoadingView.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                bottomLoadingView.setVisibility(View.GONE);
                 break;
             default:
                 recyclerView.setVisibility(View.GONE);

@@ -3,7 +3,7 @@
 
 
     <solid
-        android:color="#1A000000"/>
+        android:color="#CC000000"/>
 
     <corners android:bottomLeftRadius="@dimen/rounded_edge"
         android:bottomRightRadius="@dimen/rounded_edge"

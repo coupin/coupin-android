@@ -177,7 +177,7 @@ public class PreferenceMngr {
      * Set the updateAvailable based on if update is available or not
      * @param isAvaialble
      */
-    public static void setUpdate(boolean isAvaialble) {
+    public void setUpdate(boolean isAvaialble) {
         preferences.edit().putBoolean("updateAvailable", isAvaialble).apply();
     }
 

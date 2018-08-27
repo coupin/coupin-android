@@ -11,17 +11,20 @@
     <android.support.v7.widget.CardView
         android:background="@color/black"
         android:layout_gravity="top|start"
-        android:layout_height="60dp"
-        android:layout_width="60dp"
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
         app:cardCornerRadius="@dimen/cardview_custom_radius"
         app:cardElevation="5dp"
-        app:contentPadding="3dp"
         app:cardUseCompatPadding="true">
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:src="@drawable/slide1"/>
+        <com.makeramen.roundedimageview.RoundedImageView
+            android:id="@+id/fav_logo"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/slide1"
+            app:riv_border_color="@color/white"
+            app:riv_border_width="2dp"
+            app:riv_corner_radius="3dp"/>
 
     </android.support.v7.widget.CardView>
 
@@ -42,10 +45,11 @@
             <RelativeLayout
                 android:background="@color/black"
                 android:layout_width="match_parent"
-                android:layout_height="90dp">
+                android:layout_height="81dp">
 
                 <ImageView
                     android:alpha="0.5"
+                    android:id="@+id/fav_banner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/temp1"
@@ -56,10 +60,11 @@
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_alignParentTop="true"
-                    android:layout_height="50dp"
+                    android:layout_height="30dp"
                     android:layout_marginBottom="@dimen/margin_sm"
-                    android:layout_marginTop="@dimen/margin_sm"
-                    android:layout_width="50dp"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginTop="18dp"
+                    android:layout_width="30dp"
                     android:src="@drawable/ic_food" />
 
                 <TextView
@@ -81,28 +86,20 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
+                    <!--<View-->
+                        <!--android:background="@color/white"-->
+                        <!--android:layout_height="28dp"-->
+                        <!--android:layout_marginRight="@dimen/margin_sm"-->
+                        <!--android:layout_marginTop="@dimen/margin_xs"-->
+                        <!--android:layout_width="1dp"/>-->
+
                     <ImageView
-                        android:layout_height="30dp"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_height="15dp"
+                        android:layout_marginBottom="@dimen/margin_sm"
                         android:layout_marginRight="@dimen/margin_sm"
-                        android:layout_width="wrap_content"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="15dp"
                         android:src="@drawable/ic_steps"/>
-
-                    <View
-                        android:background="@color/white"
-                        android:layout_height="28dp"
-                        android:layout_marginRight="@dimen/margin_sm"
-                        android:layout_marginTop="@dimen/margin_xs"
-                        android:layout_width="1dp"/>
-
-                    <ImageView
-                        android:layout_height="30dp"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginRight="@dimen/margin_sm"
-                        android:layout_marginTop="@dimen/margin_xs"
-                        android:layout_width="wrap_content"
-                        android:src="@drawable/ic_star"/>
 
                 </LinearLayout>
 
@@ -123,6 +120,7 @@
                         android:id="@+id/active_reward_1"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:maxLines="2"
@@ -136,10 +134,9 @@
                         android:id="@+id/active_percent_1"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
                         android:layout_width="wrap_content"
-                        android:text="100%"
                         android:textColor="@color/black"
                         android:textSize="@dimen/xlarge_text"
                         android:textStyle="bold"/>
@@ -170,6 +167,7 @@
                         android:id="@+id/active_reward_2"
                         android:layout_alignParentLeft="true"
                         android:layout_alignParentStart="true"
+                        android:layout_centerVertical="true"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:maxLines="2"
@@ -182,9 +180,8 @@
                         android:id="@+id/active_percent_2"
                         android:layout_alignParentEnd="true"
                         android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
                         android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xxs"
-                        android:layout_marginTop="@dimen/margin_xs"
                         android:layout_width="wrap_content"
                         android:textColor="@color/black"
                         android:textSize="@dimen/xlarge_text"
@@ -205,14 +202,14 @@
                         android:layout_alignParentStart="true"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_md"
+                        android:layout_marginBottom="13dp"
                         android:layout_marginEnd="@dimen/margin_sm"
                         android:layout_marginLeft="@dimen/margin_sm"
                         android:layout_marginRight="@dimen/margin_sm"
                         android:layout_marginStart="@dimen/margin_sm"
                         android:layout_marginTop="@dimen/margin_sm"
                         android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/large_text"
+                        android:textSize="@dimen/medium_text"
                         android:textStyle="bold"/>
 
                     <View
@@ -235,7 +232,7 @@
                         android:paddingRight="@dimen/padding_sm"
                         android:paddingTop="@dimen/padding_sm"
                         android:textColor="@color/colorAccent"
-                        android:textSize="@dimen/large_text"
+                        android:textSize="@dimen/medium_text"
                         android:textStyle="bold"/>
 
                 </RelativeLayout>
@@ -268,7 +265,8 @@
                             android:layout_alignParentStart="true"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="@string/expiry"
+                            android:text="@string/expiry_full"
+                            android:textAllCaps="true"
                             android:textColor="@color/text_dark_grey"
                             android:textSize="@dimen/large_text"
                             android:textStyle="bold"/>

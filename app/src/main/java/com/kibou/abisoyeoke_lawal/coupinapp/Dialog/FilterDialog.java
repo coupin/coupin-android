@@ -35,6 +35,8 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
     public LinearLayout fillFood;
     @BindView(R.id.fil_gadget)
     public LinearLayout fillGadget;
+    @BindView(R.id.fil_groceries)
+    public LinearLayout fillGroceries;
     @BindView(R.id.fil_health)
     public LinearLayout fillHealth;
     @BindView(R.id.fil_shopping)
@@ -82,6 +84,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
         fillEnt.setOnClickListener(this);
         fillFood.setOnClickListener(this);
         fillGadget.setOnClickListener(this);
+        fillGroceries.setOnClickListener(this);
         fillHealth.setOnClickListener(this);
         fillShop.setOnClickListener(this);
         fillTickets.setOnClickListener(this);
@@ -94,25 +97,28 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fil_ent:
-                toggleTag(fillEnt);
+                toggleTag(fillEnt, "entertainment");
                 break;
             case R.id.fil_food:
-                toggleTag(fillFood);
+                toggleTag(fillFood, "foodndrink");
                 break;
             case R.id.fil_gadget:
-                toggleTag(fillGadget);
+                toggleTag(fillGadget, "gadgets");
+                break;
+            case R.id.fil_groceries:
+                toggleTag(fillGroceries, "groceries");
                 break;
             case R.id.fil_health:
-                toggleTag(fillHealth);
+                toggleTag(fillHealth, "healthnbeauty");
                 break;
             case R.id.fil_shopping:
-                toggleTag(fillShop);
+                toggleTag(fillShop, "shopping");
                 break;
             case R.id.fil_tickets:
-                toggleTag(fillTickets);
+                toggleTag(fillTickets, "tickets");
                 break;
             case R.id.fil_travel:
-                toggleTag(fillTravel);
+                toggleTag(fillTravel, "travel");
                 break;
             case R.id.filter_cancel:
                 dismiss();
@@ -126,11 +132,10 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
         dismiss();
     }
 
-    private void toggleTag(LinearLayout fillEnt) {
+    private void toggleTag(LinearLayout fillEnt, String query) {
         ImageView imageView = (ImageView) fillEnt.getChildAt(0);
         TextView textView = (TextView) fillEnt.getChildAt(1);
 
-        String query = textView.getText().toString().toLowerCase();
         if (selected.contains(getArrayString(query))) {
             selected.remove(getArrayString(query));
             fillEnt.setBackground(context.getResources().getDrawable(R.drawable.round_edges_light_grey));

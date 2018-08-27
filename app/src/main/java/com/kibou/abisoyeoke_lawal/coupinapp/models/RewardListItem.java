@@ -15,6 +15,7 @@ public class RewardListItem implements Serializable {
     public String bookingId;
     public String bookingShortCode;
     public String merchantAddress;
+    public String merchantBanner;
     public String merchantLogo;
     public String merchantName;
     public String merchantPhone;
@@ -48,6 +49,10 @@ public class RewardListItem implements Serializable {
 
     public String getMerchantAddress() {
         return merchantAddress;
+    }
+
+    public String getMerchantBanner() {
+        return merchantBanner;
     }
 
     public String getMerchantLogo() {
@@ -96,6 +101,10 @@ public class RewardListItem implements Serializable {
 
     public void setMerchantAddress(String merchantAddress) {
         this.merchantAddress = merchantAddress;
+    }
+
+    public void setMerchantBanner(String merchantBanner) {
+        this.merchantBanner = merchantBanner;
     }
 
     public void setMerchantLogo(String merchantLogo) {

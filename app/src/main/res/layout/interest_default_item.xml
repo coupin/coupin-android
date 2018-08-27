@@ -4,7 +4,11 @@
     android:animateLayoutChanges="true"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:padding="@dimen/padding_sm">
+    android:paddingBottom="@dimen/padding_sm"
+    android:paddingLeft="@dimen/padding_sm"
+    android:paddingRight="@dimen/padding_sm"
+    android:paddingTop="@dimen/padding_sm"
+    >
 
     <LinearLayout
         android:background="@drawable/interest_default"
@@ -34,7 +38,7 @@
             android:singleLine="true"
             android:text="@string/example_text_1"
             android:textColor="@color/white"
-            android:textSize="@dimen/large_text"
+            android:textSize="@dimen/medium_text"
             android:textStyle="bold"/>
 
     </LinearLayout>

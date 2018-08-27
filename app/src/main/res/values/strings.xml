@@ -29,8 +29,10 @@
     <string name="error_confirm_password">Password is not the same, please reenter password</string>
     <string name="error_full_name_required">Full name is required</string>
     <string name="error_invalid_network">Invalid Network Provider</string>
+    <string name="error_empty">Error, Cannot be empty.</string>
     <string name="error_connection_title">Connection Error</string>
     <string name="error_connection_detail">We encountered an error while trying to connect.</string>
+    <string name="success_password">Password updated successfully.</string>
 
     <string-array name="networks">
         <item>Select Mobile Network</item>
@@ -48,12 +50,8 @@
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
     <!--<string name="base_url_v1">https://coupin.herokuapp.com/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <string name="base_url">https://fe77dd00.ngrok.io/api/v1</string>
-    <!--<string name="base_url">https://154ec2cb.ngrok.io/api/v1</string>-->
-    <!--<string name="base_url">http://172.16.3.62:5030/api/v1</string>-->
-    <!--<string name="base_url">http://172.16.2.193:5030/api/v1</string>-->
-    <!--<string name="base_url">http://192.168.8.101:5030/api/v1</string>-->
-    <!--<string name="base_url">http://10.75.111.91:5030</string>-->
+    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
+    <string name="base_url">https://5e3cea48.ngrok.io/api/v1</string>
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -62,8 +60,12 @@
 
     <!--Merchant Endpoints-->
     <string name="ep_api_merchant">/merchant</string>
+    <string name="ep_api_get_prime">/merchant/prime</string>
     <string name="ep_api_merchant_new">/merchant/new</string>
     <string name="ep_api_merchant_recent">/merchant/recent</string>
+
+    <!--Reward Endpoints-->
+    <string name="ep_api_reward">/rewards/merchant</string>
 
     <!--Customer Endpoints-->
     <string name="ep_api_user">/customer</string>
@@ -74,20 +76,6 @@
     <string name="ep_generate_code">/coupin</string>
     <string name="ep_get_rewards">/coupin</string>
     <string name="ep_rewards_use_saved">/coupin/id/activate</string>
-
-    <!--<string name="ep_api_merchant">/api/merchant</string>-->
-    <!--<string name="ep_api_merchant_new">/api/merchant/recent</string>-->
-    <!--<string name="ep_api_merchant_recent">/api/merchant/recent</string>-->
-    <!--<string name="ep_generate_code">/api/reward/coupin</string>-->
-    <!--<string name="ep_login_user">/customer/authenticate</string>-->
-    <!--<string name="ep_register_user">/customer/register</string>-->
-    <!--<string name="ep_rewards_for_now">/api/reward/me/now</string>-->
-    <!--<string name="ep_rewards_for_later">/api/reward/me/later</string>-->
-    <!--<string name="ep_rewards_use_saved">/api/reward/me/use</string>-->
-    <!--<string name="ep_api_user">/api/user</string>-->
-    <!--<string name="ep_api_user_category">/api/user/category</string>-->
-    <!--<string name="ep_api_user_favourite">/api/user/favourites</string>-->
-    <string name="ep_api_get_hot">/api/merchant/hot</string>
 
 
     <!-- Coupin words and phrases -->
@@ -203,9 +191,10 @@
     <string name="distance">Distance from you?</string>
     <string name="interested">What are you interested in?</string>
     <string name="cat_ent">Entertainment</string>
-    <string name="cat_food">FoodNDrinks</string>
+    <string name="cat_food">Food &amp; Drinks</string>
     <string name="cat_gadg">Gadgets</string>
-    <string name="cat_health">HealthNBeauty</string>
+    <string name="cat_groc">Groceries</string>
+    <string name="cat_health">Health &amp; Beauty</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_ticket">Tickets</string>
     <string name="cat_travel">Travel</string>
@@ -216,7 +205,8 @@
     <string name="reward_det">Reward Details</string>
     <string name="ongoing">ONGOING REWARDS</string>
     <string name="sort">Sort By</string>
-    <string name="expiry">EXPIRY DATE:</string>
+    <string name="expiry">EXP:</string>
+    <string name="expiry_full">Expiry Date:</string>
     <string name="example_date">25 JAN 2017</string>
     <string name="facebook">Facebook</string>
     <string name="google">Google</string>
@@ -287,10 +277,13 @@
     <!--DEV-->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyASorYra1BsFx0g-alZC_yolz3ugfKMZTs</string>
     <!--PRO-->
-    <string name="google_maps_key_pro" templateMergeStrategy="preserve" translatable="false">AIzaSyC_mcnWhw-J9NdVPBItY7rlEuGqXY3Ehh4</string>
+    <string name="google_maps_key_pro" templateMergeStrategy="preserve" translatable="false">AIzaSyCGfjpKAEXIAnnSWg0wwQQCbjxpQWAYscM</string>
     <string name="cloudinary_api_key">254821729494622</string>
     <string name="update_now">Update Now</string>
     <string name="no_thank_you">Not Now</string>
     <string name="update_header">New Update!</string>
     <string name="update_body">A new update is available. would you like to update now?</string>
+    <string name="change_save">Save Password</string>
+    <string name="empty_title">No Merchants Found</string>
+    <string name="empty_details">Sorry there are no merchants around you, increasing the radius and then try again.</string>
 </resources>

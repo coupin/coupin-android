@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ImageView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -13,9 +14,13 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.signed.Signature;
 import com.cloudinary.android.signed.SignatureProvider;
+import com.cunoraz.gifview.library.GifView;
 import com.facebook.FacebookSdk;
 import com.facebook.appevents.AppEventsLogger;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.UpdateDialog;
@@ -27,6 +32,7 @@ import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SplashScreen extends Activity implements MyOnSelect {
@@ -36,6 +42,11 @@ public class SplashScreen extends Activity implements MyOnSelect {
     Handler handler = new Handler();
     UpdateDialog updateDialog;
 
+    @BindView(R.id.loading_gif)
+    GifView loadingView;
+    @BindView(R.id.test_image)
+    ImageView testView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -44,6 +55,12 @@ public class SplashScreen extends Activity implements MyOnSelect {
         FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         final RequestQueue requestQueue1 = Volley.newRequestQueue(this);
+
+        loadingView.setGifResource(R.raw.loading_gif);
+//        loadingView.setVisibility(View.VISIBLE);
+//        loadingView.play();
+
+        Glide.with(this).load(R.raw.loading_gif).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)).into(testView);
 
         PreferenceMngr.setContext(getApplicationContext());
         if (PreferenceMngr.getInstance().getRequestQueue() == null) {
@@ -129,12 +146,13 @@ public class SplashScreen extends Activity implements MyOnSelect {
 
     @Override
     public void onSelect(boolean selected, int version) {
-        if (!selected) {
-            PreferenceMngr.setUpdate(false);
+        Log.v("VolleyUpdateAvailable", String.valueOf(selected));
+        if (selected) {
+            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_link))));
+        } else {
+            PreferenceMngr.getInstance().setUpdate(false);
             PreferenceMngr.setLastUpdate(version);
             proceed();
-        } else {
-            startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_link))));
         }
     }
 }

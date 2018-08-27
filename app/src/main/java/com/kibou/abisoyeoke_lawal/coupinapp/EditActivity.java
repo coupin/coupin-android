@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ import com.bumptech.glide.Glide;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
+import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.ChangePasswordDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.StringUtils;
@@ -43,6 +45,8 @@ import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+    @BindView(R.id.profile_password)
+    public Button changePasswordBtn;
     @BindView(R.id.edit_picture)
     public CircleImageView editPicture;
     @BindView(R.id.profile_picture)
@@ -65,8 +69,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     public TextView profileLastName;
     @BindView(R.id.profile_mobile)
     public TextView profileMobile;
-    @BindView(R.id.profile_password)
-    public TextView profilePassword;
 
     private final int IMAGE_SELECTION = 1004;
     private Toast toast;
@@ -120,6 +122,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
         setupDetails();
 
+        changePasswordBtn.setOnClickListener(this);
         editFalse.setOnClickListener(this);
         editTrue.setOnClickListener(this);
         editBack.setOnClickListener(this);
@@ -160,9 +163,12 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
             profileGender.setEnabled(false);
 
-            if (user.has("picture")) {
+            Log.v("VolleyTired", user.getJSONObject("picture").toString());
+            if (user.has("picture") && user.getJSONObject("picture").getString("url") != "null") {
                 JSONObject object = user.getJSONObject("picture");
                 Glide.with(this).load(object.getString("url")).into(profilePicture);
+            } else {
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
             }
 
         } catch (Exception e) {
@@ -341,9 +347,20 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         gender = null;
     }
 
+    /**
+     * Open the custom password dialog
+     */
+    private void openPasswordDialog() {
+        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(this, PreferenceMngr.getToken());
+        passwordDialog.show();
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
+            case R.id.profile_password:
+                openPasswordDialog();
+                break;
             case R.id.edit_true:
                 makeEditable(true);
                 editTrue.setVisibility(View.GONE);

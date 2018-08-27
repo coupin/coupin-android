@@ -35,10 +35,11 @@
             android:contentDescription="@string/white_logo"
             android:id="@+id/logo_wh"
             android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/activity_vertical_margin"
-            android:layout_width="wrap_content"
+            android:layout_width="100dp"
             android:layout_height="100dp"
-            android:src="@drawable/logo_wh_bg" />
+            android:src="@drawable/ic_clogo" />
 
     </RelativeLayout>
 

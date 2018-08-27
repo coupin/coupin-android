@@ -59,7 +59,18 @@
         app:radius="4dp"
         app:slideInterval="3000"
         app:strokeColor="@color/white"
-        app:strokeWidth="1dp"/>
+        app:strokeWidth="1dp"
+        android:visibility="gone"/>
+        
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/slides_loading_view"
+        android:layout_height="230dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="230dp"
+        android:padding="@dimen/padding_sm"
+        app:indicatorColor="@color/colorAccent"
+        app:indicatorName="BallScaleMultipleIndicator"/>
 
     <TextView
         android:layout_width="match_parent"
@@ -72,6 +83,16 @@
         android:textColor="@color/text_dark_grey"
         android:textSize="@dimen/large_text"
         android:textStyle="bold"/>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/featured_loading_view"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:padding="@dimen/padding_sm"
+        app:indicatorColor="@color/colorAccent"
+        app:indicatorName="BallScaleMultipleIndicator"/>
 
     <include layout="@layout/cardview_group_hotlist"/>
 
@@ -87,12 +108,23 @@
         android:textSize="@dimen/large_text"
         android:textStyle="bold"/>
 
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/recommended_loading_view"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="150dp"
+        android:padding="@dimen/padding_sm"
+        app:indicatorColor="@color/colorAccent"
+        app:indicatorName="BallScaleMultipleIndicator"/>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hot_recyclerview"
         android:layout_height="match_parent"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
-        android:layout_width="match_parent"/>
+        android:layout_width="match_parent"
+        android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -55,7 +55,7 @@ public class NotificationService extends IntentService {
                     int total = object.getInt("total");
 
                     NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(getApplicationContext());
-                    notifBuilder.setSmallIcon(R.drawable.logo);
+                    notifBuilder.setSmallIcon(R.drawable.ic_clogo);
                     if (total > 0) {
                         notifBuilder.setContentTitle("New Coupins!!!");
                         notifBuilder.setContentText("There are " + total + " coupins matching your interests around you.");

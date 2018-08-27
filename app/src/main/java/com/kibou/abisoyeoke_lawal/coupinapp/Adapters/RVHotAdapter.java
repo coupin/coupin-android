@@ -1,30 +1,36 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
+import android.content.Context;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
 
-import java.util.List;
+import java.util.ArrayList;
 
 /**
  * Created by abisoyeoke-lawal on 10/5/17.
  */
 
 public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHolder> {
-    public List<RewardListItem> hotList;
+    public ArrayList<Merchant> merchants;
+    public Context context;
 
     static  public MyOnClick myOnClick;
 
-    public RVHotAdapter(List<RewardListItem> hotList, MyOnClick myOnClick) {
-        this.hotList = hotList;
+    public RVHotAdapter(ArrayList<Merchant> merchants, Context context, MyOnClick myOnClick) {
+        this.context = context;
+        this.merchants = merchants;
         this.myOnClick = myOnClick;
     }
 
@@ -37,40 +43,45 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        RewardListItem hotItem = hotList.get(position);
+        Merchant hotItem = merchants.get(position);
 
         try {
-            JSONArray rewardArray = new JSONArray(hotItem.getRewardDetails());
+            JSONArray rewardArray = new JSONArray(hotItem.getRewards());
 
-            holder.hotTitle.setText(hotItem.getMerchantName());
-            holder.hotAddress.setText(hotItem.getMerchantAddress());
+            holder.hotTitle.setText(hotItem.getTitle());
+            holder.hotAddress.setText(hotItem.getAddress());
+            Glide.with(context).load(hotItem.getLogo()).into(holder.hotLogo);
 
-            if (hotItem.getRewardCount() > 1) {
-                holder.hotRewards.setText(hotItem.getRewardCount() + " REWARDS");
+            if (hotItem.getRewardsCount() > 1) {
+                holder.hotRewards.setText(hotItem.getRewardsCount() + " REWARDS");
             } else {
                 holder.hotRewards.setText(rewardArray.getJSONObject(0).getString("name"));
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+        holder.bind(position);
     }
 
     @Override
     public int getItemCount() {
-        return hotList.size();
+        return merchants.size();
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
+        public CardView cardView;
+        public RoundedImageView hotLogo;
         public TextView hotTitle;
         public TextView hotAddress;
         public TextView hotRewards;
 
-        public ItemViewHolder(View view) {
-            super(view);
+        public ItemViewHolder(View itemView) {
+            super(itemView);
 
-            hotTitle = (TextView) view.findViewById(R.id.hot_title);
-            hotAddress = (TextView) view.findViewById(R.id.hot_address);
-            hotRewards = (TextView) view.findViewById(R.id.hot_rewards);
+            hotLogo = (RoundedImageView) itemView.findViewById(R.id.hot_logo);
+            hotTitle = (TextView) itemView.findViewById(R.id.hot_title);
+            hotAddress = (TextView) itemView.findViewById(R.id.hot_address);
+            hotRewards = (TextView) itemView.findViewById(R.id.hot_rewards);
         }
 
         public void bind(final int position) {

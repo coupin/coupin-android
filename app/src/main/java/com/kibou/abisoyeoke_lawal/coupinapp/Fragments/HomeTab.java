@@ -36,6 +36,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
@@ -44,6 +45,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.bumptech.glide.Glide;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -73,6 +75,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.NetworkErrorDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
+import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
@@ -102,7 +105,7 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener{
+    GoogleApiClient.OnConnectionFailedListener, MyOnClick {
     private static final int SERVICE_ID = 1002;
     @BindView(R.id.btn_mylocation)
     public FloatingActionButton btnMyLocation;
@@ -141,6 +144,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     // Map Stuff
     public ViewGroup infoWindow;
     public ImageView banner;
+    public ImageView category;
     public TextView title;
     public TextView address;
     public Button infoButton;
@@ -257,6 +261,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
         });
 
+
+
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (!NetworkGPSUtils.isConnected(getContext())) {
@@ -315,15 +321,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                         try {
                             JSONObject res = new JSONObject(marker.getSnippet());
-                            JSONArray reward = res.getJSONArray("rewards");
+                            int count = res.getInt("count");
 
                             if (marker.getTitle().toString().equals("Yes")) {
                                 infoWindow = (ViewGroup) getActivity().getLayoutInflater().inflate(R.layout.info_window_title_only, null);
-//                                marker1.setInfoWindowAnchor(1.85f, 0.95f);
                                 TextView tempView = (TextView) infoWindow.findViewById(R.id.name);
                                 tempView.measure(0, 0);
                                 float initWidth =  tempView.getMeasuredWidth();
-                                tempView.setText(res.getString("name"));
+                                tempView.setText(toTitleCase(res.getString("name")));
+                                adapter.clearPreviousView();
 
                                 marker1.setInfoWindowAnchor(2.5f, 0.85f);
                             } else {
@@ -332,20 +338,20 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 marker1.setInfoWindowAnchor(0.5f, 0.7f);
 
                                 banner = (ImageView) infoWindow.findViewById(R.id.marker_banner);
+                                category = (ImageView) infoWindow.findViewById(R.id.marker_category);
                                 title = (TextView) infoWindow.findViewById(R.id.discount_1);
                                 address = (TextView) infoWindow.findViewById(R.id.discount_2);
                                 infoButton = (Button) infoWindow.findViewById(R.id.info_button);
 
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));
-                                // Set icon
-//                                banner.setImageResource(getResources().getDrawable(icons[]));
-                                if (reward.length() > 1) {
-                                    String temp = reward.length() + " Rewards Available";
-                                    infoButton.setText(temp);
-                                } else {
-                                    infoButton.setText(reward.getJSONObject(0).getString("name"));
+                                if (res.has("logo") && res.getJSONObject("logo").has("url")) {
+                                    Glide.with(getActivity()).load(res.getJSONObject("logo").getString("url")).into(banner);
                                 }
+                                String snippet = count > 1 ? count + " Rewards Available" :
+                                    res.getJSONObject("reward").getString("name");
+                                infoButton.setText(snippet);
+                                category.setImageResource(getCategoryImage(res.getString("category")));
                             }
                         }   catch (Exception e) {
                             e.printStackTrace();
@@ -363,7 +369,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        int index = Integer.valueOf(marker.getId().substring(1));
+                        Log.v("VolleySnippet", marker.getSnippet());
                         Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
                         Bundle extra = new Bundle();
                         extra.putString("merchant", marker.getSnippet().toString());
@@ -380,6 +386,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         if (!marker.getTitle().toString().equals("Hello!")) {
                             marker.setTitle("Yes");
                         }
+                        Log.v("MarkerLog", "" + marker.getId() + " - " + marker.getTitle());
 
                         lastOpened = marker;
                         onMarker = true;
@@ -456,6 +463,41 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         return rootView;
     }
 
+    public int getCategoryImage(String cat) {
+        int x = 0;
+        switch(cat) {
+            case "entertainment":
+                x = R.drawable.int_ent;
+                break;
+            case "foodndrink":
+                x = R.drawable.int_food;
+                break;
+            case "gadgets":
+                x = R.drawable.int_gadget;
+                break;
+            case "groceries":
+                x = R.drawable.int_groceries;
+                break;
+            case "healthnbeauty":
+                x = R.drawable.int_beauty;
+                break;
+            case "shopping":
+                x = R.drawable.int_fashion;
+                break;
+            case "tickets":
+                x = R.drawable.int_ticket;
+                break;
+            case "travel":
+                x = R.drawable.int_travel;
+                break;
+            default:
+                x = R.drawable.int_food;
+                break;
+        }
+
+        return x;
+    }
+
     /**
      * Calculate the distance between to points using latitude and longitude
      * @param StartP
@@ -503,7 +545,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         // Get Current Location
         if (currentLocation != null) {
-            Log.v("VolleySetup", "In set last known");
             setUpList();
         } else {
             if (googleApiClient == null) {
@@ -535,14 +576,16 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         if (iconsList.size() > 0 && filter) {
             iconsList.clear();
             adapter.notifyDataSetChanged();
-            filter = false;
-        } else if (iconsList.size() > 0 && !filter) {
+            mGoogleMap.clear();
+            markers.clear();
+            adapter.clear();
+        } else if (iconsList.size() > 0 && !filter && retrievingData) {
             return;
+        } else {
+
         }
 
-        Log.v("VolleySetup", "Entered Setup");
-
-        String query = "";
+        filter = false;
 
         if (currentLocation != null) {
             longitude = new BigDecimal(currentLocation.getLongitude());
@@ -553,7 +596,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             try {
                 if (geocoder.isPresent()) {
                     addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                    Log.v("VolleyAddress", addresses.toString());
                     street.setText(addresses.get(0).getThoroughfare().toString());
                 }
             } catch (Exception e) {
@@ -565,50 +607,42 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    double one = 0;
-                    double two = 0;
-                    int counter = 0;
+                    Log.v("VolleyConfused", "Inside Success");
                     try {
                         Merchant first = new Merchant();
                         first.setPicture(R.drawable.hot);
                         iconsList.add(first);
 
-                        if (currentLocation != null && myPosition == null) {
+                        if (currentLocation != null) {
                             markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
                                 .title("Hello!")
                                 .snippet("You are here")
                                 .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
                         }
-                        Log.v("VolleyCheck", response);
 
                         JSONArray resArr = new JSONArray(response);
                         for (int j = 0; j < resArr.length(); j++) {
                             JSONObject res = resArr.getJSONObject(j);
                             Merchant item = new Merchant();
                             item.setId(res.getString("_id"));
-                            if (res.has("logo") && res.getString("logo") != "null") {
-                                item.setLogo(res.getString("logo"));
-                            } else {
-                                item.setPicture(icons[j]);
-                            }
+                            item.setLogo(res.getJSONObject("logo").getString("url"));
                             item.setAddress(res.getString("address"));
                             item.setDetails(res.getString("details"));
                             item.setEmail(res.getString("email"));
                             item.setMobile(res.getString("mobile"));
                             item.setTitle(res.getString("name"));
-                            item.setRewards(res.getJSONArray("rewards").toString());
+//                            item.setReward(res.getJSONArray("reward").toString());
+                            item.setRewardsCount(res.getInt("count"));
                             item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                             item.setLongitude(res.getJSONObject("location").getDouble("long"));
+                            item.setRating(res.getInt("rating"));
                             markers.add(mGoogleMap.addMarker(new MarkerOptions()
                                     .title(res.getString("name"))
                                     .snippet(res.toString())
                                     .position(new LatLng(item.getLatitude(), item.getLongitude()))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
-                            one = item.getLatitude();
-                            two = item.getLongitude();
                             iconsList.add(item);
-                            counter++;
                         }
 
                         spots.setText(iconsList.size() - 1 + " Rewards ");
@@ -623,24 +657,52 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         retrievingData = false;
                     } catch (Exception e) {
                         e.printStackTrace();
+                        adapter.setIconList(iconsList);
+                        adapter.notifyDataSetChanged();
+                        retrievingData = false;
+                        showDialog(false);
                     }
                 }
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    Merchant first = new Merchant();
+                    first.setPicture(R.drawable.hot);
+                    iconsList.add(first);
+
+                    if (currentLocation != null) {
+                        markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
+                            .title("Hello!")
+                            .snippet("You are here")
+                            .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                    }
+
+                    adapter.setIconList(iconsList);
+                    adapter.notifyDataSetChanged();
+
+                    retrievingData = false;
                     spots.setText("0 Rewards ");
                     showDialog(false);
 
-                    if (error.networkResponse == null) {
-                        networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                            getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    getActivity().finish();
-                                }
-                            });
-                    } else {
-                        if (HomeTab.this.isVisible()) {
+                    if (HomeTab.this.isVisible()) {
+                        if (error.networkResponse == null) {
+                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
+                                getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        getActivity().finish();
+                                    }
+                                });
+                        } else if (error.networkResponse.statusCode == 404) {
+                            networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_title),
+                                getResources().getString(R.string.empty_details), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        networkErrorDialog.dismiss();
+                                    }
+                                });
+                        } else {
                             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                                 error.getMessage(), new View.OnClickListener() {
                                     @Override
@@ -649,6 +711,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     }
                                 });
                         }
+                        networkErrorDialog.show();
                     }
                 }
             }) {
@@ -718,8 +781,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             latLngBounds.include(markers.get(x).getPosition());
         }
 
-        LatLngBounds bounds = latLngBounds.build();
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
+        if (myPosition != null) {
+            LatLngBounds bounds = latLngBounds.build();
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
+        }
     }
 
     public double getZoomForMetersWide(double desiredMeters, double latitude) {
@@ -731,31 +796,25 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     /**
      * Center on button
      */
-    private void center() {
+    public void center() {
         LatLngBounds.Builder tempBounds = new LatLngBounds.Builder();
-//        CircleOptions circleOptions = new CircleOptions();
-//        circleOptions.center(myPosition.getPosition());
-//        circleOptions.radius(tempDist);
-        Log.v("VolleyDistance", String.valueOf(tempDist));
-
-//        tempBounds.include(myPosition.getPosition());
-//        tempBounds.include(closestMarker.getPosition());
-//        LatLngBounds bounds = tempBounds.build();
 
         if (onMarker) {
             if (lastOpened != null && lastOpened.isInfoWindowShown()) {
                 lastOpened.hideInfoWindow();
             }
+            adapter.clearPreviousView();
             onMarker = false;
         }
 
-        float zoom = (float)getZoomForMetersWide(tempDist * 10, (float)closestMarker.getPosition().latitude);
-        Log.v("VolleyZoom", String.valueOf(zoom));
-
-        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), zoom));
-
-        Log.v("VolleyMin", String.valueOf(closestMarker.isVisible()));
-//        mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));
+        if (closestMarker != null) {
+            float zoom = (float)getZoomForMetersWide(tempDist * 10, (float)closestMarker.getPosition().latitude);
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), zoom));
+        } else if (myPosition != null) {
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myPosition.getPosition(), 17));
+        } else {
+            Toast.makeText(getActivity(), "Cannot get your position at the time.", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -776,7 +835,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (isLoading)
+            if (isLoading || (iconsList.size() / 5) != 0 || iconsList.size() < 5)
                 return;
 
             int visibleItemCount = mLinearLayoutManager.getChildCount();
@@ -839,6 +898,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         adapter.notifyDataSetChanged();
                         page++;
                     } catch (Exception e) {
+                        retrievingData = false;
+                        isLoading = false;
                         e.printStackTrace();
                     }
                 }
@@ -848,24 +909,24 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     isLoading = false;
                     loading();
 
-                    if (error.networkResponse == null) {
-                        networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                            getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    getActivity().finish();
-                                }
-                            });
-                    } else if (error.networkResponse.statusCode == 404) {
-                        networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_more_title),
-                            getResources().getString(R.string.empty_more_details), new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
-                                    networkErrorDialog.dismiss();
-                                }
-                            });
-                    } else {
-                        if (HomeTab.this.isVisible()) {
+                    if (HomeTab.this.isVisible()) {
+                        if (error.networkResponse == null) {
+                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
+                                getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        getActivity().finish();
+                                    }
+                                });
+                        } else if (error.networkResponse.statusCode == 404) {
+                            networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_more_title),
+                                getResources().getString(R.string.empty_more_details), new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View view) {
+                                        networkErrorDialog.dismiss();
+                                    }
+                                });
+                        } else {
                             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                                 error.getMessage(), new View.OnClickListener() {
                                     @Override
@@ -874,9 +935,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     }
                                 });
                         }
-                    }
 
-                    networkErrorDialog.show();
+                        networkErrorDialog.show();
+                    }
                 }
             }) {
                 @Override
@@ -1136,6 +1197,34 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
     }
 
+    public static String toTitleCase(String str) {
+
+        if (str == null) {
+            return null;
+        }
+
+        boolean space = true;
+        StringBuilder builder = new StringBuilder(str);
+        final int len = builder.length();
+
+        for (int i = 0; i < len; ++i) {
+            char c = builder.charAt(i);
+            if (space) {
+                if (!Character.isWhitespace(c)) {
+                    // Convert to title case and switch out of whitespace mode.
+                    builder.setCharAt(i, Character.toTitleCase(c));
+                    space = false;
+                }
+            } else if (Character.isWhitespace(c)) {
+                space = true;
+            } else {
+                builder.setCharAt(i, Character.toLowerCase(c));
+            }
+        }
+
+        return builder.toString();
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode){
@@ -1148,5 +1237,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     break;
                 }
         }
+    }
+
+    @Override
+    public void onItemClick(int position) {
+        Log.v("VolleyTesting", "Testing");
+        Toast.makeText(getActivity(), "This is a test", Toast.LENGTH_SHORT).show();
+//        setUpList();
     }
 }

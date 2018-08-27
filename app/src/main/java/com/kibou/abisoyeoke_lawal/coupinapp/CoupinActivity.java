@@ -1,11 +1,12 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -37,11 +38,17 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class CoupinActivity extends AppCompatActivity implements MyOnClick {
+public class CoupinActivity extends AppCompatActivity implements MyOnClick, View.OnClickListener {
+    @BindView(R.id.navigate)
+    public FloatingActionButton naviagteBtn;
+    @BindView(R.id.share)
+    public FloatingActionButton shareBtn;
     @BindView(R.id.list_back)
     public ImageButton listBack;
+    @BindView(R.id.list_logo)
+    public ImageView merchantLogo;
     @BindView(R.id.coupin_banner)
-    public ImageView coupinBanner;
+    public ImageView merchantBanner;
     @BindView(R.id.coupin_activate_holder)
     public LinearLayout activateHolder;
     @BindView(R.id.coupin_code_holder)
@@ -54,6 +61,10 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
     public TextView listCode;
     @BindView(R.id.list_count)
     public TextView listCount;
+    @BindView(R.id.list_merchant_name)
+    public TextView merchantName;
+    @BindView(R.id.list_merchant_address)
+    public TextView merchantAddress;
 
     ArrayList<Reward> coupinRewards;
     RewardListItem coupin;
@@ -69,9 +80,15 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
         requestQueue = Volley.newRequestQueue(this);
 
         coupin = (RewardListItem) getIntent().getSerializableExtra("coupin");
+
+        merchantName.setText(coupin.getMerchantName());
+        merchantAddress.setText(coupin.getMerchantAddress());
+        Glide.with(this).load(coupin.getMerchantBanner()).into(merchantBanner);
+        Glide.with(this).load(coupin.getMerchantLogo()).into(merchantLogo);
+
         coupinRewards = new ArrayList<>();
 
-        Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(coupinBanner);
+//        Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(merchantBanner);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(
@@ -85,13 +102,14 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
             activateHolder.setVisibility(View.VISIBLE);
         }
 
+        naviagteBtn.setOnClickListener(this);
+        shareBtn.setOnClickListener(this);
+
         try {
             JSONArray res = new JSONArray(coupin.getRewardDetails());
             listCode.setText(coupin.getBookingShortCode());
 
             int total = res.length();
-
-                Log.v("VolleyCheck", coupin.getRewardDetails());
             listCount.setText("ACTIVE REWARDS - " + total);
 
             for(int x = 0; x < total; x++) {
@@ -191,5 +209,40 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick {
     @Override
     public void onItemClick(int position) {
 
+    }
+
+    /**
+     * Navigate to address
+     */
+    private void naviage() {
+        String parsedAddress = coupin.getMerchantAddress().replace(" ", "+");
+        parsedAddress = parsedAddress.replace(",", "");
+
+        Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
+        navigateIntent.setData(Uri.parse("geo:0,0?q=" + parsedAddress));
+        startActivity(navigateIntent);
+    }
+
+    /**
+     * Share details of coupin
+     */
+    private void share() {
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "Coupin Share!");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, "We are here to share again but not yet, this is just a test.");
+        startActivity(sendIntent);
+    }
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.navigate:
+                naviage();
+                break;
+            case R.id.share:
+                share();
+                break;
+        }
     }
 }

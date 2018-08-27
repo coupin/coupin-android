@@ -8,7 +8,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,15 +93,14 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
             profileName.setText(StringUtils.capitalize(userObject.getString("name")));
 
-            if (userObject.has("picture") && !userObject.get("picture").toString().equals("null")) {
+            if (userObject.has("picture") && userObject.getJSONObject("picture").getString("url") != "null") {
                 pictureUrl = userObject.getJSONObject("picture").getString("url");
+                Glide.with(this)
+                    .load(pictureUrl)
+                    .into(profilePicture);
+            } else {
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
             }
-
-            Log.v("VolleyPicture", pictureUrl);
-
-            Glide.with(this)
-                .load(pictureUrl)
-                .into(profilePicture);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -133,18 +131,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
-        try {
-            userObject = new JSONObject(PreferenceMngr.getUser());
-            if (userObject.has("picture") && !userObject.get("picture").toString().equals(pictureUrl)) {
-                pictureUrl = userObject.getJSONObject("picture").getString("url");
-                Glide.with(this)
-                    .load(pictureUrl)
-                    .into(profilePicture);
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            userObject = new JSONObject(PreferenceMngr.getUser());
+//            if (userObject.has("picture") && !userObject.get("picture").toString().equals(pictureUrl)) {
+//                pictureUrl = userObject.getJSONObject("picture").getString("url");
+//                Glide.with(this)
+//                    .load(pictureUrl)
+//                    .into(profilePicture);
+//            }
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

@@ -14,7 +14,12 @@
             android:id="@+id/full_header"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:padding="@dimen/padding_sm_plus"
+            android:paddingEnd="@dimen/padding_sm_plus"
+            android:paddingLeft="@dimen/padding_sm"
+            android:paddingRight="@dimen/padding_sm_plus"
+            android:paddingStart="@dimen/padding_sm"
+            android:paddingTop="@dimen/padding_sm_plus"
+            android:paddingBottom="@dimen/padding_sm_plus"
             android:text="@string/example_text_1"
             android:textColor="@color/text_dark_grey"
             android:textSize="@dimen/large_text"
@@ -153,8 +158,35 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/delivery_holder"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_width="wrap_content"
+                android:text="Delivery"
+                android:textColor="@color/text_light_grey"
+                android:textSize="@dimen/medium_text"/>
+
+            <TextView
+                android:id="@+id/full_delivers"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="NO"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_toLeftOf="@id/delivery_holder"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_sm"
             android:layout_width="wrap_content"

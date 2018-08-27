@@ -23,5 +23,5 @@
     <!--DEV-->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyASorYra1BsFx0g-alZC_yolz3ugfKMZTs</string>
     <!--PRO-->
-    <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyC_mcnWhw-J9NdVPBItY7rlEuGqXY3Ehh4</string>-->
+    <!--<string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCGfjpKAEXIAnnSWg0wwQQCbjxpQWAYscM</string>-->
 </resources>

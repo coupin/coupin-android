@@ -26,6 +26,7 @@
                 android:scaleType="centerCrop"/>
 
             <RelativeLayout
+                android:background="@drawable/background_coupin_gradient"
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:paddingBottom="@dimen/padding_md"
@@ -33,20 +34,22 @@
                 android:paddingLeft="@dimen/padding_sm"
                 android:paddingRight="@dimen/padding_sm"
                 android:paddingStart="@dimen/padding_sm">
-            
-                <ImageView
-                    android:background="@color/white"
+
+                <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/list_logo"
                     android:layout_alignParentBottom="true"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_height="70dp"
+                    android:layout_height="60dp"
                     android:layout_marginLeft="@dimen/margin_md"
                     android:layout_marginRight="@dimen/margin_sm"
-                    android:layout_width="70dp"/>
+                    android:layout_width="60dp"
+                    app:riv_border_color="@color/white"
+                    app:riv_corner_radius="5dp"
+                    app:riv_border_width="2dp"/>
 
                 <LinearLayout
-                    android:layout_alignParentBottom="true"
+                    android:layout_alignTop="@id/list_logo"
                     android:layout_height="wrap_content"
                     android:layout_toEndOf="@id/list_logo"
                     android:layout_toRightOf="@id/list_logo"
@@ -59,8 +62,10 @@
                         android:layout_marginBottom="@dimen/margin_xs"
                         android:layout_width="wrap_content"
                         android:text="@string/example_text_1"
+                        android:textAllCaps="true"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/medium_text"/>
+                        android:textSize="@dimen/large_text"
+                        android:textStyle="bold"/>
 
                     <TextView
                         android:id="@+id/list_merchant_address"
@@ -87,8 +92,8 @@
             android:paddingStart="@dimen/padding_sm"
             android:text=""
             android:textColor="@color/text_med_grey"
-            android:textSize="@dimen/large_text"
-            android:textStyle="bold"/>
+            android:textSize="@dimen/medium_text"
+            android:textStyle="normal"/>
 
         <android.support.v7.widget.RecyclerView
             android:id="@+id/list_view"
@@ -119,40 +124,39 @@
             android:src="@drawable/ic_back"/>
 
         <LinearLayout
+            android:gravity="center_vertical"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <ImageButton
+            <ImageView
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/descr_steps"
-                android:layout_height="26dp"
-                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_height="17dp"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:layout_marginEnd="@dimen/margin_xs"
                 android:layout_marginRight="@dimen/margin_xs"
-                android:layout_width="wrap_content"
+                android:layout_width="17dp"
                 android:src="@drawable/ic_steps"/>
 
             <View
                 android:background="@color/white"
-                android:layout_height="30dp"
+                android:layout_height="25dp"
                 android:layout_marginEnd="@dimen/margin_xs"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:layout_width="1dp"/>
 
-            <ImageButton
+            <ImageView
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/descr_favourite"
-                android:layout_height="26dp"
-                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_height="17dp"
                 android:layout_marginEnd="@dimen/margin_xs"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:layout_marginTop="@dimen/margin_xs"
-                android:layout_width="wrap_content"
+                android:layout_width="17dp"
                 android:src="@drawable/ic_star"/>
 
         </LinearLayout>
@@ -215,13 +219,28 @@
 
     <android.support.design.widget.FloatingActionButton
         android:background="@color/text_med_grey"
+        android:id="@+id/navigate"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
         android:layout_marginRight="15dp"
-        android:layout_marginTop="145dp"
-        android:layout_height="64dp"
-        android:layout_width="64dp"
+        android:layout_marginTop="155dp"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
         android:src="@drawable/ic_nav_arrow"
+        app:elevation="10dp"
+        app:backgroundTint="@color/text_med_grey"
+        app:rippleColor="@color/black"/>
+
+    <android.support.design.widget.FloatingActionButton
+        android:background="@color/text_med_grey"
+        android:id="@+id/share"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="75dp"
+        android:layout_marginTop="155dp"
+        android:layout_height="48dp"
+        android:layout_width="48dp"
+        android:src="@drawable/ic_share"
         app:elevation="10dp"
         app:backgroundTint="@color/text_med_grey"
         app:rippleColor="@color/black"/>

@@ -133,8 +133,8 @@
         </LinearLayout>
 
         <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_width="match_parent">
 
             <LinearLayout
                 android:gravity="center"
@@ -212,6 +212,19 @@
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                style="?android:attr/progressBarStyleLarge"
+                android:id="@+id/search_bottom_loading"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_height="24dp"
+                android:layout_marginEnd="@dimen/margin_xxs"
+                android:layout_marginRight="@dimen/margin_xxs"
+                android:layout_width="24dp"
+                app:indicatorName="BallPulseIndicator"
+                app:indicatorColor="@color/colorAccent"
+                android:visibility="gone"/>
 
         </RelativeLayout>
 

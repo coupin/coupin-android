@@ -8,7 +8,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
@@ -30,6 +29,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -43,6 +43,8 @@ import butterknife.ButterKnife;
 import co.lujun.androidtagview.TagContainerLayout;
 
 public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFilter {
+    @BindView(R.id.search_bottom_loading)
+    public AVLoadingIndicatorView bottomLoadingView;
     @BindView(R.id.search_edittext)
     public EditText searchTextView;
     @BindView(R.id.search_back)
@@ -62,16 +64,19 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
     @BindView(R.id.search_street)
     public TextView searchStreet;
 
-    public ArrayList<String> categories = new ArrayList<>();
-    public String queryString;
-    public String url;
-    public RequestQueue requestQueue;
+    private ArrayList<String> categories = new ArrayList<>();
+    private ArrayList<Merchant> companyInfos;
+    private boolean isLoading = false;
+    private int page = 0;
+    private LinearLayoutManager linearLayoutManager;
+    private RequestQueue requestQueue;
+    private RVSearchAdapter adapter;
+    private String queryString;
+    private String url;
 
-    public ArrayList<Merchant> companyInfos;
-    public RVSearchAdapter adapter;
-    public LinearLayoutManager linearLayoutManager;
 
     public Handler handler = new Handler();
+    public Runnable queryRun;
 
     public int icons[] = new int[]{R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
@@ -106,6 +111,15 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
 
         queryString = "";
         query();
+        implementOnScrollListener();
+
+        queryRun = new Runnable() {
+            @Override
+            public void run() {
+                loading(0);
+                query();
+            }
+        };
 
         searchTextView.addTextChangedListener(new TextWatcher() {
             @Override
@@ -121,9 +135,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
-                    loading(0);
+                    handler.removeCallbacks(queryRun);
+
                     queryString = s.toString();
-                    query();
+                    handler.postDelayed(queryRun, 500);
                 }
             }
         });
@@ -143,9 +158,11 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         });
     }
 
+    /**
+     * Query for search
+     */
     private void query() {
-        Log.v("VolleyQuery", queryString);
-        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/search";
+        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/" + queryString + "/search?page=" + page;
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -158,26 +175,31 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                         for (int x = 0; x < resArr.length(); x++) {
                             //TODO: Do the cards
                             JSONObject res = resArr.getJSONObject(x);
-                            JSONObject object = res.getJSONObject("merchantInfo");
                             Merchant item = new Merchant();
                             item.setId(res.getString("_id"));
                             item.setEmail(res.getString("email"));
-                            item.setPicture(icons[x]);
-                            item.setAddress(object.getString("address"));
-                            item.setDetails(object.getString("companyDetails"));
-                            item.setMobile(object.getString("mobileNumber"));
-                            item.setTitle(object.getString("companyName"));
-                            item.setRewards(object.getJSONArray("rewards").toString());
+                            item.setLogo(res.getJSONObject("logo").getString("url"));
+                            item.setAddress(res.getString("address"));
+                            item.setDetails(res.getString("details"));
+                            item.setMobile(res.getString("mobile"));
+                            item.setTitle(res.getString("name"));
+                            item.setReward(res.getJSONObject("reward").toString());
+                            item.setRewards(res.getJSONArray("rewards").toString());
+                            item.setRewardsCount(res.getInt("count"));
                             item.setResponse(res.toString());
+                            item.setRating(res.getInt("rating"));
 
-                            if (object.has("location")) {
-                                item.setLatitude(object.getJSONArray("location").getDouble(1));
-                                item.setLongitude(object.getJSONArray("location").getDouble(0));
+                            if (res.has("location")) {
+                                item.setLatitude(res.getJSONObject("location").getDouble("lat"));
+                                item.setLongitude(res.getJSONObject("location").getDouble("long"));
                             }
                             companyInfos.add(item);
                         }
-                        Log.v("VolleyList", companyInfos.toString());
 
+                        isLoading = false;
+                        if (page > 0) {
+                            loading(5);
+                        }
                         adapter.notifyDataSetChanged();
                         handler.postDelayed(new Runnable() {
                             @Override
@@ -200,6 +222,10 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                         @Override
                         public void run() {
                             loading(3);
+                            isLoading = false;
+                            if (page > 0) {
+                                loading(5);
+                            }
                         }
                     }, 2000);
                 }
@@ -207,7 +233,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                isLoading = false;
                 if (error.toString().equals("com.android.volley.TimeoutError")) {
                     loading(3);
                 } else {
@@ -218,6 +244,9 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                     } else {
                         loading(3);
                     }
+                }
+                if (page > 0) {
+                    loading(5);
                 }
             }
         }) {
@@ -243,6 +272,36 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         requestQueue.add(request);
     }
 
+    /**
+     * Implements scroll listener for the search list
+     * Using it to load more merchants
+     */
+    private void implementOnScrollListener() {
+        searchRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isLoading || (companyInfos.size() % 7) != 0 || companyInfos.size() < 7)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    isLoading = true;
+                    loading(4);
+                    page = companyInfos.size() / 7;
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            query();
+                        }
+                    }, 2000);
+                }
+            }
+        });
+    }
+
     @Override
     public void onItemClick(int position) {
         Intent merchantIntent = new Intent(this, MerchantActivity.class);
@@ -266,15 +325,27 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                 break;
             case 1:
                 loadingSearchView.setVisibility(View.GONE);
+                emptySearchView.setVisibility(View.GONE);
+                errorSearchView.setVisibility(View.GONE);
                 searchRecyclerView.setVisibility(View.VISIBLE);
                 break;
             case 2:
                 loadingSearchView.setVisibility(View.GONE);
+                errorSearchView.setVisibility(View.GONE);
+                searchRecyclerView.setVisibility(View.GONE);
                 emptySearchView.setVisibility(View.VISIBLE);
                 break;
             case 3:
                 loadingSearchView.setVisibility(View.GONE);
+                searchRecyclerView.setVisibility(View.GONE);
+                emptySearchView.setVisibility(View.GONE);
                 errorSearchView.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                bottomLoadingView.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                bottomLoadingView.setVisibility(View.GONE);
                 break;
             default:
                 searchRecyclerView.setVisibility(View.GONE);

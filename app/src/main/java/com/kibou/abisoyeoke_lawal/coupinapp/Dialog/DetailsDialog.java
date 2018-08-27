@@ -25,6 +25,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import org.json.JSONArray;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 
 /**
  * Created by abisoyeoke-lawal on 9/1/17.
@@ -40,6 +41,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public ImageView photo3;
     public ImageView photo4;
     public LinearLayout buttonHolder;
+    public ArrayList<String> thumbnails = new ArrayList<>();
     public TextView fullDateEnd;
     public TextView fullDateStart;
     public TextView fullDescription;
@@ -139,6 +141,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         if (pictures != null) {
             try {
                 for (int x = 0; x < pictures.length(); x++) {
+                    thumbnails.add(pictures.getJSONObject(x).getString("url"));
                     Glide.with(context).load(pictures.getJSONObject(x).getString("url")).into(holders[x]);
                 }
             } catch (Exception e) {
@@ -221,7 +224,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public void showImageDialog(int position) {
         try {
             if (pictures.length() > 0) {
-                imageDialog = new GalleryDialog(context, pictures.getJSONObject(position).getString("url"));
+                imageDialog = new GalleryDialog(context, pictures.getJSONObject(position).getString("url"), thumbnails);
                 imageDialog.show();
             }
         } catch (Exception e) {

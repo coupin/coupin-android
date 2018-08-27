@@ -71,7 +71,7 @@ public class FavFragment extends Fragment implements MyOnClick {
         url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new RVAdapter(favList, this);
+        rvAdapter = new RVAdapter(favList, this, getContext());
         favRecyclerView.setLayoutManager(linearLayoutManager);
         favRecyclerView.setHasFixedSize(true);
         favRecyclerView.setAdapter(rvAdapter);
@@ -101,7 +101,8 @@ public class FavFragment extends Fragment implements MyOnClick {
                         item.setFav(true);
                         item.setMerchantName(mainObject.getString("name"));
                         item.setMerchantAddress(mainObject.getString("address"));
-                        item.setMerchantLogo(mainObject.getString("logo"));
+                        item.setMerchantBanner(mainObject.getJSONObject("banner").getString("url"));
+                        item.setMerchantLogo(mainObject.getJSONObject("logo").getString("url"));
                         item.setMerchantPhone(mainObject.getString("mobile"));
                         item.setRewardDetails(rewardObjects.toString());
                         item.setRewardCount(rewardObjects.length());

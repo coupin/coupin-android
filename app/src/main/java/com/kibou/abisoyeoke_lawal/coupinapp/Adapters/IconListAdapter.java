@@ -112,4 +112,18 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
             }
         }
     }
+
+    public void clear() {
+        previousView = null;
+        previousPosition = 0;
+        iconList.clear();
+    }
+
+    public void clearPreviousView() {
+        if (previousView != null) {
+            ((ImageView) previousView.findViewById(R.id.icon_x)).setVisibility(View.GONE);
+            ((FrameLayout) previousView.findViewById(R.id.image_frame)).setBackgroundColor(parent.getResources().getColor(android.R.color.transparent));
+            previousView = null;
+        }
+    }
 }

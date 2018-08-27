@@ -1,7 +1,10 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +17,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -35,6 +39,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -48,10 +53,16 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, MyOnArraySelect {
+    @BindView(R.id.rewards_loading)
+    public AVLoadingIndicatorView bottomLoadingView;
+    @BindView(R.id.rewards_loadingview)
+    AVLoadingIndicatorView loadingRewards;
     @BindView(R.id.selected_btn_pin)
     public Button selectedBtnPin;
     @BindView(R.id.selected_btn_save)
     public Button selectedBtnSave;
+    @BindView(R.id.merchant_navigation)
+    public FloatingActionButton navigationBtn;
     @BindView(R.id.banner_holder)
     public ImageView bannerHolder;
     @BindView(R.id.photo_1)
@@ -64,12 +75,18 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public LinearLayout buttonHolder;
     @BindView(R.id.selected_holder)
     public LinearLayout selectedHolder;
+    @BindView(R.id.merchant_rating)
+    public RatingBar merchantRating;
     @BindView(R.id.rewards_recycler_view)
     public RecyclerView rvRewards;
-    @BindView(R.id.merchant_details_textview)
-    public TextView merchantDetails;
+    @BindView(R.id.merchant_address_textview)
+    public TextView merchantAddress;
+    @BindView(R.id.merchant_phone_textview)
+    public TextView merchantPhone;
     @BindView(R.id.merchant_name_textview)
     public TextView merchantName;
+    @BindView(R.id.rating_text)
+    public TextView ratingText;
     @BindView(R.id.selected_text)
     public TextView selectedText;
     @BindView(R.id.merchant_toolbar)
@@ -80,18 +97,23 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public RequestQueue requestQueue;
     String url;
 
-    public ArrayList<Reward> values;
-    public ArrayList<String> selected;
-    public ArrayList<String> favourites;
-    public boolean favourite = false;
-    public boolean requestGenderNumber = false;
-    public JSONArray userFavourites;
-    public Merchant item;
-    public JSONArray resArray;
-    public JSONObject res;
-    public JSONObject user;
-    public RVPopUpAdapter rvPopUpAdapter;
-    public String rewardHolder;
+    private ArrayList<Reward> values;
+    private ArrayList<String> selected;
+    private ArrayList<String> favourites;
+    private boolean favourite = false;
+    private boolean isLoading = false;
+    private boolean requestGenderNumber = false;
+    private Handler handler;
+    private int page = 0;
+    private JSONArray userFavourites;
+    private LinearLayoutManager linearLayoutManager;
+    private Merchant item;
+    private JSONArray resArray;
+    private JSONObject res;
+    private JSONObject user;
+    private RVPopUpAdapter rvPopUpAdapter;
+    private String merchantId;
+    private String rewardHolder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,6 +131,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             try {
                 item = (Merchant) extra.getSerializable("object");
                 resArray = new JSONArray(item.getRewards());
+//                id = new JSONObject(extra.getString("merchant")).getString("_id");
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -118,13 +141,21 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
         infoDialog = new RewardInfoDialog(this, this);
 
-        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager = new LinearLayoutManager(this);
         rvPopUpAdapter = new RVPopUpAdapter(values, this, this);
         rvRewards.setLayoutManager(linearLayoutManager);
         rvRewards.setHasFixedSize(true);
         rvRewards.setAdapter(rvPopUpAdapter);
 
         requestQueue = Volley.newRequestQueue(this);
+        handler = new Handler();
+
+        navigationBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                navigate();
+            }
+        });
 
         selectedBtnPin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -193,17 +224,20 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 item.setEmail(res.getString("email"));
                 item.setMobile(res.getString("mobile"));
                 item.setTitle(res.getString("name"));
-                item.setRewards(res.getJSONArray("rewards").toString());
                 item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                 item.setLongitude(res.getJSONObject("location").getDouble("long"));
+                item.setRating(res.getInt("rating"));
+                item.setBanner(res.getJSONObject("banner").getString("url"));
+                implementOnScrollListener();
             }
+            merchantId = item.getId();
+            Glide.with(this).load(item.getBanner()).into(bannerHolder);
             merchantName.setText(item.getTitle());
-            merchantDetails.setText(item.getAddress());
+            merchantAddress.setText(item.getAddress());
+            merchantPhone.setText("Tel: " + item.getMobile());
 
             user = new JSONObject(PreferenceMngr.getInstance().getUser());
             userFavourites = user.getJSONArray("favourites");
-
-            Log.v("VolleyMerchant", String.valueOf(PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id"))));
 
             // Show Mobile and Gender Dialog
             if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
@@ -212,65 +246,178 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 requestGenderNumber = true;
             }
 
+            merchantRating.setRating(item.getRating());
+            ratingText.setText(String.valueOf(item.getRating()) + "/5.0");
+
             String temp = userFavourites.toString();
             favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
             if (favourites.contains(item.getId())) {
                 favourite = true;
             }
 
-            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(bannerHolder);
+            loadRewards();
+            implementOnScrollListener();
+
             Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
             Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
             Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
-
-//            if (res.get("picture").toString() != "null") {
-//                merchantImage.setImage
-//            }
-
-            if (resArray == null) {
-                resArray = res.getJSONArray("rewards");
-            }
-
-            for (int x = 0; x < resArray.length(); x++) {
-                Reward reward = new Reward();
-                JSONObject object = resArray.getJSONObject(x);
-                reward.setId(object.getString("_id"));
-                reward.setTitle(object.getString("name"));
-                reward.setDetails(object.getString("description"));
-
-                // Date
-                reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
-                reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
-
-                // Price Details
-                if (object.has("price")) {
-                    reward.setIsDiscount(true);
-                    reward.setNewPrice(object.getJSONObject("price").getInt("new"));
-                    reward.setOldPrice(object.getJSONObject("price").getInt("old"));
-                } else {
-                    reward.setIsDiscount(false);
-                }
-
-                // Multiple Use details
-                if (object.getJSONObject("multiple").getBoolean("status")) {
-                    reward.setMultiple(true);
-                } else {
-                    reward.setMultiple(false);
-                }
-
-                // Applicable days
-                reward.setDays(object.getJSONArray("applicableDays"));
-
-                if (object.has("pictures")) {
-                    reward.setPictures(object.getJSONArray("pictures"));
-                }
-
-                values.add(reward);
-            }
-
-            rvPopUpAdapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Navigate to restaurant
+     */
+    private void navigate() {
+        String parsedAddress = item.getAddress().replace(" ", "+");
+        Log.v("RetroAddress1", parsedAddress);
+        parsedAddress = parsedAddress.replace(",", "");
+        Log.v("RetroAddress2", parsedAddress);
+
+        Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
+        navigateIntent.setData(Uri.parse("geo:0,0?q=" + parsedAddress));
+        startActivity(navigateIntent);
+    }
+
+    /**
+     * Load Merchant Rewards
+     */
+    public void loadRewards() {
+        Log.v("VolleyRewards", "LoadingRewards");
+        String rewardUrl = getString(R.string.base_url) + getString(R.string.ep_api_reward) + "/" +
+            merchantId + "?page=" + page;
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, rewardUrl, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    resArray = new JSONArray(response);
+                    for (int x = 0; x < resArray.length(); x++) {
+                        Reward reward = new Reward();
+                        JSONObject object = resArray.getJSONObject(x);
+                        reward.setId(object.getString("_id"));
+                        reward.setTitle(object.getString("name"));
+                        reward.setDetails(object.getString("description"));
+
+                        // Date
+                        reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
+                        reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
+
+                        // Price Details
+                        if (object.has("price")) {
+                            reward.setIsDiscount(true);
+                            reward.setNewPrice(object.getJSONObject("price").getInt("new"));
+                            reward.setOldPrice(object.getJSONObject("price").getInt("old"));
+                        } else {
+                            reward.setIsDiscount(false);
+                        }
+
+                        // Multiple Use details
+                        if (object.getJSONObject("multiple").getBoolean("status")) {
+                            reward.setMultiple(true);
+                        } else {
+                            reward.setMultiple(false);
+                        }
+
+                        // Applicable days
+                        reward.setDays(object.getJSONArray("applicableDays"));
+
+                        if (object.has("pictures")) {
+                            reward.setPictures(object.getJSONArray("pictures"));
+                        }
+
+                        values.add(reward);
+                        toggleViews(0);
+                    }
+                    isLoading = false;
+                    if (page > 0) {
+                        bottomLoading(false);
+                    }
+                    rvPopUpAdapter.notifyDataSetChanged();
+                } catch (Exception e) {
+                    //TODO: Erorr view
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                isLoading = false;
+                if (page > 0) {
+                    bottomLoading(false);
+                }
+                Log.v("VolleyResponseError", error.toString());
+                //TODO: Erorr view
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("page", String.valueOf(page));
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", PreferenceMngr.getToken());
+
+                return headers;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Implements scroll listener for the active list
+     * Using it to load new coupins
+     */
+    private void implementOnScrollListener() {
+        rvRewards.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isLoading || (values.size() % 10) != 0 || values.size() < 10)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    isLoading = true;
+                    bottomLoading(true);
+                    page = values.size() / 10;
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            loadRewards();
+                        }
+                    }, 2000);
+                }
+            }
+        });
+    }
+
+    /**
+     * Determine whether or not to show bottom loading view
+     * @param b
+     */
+    private void bottomLoading(boolean b) {
+        if (b) {
+            bottomLoadingView.setVisibility(View.VISIBLE);
+        } else {
+            bottomLoadingView.setVisibility(View.GONE);
+        }
+    }
+
+    public void toggleViews(int opt) {
+        switch (opt) {
+            case 0:
+                loadingRewards.setVisibility(View.GONE);
+                rvRewards.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
@@ -419,6 +566,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     coupin.setMerchantName(item.getTitle());
                     coupin.setMerchantAddress(item.getAddress());
                     // TODO: Sort out the merchant logo
+                    coupin.setMerchantLogo(item.getLogo());
+                    coupin.setMerchantBanner(item.getBanner());
 
                     coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
 

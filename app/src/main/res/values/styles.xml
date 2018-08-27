@@ -30,8 +30,9 @@
 
     <style name="circleRating" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/custom_rating</item>
-        <item name="android:minHeight">24dp</item>
-        <item name="android:minWidth">24dp</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:minHeight">20dp</item>
+        <item name="android:minWidth">20dp</item>
     </style>
 
     <style name="Filter_Dialog" parent="Theme.AppCompat.Light.Dialog">

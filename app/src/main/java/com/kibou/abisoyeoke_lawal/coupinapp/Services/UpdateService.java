@@ -12,9 +12,11 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
 
@@ -32,11 +34,13 @@ public class UpdateService extends Service {
     private static final long NOTIFY_INTERVAL = AlarmManager.INTERVAL_DAY;
 
     private Handler handler = new Handler();
+    public RequestQueue requestQueue;
     private Timer timer;
 
     @Override
     public void onCreate() {
         super.onCreate();
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
 
         if (timer != null) {
             timer.cancel();
@@ -62,12 +66,13 @@ public class UpdateService extends Service {
                 @Override
                 public void onResponse(String response) {
                     Log.v("VolleyUpdate", response);
+                    PreferenceMngr.setContext(getApplicationContext());
                     int code = getVersionCode(getApplicationContext());
                     int newCode = Integer.valueOf(response);
                     if (code < newCode && PreferenceMngr.getLastAttempt() < newCode) {
-                        PreferenceMngr.setUpdate(true);
+                        PreferenceMngr.getInstance().setUpdate(true);
                     } else {
-                        PreferenceMngr.setUpdate(false);
+                        PreferenceMngr.getInstance().setUpdate(false);
                     }
                 }
             }, new Response.ErrorListener() {
@@ -85,7 +90,7 @@ public class UpdateService extends Service {
                 }
             };
 
-            PreferenceMngr.getInstance().getRequestQueue().add(stringRequest);
+            requestQueue.add(stringRequest);
         }
 
         private int getVersionCode(Context context) {

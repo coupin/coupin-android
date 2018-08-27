@@ -263,7 +263,7 @@
             </LinearLayout>
 
             <Button
-                android:background="@drawable/round_edges_red_btn"
+                android:background="@drawable/round_edges_light_grey"
                 android:id="@+id/profile_password"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_sm"
