@@ -9,6 +9,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.FacebookSdk;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
 import com.yqritc.scalablevideoview.ScalableVideoView;
@@ -37,6 +38,7 @@ public class LandingActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_landing);
         ButterKnife.bind(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         signUpButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 
@@ -32,7 +33,7 @@ import java.util.Map;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SplashScreen extends Activity implements MyOnSelect {
+public class SplashScreen extends AppCompatActivity implements MyOnSelect {
     boolean check = false;
     int count = 0;
 
@@ -50,7 +51,6 @@ public class SplashScreen extends Activity implements MyOnSelect {
         Log.v("VolleyOkay", "1");
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-        FacebookSdk.sdkInitialize(getApplicationContext());
         AppEventsLogger.activateApp(this);
         final RequestQueue requestQueue1 = Volley.newRequestQueue(this);
 

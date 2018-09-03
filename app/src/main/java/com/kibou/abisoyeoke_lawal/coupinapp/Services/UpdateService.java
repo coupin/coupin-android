@@ -96,7 +96,7 @@ public class UpdateService extends Service {
         private int getVersionCode(Context context) {
             PackageManager pm = context.getPackageManager();
             try {
-                PackageInfo pi = pm.getPackageInfo(context.getPackageName(), 0);
+                PackageInfo pi = pm.getPackageInfo(context.getPackageName(), PackageManager.GET_SIGNATURES);
                 return pi.versionCode;
             } catch (Exception e) {
                 e.printStackTrace();
