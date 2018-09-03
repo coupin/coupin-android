@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RewardsTabAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
@@ -16,6 +18,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
  * A simple {@link Fragment} subclass.
  */
 public class RewardsTab extends Fragment {
+    public RequestQueue requestQueue;
 
 
     public RewardsTab() {
@@ -50,6 +53,7 @@ public class RewardsTab extends Fragment {
     }
 
     public void setupWithViewPager(ViewPager viewPager) {
+        requestQueue = Volley.newRequestQueue(getContext());
         UseNowFragment useNowFragment = new UseNowFragment();
         SaveFragment saveFragment = new SaveFragment();
 

@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           xmlns:tools="http://schemas.android.com/tools"
           package="com.kibou.abisoyeoke_lawal.coupinapp"
-          android:versionCode="11"
-          android:versionName="0.0.11">
+          android:versionCode="12"
+          android:versionName="0.0.12">
 
     <!-- To auto-complete the email text field in the login form with the user's emails -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>

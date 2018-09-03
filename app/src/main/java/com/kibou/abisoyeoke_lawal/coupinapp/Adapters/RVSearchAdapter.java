@@ -1,5 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
@@ -20,10 +22,12 @@ import java.util.List;
  */
 
 public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemViewHolder> {
-    public List<Merchant> searchList;
-    public static MyOnClick myOnClick;
+    private Context context;
+    private List<Merchant> searchList;
+    private static MyOnClick myOnClick;
 
-    public RVSearchAdapter(List<Merchant> searchList, MyOnClick myOnClick) {
+    public RVSearchAdapter(List<Merchant> searchList, MyOnClick myOnClick, Context context) {
+        this.context = context;
         this.searchList = searchList;
         this.myOnClick = myOnClick;
     };
@@ -42,8 +46,17 @@ public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemVi
         try {
             JSONArray rewardArray = new JSONArray(item.getRewards());
 
+            Glide.with(context).load(item.getLogo()).into(holder.searchLogo);
             holder.searchTitle.setText(item.getTitle());
             holder.searchAddress.setText(item.getAddress());
+
+            if (item.isFavourite()) {
+                holder.searchFavourite.setVisibility(View.VISIBLE);
+            }
+
+            if (item.isVisited()) {
+                holder.searchVisited.setVisibility(View.VISIBLE);
+            }
 
             if (rewardArray.length() > 1) {
                 holder.searchRewards.setText(rewardArray.length() + " REWARDS");
@@ -62,7 +75,7 @@ public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemVi
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        public ImageView searchFav;
+        public ImageView searchFavourite;
         public ImageView searchLogo;
         public ImageView searchVisited;
         public TextView searchTitle;
@@ -72,9 +85,12 @@ public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemVi
         public ItemViewHolder(View view) {
             super(view);
 
-            searchTitle = (TextView) view.findViewById(R.id.hot_title);
             searchAddress = (TextView) view.findViewById(R.id.hot_address);
+            searchFavourite = (ImageView) view.findViewById(R.id.hot_fav);
+            searchLogo = (ImageView) view.findViewById(R.id.hot_logo);
             searchRewards = (TextView) view.findViewById(R.id.hot_rewards);
+            searchTitle = (TextView) view.findViewById(R.id.hot_title);
+            searchVisited = (ImageView) view.findViewById(R.id.hot_visited);
         }
 
         public void bind(final int position) {

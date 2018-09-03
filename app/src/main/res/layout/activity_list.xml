@@ -134,12 +134,14 @@
             <ImageView
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/descr_steps"
+                android:id="@+id/coupin_visited"
                 android:layout_height="17dp"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:layout_marginEnd="@dimen/margin_xs"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:layout_width="17dp"
-                android:src="@drawable/ic_steps"/>
+                android:src="@drawable/ic_steps"
+                android:visibility="gone"/>
 
             <View
                 android:background="@color/white"
@@ -152,12 +154,14 @@
             <ImageView
                 android:background="@android:color/transparent"
                 android:contentDescription="@string/descr_favourite"
+                android:id="@+id/coupin_fav"
                 android:layout_height="17dp"
                 android:layout_marginEnd="@dimen/margin_xs"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:layout_width="17dp"
-                android:src="@drawable/ic_star"/>
+                android:src="@drawable/ic_star"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

@@ -95,13 +95,15 @@
                     android:layout_marginStart="@dimen/margin_sm"
                     android:layout_width="wrap_content"
                     android:src="@drawable/ic_steps"
-                    android:tint="@color/black"/>
+                    android:tint="@color/black"
+                    android:visibility="gone"/>
 
                 <TextView
                     android:ellipsize="marquee"
+                    android:gravity="center_vertical"
                     android:id="@+id/hot_rewards"
                     android:layout_centerVertical="true"
-                    android:layout_height="wrap_content"
+                    android:layout_height="24dp"
                     android:layout_marginLeft="@dimen/margin_lg"
                     android:layout_marginStart="@dimen/margin_lg"
                     android:layout_toEndOf="@id/hot_visited"
@@ -125,7 +127,8 @@
                     android:layout_marginRight="@dimen/margin_sm"
                     android:layout_width="wrap_content"
                     android:src="@drawable/ic_star"
-                    android:tint="@color/black"/>
+                    android:tint="@color/black"
+                    android:visibility="gone"/>
 
             </RelativeLayout>
 

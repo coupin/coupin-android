@@ -86,20 +86,35 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
-                    <!--<View-->
-                        <!--android:background="@color/white"-->
-                        <!--android:layout_height="28dp"-->
-                        <!--android:layout_marginRight="@dimen/margin_sm"-->
-                        <!--android:layout_marginTop="@dimen/margin_xs"-->
-                        <!--android:layout_width="1dp"/>-->
-
                     <ImageView
+                        android:id="@+id/visited"
                         android:layout_height="15dp"
                         android:layout_marginBottom="@dimen/margin_sm"
                         android:layout_marginRight="@dimen/margin_sm"
                         android:layout_marginTop="@dimen/margin_xs"
                         android:layout_width="15dp"
-                        android:src="@drawable/ic_steps"/>
+                        android:src="@drawable/ic_steps"
+                        android:visibility="gone"/>
+
+                    <View
+                        android:background="@color/white"
+                        android:id="@+id/divide"
+                        android:layout_height="20dp"
+                        android:layout_marginBottom="@dimen/margin_xs"
+                        android:layout_marginRight="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="1dp"
+                        android:visibility="gone"/>
+
+                    <ImageView
+                        android:id="@+id/favourite"
+                        android:layout_height="15dp"
+                        android:layout_marginBottom="@dimen/margin_sm"
+                        android:layout_marginRight="@dimen/margin_sm"
+                        android:layout_marginTop="@dimen/margin_xs"
+                        android:layout_width="15dp"
+                        android:src="@drawable/nav_fav"
+                        android:visibility="gone"/>
 
                 </LinearLayout>
 

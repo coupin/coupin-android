@@ -106,6 +106,7 @@ public class FavFragment extends Fragment implements MyOnClick {
                         item.setMerchantPhone(mainObject.getString("mobile"));
                         item.setRewardDetails(rewardObjects.toString());
                         item.setRewardCount(rewardObjects.length());
+                        item.setVisited(mainObject.getBoolean("visited"));
 
                         favList.add(item);
                     }

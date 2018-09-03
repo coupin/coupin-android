@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -44,6 +46,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public AVLoadingIndicatorView featuredLoading;
     @BindView(R.id.recommended_loading_view)
     public AVLoadingIndicatorView recommendLoading;
+    @BindView(R.id.hot_bottom_loading)
+    public AVLoadingIndicatorView bottomLoading;
     @BindView(R.id.card1)
     public CardView cardView1;
     @BindView(R.id.card2)
@@ -60,8 +64,18 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public ImageView hotLogo2;
     @BindView(R.id.hot_logo_3)
     public ImageView hotLogo3;
+    @BindView(R.id.hot_visited_1)
+    public ImageView hotVisited1;
+    @BindView(R.id.hot_visited_2)
+    public ImageView hotVisited2;
+    @BindView(R.id.hot_visited_3)
+    public ImageView hotVisited3;
     @BindView(R.id.hotlist_group)
     public LinearLayout featuredHolder;
+    @BindView(R.id.hot_empty)
+    public LinearLayout hotEmpty;
+    @BindView(R.id.hot_error)
+    public LinearLayout hotError;
     @BindView(R.id.hot_recyclerview)
     public RecyclerView hotRecyclerView;
     @BindView(R.id.hot_address_1)
@@ -86,11 +100,15 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     private ArrayList<Merchant> featured = new ArrayList<>();
     private ArrayList<Merchant> hotlist = new ArrayList<>();
     private ArrayList<Merchant> merchants = new ArrayList<>();
+    private ArrayList<String> slides = new ArrayList<>();
+    private Handler handler = new Handler();
     private LinearLayoutManager linearLayoutManager;
     private RequestQueue requestQueue;
+    private Runnable queryRun;
     private RVHotAdapter adapter;
 
-    public ArrayList slides = new ArrayList();
+    private boolean isLoading = false;
+    private int page = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -113,6 +131,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
 
         getPrime();
         getMostRecent();
+        implementOnScrollListener();
 
         hotBack.setOnClickListener(this);
         hotCarousel.setImageClickListener(new ImageClickListener() {
@@ -140,6 +159,20 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             case 2:
                 recommendLoading.setVisibility(View.GONE);
                 hotRecyclerView.setVisibility(View.VISIBLE);
+                break;
+            case 3:
+                recommendLoading.setVisibility(View.GONE);
+                hotEmpty.setVisibility(View.VISIBLE);
+                break;
+            case 4:
+                recommendLoading.setVisibility(View.GONE);
+                hotError.setVisibility(View.VISIBLE);
+                break;
+            case 5:
+                bottomLoading.setVisibility(View.VISIBLE);
+                break;
+            case 6:
+                bottomLoading.setVisibility(View.GONE);
                 break;
         }
     }
@@ -189,6 +222,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setRewardsCount(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
                         item.setLatitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                         item.setLongitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
+
                         setUpFeatured(x, item);
                         featured.add(item);
                     }
@@ -244,7 +278,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     public void getMostRecent() {
-        String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_merchant_recent);
+        String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_merchant_recent) + "?page=" + page;
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
@@ -268,22 +302,57 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
                         item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                         item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
+                        item.setFavourite(merchantObject.getBoolean("favourite"));
+                        item.setVisited(merchantObject.getBoolean("visited"));
 
                         merchants.add(item);
                     }
 
+                    isLoading = false;
                     adapter.notifyDataSetChanged();
-                    loading(2);
+                    if (merchants.size() > 0) {
+                        loading(2);
+                    } else {
+                        loading(3);
+                    }
+
+                    if (page > 0) {
+                        loading(6);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-//                    Toast.makeText(HotActivity.this, "An erro", Toast.LENGTH_SHORT).show();
+                    isLoading = false;
+                    if (merchants.size() > 0) {
+                        Toast.makeText(HotActivity.this, getResources().getString(R.string.error_now), Toast.LENGTH_SHORT).show();
+                    } else {
+                        loading(4);
+                    }
+
+                    if (page > 0) {
+                        loading(6);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyRecentError", error.toString());
-                Log.v("VolleyRecentError", "" + error.networkResponse.statusCode);
+                isLoading = false;
+                if (page > 0) {
+                    loading(6);
+                }
+                if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
+                    if (merchants.size() > 0) {
+                        Toast.makeText(HotActivity.this, getResources().getString(R.string.empty_merchants), Toast.LENGTH_SHORT).show();
+                    } else {
+                        loading(3);
+                    }
+                } else {
+                    if (merchants.size() > 0) {
+                        Toast.makeText(HotActivity.this, getResources().getString(R.string.error_recent), Toast.LENGTH_SHORT).show();
+                    } else {
+                        loading(4);
+                    }
+                }
             }
         }) {
             @Override
@@ -299,6 +368,36 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     /**
+     * Implements scroll listener for the search list
+     * Using it to load more merchants
+     */
+    private void implementOnScrollListener() {
+        hotRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (isLoading || (merchants.size() % 7) != 0 || merchants.size() < 7)
+                    return;
+
+                int visibleItemCount = linearLayoutManager.getChildCount();
+                int totalItemCount = linearLayoutManager.getItemCount();
+                int pastVisibleItems = linearLayoutManager.findFirstVisibleItemPosition();
+                if (pastVisibleItems + visibleItemCount >= totalItemCount) {
+                    isLoading = true;
+                    loading(5);
+                    page = merchants.size() / 7;
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            getMostRecent();
+                        }
+                    }, 2000);
+                }
+            }
+        });
+    }
+
+    /**
      * Set the featured information
      * @param index
      * @param merchant
@@ -311,6 +410,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 String rewardsText1 = merchant.getRewardsCount() == 1 ?
                     merchant.getReward() : merchant.getRewardsCount() + " REWARDS";
                 hotrewards1.setText(rewardsText1);
+                if (merchant.isVisited()) {
+                    hotVisited1.setVisibility(View.VISIBLE);
+                }
                 Glide.with(this).load(merchant.getLogo()).into(hotLogo1);
                 break;
             case 1:
@@ -319,6 +421,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 String rewardsText2 = merchant.getRewardsCount() == 1 ?
                     merchant.getReward() : merchant.getRewardsCount() + " REWARDS";
                 hotrewards2.setText(rewardsText2);
+                if (merchant.isVisited()) {
+                    hotVisited2.setVisibility(View.VISIBLE);
+                }
                 Glide.with(this).load(merchant.getLogo()).into(hotLogo2);
                 break;
             case 2:
@@ -327,6 +432,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 String rewardsText3 = merchant.getRewardsCount() == 1 ?
                     merchant.getReward() : merchant.getRewardsCount() + " REWARDS";
                 hotrewards3.setText(rewardsText3);
+                if (merchant.isVisited()) {
+                    hotVisited3.setVisibility(View.VISIBLE);
+                }
                 Glide.with(this).load(merchant.getLogo()).into(hotLogo3);
                 break;
         }
@@ -359,8 +467,13 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    public void onPause() {
+        super.onPause();
+        requestQueue.stop();
+    }
+
+    @Override
     public void onItemClick(int position) {
-        Log.v("VolleyCheck", "" + position);
         goToMerchantPage(merchants.get(position));
     }
 }

@@ -48,10 +48,8 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <!--<string name="base_url_v1">https://coupin.herokuapp.com/api/v1</string>-->
-    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <string name="base_url">https://5e3cea48.ngrok.io/api/v1</string>
+    <string name="base_url">https://coupin.herokuapp.com/api/v1</string>
+    <!--<string name="base_url">https://fceaa55e.ngrok.io/api/v1</string>-->
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -286,4 +284,11 @@
     <string name="change_save">Save Password</string>
     <string name="empty_title">No Merchants Found</string>
     <string name="empty_details">Sorry there are no merchants around you, increasing the radius and then try again.</string>
+    <string name="no_coupins">\"There are no more coupins.\"</string>
+    <string name="error_coupins">An error occured while getting your coupins, please try again or check your network.</string>
+    <string name="empty_reward">There are no current active rewards.</string>
+    <string name="error_reward">An error occured while getting the rewards.</string>
+    <string name="error_recent">An error occured while getting merchants with the most recent rewards</string>
+    <string name="exiting_msg">Press back one more time to exit.</string>
+    <string name="error_us">A server error occurred on our end, please try again or contact the help desk.</string>
 </resources>

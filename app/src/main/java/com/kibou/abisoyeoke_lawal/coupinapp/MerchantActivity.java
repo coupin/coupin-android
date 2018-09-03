@@ -31,7 +31,6 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.ExperienceDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.RewardInfoDialog;
-import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnArraySelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
@@ -46,13 +45,16 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, MyOnArraySelect {
+import static android.view.View.GONE;
+
+public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick {
     @BindView(R.id.rewards_loading)
     public AVLoadingIndicatorView bottomLoadingView;
     @BindView(R.id.rewards_loadingview)
@@ -73,6 +75,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public ImageView photo3;
     @BindView(R.id.button_holder)
     public LinearLayout buttonHolder;
+    @BindView(R.id.reward_empty)
+    public LinearLayout EmptyHolder;
+    @BindView(R.id.reward_error)
+    public LinearLayout ErrorHolder;
     @BindView(R.id.selected_holder)
     public LinearLayout selectedHolder;
     @BindView(R.id.merchant_rating)
@@ -99,10 +105,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
     private ArrayList<Reward> values;
     private ArrayList<String> selected;
+    private ArrayList<Date> expiryDates;
     private ArrayList<String> favourites;
     private boolean favourite = false;
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
+    private Date expiryDate;
     private Handler handler;
     private int page = 0;
     private JSONArray userFavourites;
@@ -136,8 +144,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 e.printStackTrace();
             }
         }
-        values = new ArrayList<>();
+        expiryDates = new ArrayList<>();
         selected = new ArrayList<>();
+        values = new ArrayList<>();
 
         infoDialog = new RewardInfoDialog(this, this);
 
@@ -163,6 +172,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 if (requestGenderNumber) {
                     experienceDialog.show();
                 } else {
+                    expiryDate = expiryDates.get(0);
+                    for (int i = 1; i < expiryDates.size(); i++) {
+                        if (expiryDates.get(i).after(expiryDate)) {
+                            expiryDate = expiryDates.get(i);
+                        }
+                    }
                     generatePin();
                 }
             }
@@ -227,6 +242,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                 item.setLongitude(res.getJSONObject("location").getDouble("long"));
                 item.setRating(res.getInt("rating"));
+                item.setLogo(res.getJSONObject("logo").getString("url"));
                 item.setBanner(res.getJSONObject("banner").getString("url"));
                 implementOnScrollListener();
             }
@@ -271,12 +287,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     private void navigate() {
         String parsedAddress = item.getAddress().replace(" ", "+");
-        Log.v("RetroAddress1", parsedAddress);
         parsedAddress = parsedAddress.replace(",", "");
-        Log.v("RetroAddress2", parsedAddress);
 
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
-        navigateIntent.setData(Uri.parse("geo:0,0?q=" + parsedAddress));
+        navigateIntent.setData(Uri.parse("geo:" + item.getLatitude() + "," + item.getLongitude() +
+            "?q=" + item.getLatitude() + "," + item.getLongitude()));
         startActivity(navigateIntent);
     }
 
@@ -327,15 +342,28 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         }
 
                         values.add(reward);
-                        toggleViews(0);
                     }
+
                     isLoading = false;
+                    if (page == 0) {
+                        if (values.size() == 0) {
+                            toggleViews(1);
+                        } else {
+                            toggleViews(0);
+                        }
+                    }
+
                     if (page > 0) {
                         bottomLoading(false);
                     }
                     rvPopUpAdapter.notifyDataSetChanged();
                 } catch (Exception e) {
-                    //TODO: Erorr view
+                    e.printStackTrace();
+                    if (page == 0) {
+                        toggleViews(2);
+                    } else {
+                        showErrorToast(false);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
@@ -345,8 +373,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 if (page > 0) {
                     bottomLoading(false);
                 }
-                Log.v("VolleyResponseError", error.toString());
-                //TODO: Erorr view
+
+                if (page == 0) {
+                    if (values.size() == 0) {
+                        toggleViews(2);
+                    } else {
+                        showErrorToast(false);
+                    }
+                }
             }
         }){
             @Override
@@ -368,6 +402,18 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Show toast instead of changing view
+     * @param isEmpty was it an empty return
+     */
+    public void showErrorToast(Boolean isEmpty) {
+        if (isEmpty) {
+            Toast.makeText(this, getResources().getString(R.string.empty_reward), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.error_reward), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -400,6 +446,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         });
     }
 
+    @Override
+    public void onPause() {
+        super.onPause();
+        requestQueue.stop();
+    }
+
     /**
      * Determine whether or not to show bottom loading view
      * @param b
@@ -408,15 +460,23 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         if (b) {
             bottomLoadingView.setVisibility(View.VISIBLE);
         } else {
-            bottomLoadingView.setVisibility(View.GONE);
+            bottomLoadingView.setVisibility(GONE);
         }
     }
 
     public void toggleViews(int opt) {
         switch (opt) {
             case 0:
-                loadingRewards.setVisibility(View.GONE);
+                loadingRewards.setVisibility(GONE);
                 rvRewards.setVisibility(View.VISIBLE);
+                break;
+            case 1:
+                loadingRewards.setVisibility(GONE);
+                EmptyHolder.setVisibility(View.VISIBLE);
+                break;
+            case 2:
+                loadingRewards.setVisibility(GONE);
+                ErrorHolder.setVisibility(View.VISIBLE);
                 break;
         }
     }
@@ -446,15 +506,17 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public void onSelect(boolean selected, int index) {
         if (selected) {
             this.selected.add(values.get(index).getId());
+            this.expiryDates.add(values.get(index).getExpires());
             selectedText.setText(this.selected.size() + " Items Selected");
-            if (selectedHolder.getVisibility() == View.GONE) {
+            if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
         } else {
             this.selected.remove(values.get(index).getId());
+            this.expiryDates.remove(values.get(index).getExpires());
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
-                selectedHolder.setVisibility(View.GONE);
+                selectedHolder.setVisibility(GONE);
             }
         }
     }
@@ -471,6 +533,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             this.selected.clear();
             onBackPressed();
         } else {
+            expiryDate = expiryDates.get(0);
+            for (int i = 1; i < expiryDates.size(); i++) {
+                if (expiryDates.get(i).after(expiryDate)) {
+                    expiryDate = expiryDates.get(i);
+                }
+            }
             generatePin();
         }
     }
@@ -601,6 +669,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                 params.put("merchantId", item.getId());
                 params.put("rewardId", selected.toString());
+                params.put("expiryDate", expiryDate.toString());
 
                 return params;
             }
@@ -700,8 +769,4 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         requestQueue.add(stringRequest);
     }
 
-    @Override
-    public void onArraySelected(String[] array) {
-
-    }
 }

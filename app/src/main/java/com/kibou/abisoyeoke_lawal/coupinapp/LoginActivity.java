@@ -239,9 +239,11 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                             Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
                         } else if (error.networkResponse.statusCode == 404) {
                             Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
                         }
                     } else {
-                        Toast.makeText(LoginActivity.this, "An Error occured while trying to log you in. Please try again.", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -287,11 +289,14 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                 if (error.toString().equals("com.android.volley.TimeoutError")) {
                     Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
                 } else {
+                    Log.v("VolleyError", "Once" + error.networkResponse.toString());
                     if (error.networkResponse != null && error.networkResponse.data != null) {
                         if (error.networkResponse.statusCode == 401) {
                             Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
                         } else if (error.networkResponse.statusCode == 404) {
                             Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
                         }
                     } else {
                         Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();

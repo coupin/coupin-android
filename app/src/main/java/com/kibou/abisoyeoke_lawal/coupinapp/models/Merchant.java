@@ -7,20 +7,22 @@ import java.io.Serializable;
  */
 
 public class Merchant implements Serializable {
-    public String id;
+    public boolean favourite;
+    public boolean visited;
     public int picture;
     public int rating;
     public int rewardsCount;
-    public String title;
-    public String email;
-    public String mobile;
-    public String details;
     public String address;
     public String banner;
+    public String details;
+    public String email;
+    public String id;
     public String logo;
+    public String mobile;
     public String response;
-    public String rewards;
     public String reward;
+    public String rewards;
+    public String title;
     public double latitude;
     public double longitude;
 
@@ -150,5 +152,21 @@ public class Merchant implements Serializable {
 
     public void setResponse(String response) {
         this.response = response;
+    }
+
+    public boolean isFavourite() {
+        return favourite;
+    }
+
+    public void setFavourite(boolean favourite) {
+        this.favourite = favourite;
+    }
+
+    public boolean isVisited() {
+        return visited;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 }

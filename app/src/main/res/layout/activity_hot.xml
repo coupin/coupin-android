@@ -126,6 +126,65 @@
         android:layout_width="match_parent"
         android:visibility="gone"/>
 
+    <LinearLayout
+        android:id="@+id/hot_empty"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_height="@dimen/icon_sm"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="@dimen/icon_sm"
+            android:src="@drawable/empty_box"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_merchants"
+            android:textSize="@dimen/small_text"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/hot_error"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_height="@dimen/icon_sm"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="@dimen/icon_sm"
+            android:src="@drawable/attention"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/error_now"
+            android:textSize="@dimen/small_text"/>
+
+    </LinearLayout>
+
+    <com.wang.avi.AVLoadingIndicatorView
+        style="?android:attr/progressBarStyleLarge"
+        android:id="@+id/hot_bottom_loading"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_height="24dp"
+        android:layout_marginEnd="@dimen/margin_xxs"
+        android:layout_marginRight="@dimen/margin_xxs"
+        android:layout_width="24dp"
+        app:indicatorName="BallPulseIndicator"
+        app:indicatorColor="@color/colorAccent"
+        android:visibility="gone"/>
+
     </LinearLayout>
 
 </ScrollView>

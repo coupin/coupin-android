@@ -10,7 +10,11 @@ import java.util.Date;
 public class RewardListItem implements Serializable {
     public boolean fav = false;
     public boolean later = false;
+    public boolean favourited = false;
+    public boolean visited = false;
     public Date expiresDate;
+    public double latitude;
+    public double longitude;
     public int rewardCount= 0;
     public String bookingId;
     public String bookingShortCode;
@@ -43,8 +47,20 @@ public class RewardListItem implements Serializable {
         return fav;
     }
 
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
     public int getRewardCount() {
         return rewardCount;
+    }
+
+    public boolean isFavourited() {
+        return favourited;
     }
 
     public String getMerchantAddress() {
@@ -79,6 +95,10 @@ public class RewardListItem implements Serializable {
         return rewardName;
     }
 
+    public boolean hasVisited() {
+        return visited;
+    }
+
     public void setBookingId(String bookingId) {
         this.bookingId = bookingId;
     }
@@ -87,12 +107,24 @@ public class RewardListItem implements Serializable {
         this.bookingShortCode = bookingShortCode;
     }
 
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
+    }
+
     public void setExpiresDate(Date expiresDate) {
         this.expiresDate = expiresDate;
     }
 
     public void setFav(boolean fav) {
         this.fav = fav;
+    }
+
+    public void setFavourited(boolean favourited) {
+        this.favourited = favourited;
     }
 
     public void setLater(boolean later) {
@@ -133,5 +165,9 @@ public class RewardListItem implements Serializable {
 
     public void setRewardName(String rewardName) {
         this.rewardName = rewardName;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
     }
 }

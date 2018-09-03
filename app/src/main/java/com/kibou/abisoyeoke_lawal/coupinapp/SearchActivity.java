@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -103,20 +104,21 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);
-        adapter = new RVSearchAdapter(companyInfos, this);
+        adapter = new RVSearchAdapter(companyInfos, this, this);
 
         searchRecyclerView.setLayoutManager(linearLayoutManager);
         searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setAdapter(adapter);
 
         queryString = "";
-        query();
+//        query();
         implementOnScrollListener();
 
         queryRun = new Runnable() {
             @Override
             public void run() {
                 loading(0);
+                page = 0;
                 query();
             }
         };
@@ -167,17 +169,20 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                companyInfos.clear();
-                adapter.notifyDataSetChanged();
+                if (page == 0) {
+                    companyInfos.clear();
+                    adapter.notifyDataSetChanged();
+                }
                 try {
                     JSONArray resArr = new JSONArray(response);
                     if (resArr.length() > 0) {
                         for (int x = 0; x < resArr.length(); x++) {
-                            //TODO: Do the cards
                             JSONObject res = resArr.getJSONObject(x);
+
                             Merchant item = new Merchant();
                             item.setId(res.getString("_id"));
                             item.setEmail(res.getString("email"));
+                            item.setBanner(res.getJSONObject("banner").getString("url"));
                             item.setLogo(res.getJSONObject("logo").getString("url"));
                             item.setAddress(res.getString("address"));
                             item.setDetails(res.getString("details"));
@@ -188,6 +193,8 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                             item.setRewardsCount(res.getInt("count"));
                             item.setResponse(res.toString());
                             item.setRating(res.getInt("rating"));
+                            item.setFavourite(res.getBoolean("favourite"));
+                            item.setVisited(res.getBoolean("visited"));
 
                             if (res.has("location")) {
                                 item.setLatitude(res.getJSONObject("location").getDouble("lat"));
@@ -201,19 +208,13 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                             loading(5);
                         }
                         adapter.notifyDataSetChanged();
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                loading(1);
-                            }
-                        }, 2000);
+                        loading(1);
                     } else {
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                loading(2);
-                            }
-                        }, 2000);
+                        if (page == 0) {
+                            loading(2);
+                        } else {
+                            showErrorToast(true);
+                        }
                     }
 
                 } catch (Exception e) {
@@ -221,7 +222,11 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            loading(3);
+                            if (page == 0) {
+                                loading(3);
+                            } else {
+                                showErrorToast(false);
+                            }
                             isLoading = false;
                             if (page > 0) {
                                 loading(5);
@@ -234,17 +239,22 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
             @Override
             public void onErrorResponse(VolleyError error) {
                 isLoading = false;
-                if (error.toString().equals("com.android.volley.TimeoutError")) {
-                    loading(3);
-                } else {
-                    if (error.networkResponse != null && error.networkResponse.data != null) {
-                        if (error.networkResponse.statusCode == 404) {
-                            loading(2);
-                        }
-                    } else {
+                if (page == 0) {
+                    if (error.toString().equals("com.android.volley.TimeoutError")) {
                         loading(3);
+                    } else {
+                        if (error.networkResponse != null && error.networkResponse.data != null) {
+                            if (error.networkResponse.statusCode == 404) {
+                                loading(2);
+                            }
+                        } else {
+                            loading(3);
+                        }
                     }
+                } else {
+                    showErrorToast(false);
                 }
+
                 if (page > 0) {
                     loading(5);
                 }
@@ -302,6 +312,18 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         });
     }
 
+    /**
+     * Show toast instead of changing view
+     * @param isEmpty was it an empty return
+     */
+    public void showErrorToast(Boolean isEmpty) {
+        if (isEmpty) {
+            Toast.makeText(this, getResources().getString(R.string.empty_merchants), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.error_now), Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onItemClick(int position) {
         Intent merchantIntent = new Intent(this, MerchantActivity.class);
@@ -354,6 +376,12 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                 loadingSearchView.setVisibility(View.VISIBLE);
                 break;
         }
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        requestQueue.stop();
     }
 
     /**

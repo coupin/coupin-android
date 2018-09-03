@@ -14,9 +14,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.request.RequestOptions;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.signed.Signature;
 import com.cloudinary.android.signed.SignatureProvider;
@@ -50,6 +47,7 @@ public class SplashScreen extends Activity implements MyOnSelect {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Log.v("VolleyOkay", "1");
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
@@ -59,8 +57,9 @@ public class SplashScreen extends Activity implements MyOnSelect {
         loadingView.setGifResource(R.raw.loading_gif);
 //        loadingView.setVisibility(View.VISIBLE);
 //        loadingView.play();
+        Log.v("VolleyOkay", "2");
 
-        Glide.with(this).load(R.raw.loading_gif).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)).into(testView);
+//        Glide.with(this).load(R.raw.loading_gif).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)).into(testView);
 
         PreferenceMngr.setContext(getApplicationContext());
         if (PreferenceMngr.getInstance().getRequestQueue() == null) {
@@ -74,19 +73,23 @@ public class SplashScreen extends Activity implements MyOnSelect {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(final String response) {
-                MediaManager.init(getApplicationContext(), new SignatureProvider() {
-                    @Override
-                    public Signature provideSignature(Map options) {
-                        long temp = timestamp.getTime();
-                        PreferenceMngr.setTimestamp(String.valueOf(temp));
-                        return new Signature(response, getString(R.string.cloudinary_api_key), temp);
-                    }
+                try {
+                    MediaManager.init(getApplicationContext(), new SignatureProvider() {
+                        @Override
+                        public Signature provideSignature(Map options) {
+                            long temp = timestamp.getTime();
+                            PreferenceMngr.setTimestamp(String.valueOf(temp));
+                            return new Signature(response, getString(R.string.cloudinary_api_key), temp);
+                        }
 
-                    @Override
-                    public String getName() {
-                        return null;
-                    }
-                });
+                        @Override
+                        public String getName() {
+                            return null;
+                        }
+                    });
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }, new Response.ErrorListener() {
             @Override

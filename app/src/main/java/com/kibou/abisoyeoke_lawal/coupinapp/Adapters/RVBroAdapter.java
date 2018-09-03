@@ -1,10 +1,10 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -45,6 +45,18 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
         // Add data here
         RewardListItem reward = rewardListItems.get(position);
         Date temp = new Date();
+
+        if (reward.hasVisited()) {
+            holder.visitedIcon.setVisibility(View.VISIBLE);
+        }
+
+        if (reward.isFavourited()) {
+            holder.favIcon.setVisibility(View.VISIBLE);
+        }
+
+        if (reward.hasVisited() && reward.isFav()) {
+            holder.divide.setVisibility(View.VISIBLE);
+        }
 
         try {
             holder.merchantName.setText(reward.getMerchantName());
@@ -103,7 +115,8 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
 
-        public CardView cardView;
+        public ImageView favIcon;
+        public ImageView visitedIcon;
         public RelativeLayout activeFavHolder;
         public RelativeLayout activeRewardHolder;
         public RelativeLayout activeRewardHolder2;
@@ -116,6 +129,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
         public TextView rewardOnePercent;
         public TextView rewardTwo;
         public TextView rewardTwoPercent;
+        public View divide;
 
 
         public ItemViewHolder(View itemView) {
@@ -124,14 +138,17 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             activeRewardHolder = (RelativeLayout) itemView.findViewById(R.id.text_holder_1);
             activeRewardHolder2 = (RelativeLayout) itemView.findViewById(R.id.text_holder_2);
             code = (TextView) itemView.findViewById(R.id.active_code);
+            divide = (View) itemView.findViewById(R.id.divide);
             activeExpiration = (TextView) itemView.findViewById(R.id.active_expiration);
             favAddress = (TextView) itemView.findViewById(R.id.active_fav_address);
             favCode = (TextView) itemView.findViewById(R.id.fav_code);
+            favIcon = (ImageView) itemView.findViewById(R.id.favourite);
             merchantName = (TextView) itemView.findViewById(R.id.active_merchant_name);
             rewardOne = (TextView) itemView.findViewById(R.id.active_reward_1);
             rewardOnePercent = (TextView) itemView.findViewById(R.id.active_percent_1);
             rewardTwo = (TextView) itemView.findViewById(R.id.active_reward_2);
             rewardTwoPercent = (TextView) itemView.findViewById(R.id.active_percent_2);
+            visitedIcon = (ImageView) itemView.findViewById(R.id.visited);
         }
 
         public void bind(final int position) {

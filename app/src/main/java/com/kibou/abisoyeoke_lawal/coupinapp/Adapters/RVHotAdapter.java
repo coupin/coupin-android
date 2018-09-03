@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -52,6 +53,14 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
             holder.hotAddress.setText(hotItem.getAddress());
             Glide.with(context).load(hotItem.getLogo()).into(holder.hotLogo);
 
+            if (hotItem.isVisited()) {
+                holder.hotVisited.setVisibility(View.VISIBLE);
+            }
+
+            if (hotItem.isFavourite()) {
+                holder.hotFavourite.setVisibility(View.VISIBLE);
+            }
+
             if (hotItem.getRewardsCount() > 1) {
                 holder.hotRewards.setText(hotItem.getRewardsCount() + " REWARDS");
             } else {
@@ -70,6 +79,8 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
         public CardView cardView;
+        public ImageView hotFavourite;
+        public ImageView hotVisited;
         public RoundedImageView hotLogo;
         public TextView hotTitle;
         public TextView hotAddress;
@@ -78,6 +89,8 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
         public ItemViewHolder(View itemView) {
             super(itemView);
 
+            hotFavourite = (ImageView) itemView.findViewById(R.id.hot_fav);
+            hotVisited = (ImageView) itemView.findViewById(R.id.hot_visited);
             hotLogo = (RoundedImageView) itemView.findViewById(R.id.hot_logo);
             hotTitle = (TextView) itemView.findViewById(R.id.hot_title);
             hotAddress = (TextView) itemView.findViewById(R.id.hot_address);

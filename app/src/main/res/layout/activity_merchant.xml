@@ -269,6 +269,52 @@
                 android:minHeight="500dp"
                 android:visibility="gone"/>
 
+            <LinearLayout
+                android:id="@+id/reward_empty"
+                android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_margin="@dimen/margin_sm"
+                    android:layout_width="@dimen/icon_sm"
+                    android:src="@drawable/empty_box"/>
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/empty_reward"
+                    android:textSize="@dimen/small_text"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/reward_error"
+                android:gravity="center"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:orientation="vertical"
+                android:visibility="gone">
+
+                <ImageView
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_margin="@dimen/margin_sm"
+                    android:layout_width="@dimen/icon_sm"
+                    android:src="@drawable/attention"/>
+
+                <TextView
+                    android:gravity="center"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/error_now"
+                    android:textSize="@dimen/small_text"/>
+
+            </LinearLayout>
+
         </LinearLayout>
 
     </ScrollView>

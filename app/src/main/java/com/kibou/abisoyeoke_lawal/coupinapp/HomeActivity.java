@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.FavFragment;
@@ -25,10 +26,11 @@ public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     public BottomNavigationViewEx bottomNavigationView;
 
+    private boolean exiting = false;
     private FragmentManager fm;
     private FragmentTransaction ft;
     private MyOnClick myOnClick;
-    private String tag;
+    private String tag = "home";
     final HomeTab homeTab = HomeTab.newInstance();
     Fragment selectedFrag;
 
@@ -59,9 +61,10 @@ public class HomeActivity extends AppCompatActivity {
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                exiting = false;
                 switch (item.getItemId()) {
                     case R.id.nav_home:
-                        if (tag == "home") {
+                        if (tag != "home") {
                             selectedFrag = homeTab;
                             tag = "home";
                         } else {
@@ -100,11 +103,14 @@ public class HomeActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        if (selectedFrag != homeTab) {
+        if (!tag.equals("home")) {
             bottomNavigationView.setCurrentItem(0);
             fm = getSupportFragmentManager();
             ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
             ft.commit();
+        } else if (exiting == false) {
+            exiting = true;
+            Toast.makeText(this, getResources().getString(R.string.exiting_msg), Toast.LENGTH_SHORT).show();
         } else {
             this.finish();
         }

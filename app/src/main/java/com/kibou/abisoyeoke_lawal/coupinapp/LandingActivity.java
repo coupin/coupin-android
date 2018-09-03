@@ -1,9 +1,9 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -16,7 +16,7 @@ import com.yqritc.scalablevideoview.ScalableVideoView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class LandingActivity extends Activity {
+public class LandingActivity extends AppCompatActivity {
     @BindView(R.id.back_video)
     public ScalableVideoView backVideo;
     @BindView(R.id.sign_up_button)

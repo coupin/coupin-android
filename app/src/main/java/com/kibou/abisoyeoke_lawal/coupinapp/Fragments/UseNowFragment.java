@@ -11,6 +11,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -72,8 +73,8 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         View rootView = inflater.inflate(R.layout.fragment_use_now, container, false);
         ButterKnife.bind(this, rootView);
 
-        requestQueue = Volley.newRequestQueue(getContext());
         handler = new Handler();
+        requestQueue = Volley.newRequestQueue(getContext());
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         rvAdapter = new RVAdapter(nowList, this, getContext());
@@ -115,6 +116,11 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                         item.setMerchantAddress(merchantObject.getString("address"));
                         item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
                         item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
+                        item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
+                        item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
+                        item.setRewardDetails(rewardObjects.toString());
+                        item.setVisited(mainObject.getBoolean("visited"));
+                        item.setFavourited(mainObject.getBoolean("favourite"));
 
 
                         item.setRewardDetails(rewardObjects.toString());
@@ -128,27 +134,41 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                     }
                     rvAdapter.notifyDataSetChanged();
                     if (jsonArray.length() == 0) {
-                        loading(2);
+                        if (nowList.size() < 1) {
+                            loading(2);
+                        } else {
+                            showErrorToast(true);
+                        }
                     } else {
                         loading(1);
                     }
 
                 } catch (Exception e) {
                     e.printStackTrace();
+                    if (nowList.size() < 1) {
+                        loading(3);
+                    } else {
+                        showErrorToast(false);
+                    }
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
                 isLoading = false;
-                if (error.networkResponse != null) {
-                    if (error.networkResponse.statusCode == 404) {
-                        loading(2);
+                if (nowList.size() < 1) {
+                    if (error.networkResponse != null) {
+                        if (error.networkResponse.statusCode == 404) {
+                            loading(2);
+                        } else {
+                            loading(3);
+                        }
                     } else {
                         loading(3);
                     }
                 } else {
-                    loading(3);
+                    showErrorToast(false);
                 }
 
                 if (page > 0) {
@@ -166,6 +186,18 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Show toast instead of changing view
+     * @param isEmpty was it an empty return
+     */
+    public void showErrorToast(Boolean isEmpty) {
+        if (isEmpty) {
+            Toast.makeText(getContext(), getResources().getString(R.string.no_coupins), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(getContext(), getResources().getString(R.string.error_coupins), Toast.LENGTH_SHORT).show();
+        }
     }
 
     /**
@@ -196,6 +228,12 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                 }
             }
         });
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        requestQueue.stop();
     }
 
     /**

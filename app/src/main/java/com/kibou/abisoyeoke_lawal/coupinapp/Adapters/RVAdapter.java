@@ -1,8 +1,8 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.Adapters;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -59,6 +59,17 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             Date temp = new Date();
             Glide.with(context).load(reward.getMerchantLogo()).into(holder.favLogo);
             Glide.with(context).load(reward.getMerchantBanner()).into(holder.favBanner);
+            if (reward.hasVisited()) {
+                holder.visitedIcon.setVisibility(View.VISIBLE);
+            }
+
+            if (reward.isFavourited()) {
+                holder.favIcon.setVisibility(View.VISIBLE);
+            }
+
+            if (reward.hasVisited() && reward.isFav()) {
+                holder.divide.setVisibility(View.VISIBLE);
+            }
 
             if (reward.isFav()) {
                 holder.favAddress.setText(reward.getMerchantAddress());
@@ -74,6 +85,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 if (reward.getRewardCount() > 1) {
                     holder.favCode.setText(reward.getRewardCount() + " REWARDS");
                 } else {
+                    Log.v("TryingToGet", rewardArray.toString());
                     holder.favCode.setText(rewardArray.getJSONObject(0).getString("name"));
                     holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
@@ -133,9 +145,10 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder{
 
-        public CardView cardView;
         public ImageView favBanner;
+        public ImageView favIcon;
         public ImageView favLogo;
+        public ImageView visitedIcon;
         public LinearLayout expiryHolder;
         public RelativeLayout activeFavHolder;
         public RelativeLayout activeRewardHolder;
@@ -150,6 +163,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
         public TextView rewardOnePercent;
         public TextView rewardTwo;
         public TextView rewardTwoPercent;
+        public View divide;
 
 
         public ItemViewHolder(View itemView) {
@@ -159,17 +173,20 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             activeRewardHolder2 = (RelativeLayout) itemView.findViewById(R.id.text_holder_2);
             activeExpiration = (TextView) itemView.findViewById(R.id.active_expiration);
             code = (TextView) itemView.findViewById(R.id.active_code);
+            divide = (View) itemView.findViewById(R.id.divide);
             expiryHolder = (LinearLayout) itemView.findViewById(R.id.expiry_holder);
             expiryLabel = (RelativeLayout) itemView.findViewById(R.id.expiry_label);
             favAddress = (TextView) itemView.findViewById(R.id.active_fav_address);
             favBanner = (ImageView) itemView.findViewById(R.id.fav_banner);
             favCode = (TextView) itemView.findViewById(R.id.fav_code);
+            favIcon = (ImageView) itemView.findViewById(R.id.favourite);
             favLogo = (ImageView) itemView.findViewById(R.id.fav_logo);
             merchantName = (TextView) itemView.findViewById(R.id.active_merchant_name);
             rewardOne = (TextView) itemView.findViewById(R.id.active_reward_1);
             rewardOnePercent = (TextView) itemView.findViewById(R.id.active_percent_1);
             rewardTwo = (TextView) itemView.findViewById(R.id.active_reward_2);
             rewardTwoPercent = (TextView) itemView.findViewById(R.id.active_percent_2);
+            visitedIcon = (ImageView) itemView.findViewById(R.id.visited);
         }
 
         public void bind(final int position) {

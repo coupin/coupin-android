@@ -25,6 +25,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.Utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 
@@ -47,6 +48,10 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public ImageButton listBack;
     @BindView(R.id.list_logo)
     public ImageView merchantLogo;
+    @BindView(R.id.coupin_fav)
+    public ImageView coupinFav;
+    @BindView(R.id.coupin_visited)
+    public ImageView coupinVisited;
     @BindView(R.id.coupin_banner)
     public ImageView merchantBanner;
     @BindView(R.id.coupin_activate_holder)
@@ -83,6 +88,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         merchantName.setText(coupin.getMerchantName());
         merchantAddress.setText(coupin.getMerchantAddress());
+        if (coupin.hasVisited()) {
+            coupinVisited.setVisibility(View.VISIBLE);
+        }
+        if (coupin.isFav()) {
+            coupinFav.setVisibility(View.VISIBLE);
+        }
         Glide.with(this).load(coupin.getMerchantBanner()).into(merchantBanner);
         Glide.with(this).load(coupin.getMerchantLogo()).into(merchantLogo);
 
@@ -219,7 +230,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         parsedAddress = parsedAddress.replace(",", "");
 
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
-        navigateIntent.setData(Uri.parse("geo:0,0?q=" + parsedAddress));
+        navigateIntent.setData(Uri.parse("geo:" + coupin.getLatitude() + "," + coupin.getLongitude() +
+            "?q=" + coupin.getLatitude() + "," + coupin.getLongitude()));
         startActivity(navigateIntent);
     }
 
@@ -227,10 +239,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
      * Share details of coupin
      */
     private void share() {
+        String msg = "Coupin rewards for " + StringUtils.capitalize(coupin.getMerchantName()) + " to get " +
+            coupinRewards.get(0).getDetails() + "! https://www.example.com/tobe/replacedby/reallink";
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("text/plain");
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Coupin Share!");
-        sendIntent.putExtra(Intent.EXTRA_TEXT, "We are here to share again but not yet, this is just a test.");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
         startActivity(sendIntent);
     }
 
