@@ -4,7 +4,7 @@
               android:layout_height="match_parent"
               android:layout_width="match_parent"
              android:orientation="vertical"
-             tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.ProfileFragment">
+             tools:context="com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment">
 
     <!-- TODO: Update blank fragment layout -->
     <RelativeLayout

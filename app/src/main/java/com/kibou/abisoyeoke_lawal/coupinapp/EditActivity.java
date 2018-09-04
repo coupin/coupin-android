@@ -29,10 +29,10 @@ import com.bumptech.glide.Glide;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.callback.ErrorInfo;
 import com.cloudinary.android.callback.UploadCallback;
-import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.ChangePasswordDialog;
-import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.LoadingDialog;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.StringUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ChangePasswordDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.dialog.LoadingDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import org.json.JSONObject;
 

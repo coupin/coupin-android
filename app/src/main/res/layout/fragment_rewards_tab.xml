@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.fragments.RewardsTab">
 
     <RelativeLayout
         android:background="@color/white"

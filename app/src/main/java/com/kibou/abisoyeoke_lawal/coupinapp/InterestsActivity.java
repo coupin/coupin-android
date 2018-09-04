@@ -18,10 +18,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.InterestAdapter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.NotificationUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import java.util.ArrayList;
 import java.util.Calendar;

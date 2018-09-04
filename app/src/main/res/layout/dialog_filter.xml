@@ -65,7 +65,7 @@
         android:textColor="@color/text_light_grey"
         android:textSize="@dimen/medium_text"/>
 
-    <com.kibou.abisoyeoke_lawal.coupinapp.CustomViews.DistanceSeekBar
+    <com.kibou.abisoyeoke_lawal.coupinapp.custom_views.DistanceSeekBar
         android:id="@+id/distance"
         android:layout_height="80dp"
         android:layout_marginBottom="@dimen/margin_sm"

@@ -291,4 +291,5 @@
     <string name="error_recent">An error occured while getting merchants with the most recent rewards</string>
     <string name="exiting_msg">Press back one more time to exit.</string>
     <string name="error_us">A server error occurred on our end, please try again or contact the help desk.</string>
+    <string name="permissions">All permissions must be granted to continue.</string>
 </resources>

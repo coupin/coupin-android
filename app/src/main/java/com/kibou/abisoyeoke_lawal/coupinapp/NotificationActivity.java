@@ -9,8 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.NotificationUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import java.util.Calendar;
 

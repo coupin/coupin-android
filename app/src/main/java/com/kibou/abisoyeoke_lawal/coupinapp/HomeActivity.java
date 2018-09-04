@@ -13,11 +13,11 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
-import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.FavFragment;
-import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.HomeTab;
-import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.ProfileFragment;
-import com.kibou.abisoyeoke_lawal.coupinapp.Fragments.RewardsTab;
-import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment;
+import com.kibou.abisoyeoke_lawal.coupinapp.fragments.HomeTab;
+import com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment;
+import com.kibou.abisoyeoke_lawal.coupinapp.fragments.RewardsTab;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

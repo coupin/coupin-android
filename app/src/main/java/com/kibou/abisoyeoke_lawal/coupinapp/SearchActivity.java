@@ -24,12 +24,12 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVSearchAdapter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Dialog.FilterNoDistDialog;
-import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyFilter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVSearchAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.dialog.FilterNoDistDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyFilter;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;

@@ -21,13 +21,13 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVCoupinAdapter;
-import com.kibou.abisoyeoke_lawal.coupinapp.Interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.DateTimeUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.PreferenceMngr;
-import com.kibou.abisoyeoke_lawal.coupinapp.Utils.StringUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;

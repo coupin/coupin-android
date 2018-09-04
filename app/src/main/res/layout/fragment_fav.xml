@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.Fragments.FavFragment">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment">
 
     <RelativeLayout
         android:background="@color/white"

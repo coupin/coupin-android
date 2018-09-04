@@ -7,7 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.Adapters.RVFaqAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVFaqAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.FaqModel;
 
 import java.util.ArrayList;
