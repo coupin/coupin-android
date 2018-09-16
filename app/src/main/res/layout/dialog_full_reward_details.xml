@@ -61,22 +61,25 @@
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
+            android:paddingEnd="@dimen/padding_xs"
             android:paddingRight="@dimen/padding_xs"
-            android:text="N5500"
             android:textColor="@color/text_dark_grey"
             android:textSize="@dimen/medium_text"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/full_old_price"
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
+            android:layout_toEndOf="@id/full_new_price"
             android:layout_toRightOf="@id/full_new_price"
             android:layout_width="wrap_content"
+            android:paddingEnd="@dimen/padding_xs"
             android:paddingRight="@dimen/padding_xs"
-            android:text="N7500"
             android:textColor="@color/text_lighter_grey"
-            android:textSize="@dimen/medium_text"/>
+            android:textSize="@dimen/medium_text"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/full_percentage"
@@ -85,10 +88,10 @@
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="10%"
             android:textColor="@color/text_dark_grey"
             android:textSize="@dimen/xxlarge_text"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 
@@ -358,7 +361,8 @@
             android:layout_marginRight="@dimen/margin_xs"
             android:layout_weight="1"
             android:layout_width="80dp"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/photo_2"
@@ -367,7 +371,8 @@
             android:layout_marginRight="@dimen/margin_xs"
             android:layout_weight="1"
             android:layout_width="80dp"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/photo_3"
@@ -376,7 +381,8 @@
             android:layout_marginRight="@dimen/margin_xs"
             android:layout_weight="1"
             android:layout_width="80dp"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/photo_4"
@@ -385,7 +391,8 @@
             android:layout_marginRight="@dimen/margin_xs"
             android:layout_weight="1"
             android:layout_width="80dp"
-            android:scaleType="centerCrop"/>
+            android:scaleType="centerCrop"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

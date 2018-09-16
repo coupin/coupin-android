@@ -9,8 +9,8 @@ android {
         // Set back to 26 for production
         // Set back to 22 for development
         targetSdkVersion 26
-        versionCode 14
-        versionName "0.0.14"
+        versionCode 16
+        versionName "0.0.16"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -56,7 +56,7 @@ dependencies {
     implementation 'com.cloudinary:cloudinary-android:1.21.0'
     implementation 'co.lujun:androidtagview:1.1.4'
     implementation 'com.github.Cutta:GifView:1.1'
-    testImplementation'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
     annotationProcessor 'com.jakewharton:butterknife-compiler:8.8.1'
     annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
 }

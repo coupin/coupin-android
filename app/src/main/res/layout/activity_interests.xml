@@ -1,12 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true"
     android:background="@color/colorAccent"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity">
+
+    <FrameLayout
+        android:id="@+id/intro_holder"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent">
+
+        <com.yqritc.scalablevideoview.ScalableVideoView
+            android:id="@+id/intro_video"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:scalableType="centerCrop"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:id="@+id/interest_holder"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
 
         <LinearLayout
             android:layout_height="match_parent"
@@ -48,41 +68,43 @@
 
             </RelativeLayout>
 
+            <TextView
+                android:gravity="center"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_md"
+                android:layout_width="match_parent"
+                android:text="@string/select_category"
+                android:textColor="@color/white"
+                android:textSize="@dimen/large_text"
+                android:textStyle="normal"/>
+
+            <GridView
+                android:gravity="center"
+                android:horizontalSpacing="@dimen/margin_sm"
+                android:id="@+id/interests_grid"
+                android:layout_height="match_parent"
+                android:layout_width="match_parent"
+                android:numColumns="2"
+                android:stretchMode="columnWidth"
+                android:verticalSpacing="@dimen/margin_sm"/>
+
+        </LinearLayout>
+
         <TextView
+            android:background="@color/text_dark_grey"
             android:gravity="center"
+            android:id="@+id/interest_continue"
+            android:layout_alignParentBottom="true"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="@dimen/margin_md"
             android:layout_width="match_parent"
-            android:text="@string/select_category"
+            android:padding="@dimen/padding_sm_plus"
+            android:text="@string/cont"
+            android:textAllCaps="true"
             android:textColor="@color/white"
             android:textSize="@dimen/large_text"
-            android:textStyle="normal"/>
+            android:textStyle="bold"
+            android:visibility="gone"/>
 
-        <GridView
-            android:gravity="center"
-            android:horizontalSpacing="@dimen/margin_sm"
-            android:id="@+id/interests_grid"
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:numColumns="2"
-            android:stretchMode="columnWidth"
-            android:verticalSpacing="@dimen/margin_sm"/>
-
-    </LinearLayout>
-
-    <TextView
-        android:background="@color/text_dark_grey"
-        android:gravity="center"
-        android:id="@+id/interest_continue"
-        android:layout_alignParentBottom="true"
-        android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:padding="@dimen/padding_sm_plus"
-        android:text="@string/cont"
-        android:textAllCaps="true"
-        android:textColor="@color/white"
-        android:textSize="@dimen/large_text"
-        android:textStyle="bold"
-        android:visibility="gone"/>
+        </RelativeLayout>
 
 </RelativeLayout>

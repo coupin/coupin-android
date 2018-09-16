@@ -133,6 +133,9 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullPercentage.setText(String.valueOf((int) discount) + "%");
             fullNewPrice.setText("N" + String.valueOf(((int) newPrice)));
             fullOldPrice.setText("N" + String.valueOf((int) oldPrice));
+            fullPercentage.setVisibility(View.VISIBLE);
+            fullNewPrice.setVisibility(View.VISIBLE);
+            fullOldPrice.setVisibility(View.VISIBLE);
         }
 
         pictures = reward.getPictures();
@@ -143,15 +146,11 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                 for (int x = 0; x < pictures.length(); x++) {
                     thumbnails.add(pictures.getJSONObject(x).getString("url"));
                     Glide.with(context).load(pictures.getJSONObject(x).getString("url")).into(holders[x]);
+                    holders[x].setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
                 e.printStackTrace();
             }
-        } else {
-            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
-            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
-            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
-            Glide.with(context).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo4);
         }
 
         if (reward.isSelected()) {

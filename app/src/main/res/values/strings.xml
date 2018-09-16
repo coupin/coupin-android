@@ -49,7 +49,7 @@
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
     <string name="base_url">https://coupin.herokuapp.com/api/v1</string>
-    <!--<string name="base_url">https://fceaa55e.ngrok.io/api/v1</string>-->
+    <!--<string name="base_url">https://849c270a.ngrok.io/api/v1</string>-->
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -292,4 +292,9 @@
     <string name="exiting_msg">Press back one more time to exit.</string>
     <string name="error_us">A server error occurred on our end, please try again or contact the help desk.</string>
     <string name="permissions">All permissions must be granted to continue.</string>
+    <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
+    <string name="forgot_password_header">Forgot Password?</string>
+    <string name="forgot_password_sub_header">Fill in email address and submit.\nAn email will be sent to you with the link to reset your password.</string>
+    <string name="email_sent">An email has been sent. Please check your inbox.</string>
+    <string name="forgot_password">/auth/forgot-password</string>
 </resources>

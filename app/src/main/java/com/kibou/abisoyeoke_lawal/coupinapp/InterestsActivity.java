@@ -2,14 +2,17 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Request;
@@ -22,6 +25,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -33,15 +37,22 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class InterestsActivity extends AppCompatActivity {
+    @BindView(R.id.intro_holder)
+    public FrameLayout introHolder;
     @BindView(R.id.interests_grid)
     public GridView interestGrid;
+    @BindView(R.id.interest_holder)
+    public RelativeLayout interestHolder;
+    @BindView(R.id.intro_video)
+    public ScalableVideoView introVideo;
     @BindView(R.id.interest_continue)
     public TextView interestContinue;
     @BindView(R.id.interest_name)
     public TextView interestName;
 
-    public ArrayList<Interest> interests = new ArrayList<>();
-    public ArrayList<String> selected = new ArrayList<>();
+    private ArrayList<Interest> interests = new ArrayList<>();
+    private ArrayList<String> selected = new ArrayList<>();
+    private MediaPlayer mediaPlayer;
 
     public int[] categoryIcons = new int[]{R.drawable.int_ent, R.drawable.int_food, R.drawable.int_gadget,
         R.drawable.int_groceries, R.drawable.int_beauty, R.drawable.int_fashion, R.drawable.int_ticket,
@@ -60,6 +71,8 @@ public class InterestsActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         requestQueue = Volley.newRequestQueue(this);
+
+        play();
 
         Intent receivedIntent = getIntent();
 
@@ -132,6 +145,38 @@ public class InterestsActivity extends AppCompatActivity {
         NotificationUtils.setReminder(InterestsActivity.this, getApplicationContext(), true, calendar);
         PreferenceMngr.notificationSelection(true, true, false);
         PreferenceMngr.setLastChecked((new Date()).toString());
+    }
+
+    private void play() {
+        try {
+            introVideo.setRawData(R.raw.appguide);
+            introVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
+                @Override
+                public void onPrepared(MediaPlayer mp) {
+                    mediaPlayer = mp;
+                    mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                        @Override
+                        public void onCompletion(MediaPlayer mp) {
+                            mp.release();
+                            introHolder.setVisibility(View.GONE);
+                            interestHolder.setVisibility(View.VISIBLE);
+                        }
+                    });
+                    mediaPlayer.start();
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void onPause() {
+        if (mediaPlayer != null) {
+            mediaPlayer.stop();
+            mediaPlayer.reset();
+        }
+        super.onPause();
     }
 
     /**

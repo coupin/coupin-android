@@ -6,6 +6,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -46,6 +47,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -155,7 +158,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private LocationManager mLocationManager;
     private LinearLayoutManager mLinearLayoutManager;
     private List<Address> addresses;
+    private RequestOptions requestOptions;
 
+    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
     private boolean filter;
     private boolean isGPSEnabled;
     private boolean isNetworkEnabled;
@@ -226,6 +231,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         loadingDialog = new LoadingDialog(getActivity(), R.style.Loading_Dialog);
         loadingDialog.setCancelable(false);
 
+        requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.ic_placeholder);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+
         // Error Dialog
         networkErrorDialog = new NetworkErrorDialog(getContext());
 
@@ -260,8 +269,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 startActivity(new Intent(HomeTab.this.getActivity(), InterestsActivity.class));
             }
         });
-
-
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -299,11 +306,17 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
                 mGoogleMap.setMyLocationEnabled(false);
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(6.517693, 3.378371), 20));
+                mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+                    @Override
+                    public void onMapClick(LatLng latLng) {
+                        adapter.clearPreviousView();
+                        onMarker = false;
+                    }
+                });
 
                 try {
                     if (geocoder.isPresent() && currentLocation != null) {
                         addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                        Log.v("VolleyAddress", addresses.toString());
                         street.setText(addresses.get(0).getThoroughfare().toString());
                     }
                 } catch (Exception e) {
@@ -346,7 +359,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));
                                 if (res.has("logo") && res.getJSONObject("logo").has("url")) {
-                                    Glide.with(getActivity()).load(res.getJSONObject("logo").getString("url")).into(banner);
+                                    Glide.with(getContext())
+                                        .load(res.getJSONObject("logo").getString("url"))
+                                        .apply(requestOptions)
+                                        .into(banner);
                                 }
                                 String snippet = count > 1 ? count + " Rewards Available" :
                                     res.getJSONObject("reward").getString("name");
@@ -386,7 +402,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         if (!marker.getTitle().toString().equals("Hello!")) {
                             marker.setTitle("Yes");
                         }
-                        Log.v("MarkerLog", "" + marker.getId() + " - " + marker.getTitle());
 
                         lastOpened = marker;
                         onMarker = true;
@@ -455,6 +470,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         homeSearchView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                adapter.clearPreviousView();
+                onMarker = false;
                 Intent intent = new Intent(getActivity(), SearchActivity.class);
                 startActivity(intent);
             }
@@ -607,7 +624,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.v("VolleyConfused", "Inside Success");
                     try {
                         Merchant first = new Merchant();
                         first.setPicture(R.drawable.hot);
@@ -643,6 +659,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     .position(new LatLng(item.getLatitude(), item.getLongitude()))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
                             iconsList.add(item);
+
+
                         }
 
                         spots.setText(iconsList.size() - 1 + " Rewards ");
@@ -687,13 +705,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                     if (HomeTab.this.isVisible()) {
                         if (error.networkResponse == null) {
-                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                                getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        getActivity().finish();
-                                    }
-                                });
+                            Toast.makeText(getContext(), getResources().getString(R.string.error_connection_detail), Toast.LENGTH_SHORT).show();
                         } else if (error.networkResponse.statusCode == 404) {
                             networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_title),
                                 getResources().getString(R.string.empty_details), new View.OnClickListener() {
@@ -702,16 +714,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                         networkErrorDialog.dismiss();
                                     }
                                 });
+                            networkErrorDialog.show();
                         } else {
-                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                                error.getMessage(), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        getActivity().finish();
-                                    }
-                                });
+                            Toast.makeText(getContext(), getResources().getString(R.string.error_connection_detail), Toast.LENGTH_SHORT).show();
                         }
-                        networkErrorDialog.show();
                     }
                 }
             }) {
@@ -760,7 +766,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         closestMarker = markers.get(1);
         tempDist = CalculationByDistance(myPosition.getPosition(), closestMarker.getPosition());
-        Log.v("VolleyDist", String.valueOf(tempDist));
 
         latLngBounds = new LatLngBounds.Builder();
 
@@ -1072,6 +1077,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         categories = selection;
         this.distance = distance / 10;
         filter = true;
+        adapter.clearPreviousView();
+        onMarker = false;
         setUpList();
     }
 

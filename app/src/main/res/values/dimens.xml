@@ -70,4 +70,5 @@
     <dimen name="btn_float">60dp</dimen>
     <dimen name="navbar_space">54dp</dimen>
     <dimen name="thumbSize">75dp</dimen>
+    <dimen name="fab_margin">16dp</dimen>
 </resources>

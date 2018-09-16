@@ -93,6 +93,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     public EditText mPasswordView;
     @BindView(R.id.login_bottom)
     public LinearLayout loginBottom;
+    @BindView(R.id.forgot_text)
+    public TextView forgotText;
     @BindView(R.id.login_form)
     public View mLoginFormView;
     @BindView(R.id.login_progress)
@@ -150,6 +152,13 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
+            }
+        });
+
+        forgotText.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
             }
         });
 

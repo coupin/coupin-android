@@ -18,6 +18,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,6 +74,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public ImageView photo2;
     @BindView(R.id.photo_3)
     public ImageView photo3;
+    @BindView(R.id.photo_4)
+    public ImageView photo4;
     @BindView(R.id.button_holder)
     public LinearLayout buttonHolder;
     @BindView(R.id.reward_empty)
@@ -87,6 +90,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public RecyclerView rvRewards;
     @BindView(R.id.merchant_address_textview)
     public TextView merchantAddress;
+    @BindView(R.id.photo_gallery)
+    public RelativeLayout photoGallery;
     @BindView(R.id.merchant_phone_textview)
     public TextView merchantPhone;
     @BindView(R.id.merchant_name_textview)
@@ -103,10 +108,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public RequestQueue requestQueue;
     String url;
 
-    private ArrayList<Reward> values;
-    private ArrayList<String> selected;
     private ArrayList<Date> expiryDates;
     private ArrayList<String> favourites;
+    private ArrayList<String> pictures;
+    private ArrayList<String> selected;
+    private ArrayList<Reward> values;
     private boolean favourite = false;
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
@@ -139,12 +145,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             try {
                 item = (Merchant) extra.getSerializable("object");
                 resArray = new JSONArray(item.getRewards());
-//                id = new JSONObject(extra.getString("merchant")).getString("_id");
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
         expiryDates = new ArrayList<>();
+        pictures = new ArrayList<>();
         selected = new ArrayList<>();
         values = new ArrayList<>();
 
@@ -199,8 +205,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         toggleClickableButtons(false);
-                        Log.v("VolleyError", error.toString());
-                        Log.v("VolleyStatue", "" + error.networkResponse.statusCode);
                         error.printStackTrace();
                     }
                 }){
@@ -263,7 +267,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             }
 
             merchantRating.setRating(item.getRating());
-            ratingText.setText(String.valueOf(item.getRating()) + "/5.0");
+            ratingText.setText(String.valueOf(item.getRating()) + "/5");
 
             String temp = userFavourites.toString();
             favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
@@ -273,10 +277,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
             loadRewards();
             implementOnScrollListener();
-
-            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409658/Mask_Group_1_ucjx1i.png").into(photo1);
-            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409660/Mask_Group_2_odbzxx.png").into(photo2);
-            Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510409666/Mask_Group_mc9jlu.png").into(photo3);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -319,7 +319,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
 
                         // Price Details
-                        if (object.has("price")) {
+                        if (object.has("price")
+                            && !object.getJSONObject("price").isNull("new")
+                            && !object.getJSONObject("price").isNull("old")) {
                             reward.setIsDiscount(true);
                             reward.setNewPrice(object.getJSONObject("price").getInt("new"));
                             reward.setOldPrice(object.getJSONObject("price").getInt("old"));
@@ -337,8 +339,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         // Applicable days
                         reward.setDays(object.getJSONArray("applicableDays"));
 
-                        if (object.has("pictures")) {
-                            reward.setPictures(object.getJSONArray("pictures"));
+                        if (object.has("pictures") && !object.isNull("pictures")) {
+                            JSONArray jsonPictures = object.getJSONArray("pictures");
+                            reward.setPictures(jsonPictures);
+                            for(int j = 0; j < jsonPictures.length(); j++) {
+                                pictures.add(jsonPictures.getJSONObject(j).getString("url"));
+                            }
                         }
 
                         values.add(reward);
@@ -351,6 +357,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         } else {
                             toggleViews(0);
                         }
+
+                        setupRandomImages();
                     }
 
                     if (page > 0) {
@@ -402,6 +410,42 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    private void setupRandomImages() {
+        ArrayList<Integer> indexes = new ArrayList<>();
+        int max = pictures.size();
+        int min = 0;
+        int range = max - 1 - min + 1;
+
+        for (int k = 0; k < 4 && k < max; k++) {
+            int index = 0;
+
+            while (indexes.contains(index)) {
+                index = (int) (Math.random() * range) + min;
+            }
+
+            indexes.add(index);
+
+            switch (k) {
+                case 0:
+                    Glide.with(MerchantActivity.this).load(pictures.get(index)).into(photo1);
+                    photo1.setVisibility(View.VISIBLE);
+                    break;
+                case 1:
+                    Glide.with(MerchantActivity.this).load(pictures.get(index)).into(photo2);
+                    photo2.setVisibility(View.VISIBLE);
+                    break;
+                case 2:
+                    Glide.with(MerchantActivity.this).load(pictures.get(index)).into(photo3);
+                    photo3.setVisibility(View.VISIBLE);
+                    break;
+                case 3:
+                    Glide.with(MerchantActivity.this).load(pictures.get(index)).into(photo4);
+                    photoGallery.setVisibility(View.VISIBLE);
+                    break;
+            }
+        }
     }
 
     /**

@@ -9,6 +9,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.CustomClickListener;
@@ -28,14 +30,14 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
     private View parent;
     private View previousView;
 
-    public IconListAdapter(ArrayList<Merchant> items) {
-        iconList = items;
-    }
-
-    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener) {
-        iconList = items;
-        this.mClickListener = mClickListener;
-    }
+//    public IconListAdapter(ArrayList<Merchant> items) {
+//        iconList = items;
+//    }
+//
+//    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener) {
+//        iconList = items;
+//        this.mClickListener = mClickListener;
+//    }
 
     public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener, Context context) {
         iconList = items;
@@ -55,8 +57,14 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
 
     @Override
     public void onBindViewHolder(IconListViewHolder holder, int position) {
+        RequestOptions requestOptions = new RequestOptions();
+        requestOptions.placeholder(R.drawable.ic_placeholder);
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
         if (iconList.get(position).getLogo() != null) {
-            Glide.with(context).load(iconList.get(position).getLogo()).into(holder.iconView);
+            Glide.with(context)
+                .load(iconList.get(position).getLogo())
+                .apply(requestOptions)
+                .into(holder.iconView);
         } else {
             holder.iconView.setImageResource(iconList.get(position).getPicture());
         }

@@ -20,6 +20,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVHotAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
@@ -180,7 +181,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     ImageListener imageListener = new ImageListener() {
         @Override
         public void setImageForPosition(int position, ImageView imageView) {
-            Glide.with(HotActivity.this).load(slides.get(position)).into(imageView);
+            Glide.with(HotActivity.this).load(slides.get(position))
+                .apply(RequestOptions.fitCenterTransform()).into(imageView);
         }
     };
 
@@ -232,24 +234,32 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         JSONObject slideObject = slideObjects.getJSONObject(x);
                         JSONObject merchantObject = slideObject.getJSONObject("id");
 
-                        slides.add(slideObject.getString("url"));
+                        if (
+                            merchantObject.getJSONObject("merchantInfo").has("rewards")
+                                && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
+                                && !merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
+                                .isNull(0)) {
+                            slides.add(slideObject.getString("url"));
 
-                        Merchant item = new Merchant();
-                        item.setId(merchantObject.getString("_id"));
-                        item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
-                        item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + " " + merchantObject.getJSONObject("merchantInfo").getString("city"));
-                        item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
-                        item.setEmail(merchantObject.getString("email"));
-                        item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
-                        item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
-                        item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
-                        item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
-                        item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
-                        item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
-                        item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
+                            Merchant item = new Merchant();
+                            item.setId(merchantObject.getString("_id"));
+                            item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
+                            item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
+                            item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + " " + merchantObject.getJSONObject("merchantInfo").getString("city"));
+                            item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
+                            item.setEmail(merchantObject.getString("email"));
+                            item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
+                            item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
+                            item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
+                                .getJSONObject(0)
+                                .getString("name"));
+                            item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
+                            item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                            item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
+                            item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
 
-                        hotlist.add(item);
+                            hotlist.add(item);
+                        }
                     }
 
                     hotCarousel.setImageListener(imageListener);
@@ -277,6 +287,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         requestQueue.add(stringRequest);
     }
 
+    /**
+     * Get most recent merchants
+     */
     public void getMostRecent() {
         String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_merchant_recent) + "?page=" + page;
 
@@ -440,6 +453,10 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
+    /**
+     * Navigate user to merchant page
+     * @param merchant
+     */
     public void goToMerchantPage(Merchant merchant) {
         Intent merchantIntent = new Intent(this, MerchantActivity.class);
         Bundle extra = new Bundle();

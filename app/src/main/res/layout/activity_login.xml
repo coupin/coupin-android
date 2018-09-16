@@ -128,6 +128,7 @@
 
                 <TextView
                     android:gravity="end"
+                    android:id="@+id/forgot_text"
                     android:layout_marginLeft="20dp"
                     android:layout_marginRight="20dp"
                     android:layout_marginTop="5dp"

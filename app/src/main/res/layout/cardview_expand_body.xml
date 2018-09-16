@@ -52,11 +52,10 @@
 
         <TextView
             android:id="@+id/list_old_price"
-            android:layout_gravity="left|start|center_vertical"
+            android:layout_gravity="start|center_vertical"
             android:layout_height="wrap_content"
             android:layout_weight="6"
             android:layout_width="wrap_content"
-            android:text="N5000"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/medium_text"
             android:textStyle="bold"/>
@@ -67,7 +66,6 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:layout_width="wrap_content"
-            android:text="N7500"
             android:textColor="@color/text_lighter_grey"
             android:textSize="@dimen/medium_text" />
 
@@ -79,6 +77,7 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
             android:paddingBottom="@dimen/margin_xxs"
             android:paddingLeft="@dimen/padding_sm"
             android:paddingRight="@dimen/padding_sm"
@@ -96,6 +95,7 @@
             android:layout_weight="1"
             android:layout_width="wrap_content"
             android:layout_marginLeft="@dimen/margin_sm"
+            android:layout_marginStart="@dimen/margin_sm"
             android:paddingBottom="@dimen/margin_xxs"
             android:paddingLeft="@dimen/padding_sm"
             android:paddingRight="@dimen/padding_sm"

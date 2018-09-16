@@ -27,7 +27,7 @@ public class LandingActivity extends AppCompatActivity {
     @BindView(R.id.carouselView)
     public CarouselView carouselView;
 
-    public MediaPlayer mediaPlayer;
+    private MediaPlayer mediaPlayer;
 
     String[] quotes = new String[]{"If one is to know himself, he must first discover freedom",
             "Tell a man what your dreams are and he will be your nightmare",

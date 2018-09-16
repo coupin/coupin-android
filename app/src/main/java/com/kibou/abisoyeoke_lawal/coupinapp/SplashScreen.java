@@ -65,7 +65,10 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
         AppEventsLogger.activateApp(this);
         requestQueue1 = Volley.newRequestQueue(this);
 
-        Glide.with(this).load(R.raw.loading_gif).apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC)).into(testView);
+        Glide.with(this)
+            .load(R.raw.loading_gif)
+            .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
+            .into(testView);
 
         PreferenceMngr.setContext(getApplicationContext());
         if (PreferenceMngr.getInstance().getRequestQueue() == null) {

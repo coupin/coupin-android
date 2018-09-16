@@ -153,7 +153,8 @@
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_weight="1"
                                 android:layout_width="80dp"
-                                android:scaleType="centerCrop"/>
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"/>
 
                             <ImageView
                                 android:id="@+id/photo_2"
@@ -162,7 +163,8 @@
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_weight="1"
                                 android:layout_width="80dp"
-                                android:scaleType="centerCrop"/>
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"/>
 
                             <ImageView
                                 android:id="@+id/photo_3"
@@ -171,17 +173,19 @@
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_weight="1"
                                 android:layout_width="80dp"
-                                android:scaleType="centerCrop"/>
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"/>
 
                             <RelativeLayout
-                                android:id="@+id/photo_4"
+                                android:id="@+id/photo_gallery"
                                 android:background="@color/lightGrey"
                                 android:layout_height="80dp"
                                 android:layout_weight="1"
-                                android:layout_width="80dp">
+                                android:layout_width="80dp"
+                                android:visibility="gone">
                                 
                                 <ImageView
-                                    android:id="@+id/photo_gallery"
+                                    android:id="@+id/photo_4"
                                     android:layout_centerHorizontal="true"
                                     android:layout_height="30dp"
                                     android:layout_marginTop="15dp"
@@ -190,7 +194,7 @@
                                     android:tint="@color/text_light_grey"/>
 
                                 <TextView
-                                    android:layout_below="@id/photo_gallery"
+                                    android:layout_below="@id/photo_4"
                                     android:layout_centerHorizontal="true"
                                     android:layout_height="wrap_content"
                                     android:layout_marginTop="@dimen/margin_xxs"
