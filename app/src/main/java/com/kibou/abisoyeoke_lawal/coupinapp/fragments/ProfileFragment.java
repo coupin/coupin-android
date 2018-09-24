@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.AboutActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.EditActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.FAQActivity;
@@ -60,6 +63,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView profileVersion;
 
     public JSONObject userObject;
+    public RequestOptions requestOptions;
     public String pictureUrl = "http://res.cloudinary.com/mybookingngtest/image/upload/v1510417817/profile_lziaj4.jpg";
 
     public ProfileFragment() {
@@ -73,6 +77,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
+
+        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
 
         new Handler().postDelayed(new Runnable() {
             @Override
@@ -97,6 +103,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 pictureUrl = userObject.getJSONObject("picture").getString("url");
                 Glide.with(this)
                     .load(pictureUrl)
+                    .apply(requestOptions)
                     .into(profilePicture);
             } else {
                 profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
@@ -131,18 +138,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onResume() {
         super.onResume();
 
-//        try {
-//            userObject = new JSONObject(PreferenceMngr.getUser());
-//            if (userObject.has("picture") && !userObject.get("picture").toString().equals(pictureUrl)) {
-//                pictureUrl = userObject.getJSONObject("picture").getString("url");
-//                Glide.with(this)
-//                    .load(pictureUrl)
-//                    .into(profilePicture);
-//            }
-//
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
+        try {
+            userObject = new JSONObject(PreferenceMngr.getUser());
+            Log.v("User Object", userObject.toString());
+            if (userObject.has("picture")
+                && userObject.getJSONObject("picture").has("url")
+                && !userObject.getJSONObject("picture").getString("url").toString().equals(pictureUrl)
+                ) {
+                pictureUrl = userObject.getJSONObject("picture").getString("url");
+                Glide.with(this)
+                    .load(pictureUrl)
+                    .apply(requestOptions)
+                    .into(profilePicture);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

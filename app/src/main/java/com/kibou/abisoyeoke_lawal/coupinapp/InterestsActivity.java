@@ -172,7 +172,7 @@ public class InterestsActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        if (mediaPlayer != null) {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
             mediaPlayer.stop();
             mediaPlayer.reset();
         }

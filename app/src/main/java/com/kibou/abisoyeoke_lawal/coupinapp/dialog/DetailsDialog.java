@@ -143,6 +143,19 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         if (pictures != null) {
             try {
+                if (pictures.length() >= 4) {
+                    int dim = (int)context.getResources().getDimension(R.dimen.image_size);
+                    LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                        dim,
+                        dim,
+                        1.0f
+                    );
+                    photo1.setLayoutParams(params);
+                    photo2.setLayoutParams(params);
+                    photo3.setLayoutParams(params);
+                    photo4.setLayoutParams(params);
+                }
+
                 for (int x = 0; x < pictures.length(); x++) {
                     thumbnails.add(pictures.getJSONObject(x).getString("url"));
                     Glide.with(context).load(pictures.getJSONObject(x).getString("url")).into(holders[x]);

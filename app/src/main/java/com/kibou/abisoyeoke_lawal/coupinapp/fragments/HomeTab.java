@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.location.Address;
 import android.location.Criteria;
@@ -14,6 +15,7 @@ import android.location.Geocoder;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -46,7 +48,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -91,7 +92,10 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.InputStream;
 import java.math.BigDecimal;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -160,7 +164,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private List<Address> addresses;
     private RequestOptions requestOptions;
 
-    private ArrayList<Bitmap> bitmaps = new ArrayList<>();
+    private HashMap<String, Bitmap> thumbnails = new HashMap<>();
     private boolean filter;
     private boolean isGPSEnabled;
     private boolean isNetworkEnabled;
@@ -358,11 +362,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));
+                                Log.v("BolleyBitmap", thumbnails.get(res.getString("_id")).toString());
                                 if (res.has("logo") && res.getJSONObject("logo").has("url")) {
-                                    Glide.with(getContext())
-                                        .load(res.getJSONObject("logo").getString("url"))
-                                        .apply(requestOptions)
-                                        .into(banner);
+                                    banner.setImageBitmap(thumbnails.get(res.getString("_id")));
                                 }
                                 String snippet = count > 1 ? count + " Rewards Available" :
                                     res.getJSONObject("reward").getString("name");
@@ -621,6 +623,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         try {
+            Log.v("VolleyGet", "Merchants");
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -660,7 +663,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
                             iconsList.add(item);
 
-
                         }
 
                         spots.setText(iconsList.size() - 1 + " Rewards ");
@@ -673,6 +675,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         adapter.setIconList(iconsList);
                         adapter.notifyDataSetChanged();
                         retrievingData = false;
+                        (new LogoConverter()).execute(true);
                     } catch (Exception e) {
                         e.printStackTrace();
                         adapter.setIconList(iconsList);
@@ -754,6 +757,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 requestQueue.add(stringRequest);
             }
         } catch (Exception e) {
+            showDialog(false);
             e.printStackTrace();
         }
     }
@@ -884,6 +888,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             item.setRewards(res.getJSONArray("rewards").toString());
                             item.setLatitude(res.getJSONObject("location").getDouble("lat"));
                             item.setLongitude(res.getJSONObject("location").getDouble("long"));
+                            item.setLogo(res.getJSONObject("logo").getString("url"));
                             markers.add(mGoogleMap.addMarker(new MarkerOptions()
                                 .title(res.getString("name"))
                                 .snippet(res.toString())
@@ -902,6 +907,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         loading();
                         adapter.notifyDataSetChanged();
                         page++;
+
+                        (new LogoConverter()).execute(false);
                     } catch (Exception e) {
                         retrievingData = false;
                         isLoading = false;
@@ -1251,5 +1258,33 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         Log.v("VolleyTesting", "Testing");
         Toast.makeText(getActivity(), "This is a test", Toast.LENGTH_SHORT).show();
 //        setUpList();
+    }
+
+    /**
+     * An async class to convert url to bitmaps in the background
+     */
+    private class LogoConverter extends AsyncTask<Boolean, Integer, Void> {
+        @Override
+        protected Void doInBackground(Boolean... refresh) {
+            if (refresh[0]) {
+                thumbnails.clear();
+            }
+
+            for(int i = 1; i < iconsList.size(); i++) {
+                try {
+                    URL url = new URL(iconsList.get(i).getLogo());
+                    HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                    httpURLConnection.setDoInput(true);
+                    httpURLConnection.connect();
+
+                    InputStream inputStream = httpURLConnection.getInputStream();
+                    Bitmap image = BitmapFactory.decodeStream(inputStream);
+                    thumbnails.put(iconsList.get(i).getId(), image);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+        }
     }
 }

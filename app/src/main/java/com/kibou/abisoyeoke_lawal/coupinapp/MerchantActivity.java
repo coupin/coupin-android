@@ -18,7 +18,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,8 +89,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public RecyclerView rvRewards;
     @BindView(R.id.merchant_address_textview)
     public TextView merchantAddress;
-    @BindView(R.id.photo_gallery)
-    public RelativeLayout photoGallery;
     @BindView(R.id.merchant_phone_textview)
     public TextView merchantPhone;
     @BindView(R.id.merchant_name_textview)
@@ -109,6 +106,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     String url;
 
     private ArrayList<Date> expiryDates;
+    private ArrayList<String> blacklist;
     private ArrayList<String> favourites;
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
@@ -258,6 +256,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
             user = new JSONObject(PreferenceMngr.getInstance().getUser());
             userFavourites = user.getJSONArray("favourites");
+            JSONArray tempArray = user.getJSONArray("blacklist");
+            blacklist = new ArrayList<String>(Arrays.asList(tempArray.toString().substring(1, tempArray.length() - 1).replaceAll("\"", "").split(",")));
+            rvPopUpAdapter.setBlacklist(blacklist);
 
             // Show Mobile and Gender Dialog
             if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
@@ -412,11 +413,27 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         requestQueue.add(stringRequest);
     }
 
+    /**
+     * Set random images from rewards
+     */
     private void setupRandomImages() {
         ArrayList<Integer> indexes = new ArrayList<>();
         int max = pictures.size();
         int min = 0;
         int range = max - 1 - min + 1;
+
+        if (max >= 4) {
+            int dim = (int)getResources().getDimension(R.dimen.image_size);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
+                dim,
+                dim,
+                1.0f
+            );
+            photo1.setLayoutParams(params);
+            photo2.setLayoutParams(params);
+            photo3.setLayoutParams(params);
+            photo4.setLayoutParams(params);
+        }
 
         for (int k = 0; k < 4 && k < max; k++) {
             int index = 0;
@@ -442,7 +459,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     break;
                 case 3:
                     Glide.with(MerchantActivity.this).load(pictures.get(index)).into(photo4);
-                    photoGallery.setVisibility(View.VISIBLE);
+                    photo4.setVisibility(View.VISIBLE);
                     break;
             }
         }
@@ -548,6 +565,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     @Override
     public void onSelect(boolean selected, int index) {
+        if (index == -1) {
+            Toast.makeText(MerchantActivity.this, "Sorry this reward can only be used once. ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         if (selected) {
             this.selected.add(values.get(index).getId());
             this.expiryDates.add(values.get(index).getExpires());

@@ -151,8 +151,8 @@
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
                                 android:layout_marginRight="@dimen/margin_xs"
-                                android:layout_weight="1"
                                 android:layout_width="80dp"
+                                android:maxWidth="80dp"
                                 android:scaleType="centerCrop"
                                 android:visibility="gone"/>
 
@@ -161,8 +161,8 @@
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
                                 android:layout_marginRight="@dimen/margin_xs"
-                                android:layout_weight="1"
                                 android:layout_width="80dp"
+                                android:maxWidth="80dp"
                                 android:scaleType="centerCrop"
                                 android:visibility="gone"/>
 
@@ -171,41 +171,21 @@
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
                                 android:layout_marginRight="@dimen/margin_xs"
-                                android:layout_weight="1"
                                 android:layout_width="80dp"
+                                android:maxWidth="80dp"
                                 android:scaleType="centerCrop"
                                 android:visibility="gone"/>
 
-                            <RelativeLayout
-                                android:id="@+id/photo_gallery"
-                                android:background="@color/lightGrey"
+                            <ImageView
+                                android:id="@+id/photo_4"
+                                android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
-                                android:layout_weight="1"
+                                android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_width="80dp"
-                                android:visibility="gone">
-                                
-                                <ImageView
-                                    android:id="@+id/photo_4"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_height="30dp"
-                                    android:layout_marginTop="15dp"
-                                    android:layout_width="30dp"
-                                    android:src="@drawable/ic_camera"
-                                    android:tint="@color/text_light_grey"/>
+                                android:maxWidth="80dp"
+                                android:scaleType="centerCrop"
+                                android:visibility="gone"/>
 
-                                <TextView
-                                    android:layout_below="@id/photo_4"
-                                    android:layout_centerHorizontal="true"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="@dimen/margin_xxs"
-                                    android:layout_width="wrap_content"
-                                    android:text="+37 MORE"
-                                    android:textColor="@color/text_med_grey"
-                                    android:textSize="@dimen/small_text"
-                                    android:textStyle="bold"/>
-                                
-                            </RelativeLayout>
-                            
                         </LinearLayout>
 
                     </LinearLayout>

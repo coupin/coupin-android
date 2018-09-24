@@ -61,10 +61,12 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
                 holder.hotFavourite.setVisibility(View.VISIBLE);
             }
 
-            if (hotItem.getRewardsCount() > 1) {
+            if (hotItem.getRewardsCount() == 1){
+                holder.hotRewards.setText(rewardArray.getJSONObject(0).getString("name"));
+            } else if (hotItem.getRewardsCount() > 1) {
                 holder.hotRewards.setText(hotItem.getRewardsCount() + " REWARDS");
             } else {
-                holder.hotRewards.setText(rewardArray.getJSONObject(0).getString("name"));
+                holder.hotRewards.setVisibility(View.GONE);
             }
         } catch (Exception e) {
             e.printStackTrace();

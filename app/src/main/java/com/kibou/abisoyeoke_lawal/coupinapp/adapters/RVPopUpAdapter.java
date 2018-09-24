@@ -24,6 +24,7 @@ import java.util.ArrayList;
  */
 
 public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHolder> {
+    public ArrayList<String> blacklist;
     public ArrayList<Reward> rewards;
     public Context context;
     public boolean drawerVisible = false;
@@ -96,6 +97,11 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         holder.head.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (blacklist.contains(reward.getId())) {
+                    myOnSelect.onSelect(false, -1);
+                    return;
+                }
+
                 DetailsDialog detailsDialog = new DetailsDialog(context, reward);
 
                 detailsDialog.setClickListener(new MyOnClick() {
@@ -131,6 +137,10 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                 detailsDialog.show();
             }
         });
+    }
+
+    public void setBlacklist(ArrayList<String> blacklist) {
+        this.blacklist = blacklist;
     }
 
     @Override

@@ -16,10 +16,8 @@ import java.util.Calendar;
  */
 
 public class NotificationUtils {
-    private static void checkForUpdates() {}
-
     public static void setReminder(Activity activity, Context appContext, boolean weekend, Calendar calendar) {
-        Context context = appContext.getApplicationContext();
+        Context context = appContext;
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(context.ALARM_SERVICE);
 //                long interval = 1000 * 60 * 1440;
         long interval = 1000 * 60 * 60 * 24 * 7;

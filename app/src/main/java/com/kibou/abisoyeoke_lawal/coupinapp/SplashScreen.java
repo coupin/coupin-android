@@ -1,43 +1,42 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.Manifest;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NotificationCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.cloudinary.android.MediaManager;
-import com.cloudinary.android.signed.Signature;
-import com.cloudinary.android.signed.SignatureProvider;
 import com.facebook.appevents.AppEventsLogger;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.UpdateService;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Calendar;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class SplashScreen extends AppCompatActivity implements MyOnSelect {
+    public static final String CHANNEL_ID = "3001";
+    public static final int SERVICE_ID = 3002;
     private boolean check = false;
     private final int PERMISSION_ALL = 1;
     private int count = 0;
@@ -49,13 +48,14 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
         Manifest.permission.READ_CONTACTS
     };
 
+    NotificationManager notificationManager;
     private RequestQueue requestQueue1;
 
     Handler handler = new Handler();
     UpdateDialog updateDialog;
 
-    @BindView(R.id.test_image)
-    ImageView testView;
+    @BindView(R.id.gif_image)
+    ImageView gifView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,15 +68,13 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
         Glide.with(this)
             .load(R.raw.loading_gif)
             .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
-            .into(testView);
+            .into(gifView);
 
         PreferenceMngr.setContext(getApplicationContext());
         if (PreferenceMngr.getInstance().getRequestQueue() == null) {
-            RequestQueue requestQueue = Volley.newRequestQueue(this);
-            PreferenceMngr.getInstance().setRequestQueue(requestQueue);
+//            RequestQueue requestQueue = Volley.newRequestQueue(this);
+            PreferenceMngr.getInstance().setRequestQueue(requestQueue1);
         }
-
-        getSignature();
 
         startService(new Intent(getApplicationContext(), UpdateService.class));
 
@@ -90,7 +88,6 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
                 proceed();
             }
         }
-
     }
 
     @Override
@@ -137,6 +134,47 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
     }
 
     public void proceed() {
+//        if (!PreferenceMngr.getNotificationSelection()[0]) {
+            Calendar calendar = Calendar.getInstance();
+//            calendar.set(Calendar.DAY_OF_WEEK, 1);
+//            calendar.set(Calendar.HOUR, 11);
+            calendar.set(Calendar.HOUR_OF_DAY, 23);
+            calendar.set(Calendar.MINUTE, 55);
+            NotificationUtils.setReminder(SplashScreen.this, getApplicationContext(), true, calendar);
+            PreferenceMngr.notificationSelection(true, true, false);
+            PreferenceMngr.setLastChecked((new Date()).toString());
+//        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = "Channel Name";
+            String description = "Channel Description";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(CHANNEL_ID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        } else {
+            notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        }
+
+        NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(getApplicationContext());
+        notifBuilder.setSmallIcon(R.drawable.ic_clogo);
+        notifBuilder.setPriority(NotificationCompat.PRIORITY_DEFAULT);
+//        notifBuilder.setAutoCancel(true);
+        if (1 > 0) {
+//                    if (total > 0) {
+            notifBuilder.setContentTitle("New Coupins!!!");
+            notifBuilder.setContentText("There are " + 1 + " coupins matching your interests around you.");
+        } else {
+            notifBuilder.setContentTitle("Hello There!!!");
+            notifBuilder.setContentText("Keep watching this space for new and upcoming rewards.");
+        }
+
+
+        notificationManager.notify(SERVICE_ID, notifBuilder.build());
+
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -166,60 +204,5 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
             PreferenceMngr.setLastUpdate(version);
             proceed();
         }
-    }
-
-    /**
-     * Get signature for cloudinary uploads.
-     */
-    public void getSignature() {
-        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-        String url = getString(R.string.base_url) + "/signature";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(final String response) {
-                try {
-                    MediaManager.init(getApplicationContext(), new SignatureProvider() {
-                        @Override
-                        public Signature provideSignature(Map options) {
-                            final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-                            long temp = timestamp.getTime();
-                            PreferenceMngr.setTimestamp(String.valueOf(temp));
-                            return new Signature(response, getString(R.string.cloudinary_api_key), temp);
-                        }
-
-                        @Override
-                        public String getName() {
-                            return null;
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: Handle Error
-                error.printStackTrace();
-                Log.v("VolleyInit", error.toString());
-            }
-        }){
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("timestamp", String.valueOf(timestamp.getTime()));
-
-                return params;
-            }
-        };
-
-        requestQueue1.add(stringRequest);
     }
 }

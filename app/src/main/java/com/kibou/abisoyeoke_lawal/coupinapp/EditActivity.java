@@ -153,7 +153,10 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileFirstName.setText(names[0]);
             profileLastName.setText(names[1]);
             profileEmail.setText(user.getString("email"));
-            profileMobile.setText(user.getString("mobileNumber"));
+
+            if (user.has("mobileNumber")) {
+                profileMobile.setText(user.getString("mobileNumber"));
+            }
 
             if (user.has("sex") && user.getString("sex").equals("male")) {
                 profileGender.setSelection(1);
@@ -163,8 +166,8 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
             profileGender.setEnabled(false);
 
-            Log.v("VolleyTired", user.getJSONObject("picture").toString());
             if (user.has("picture") && user.getJSONObject("picture").getString("url") != "null") {
+                Log.v("VolleyTired", user.getJSONObject("picture").toString());
                 JSONObject object = user.getJSONObject("picture");
                 Glide.with(this).load(object.getString("url")).into(profilePicture);
             } else {
@@ -308,13 +311,16 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
-                params.put("name", name);
-                params.put("mobileNumber", mobileNumber);
-                params.put("email", email);
-                params.put("sex", gender);
-                Log.v("Testing", picture.toString());
                 if (uploaded) {
                     params.put("picture", picture.toString());
+                    uploaded = false;
+                } else {
+                    params.put("name", name);
+                    if (mobileNumber != null) {
+                        params.put("mobileNumber", mobileNumber);
+                    }
+                    params.put("email", email);
+                    params.put("sex", gender);
                 }
 
                 return params;
@@ -401,10 +407,8 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     private void Upload(String picturePath) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
         Log.v("VolleyTime", String.valueOf(time.getTime()));
-        String requestId = MediaManager.get()
+        MediaManager.get()
             .upload(picturePath)
-//            .option("invalidate", String.valueOf(true))
-            .option("timestamp", PreferenceMngr.getTimestamp())
             .callback(new UploadCallback() {
             @Override
             public void onStart(String requestId) {
@@ -413,7 +417,8 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
             @Override
             public void onProgress(String requestId, long bytes, long totalBytes) {
-
+                int percentage = (int)((bytes/totalBytes) * 100);
+                Log.v("VolleyProcess", String.valueOf(percentage) + "%");
             }
 
             @Override
@@ -427,9 +432,13 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                     uploadedUrl = resultData.get("url").toString();
                     picture.put("id", publicId);
                     picture.put("url", uploadedUrl);
-                    user.put("picture", picture);
+                    JSONObject object = new JSONObject();
+                    object.put("id", publicId);
+                    object.put("url", uploadedUrl);
+
+                    user.put("picture", object.toString());
                     Glide.with(EditActivity.this).load(uploadedUrl).into(profilePicture);
-                    updateInfo();
+                    saveUser();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

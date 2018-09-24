@@ -219,9 +219,17 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setEmail(featuredObject.getString("email"));
                         item.setMobile(featuredObject.getJSONObject("merchantInfo").getString("mobileNumber"));
                         item.setTitle(featuredObject.getJSONObject("merchantInfo").getString("companyName"));
-                        item.setReward(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
-                        item.setRewards(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
-                        item.setRewardsCount(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                        if (
+                            featuredObject.getJSONObject("merchantInfo").has("rewards")
+                                && !featuredObject.getJSONObject("merchantInfo").isNull("rewards")
+                                && !featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards")
+                                .isNull(0)) {
+                            item.setReward(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
+                            item.setRewards(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
+                            item.setRewardsCount(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                        } else {
+                            item.setRewardsCount(0);
+                        }
                         item.setLatitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                         item.setLongitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
 
@@ -234,11 +242,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         JSONObject slideObject = slideObjects.getJSONObject(x);
                         JSONObject merchantObject = slideObject.getJSONObject("id");
 
-                        if (
-                            merchantObject.getJSONObject("merchantInfo").has("rewards")
-                                && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
-                                && !merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
-                                .isNull(0)) {
                             slides.add(slideObject.getString("url"));
 
                             Merchant item = new Merchant();
@@ -250,16 +253,21 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                             item.setEmail(merchantObject.getString("email"));
                             item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
                             item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
+                        if (
+                            merchantObject.getJSONObject("merchantInfo").has("rewards")
+                                && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
+                                && !merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
+                                .isNull(0)) {
                             item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
                                 .getJSONObject(0)
                                 .getString("name"));
                             item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
                             item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                        }
                             item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                             item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
 
                             hotlist.add(item);
-                        }
                     }
 
                     hotCarousel.setImageListener(imageListener);
@@ -267,12 +275,20 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                     loading(0);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(HotActivity.this,
+                        "Something went wrong while getting your featured information.",
+                        Toast.LENGTH_SHORT).show();
+                    HotActivity.this.onBackPressed();
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.v("VolleyError", error.toString());
+                Toast.makeText(HotActivity.this,
+                    "Something went wrong while getting your featured information.",
+                    Toast.LENGTH_SHORT).show();
+                HotActivity.this.onBackPressed();
             }
         }) {
             @Override
@@ -420,8 +436,14 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             case 0:
                 hotTitle1.setText(merchant.getTitle());
                 hotAddress1.setText(merchant.getAddress());
-                String rewardsText1 = merchant.getRewardsCount() == 1 ?
-                    merchant.getReward() : merchant.getRewardsCount() + " REWARDS";
+                String rewardsText1 = "";
+                if (merchant.getRewardsCount() == 1) {
+                    rewardsText1 = merchant.getReward();
+                } else if (merchant.getRewardsCount() > 1) {
+                    rewardsText1 = merchant.getRewardsCount() + " REWARDS";
+                } else {
+                    rewardsText1 = "No Rewards";
+                }
                 hotrewards1.setText(rewardsText1);
                 if (merchant.isVisited()) {
                     hotVisited1.setVisibility(View.VISIBLE);
@@ -431,8 +453,14 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             case 1:
                 hotTitle2.setText(merchant.getTitle());
                 hotAddress2.setText(merchant.getAddress());
-                String rewardsText2 = merchant.getRewardsCount() == 1 ?
-                    merchant.getReward() : merchant.getRewardsCount() + " REWARDS";
+                String rewardsText2 = "";
+                if (merchant.getRewardsCount() == 1) {
+                    rewardsText2 = merchant.getReward();
+                } else if (merchant.getRewardsCount() > 1) {
+                    rewardsText2 = merchant.getRewardsCount() + " REWARDS";
+                } else {
+                    rewardsText2 = "No Rewards";
+                }
                 hotrewards2.setText(rewardsText2);
                 if (merchant.isVisited()) {
                     hotVisited2.setVisibility(View.VISIBLE);
@@ -442,8 +470,14 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             case 2:
                 hotTitle3.setText(merchant.getTitle());
                 hotAddress3.setText(merchant.getAddress());
-                String rewardsText3 = merchant.getRewardsCount() == 1 ?
-                    merchant.getReward() : merchant.getRewardsCount() + " REWARDS";
+                String rewardsText3 = "";
+                if (merchant.getRewardsCount() == 1) {
+                    rewardsText3 = merchant.getReward();
+                } else if (merchant.getRewardsCount() > 1) {
+                    rewardsText3 = merchant.getRewardsCount() + " REWARDS";
+                } else {
+                    rewardsText3 = "No Rewards";
+                }
                 hotrewards3.setText(rewardsText3);
                 if (merchant.isVisited()) {
                     hotVisited3.setVisibility(View.VISIBLE);
