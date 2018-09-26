@@ -111,7 +111,8 @@ public class NotificationActivity extends AppCompatActivity {
             public void onClick(View v) {
                 if (toggleReceive.isChecked()) {
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.HOUR, 11);
+                    calendar.set(Calendar.HOUR_OF_DAY, 11);
+                    calendar.set(Calendar.MINUTE, 00);
 
                     if (toggleWeekends.isChecked()) {
                         calendar.set(Calendar.DAY_OF_WEEK, 6);

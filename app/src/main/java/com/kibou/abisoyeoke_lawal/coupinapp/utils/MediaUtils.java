@@ -1,17 +1,10 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
 import android.content.res.AssetFileDescriptor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.MediaMetadataRetriever;
 import android.view.TextureView;
 import android.widget.FrameLayout;
-
-import java.io.ByteArrayOutputStream;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
 
 public class MediaUtils {
     // Video measurement
@@ -35,41 +28,6 @@ public class MediaUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Convert url to bitmap
-     * @param src
-     * @return
-     */
-    public static Bitmap convertUrlToBitmap(String src) {
-        Bitmap bitmap = null;
-
-        try {
-            URL url = new URL(src);
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setDoInput(true);
-            httpURLConnection.connect();
-
-            InputStream inputStream = httpURLConnection.getInputStream();
-            ByteArrayOutputStream buffer = new ByteArrayOutputStream();
-
-            int read;
-            byte[] data = new byte[16384];
-
-            while((read = inputStream.read(data, 0, data.length)) != -1) {
-                buffer.write(data, 0, read);
-            }
-
-            buffer.flush();
-
-            Bitmap image = BitmapFactory.decodeByteArray(data, 0, data.length);
-            bitmap = Bitmap.createScaledBitmap(image, 150, 150, true);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return bitmap;
     }
 
     /**

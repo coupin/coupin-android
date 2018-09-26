@@ -78,6 +78,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
 
+        requestOptions = new RequestOptions();
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
 
         new Handler().postDelayed(new Runnable() {

@@ -159,7 +159,11 @@ public class SaveFragment extends Fragment implements MyOnClick {
                         loading(3);
                     }
                 } else {
-                    showErrorToast(false);
+                    if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
+                        showErrorToast(true);
+                    } else {
+                        showErrorToast(false);
+                    }
                 }
 
                 if (page > 0) {

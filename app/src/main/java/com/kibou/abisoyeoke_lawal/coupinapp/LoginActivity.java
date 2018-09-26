@@ -49,12 +49,15 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -229,6 +232,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     JSONObject res = new JSONObject(response);
                     JSONObject object = res.getJSONObject("user");
                     PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    setupNotifications();
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
                 } catch (Exception e) {
@@ -284,6 +288,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     JSONObject res = new JSONObject(response);
                     JSONObject object = res.getJSONObject("user");
                     PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    setupNotifications();
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
                 } catch (Exception e) {
@@ -325,6 +330,18 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    public void setupNotifications() {
+        if (!PreferenceMngr.getNotificationSelection()[0]) {
+            Calendar calendar = Calendar.getInstance();
+            calendar.set(Calendar.DAY_OF_WEEK, 2);
+            calendar.set(Calendar.HOUR_OF_DAY, 11);
+            calendar.set(Calendar.MINUTE, 00);
+            NotificationUtils.setReminder(LoginActivity.this, getApplicationContext(), true, calendar);
+            PreferenceMngr.notificationSelection(true, false, true);
+            PreferenceMngr.setLastChecked((new Date()).toString());
+        }
     }
 
     /**

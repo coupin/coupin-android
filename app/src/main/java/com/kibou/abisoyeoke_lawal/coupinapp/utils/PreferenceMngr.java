@@ -253,6 +253,7 @@ public class PreferenceMngr {
      * @param activity
      */
     public static void signOut(Activity activity) {
+        NotificationUtils.cancelReminder(activity, activity.getApplicationContext());
         preferences.edit().clear().apply();
         activity.startActivity(new Intent(activity, LandingActivity.class));
         activity.finish();

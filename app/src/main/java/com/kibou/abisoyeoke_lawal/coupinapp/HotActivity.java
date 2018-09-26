@@ -190,7 +190,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
      * Request prime information from API
      */
     public void getPrime() {
-        String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_get_prime);
+        String url = getResources().getString(R.string.base_url) +
+            getResources().getString(R.string.ep_api_get_prime) + "?page=" + page;
 
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
             @Override
@@ -405,7 +406,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLoading || (merchants.size() % 7) != 0 || merchants.size() < 7)
+                if (isLoading || (merchants.size() % 10) != 0 || merchants.size() < 10)
                     return;
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -414,7 +415,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     isLoading = true;
                     loading(5);
-                    page = merchants.size() / 7;
+                    page = merchants.size() / 10;
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
