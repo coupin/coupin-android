@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -102,6 +103,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
             @Override
             public void onResponse(String response) {
                 try {
+                    Log.v("VolleyResponse", response);
                     JSONArray jsonArray = new JSONArray(response);
                     for (int x = 0; x < jsonArray.length(); x++) {
                         JSONObject mainObject = jsonArray.getJSONObject(x);

@@ -53,12 +53,14 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
             holder.hotAddress.setText(hotItem.getAddress());
             Glide.with(context).load(hotItem.getLogo()).into(holder.hotLogo);
 
-            if (hotItem.isVisited()) {
-                holder.hotVisited.setVisibility(View.VISIBLE);
+            holder.hotVisited.setVisibility(View.VISIBLE);
+            if (!hotItem.isVisited()) {
+                holder.hotVisited.setImageAlpha(0);
             }
 
-            if (hotItem.isFavourite()) {
-                holder.hotFavourite.setVisibility(View.VISIBLE);
+            holder.hotFavourite.setVisibility(View.VISIBLE);
+            if (!hotItem.isFavourite()) {
+                holder.hotFavourite.setImageAlpha(0);
             }
 
             if (hotItem.getRewardsCount() == 1){

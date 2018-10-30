@@ -23,7 +23,6 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.yqritc.scalablevideoview.ScalableVideoView;
 
@@ -172,9 +171,13 @@ public class InterestsActivity extends AppCompatActivity {
 
     @Override
     public void onPause() {
-        if (mediaPlayer != null && mediaPlayer.isPlaying()) {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
+        try {
+            if (mediaPlayer != null && mediaPlayer.isPlaying()) {
+                mediaPlayer.stop();
+                mediaPlayer.reset();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         super.onPause();
     }

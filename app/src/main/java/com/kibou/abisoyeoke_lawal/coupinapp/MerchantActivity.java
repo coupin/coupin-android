@@ -26,7 +26,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ExperienceDialog;
@@ -142,7 +141,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         if (extra.getString("merchant", null) == null) {
             try {
                 item = (Merchant) extra.getSerializable("object");
-                resArray = new JSONArray(item.getRewards());
+                Log.v("VolleyAllINeed", item.getDetails());
+                if (item.getRewards() != null) {
+                    resArray = new JSONArray(item.getRewards());
+                } else {
+                    resArray = new JSONArray();
+                }
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -160,7 +164,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         rvRewards.setHasFixedSize(true);
         rvRewards.setAdapter(rvPopUpAdapter);
 
-        requestQueue = Volley.newRequestQueue(this);
+        requestQueue = PreferenceMngr.getInstance().getRequestQueue();
         handler = new Handler();
 
         navigationBtn.setOnClickListener(new View.OnClickListener() {
@@ -253,12 +257,25 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             merchantName.setText(item.getTitle());
             merchantAddress.setText(item.getAddress());
             merchantPhone.setText("Tel: " + item.getMobile());
+            merchantRating.setRating(item.getRating());
+            ratingText.setText(String.valueOf(item.getRating()) + "/5");
+            loadRewards();
+            implementOnScrollListener();
 
             user = new JSONObject(PreferenceMngr.getInstance().getUser());
             userFavourites = user.getJSONArray("favourites");
-            JSONArray tempArray = user.getJSONArray("blacklist");
-            blacklist = new ArrayList<String>(Arrays.asList(tempArray.toString().substring(1, tempArray.length() - 1).replaceAll("\"", "").split(",")));
-            rvPopUpAdapter.setBlacklist(blacklist);
+            if (user.has("blacklist") && !user.isNull("blacklist")) {
+                JSONArray tempArray = user.getJSONArray("blacklist");
+                if (tempArray.length() > 0) {
+                    blacklist = new ArrayList<String>(Arrays.asList(tempArray.toString().substring(1, tempArray.length() - 1).replaceAll("\"", "").split(",")));
+                } else {
+                    blacklist = new ArrayList<>();
+                }
+                rvPopUpAdapter.setBlacklist(blacklist);
+            } else {
+                blacklist = new ArrayList<>();
+                rvPopUpAdapter.setBlacklist(blacklist);
+            }
 
             // Show Mobile and Gender Dialog
             if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
@@ -267,17 +284,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 requestGenderNumber = true;
             }
 
-            merchantRating.setRating(item.getRating());
-            ratingText.setText(String.valueOf(item.getRating()) + "/5");
 
             String temp = userFavourites.toString();
             favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
             if (favourites.contains(item.getId())) {
                 favourite = true;
             }
-
-            loadRewards();
-            implementOnScrollListener();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -300,7 +312,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * Load Merchant Rewards
      */
     public void loadRewards() {
-        Log.v("VolleyRewards", "LoadingRewards");
         String rewardUrl = getString(R.string.base_url) + getString(R.string.ep_api_reward) + "/" +
             merchantId + "?page=" + page;
         StringRequest stringRequest = new StringRequest(Request.Method.GET, rewardUrl, new Response.Listener<String>() {
@@ -359,7 +370,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                             toggleViews(0);
                         }
 
-                        setupRandomImages();
+                        if (pictures.size() > 0) {
+                            setupRandomImages();
+                        }
                     }
 
                     if (page > 0) {
@@ -511,6 +524,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public void onPause() {
         super.onPause();
         requestQueue.stop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (requestQueue != null) {
+            requestQueue.start();
+        }
     }
 
     /**
@@ -700,8 +721,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     coupin.setMerchantName(item.getTitle());
                     coupin.setMerchantAddress(item.getAddress());
                     // TODO: Sort out the merchant logo
+                    coupin.setLatitude(item.getLatitude());
+                    coupin.setLongitude(item.getLongitude());
                     coupin.setMerchantLogo(item.getLogo());
                     coupin.setMerchantBanner(item.getBanner());
+                    coupin.setFav(item.isFavourite());
+                    coupin.setVisited(item.isVisited());
 
                     coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
 

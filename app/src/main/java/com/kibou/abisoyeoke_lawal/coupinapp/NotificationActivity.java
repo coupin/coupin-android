@@ -9,7 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ToggleButton;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import java.util.Calendar;
@@ -109,25 +110,33 @@ public class NotificationActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                PreferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked(), toggleWeekdays.isChecked());
                 if (toggleReceive.isChecked()) {
                     Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.HOUR_OF_DAY, 11);
-                    calendar.set(Calendar.MINUTE, 00);
+                    calendar.set(Calendar.HOUR_OF_DAY, 14);
+                    calendar.set(Calendar.MINUTE, 10);
 
                     if (toggleWeekends.isChecked()) {
                         calendar.set(Calendar.DAY_OF_WEEK, 6);
-                        NotificationUtils.setReminder(NotificationActivity.this, getApplicationContext(), true, calendar);
+                        NotificationScheduler.setReminder(
+                            NotificationActivity.this,
+                            AlarmReceiver.class,
+                            calendar
+                        );
                     }
 
                     if (toggleWeekdays.isChecked()) {
-                        calendar.set(Calendar.DAY_OF_WEEK, 2);
-                        NotificationUtils.setReminder(NotificationActivity.this, getApplicationContext(), false, calendar);
+//                        calendar.set(Calendar.DAY_OF_WEEK, 2);
+                        calendar.set(Calendar.DAY_OF_WEEK, 7);
+                        NotificationScheduler.setReminder(
+                            NotificationActivity.this,
+                            AlarmReceiver.class,
+                            calendar
+                        );
                     }
                 } else {
-                    NotificationUtils.cancelReminder(NotificationActivity.this, getApplicationContext());
+                    NotificationScheduler.cancelReminder(NotificationActivity.this, AlarmReceiver.class);
                 }
-
-                PreferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked(), toggleWeekdays.isChecked());
 
                 onBackPressed();
             }

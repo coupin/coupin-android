@@ -25,14 +25,16 @@
         android:roundIcon="@mipmap/coupin"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        tools:replace="android:icon">
+        tools:replace="android:icon,android:allowBackup,android:fullBackupContent"
+        android:allowBackup="true"
+        android:fullBackupContent="false">
 
-         <meta-data
-         android:name="com.google.android.maps.v2.API_KEY"
-         android:value="@string/google_maps_key_pro"/>
-        <!--<meta-data-->
-            <!--android:name="com.google.android.maps.v2.API_KEY"-->
-            <!--android:value="@string/google_maps_key"/>-->
+         <!--<meta-data-->
+         <!--android:name="com.google.android.maps.v2.API_KEY"-->
+         <!--android:value="@string/google_maps_key_pro"/>-->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_key"/>
         <meta-data
             android:name="CLOUDINARY_URL"
             android:value="cloudinary://@saintlawal"/>
@@ -62,10 +64,15 @@
 
         <service
             android:name=".services.UpdateService"
+            android:enabled="true"
             android:exported="false"/>
-        <service
-            android:name=".services.NotificationService"
-            android:exported="false"/>
+
+        <receiver android:name=".services.AlarmReceiver"
+                  android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".LoginActivity"

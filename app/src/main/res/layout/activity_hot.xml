@@ -38,15 +38,6 @@
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="bold"/>
 
-        <ImageView
-            android:id="@+id/hot_filter"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_height="@dimen/icon_sm"
-            android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_filter_lg"
-            android:tint="@color/white"/>
-
     </RelativeLayout>
 
     <com.synnapps.carouselview.CarouselView
@@ -87,12 +78,12 @@
     <com.wang.avi.AVLoadingIndicatorView
         style="?android:attr/progressBarStyleLarge"
         android:id="@+id/featured_loading_view"
-        android:layout_height="150dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
-        android:layout_width="150dp"
+        android:layout_width="wrap_content"
         android:padding="@dimen/padding_sm"
         app:indicatorColor="@color/colorAccent"
-        app:indicatorName="BallScaleMultipleIndicator"/>
+        app:indicatorName="BallPulseIndicator"/>
 
     <include layout="@layout/cardview_group_hotlist"/>
 
@@ -111,12 +102,13 @@
     <com.wang.avi.AVLoadingIndicatorView
         style="?android:attr/progressBarStyleLarge"
         android:id="@+id/recommended_loading_view"
-        android:layout_height="150dp"
+        android:layout_height="60dp"
         android:layout_gravity="center_horizontal"
-        android:layout_width="150dp"
+        android:layout_marginBottom="@dimen/margin_sm"
+        android:layout_width="wrap_content"
         android:padding="@dimen/padding_sm"
         app:indicatorColor="@color/colorAccent"
-        app:indicatorName="BallScaleMultipleIndicator"/>
+        app:indicatorName="BallPulseIndicator"/>
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hot_recyclerview"
@@ -161,12 +153,13 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_margin="@dimen/margin_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/attention"/>
+            android:src="@drawable/ic_no_internet_connection"/>
 
         <TextView
             android:gravity="center"
-            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_width="match_parent"
             android:text="@string/error_now"
             android:textSize="@dimen/small_text"/>
 

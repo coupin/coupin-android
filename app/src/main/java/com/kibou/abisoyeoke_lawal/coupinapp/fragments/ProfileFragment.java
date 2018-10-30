@@ -99,15 +99,17 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             userObject = new JSONObject(PreferenceMngr.getUser());
 
             profileName.setText(StringUtils.capitalize(userObject.getString("name")));
+            pictureUrl = userObject.getJSONObject("picture").getString("url");
 
-            if (userObject.has("picture") && userObject.getJSONObject("picture").getString("url") != "null") {
-                pictureUrl = userObject.getJSONObject("picture").getString("url");
+//            if (userObject.has("picture")
+//                && !userObject.getJSONObject("picture").isNull("url")
+//                && userObject.getJSONObject("picture").getString("url") != "null") {
+            if (pictureUrl != null && !pictureUrl.contains("null")) {
+                Log.v("VolleyNow", "is" + pictureUrl);
                 Glide.with(this)
                     .load(pictureUrl)
                     .apply(requestOptions)
                     .into(profilePicture);
-            } else {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -141,7 +143,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
         try {
             userObject = new JSONObject(PreferenceMngr.getUser());
-            Log.v("User Object", userObject.toString());
+
+            profileName.setText(StringUtils.capitalize(userObject.getString("name")));
             if (userObject.has("picture")
                 && userObject.getJSONObject("picture").has("url")
                 && !userObject.getJSONObject("picture").getString("url").toString().equals(pictureUrl)

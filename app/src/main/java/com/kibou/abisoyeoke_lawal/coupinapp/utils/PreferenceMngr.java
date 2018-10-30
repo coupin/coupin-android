@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import com.android.volley.RequestQueue;
 import com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -253,7 +254,7 @@ public class PreferenceMngr {
      * @param activity
      */
     public static void signOut(Activity activity) {
-        NotificationUtils.cancelReminder(activity, activity.getApplicationContext());
+        NotificationScheduler.cancelReminder(activity, AlarmReceiver.class);
         preferences.edit().clear().apply();
         activity.startActivity(new Intent(activity, LandingActivity.class));
         activity.finish();

@@ -82,6 +82,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     private boolean editMode = false;
     private boolean saveToast = false;
     private boolean uploaded = false;
+    private boolean uploading = false;
     private String url;
     private String uploadedUrl;
 
@@ -99,7 +100,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         requestQueue = Volley.newRequestQueue(this);
         preferenceMngr = PreferenceMngr.getInstance();
         loadingDialog = new LoadingDialog(this, R.style.Loading_Dialog);
-        loadingDialog.setCancelable(false);
 
 
         profileGender.setOnItemSelectedListener(this);
@@ -183,6 +183,11 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
      * Start Update process
      */
     private void updateInfo() {
+        if (uploading) {
+            Toast.makeText(this, "Profile is still uploading...", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         boolean error = false;
         genderError.setVisibility(View.GONE);
         loadingDialog.show();
@@ -281,6 +286,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void saveUser() {
         String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + preferenceMngr.getUserId();
+        uploading = true;
 
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
@@ -292,6 +298,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 editTrue.setVisibility(View.VISIBLE);
                 result("Profile updated successfully.");
                 saveToast = true;
+                uploading = false;
             }
         }, new Response.ErrorListener() {
             @Override
@@ -305,6 +312,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                     result(getString(R.string.error_general));
                 }
                 saveToast = true;
+                uploading = false;
             }
         }){
             @Override
@@ -406,7 +414,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void Upload(String picturePath) {
         Timestamp time = new Timestamp(System.currentTimeMillis());
-        Log.v("VolleyTime", String.valueOf(time.getTime()));
         MediaManager.get()
             .upload(picturePath)
             .callback(new UploadCallback() {
@@ -427,7 +434,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                     Toast.makeText(EditActivity.this, "Uploaded successfully.", Toast.LENGTH_SHORT).show();
                     loadingDialog.dismiss();
                     uploaded = true;
-                    Log.v("VolleyPicture", resultData.toString());
+
                     String publicId = resultData.get("public_id").toString();
                     uploadedUrl = resultData.get("url").toString();
                     picture.put("id", publicId);
@@ -441,6 +448,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                     saveUser();
                 } catch (Exception e) {
                     e.printStackTrace();
+                    loadingDialog.dismiss();
                 }
             }
 

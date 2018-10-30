@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.android.volley.Request;
+import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
@@ -39,6 +40,7 @@ public class HomeActivity extends AppCompatActivity {
     public BottomNavigationViewEx bottomNavigationView;
 
     private boolean exiting = false;
+    private RequestQueue requestQueue;
     private FragmentManager fm;
     private FragmentTransaction ft;
     private MyOnClick myOnClick;
@@ -51,6 +53,8 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
+
+        requestQueue = PreferenceMngr.getInstance().getRequestQueue();
 
         getSignature();
         bottomNavigationView.enableItemShiftingMode(false);
@@ -125,7 +129,7 @@ public class HomeActivity extends AppCompatActivity {
             exiting = true;
             Toast.makeText(this, getResources().getString(R.string.exiting_msg), Toast.LENGTH_SHORT).show();
         } else {
-            this.finish();
+            finish();
         }
     }
 
@@ -196,6 +200,7 @@ public class HomeActivity extends AppCompatActivity {
             }
         };
 
-        PreferenceMngr.getInstance().getRequestQueue().add(stringRequest);
+        // TODO: Check if null
+        requestQueue.add(stringRequest);
     }
 }

@@ -238,6 +238,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.ic_placeholder);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
+        setCategories();
 
         // Error Dialog
         networkErrorDialog = new NetworkErrorDialog(getContext());
@@ -321,7 +322,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 try {
                     if (geocoder.isPresent() && currentLocation != null) {
                         addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                        street.setText(addresses.get(0).getThoroughfare().toString());
+                        if (addresses.size() > 0) {
+                            street.setText(addresses.get(0).getThoroughfare().toString());
+                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -337,6 +340,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         }
 
                         try {
+                            Log.v("VolleSnipet1", "" + markers.size());
+                            Log.v("VolleSnipet2", marker.getSnippet());
                             JSONObject res = new JSONObject(marker.getSnippet());
                             int count = res.getInt("count");
 
@@ -362,10 +367,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));
-                                Log.v("BolleyBitmap", thumbnails.get(res.getString("_id")).toString());
+
                                 if (res.has("logo") && res.getJSONObject("logo").has("url")) {
                                     banner.setImageBitmap(thumbnails.get(res.getString("_id")));
                                 }
+
+                                Log.v("VolleyLog", res.toString());
+
                                 String snippet = count > 1 ? count + " Rewards Available" :
                                     res.getJSONObject("reward").getString("name");
                                 infoButton.setText(snippet);
@@ -373,6 +381,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             }
                         }   catch (Exception e) {
                             e.printStackTrace();
+                            Log.v("VolleyOne", "Error " + e.getMessage());
                         }
 
                         return infoWindow;
@@ -480,6 +489,18 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         });
 
         return rootView;
+    }
+
+    private void setCategories() {
+        try {
+            JSONObject userObject = new JSONObject(PreferenceMngr.getUser());
+            JSONArray interests = userObject.getJSONArray("interests");
+            for(int x = 0; x < interests.length(); x++) {
+                categories.add("\"" + interests.getString(x) + "\"");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public int getCategoryImage(String cat) {
@@ -601,7 +622,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         } else if (iconsList.size() > 0 && !filter && retrievingData) {
             return;
         } else {
-
+            markers.clear();
         }
 
         filter = false;
@@ -615,7 +636,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             try {
                 if (geocoder.isPresent()) {
                     addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                    street.setText(addresses.get(0).getThoroughfare().toString());
+                    if (addresses.size() > 0) {
+                        street.setText(addresses.get(0).getThoroughfare().toString());
+                    }
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -623,7 +646,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         try {
-            Log.v("VolleyGet", "Merchants");
             StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
@@ -784,8 +806,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 tempDist = temp;
                 closestMarker = markers.get(x);
             }
-
-            Log.v("VolleyPoint" + x, String.valueOf(tempDist));
 
             latLngBounds.include(markers.get(x).getPosition());
         }
@@ -1050,7 +1070,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 myPosition.setPosition(new LatLng(location.getLatitude(), location.getLongitude()));
                 addresses = geocoder.getFromLocation(myPosition.getPosition().latitude, myPosition.getPosition().longitude, 1);
 
-                if (addresses != null) {
+                if (addresses.size() > 0) {
                     street.setText(addresses.get(0).getThoroughfare().toString());
                 }
             }

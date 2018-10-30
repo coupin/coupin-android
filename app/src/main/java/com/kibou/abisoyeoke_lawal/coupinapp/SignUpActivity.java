@@ -35,7 +35,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -76,7 +77,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
     private static final int RC_SIGNUP_GOOGLE = 10006;
 
-    // Voley Variables
+    // Volley Variables
     RequestQueue reqQueue = null;
     String url = "";
 
@@ -313,7 +314,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
         String email = emailView.getText().toString();
         String password = passwordView.getText().toString();
         String confirmPassword = confirmPasswordView.getText().toString();
-//        final String mobileNetwork = mobileNetworkView.getSelectedItem().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -349,12 +349,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
             focusView = emailView;
             cancel = true;
         }
-
-//        if (mobileNetworkView.getSelectedItemPosition() == 0) {
-//            Toast.makeText(this, getString(R.string.error_invalid_network), Toast.LENGTH_SHORT).show();
-//            focusView = mobileNetworkView;
-//            cancel = true;
-//        }
 
         if (cancel) {
             // There was an error; don't attempt login and focus the first
@@ -474,7 +468,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
     @Override
     public void onCancel() {
-
+        // Do nothing
     }
 
     @Override
@@ -485,12 +479,12 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     public void setupNotifications() {
         if (!PreferenceMngr.getNotificationSelection()[0]) {
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK, 2);
+            calendar.set(Calendar.DAY_OF_WEEK, 1);
             calendar.set(Calendar.HOUR_OF_DAY, 11);
             calendar.set(Calendar.MINUTE, 00);
-            NotificationUtils.setReminder(SignUpActivity.this, getApplicationContext(), true, calendar);
             PreferenceMngr.notificationSelection(true, false, true);
             PreferenceMngr.setLastChecked((new Date()).toString());
+            NotificationScheduler.setReminder(SignUpActivity.this, AlarmReceiver.class, calendar);
         }
     }
 }

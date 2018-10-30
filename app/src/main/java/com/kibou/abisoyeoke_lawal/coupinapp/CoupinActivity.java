@@ -131,10 +131,25 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
                 reward.setTitle(object.getString("name"));
                 reward.setDetails(object.getString("description"));
 
-                if (object.has("price")) {
-                    reward.setIsDiscount(true);
-                    reward.setNewPrice(object.getJSONObject("price").getInt("new"));
-                    reward.setOldPrice(object.getJSONObject("price").getInt("old"));
+                if (object.has("price")
+                    && !object.isNull("price")) {
+                    boolean newPrice = false;
+                    boolean oldPrice = false;
+                    if (object.getJSONObject("price").has("new") &&
+                        !object.getJSONObject("price").isNull("new")) {
+                        reward.setNewPrice(object.getJSONObject("price").getInt("new"));
+                        newPrice = true;
+                    }
+
+                    if (object.getJSONObject("price").has("old") &&
+                        !object.getJSONObject("price").isNull("old")) {
+                        reward.setOldPrice(object.getJSONObject("price").getInt("old"));
+                        oldPrice = true;
+                    }
+
+                    if (newPrice && oldPrice) {
+                        reward.setIsDiscount(true);
+                    }
                 } else {
                     reward.setIsDiscount(false);
                 }
@@ -225,10 +240,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     /**
      * Navigate to address
      */
-    private void naviage() {
-        String parsedAddress = coupin.getMerchantAddress().replace(" ", "+");
-        parsedAddress = parsedAddress.replace(",", "");
-
+    private void navigate() {
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
         navigateIntent.setData(Uri.parse("geo:" + coupin.getLatitude() + "," + coupin.getLongitude() +
             "?q=" + coupin.getLatitude() + "," + coupin.getLongitude()));
@@ -252,7 +264,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.navigate:
-                naviage();
+                navigate();
                 break;
             case R.id.share:
                 share();

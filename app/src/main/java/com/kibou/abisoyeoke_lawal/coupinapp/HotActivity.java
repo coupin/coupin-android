@@ -130,8 +130,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         cardView2.setOnClickListener(this);
         cardView3.setOnClickListener(this);
 
-        getPrime();
         getMostRecent();
+        getPrime();
         implementOnScrollListener();
 
         hotBack.setOnClickListener(this);
@@ -209,6 +209,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                             featuredObject = object.getJSONObject("featured").getJSONObject("second");
                         } else {
                             featuredObject = object.getJSONObject("featured").getJSONObject("third");
+                            Log.v("VolleyFeatured", featuredObject.toString());
                         }
 
                         Merchant item = new Merchant();
@@ -231,6 +232,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         } else {
                             item.setRewardsCount(0);
                         }
+                        item.setRating(featuredObject.getJSONObject("merchantInfo").getJSONObject("rating").getInt("value"));
                         item.setLatitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                         item.setLongitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
 
@@ -243,17 +245,17 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         JSONObject slideObject = slideObjects.getJSONObject(x);
                         JSONObject merchantObject = slideObject.getJSONObject("id");
 
-                            slides.add(slideObject.getString("url"));
+                        slides.add(slideObject.getString("url"));
 
-                            Merchant item = new Merchant();
-                            item.setId(merchantObject.getString("_id"));
-                            item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
-                            item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                            item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + " " + merchantObject.getJSONObject("merchantInfo").getString("city"));
-                            item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
-                            item.setEmail(merchantObject.getString("email"));
-                            item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
-                            item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
+                        Merchant item = new Merchant();
+                        item.setId(merchantObject.getString("_id"));
+                        item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
+                        item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
+                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + " " + merchantObject.getJSONObject("merchantInfo").getString("city"));
+                        item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
+                        item.setEmail(merchantObject.getString("email"));
+                        item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
+                        item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
                         if (
                             merchantObject.getJSONObject("merchantInfo").has("rewards")
                                 && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
@@ -264,11 +266,14 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                                 .getString("name"));
                             item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
                             item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                        } else {
+                            item.setRewardsCount(0);
                         }
-                            item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
-                            item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
+                        item.setRating(merchantObject.getJSONObject("merchantInfo").getJSONObject("rating").getInt("value"));
+                        item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
+                        item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
 
-                            hotlist.add(item);
+                        hotlist.add(item);
                     }
 
                     hotCarousel.setImageListener(imageListener);
@@ -315,6 +320,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             public void onResponse(String response) {
                 try {
                     JSONArray recentArray = new JSONArray(response);
+                    Log.v("VolleyRecent", recentArray.getJSONObject(0).toString());
                     for (int x = 0; x < recentArray.length(); x++) {
                         JSONObject merchantObject = recentArray.getJSONObject(x);
 
@@ -327,9 +333,19 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setEmail(merchantObject.getString("email"));
                         item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
                         item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
-                        item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
-                        item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
-                        item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                        if (
+                            merchantObject.getJSONObject("merchantInfo").has("rewards")
+                                && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
+                                && !merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
+                                .isNull(0)) {
+                            item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
+                            item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
+                            item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
+                        } else {
+                            item.setRewardsCount(0);
+                        }
+
+                        item.setRating(merchantObject.getJSONObject("merchantInfo").getInt("rating"));
                         item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                         item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
                         item.setFavourite(merchantObject.getBoolean("favourite"));
@@ -522,6 +538,14 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public void onPause() {
         super.onPause();
         requestQueue.stop();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (requestQueue != null) {
+            requestQueue.start();
+        }
     }
 
     @Override

@@ -31,6 +31,7 @@
     <dimen name="interest_icon">60dp</dimen>
 
     <!-- Margin -->
+    <dimen name="margin_xxxs">1dp</dimen>
     <dimen name="margin_xxs">3dp</dimen>
     <dimen name="margin_xs">5dp</dimen>
     <dimen name="margin_xs_plus">7dp</dimen>
@@ -43,6 +44,7 @@
     <dimen name="margin_xxxlg">60dp</dimen>
 
     <!-- Padding -->
+    <dimen name="padding_xxxs">1dp</dimen>
     <dimen name="padding_xxs">3dp</dimen>
     <dimen name="padding_xs">5dp</dimen>
     <dimen name="padding_sm">10dp</dimen>
