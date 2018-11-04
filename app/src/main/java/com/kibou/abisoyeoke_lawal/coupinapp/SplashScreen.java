@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -21,12 +20,8 @@ import com.bumptech.glide.request.RequestOptions;
 import com.facebook.appevents.AppEventsLogger;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.UpdateService;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
-
-import java.util.Calendar;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,12 +77,6 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
                 proceed();
             }
         }
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, 2);
-        calendar.set(Calendar.HOUR_OF_DAY, 13);
-        calendar.set(Calendar.MINUTE, 47);
-        NotificationScheduler.setReminder(SplashScreen.this, AlarmReceiver.class, calendar);
     }
 
     @Override
@@ -155,7 +144,6 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
 
     @Override
     public void onSelect(boolean selected, int version) {
-        Log.v("VolleyUpdateAvailable", String.valueOf(selected));
         if (selected) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_link))));
         } else {

@@ -98,7 +98,9 @@ public class NotificationScheduler {
         }
 
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
-        notifBuilder.setSmallIcon(R.mipmap.coupin);
+        notifBuilder.setSmallIcon(R.drawable.notification_icon_w);
+        notifBuilder.setColor(context.getResources().getColor(R.color.colorAccent));
+//        notifBuilder.setSmallIcon(R.mipmap.coupin);
         notifBuilder.setSound(alarmSound);
         if (total > 0) {
             notifBuilder.setContentTitle("New Coupins!!!");

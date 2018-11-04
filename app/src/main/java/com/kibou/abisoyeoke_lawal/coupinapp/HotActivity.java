@@ -19,6 +19,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVHotAdapter;
@@ -109,6 +110,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     private RVHotAdapter adapter;
 
     private boolean isLoading = false;
+    private boolean primeLoaded = false;
     private int page = 0;
 
     @Override
@@ -117,7 +119,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_hot);
         ButterKnife.bind(this);
 
-        requestQueue = PreferenceMngr.getInstance().getRequestQueue();
+        requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RVHotAdapter(merchants, this, this);
@@ -130,7 +132,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         cardView2.setOnClickListener(this);
         cardView3.setOnClickListener(this);
 
-        getMostRecent();
         getPrime();
         implementOnScrollListener();
 
@@ -209,7 +210,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                             featuredObject = object.getJSONObject("featured").getJSONObject("second");
                         } else {
                             featuredObject = object.getJSONObject("featured").getJSONObject("third");
-                            Log.v("VolleyFeatured", featuredObject.toString());
                         }
 
                         Merchant item = new Merchant();
@@ -290,7 +290,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                error.printStackTrace();
                 Toast.makeText(HotActivity.this,
                     "Something went wrong while getting your featured information.",
                     Toast.LENGTH_SHORT).show();
@@ -307,6 +307,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         };
 
         requestQueue.add(stringRequest);
+        getMostRecent();
     }
 
     /**
@@ -383,6 +384,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onErrorResponse(VolleyError error) {
                 isLoading = false;
+                error.printStackTrace();
                 if (page > 0) {
                     loading(6);
                 }
@@ -543,8 +545,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     @Override
     public void onResume() {
         super.onResume();
-        if (requestQueue != null) {
-            requestQueue.start();
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
         }
     }
 

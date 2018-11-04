@@ -26,6 +26,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ExperienceDialog;
@@ -195,8 +196,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             @Override
             public void onClick(View v) {
                 toggleClickableButtons(true);
-                url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
+                url = getResources().getString(R.string.base_url)
+                    + getResources().getString(R.string.ep_generate_code)
+                    + "?saved=true";
 
+                expiryDate = expiryDates.get(0);
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
@@ -208,6 +212,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     public void onErrorResponse(VolleyError error) {
                         toggleClickableButtons(false);
                         error.printStackTrace();
+                        Toast.makeText(
+                            MerchantActivity.this,
+                            getResources().getString(R.string.error_saved_failed),
+                            Toast.LENGTH_SHORT
+                        ).show();
                     }
                 }){
                     @Override
@@ -217,6 +226,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         params.put("merchantId", item.getId());
                         params.put("rewardId", selected.toString());
                         params.put("useNow", String.valueOf(false));
+                        params.put("expiryDate", expiryDate.toString());
 
                         return params;
                     }
@@ -531,6 +541,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         super.onResume();
         if (requestQueue != null) {
             requestQueue.start();
+        } else {
+            requestQueue = Volley.newRequestQueue(this);
         }
     }
 

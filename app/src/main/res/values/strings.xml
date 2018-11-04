@@ -48,9 +48,9 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <string name="base_url">https://860c3908.ngrok.io/api/v1</string>
+    <!--<string name="base_url">https://cf300411.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <!--<string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
+    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -174,7 +174,7 @@
     <string name="empty_fav">You have no favourites.</string>
     <string name="empty_later">No coupins currently saved.</string>
     <string name="empty_now">No coupins currently active</string>
-    <string name="error_now">An error occured. Please check your internet and try again</string>
+    <string name="error_now">Please check your connection and try again</string>
     <string name="receive_notifications">Would you like to receive notifications?</string>
     <string name="receive_weekly">Receive on weekdays or weekends</string>
     <string name="receive_weekdays">Receive notifications every weekday.</string>
@@ -298,4 +298,5 @@
     <string name="forgot_password_sub_header">Fill in email address and submit.\nAn email will be sent to you with the link to reset your password.</string>
     <string name="email_sent">An email has been sent. Please check your inbox.</string>
     <string name="forgot_password">/auth/forgot-password</string>
+    <string name="error_saved_failed">Reward(s) has been previously saved</string>
 </resources>

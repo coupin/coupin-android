@@ -17,6 +17,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.cloudinary.android.MediaManager;
 import com.cloudinary.android.signed.Signature;
 import com.cloudinary.android.signed.SignatureProvider;
@@ -55,6 +56,10 @@ public class HomeActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         requestQueue = PreferenceMngr.getInstance().getRequestQueue();
+
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
 
         getSignature();
         bottomNavigationView.enableItemShiftingMode(false);
@@ -116,6 +121,14 @@ public class HomeActivity extends AppCompatActivity {
         FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
         ft.commit();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (requestQueue == null) {
+            requestQueue = Volley.newRequestQueue(this);
+        }
     }
 
     @Override

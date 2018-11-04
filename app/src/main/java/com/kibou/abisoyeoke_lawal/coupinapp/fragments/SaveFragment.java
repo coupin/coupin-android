@@ -147,6 +147,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
                 isLoading = false;
                 if (laterList.size() < 1) {
                     if (error != null) {

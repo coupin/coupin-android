@@ -49,6 +49,8 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -334,10 +336,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     public void setupNotifications() {
         if (!PreferenceMngr.getNotificationSelection()[0]) {
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK, 2);
+            calendar.set(Calendar.DAY_OF_WEEK, 1);
             calendar.set(Calendar.HOUR_OF_DAY, 11);
             calendar.set(Calendar.MINUTE, 00);
-            NotificationUtils.setReminder(LoginActivity.this, getApplicationContext(), true, calendar);
+            NotificationScheduler.setReminder(LoginActivity.this, AlarmReceiver.class, calendar);
             PreferenceMngr.notificationSelection(true, false, true);
             PreferenceMngr.setLastChecked((new Date()).toString());
         }
