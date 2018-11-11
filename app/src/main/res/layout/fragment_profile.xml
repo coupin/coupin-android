@@ -90,17 +90,6 @@
                 android:layout_width="match_parent"/>
 
             <TextView
-                android:gravity="center_vertical"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_xs"
-                android:layout_marginTop="@dimen/margin_lg"
-                android:layout_width="match_parent"
-                android:text="@string/support"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"
-                android:textStyle="bold"/>
-
-            <TextView
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -117,6 +106,17 @@
                 android:background="@color/lightGrey"
                 android:layout_height="2dp"
                 android:layout_width="match_parent"/>
+
+            <TextView
+                android:gravity="center_vertical"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_lg"
+                android:layout_width="match_parent"
+                android:text="@string/support"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/large_text"
+                android:textStyle="bold"/>
 
             <TextView
                 android:drawableRight="@drawable/ic_right_angle"
