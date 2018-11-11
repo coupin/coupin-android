@@ -1,6 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -14,6 +15,7 @@ import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 
+import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
 import java.util.Calendar;
@@ -97,11 +99,25 @@ public class NotificationScheduler {
             notificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
         }
 
+        Intent intent = new Intent(context.getApplicationContext(), HotActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+            context.getApplicationContext(),
+            WEEKLY_REMINDER_REQUEST_CODE,
+            intent,
+            PendingIntent.FLAG_UPDATE_CURRENT
+        );
+
         NotificationCompat.Builder notifBuilder = new NotificationCompat.Builder(context, CHANNEL_ID);
+        notifBuilder.setAutoCancel(true);
+        notifBuilder.setContentIntent(pendingIntent);
         notifBuilder.setSmallIcon(R.drawable.notification_icon_w);
         notifBuilder.setColor(context.getResources().getColor(R.color.colorAccent));
-//        notifBuilder.setSmallIcon(R.mipmap.coupin);
-        notifBuilder.setSound(alarmSound);
+        notifBuilder.setPriority(Notification.PRIORITY_HIGH);
+        notifBuilder.setDefaults(Notification.DEFAULT_LIGHTS |
+            Notification.DEFAULT_SOUND |
+            Notification.FLAG_AUTO_CANCEL
+        );
         if (total > 0) {
             notifBuilder.setContentTitle("New Coupins!!!");
             notifBuilder.setContentText("There are " + total + " coupins matching your interests around you.");

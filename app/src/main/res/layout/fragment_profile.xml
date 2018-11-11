@@ -54,6 +54,7 @@
             android:padding="@dimen/padding_sm">
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -72,6 +73,7 @@
                 android:layout_width="match_parent"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -90,6 +92,7 @@
                 android:layout_width="match_parent"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -119,6 +122,7 @@
                 android:textStyle="bold"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -137,6 +141,7 @@
                 android:layout_width="match_parent"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -155,6 +160,7 @@
                 android:layout_width="match_parent"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"
@@ -173,6 +179,7 @@
                 android:layout_width="match_parent"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
                 android:drawableRight="@drawable/ic_right_angle"
                 android:drawableTint="@color/text_light_grey"
                 android:gravity="center_vertical"

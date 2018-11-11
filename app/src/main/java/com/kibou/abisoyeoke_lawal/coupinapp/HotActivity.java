@@ -7,7 +7,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -321,7 +320,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             public void onResponse(String response) {
                 try {
                     JSONArray recentArray = new JSONArray(response);
-                    Log.v("VolleyRecent", recentArray.getJSONObject(0).toString());
                     for (int x = 0; x < recentArray.length(); x++) {
                         JSONObject merchantObject = recentArray.getJSONObject(x);
 

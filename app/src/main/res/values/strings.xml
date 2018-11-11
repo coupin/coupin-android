@@ -49,8 +49,8 @@
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
     <!--<string name="base_url">https://cf300411.ngrok.io/api/v1</string>-->
-    <string name="base_url">https://coupin.herokuapp.com/api/v1</string>
-    <!--<string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
+    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
+    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
