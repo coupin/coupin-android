@@ -12,6 +12,8 @@
         android:layout_width="match_parent">
 
         <LinearLayout
+            android:descendantFocusability="beforeDescendants"
+            android:focusableInTouchMode="true"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:orientation="vertical">
@@ -54,7 +56,10 @@
                 android:textSize="@dimen/small_text"/>
 
             <TextView
+                android:clickable="true"
+                android:focusable="true"
                 android:gravity="center"
+                android:id="@+id/profile_help_call"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_xs"
@@ -167,7 +172,7 @@
 
             <Button
                 android:background="@drawable/round_edges_accept"
-                android:id="@+id/profile_password"
+                android:id="@+id/profile_help_submit"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_sm"
                 android:layout_width="match_parent"
@@ -175,6 +180,17 @@
                 android:textAllCaps="true"
                 android:textStyle="bold"
                 android:textColor="@android:color/white"/>
+
+            <com.wang.avi.AVLoadingIndicatorView
+                style="?android:attr/progressBarStyleLarge"
+                android:layout_gravity="center_horizontal"
+                android:id="@+id/help_loadingview"
+                android:layout_height="wrap_content"
+                android:layout_margin="@dimen/margin_sm"
+                android:layout_width="60dp"
+                app:indicatorName="BallPulseIndicator"
+                app:indicatorColor="@color/colorAccent"
+                android:visibility="gone"/>
 
         </LinearLayout>
 

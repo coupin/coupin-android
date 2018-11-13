@@ -48,9 +48,9 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <!--<string name="base_url">https://cf300411.ngrok.io/api/v1</string>-->
-    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
+    <!--<string name="base_url">https://1031db72.ngrok.io/api/v1</string>-->
+    <string name="base_url">https://coupin.herokuapp.com/api/v1</string>
+    <!--<string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -70,6 +70,7 @@
     <string name="ep_api_user">/customer</string>
     <string name="ep_api_user_category">/customer/category</string>
     <string name="ep_api_user_favourite">/customer/favourites</string>
+    <string name="ep_api_user_feedback">/customer/feedback</string>
 
     <!--Coupin Endpoints-->
     <string name="ep_generate_code">/coupin</string>
@@ -169,7 +170,8 @@
     <string name="reward">Redeem Rewards</string>
     <string name="problem_question">Having problems redeeming rewards at merchant ?</string>
     <string name="call_support">Call Customer Support:</string>
-    <string name="call_no">+2348056473382</string>
+    <string name="call_no">+2348028894016</string>
+    <string name="call_no_tel">tel:+2348028894016</string>
     <string name="feedback_s">Feedback/Suggestions</string>
     <string name="empty_fav">You have no favourites.</string>
     <string name="empty_later">No coupins currently saved.</string>
@@ -291,7 +293,7 @@
     <string name="error_reward">An error occured while getting the rewards.</string>
     <string name="error_recent">An error occured while getting merchants with the most recent rewards</string>
     <string name="exiting_msg">Press back one more time to exit.</string>
-    <string name="error_us">A server error occurred on our end, please try again or contact the help desk.</string>
+    <string name="error_us">A error occurred on our end, please try again or contact the help desk.</string>
     <string name="permissions">All permissions must be granted to continue.</string>
     <string name="title_activity_forgot_password">ForgotPasswordActivity</string>
     <string name="forgot_password_header">Forgot Password?</string>
@@ -299,4 +301,6 @@
     <string name="email_sent">An email has been sent. Please check your inbox.</string>
     <string name="forgot_password">/auth/forgot-password</string>
     <string name="error_saved_failed">Reward(s) has been previously saved</string>
+    <string name="error_message">Message cannot be less than 10 characters.</string>
+    <string name="help_success">Success! Thank you for the feedback/suggestion, we will keep working to make this a more pleasant experience.</string>
 </resources>
