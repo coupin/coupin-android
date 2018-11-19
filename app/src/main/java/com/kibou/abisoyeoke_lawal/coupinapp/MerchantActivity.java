@@ -132,6 +132,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merchant);
         ButterKnife.bind(this);
+        requestQueue = Volley.newRequestQueue(this);
 
         setSupportActionBar(merchantToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -177,7 +178,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         rvRewards.setHasFixedSize(true);
         rvRewards.setAdapter(rvPopUpAdapter);
 
-        requestQueue = Volley.newRequestQueue(this);
         handler = new Handler();
 
         navigationBtn.setOnClickListener(new View.OnClickListener() {
@@ -413,6 +413,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
                 isLoading = false;
                 if (page > 0) {
                     bottomLoading(false);
@@ -540,22 +541,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 }
             }
         });
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        requestQueue.stop();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (requestQueue != null) {
-            requestQueue.start();
-        } else {
-            requestQueue = Volley.newRequestQueue(this);
-        }
     }
 
     /**

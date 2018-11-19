@@ -2,7 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import org.json.JSONObject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by abisoyeoke-lawal on 7/27/17.
@@ -51,12 +51,12 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         // Add data here
         RewardListItem reward = rewardListItems.get(position);
+        Date temp = new Date();
 
         try {
             holder.merchantName.setText(reward.getMerchantName());
 
             JSONArray rewardArray = new JSONArray(reward.getRewardDetails());
-            Date temp = new Date();
             Glide.with(context).load(reward.getMerchantLogo()).into(holder.favLogo);
             Glide.with(context).load(reward.getMerchantBanner()).into(holder.favBanner);
             if (reward.hasVisited()) {
@@ -84,8 +84,9 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
                 if (reward.getRewardCount() > 1) {
                     holder.favCode.setText(reward.getRewardCount() + " REWARDS");
+                } else if (reward.getRewardCount() == 0) {
+                    holder.favCode.setText("No Rewards");
                 } else {
-                    Log.v("TryingToGet", rewardArray.toString());
                     holder.favCode.setText(rewardArray.getJSONObject(0).getString("name"));
                     holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
@@ -103,7 +104,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                     }
                 }
 
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yy");
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yy", Locale.ENGLISH);
                 holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
                 JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");

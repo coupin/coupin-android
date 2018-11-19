@@ -78,7 +78,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
         requestQueue = Volley.newRequestQueue(getContext());
 
         linearLayoutManager = new LinearLayoutManager(getContext());
-        nowRvAdapter = new RVBroAdapter(laterList, this);
+        nowRvAdapter = new RVBroAdapter(laterList, this, getContext());
         laterRecyclerView.setLayoutManager(linearLayoutManager);
         laterRecyclerView.setHasFixedSize(true);
         laterRecyclerView.setAdapter(nowRvAdapter);
@@ -108,15 +108,14 @@ public class SaveFragment extends Fragment implements MyOnClick {
                         item.setLater(true);
                         item.setMerchantName(merchantObject.getString("companyName"));
                         item.setMerchantAddress(merchantObject.getString("address"));
-                        item.setMerchantLogo(merchantObject.getString("logo"));
+                        item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
+                        item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
                         item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
                         item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
                         item.setRewardDetails(rewardObjects.toString());
                         item.setVisited(mainObject.getBoolean("visited"));
                         item.setFavourited(mainObject.getBoolean("favourite"));
-
-
-                        item.setRewardDetails(rewardObjects.toString());
+                        item.setRewardCount(rewardObjects.length());
 
                         laterList.add(item);
                     }

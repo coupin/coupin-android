@@ -947,8 +947,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                         getActivity().finish();
                                     }
                                 });
+                            networkErrorDialog.show();
                         } else if (error.networkResponse.statusCode == 404) {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.empty_more_details), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getResources().getString(R.string.empty_more_details), Toast.LENGTH_LONG).show();
                             disableLoadMore = true;
                         } else {
                             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
@@ -958,9 +959,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                         getActivity().finish();
                                     }
                                 });
+                            networkErrorDialog.show();
                         }
-
-                        networkErrorDialog.show();
                     }
                 }
             }) {

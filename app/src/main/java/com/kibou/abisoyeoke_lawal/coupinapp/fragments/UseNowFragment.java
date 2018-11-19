@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -103,7 +102,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
             @Override
             public void onResponse(String response) {
                 try {
-                    Log.v("VolleyResponse", response);
                     JSONArray jsonArray = new JSONArray(response);
                     for (int x = 0; x < jsonArray.length(); x++) {
                         JSONObject mainObject = jsonArray.getJSONObject(x);
@@ -120,7 +118,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                         item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
                         item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
                         item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
-                        item.setRewardDetails(rewardObjects.toString());
                         item.setVisited(mainObject.getBoolean("visited"));
                         item.setFavourited(mainObject.getBoolean("favourite"));
 
