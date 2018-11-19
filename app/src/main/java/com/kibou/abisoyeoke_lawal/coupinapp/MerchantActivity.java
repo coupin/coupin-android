@@ -158,6 +158,18 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         values = new ArrayList<>();
 
         infoDialog = new RewardInfoDialog(this, this);
+        merchantPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String phone = item.getMobile();
+                if (!"0".equals(String.valueOf(phone.charAt(0)))) {
+                    phone = "+234" + phone;
+                }
+                Intent intent = new Intent(Intent.ACTION_DIAL);
+                intent.setData(Uri.parse("tel:" + phone));
+                startActivity(intent);
+            }
+        });
 
         linearLayoutManager = new LinearLayoutManager(this);
         rvPopUpAdapter = new RVPopUpAdapter(values, this, this);
@@ -165,7 +177,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         rvRewards.setHasFixedSize(true);
         rvRewards.setAdapter(rvPopUpAdapter);
 
-        requestQueue = PreferenceMngr.getInstance().getRequestQueue();
+        requestQueue = Volley.newRequestQueue(this);
         handler = new Handler();
 
         navigationBtn.setOnClickListener(new View.OnClickListener() {

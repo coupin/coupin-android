@@ -128,7 +128,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
     }
 
     private void filterMerchants() {
-        myFilter.onFilterSelected(selected, distanceSeekBar.getProgress());
+        myFilter.onFilterSelected(selected, distanceSeekBar.getProgress() + 1);
         dismiss();
     }
 

@@ -139,7 +139,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                 if (s.length() > 0) {
                     handler.removeCallbacks(queryRun);
 
-                    queryString = s.toString();
+                    queryString = s.toString().replace(" ", "&");
                     handler.postDelayed(queryRun, 500);
                 }
             }
@@ -164,7 +164,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
      * Query for search
      */
     private void query() {
-        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/" + queryString + "/search?page=" + page;
+        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/search/" + queryString + "?page=" + page;
 
         StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

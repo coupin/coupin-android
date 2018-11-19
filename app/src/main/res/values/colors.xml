@@ -49,6 +49,7 @@
     <!-- Card Colors -->
     <color name="ticked">#474556</color>
     <color name="white_trans">#CCFFFFFF</color>
+    <color name="black_semi_trans">#CC000000</color>
     <color name="black_trans">#80000000</color>
     <color name="almost_trans">#33000000</color>
 

@@ -5,6 +5,7 @@
     <!-- Keys -->
     <string name="facebook_app_id">134058260630791</string>
     <string name="fb_login_protocol_scheme">fb134058260630791</string>
+    <string name="google_id">coupin-170222</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -48,9 +49,9 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <!--<string name="base_url">https://1031db72.ngrok.io/api/v1</string>-->
-    <string name="base_url">https://coupin.herokuapp.com/api/v1</string>
-    <!--<string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
+    <!--<string name="base_url">https://0826a937.ngrok.io/api/v1</string>-->
+    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
+    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -260,7 +261,7 @@
     <string name="featured">Featured</string>
     <string name="recommend">Recommended</string>
     <string name="empty_more_title">No More Merchants</string>
-    <string name="empty_more_details">Sorry, there are no more merchants around you :\'(</string>
+    <string name="empty_more_details">All merchant\'s have been displayed.</string>
     <string name="gender_text">Please enter the details below to allow us better customise your rewards experience</string>
     <string name="prompt_phone">Phone Number</string>
     <string name="dialog_continue">Continue</string>
@@ -276,7 +277,7 @@
 
 
     <!--DEV-->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyASorYra1BsFx0g-alZC_yolz3ugfKMZTs</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDc2fRklrB_6mm3r7dsc6tKbkk87XWz5Go</string>
     <!--PRO-->
     <string name="google_maps_key_pro" templateMergeStrategy="preserve" translatable="false">AIzaSyCGfjpKAEXIAnnSWg0wwQQCbjxpQWAYscM</string>
     <string name="cloudinary_api_key">254821729494622</string>
@@ -303,4 +304,5 @@
     <string name="error_saved_failed">Reward(s) has been previously saved</string>
     <string name="error_message">Message cannot be less than 10 characters.</string>
     <string name="help_success">Success! Thank you for the feedback/suggestion, we will keep working to make this a more pleasant experience.</string>
+    <string name="error_google">\"Error occurred while signing you up with that account. Please try another\"</string>
 </resources>

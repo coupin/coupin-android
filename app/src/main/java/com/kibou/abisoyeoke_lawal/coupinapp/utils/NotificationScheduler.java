@@ -118,12 +118,17 @@ public class NotificationScheduler {
             Notification.DEFAULT_SOUND |
             Notification.FLAG_AUTO_CANCEL
         );
+        NotificationCompat.BigTextStyle bigTextStyle = new NotificationCompat.BigTextStyle();
         if (total > 0) {
+            String text = "There are " + total + " coupins matching your interests around you.";
             notifBuilder.setContentTitle("New Coupins!!!");
-            notifBuilder.setContentText("There are " + total + " coupins matching your interests around you.");
+            notifBuilder.setContentText(text);
+            notifBuilder.setStyle(bigTextStyle.bigText(text));
         } else {
+            String text = "Keep watching this space for new and upcoming rewards.";
             notifBuilder.setContentTitle("Hello There!!!");
-            notifBuilder.setContentText("Keep watching this space for new and upcoming rewards.");
+            notifBuilder.setContentText(text);
+            notifBuilder.setStyle(bigTextStyle.bigText(text));
         }
 
         notificationManager.notify(WEEKLY_REMINDER_REQUEST_CODE, notifBuilder.build());

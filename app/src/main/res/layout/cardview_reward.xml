@@ -43,17 +43,20 @@
             android:orientation="vertical">
 
             <RelativeLayout
-                android:background="@color/black"
                 android:layout_width="match_parent"
                 android:layout_height="81dp">
 
                 <ImageView
-                    android:alpha="0.5"
                     android:id="@+id/fav_banner"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:src="@drawable/temp1"
                     android:scaleType="centerCrop" />
+
+                <FrameLayout
+                    android:background="@drawable/background_black_gradient_trans"
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"/>
 
                 <ImageView
                     android:id="@+id/card_category"

@@ -37,7 +37,6 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -73,7 +72,6 @@ import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.InterestsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
@@ -143,10 +141,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     /** The default backoff multiplier */
     public static final float DEFAULT_BACKOFF_MULT = 1f;
 
-    // TODO: Remove once done testing categories
-    @BindView(R.id.temp)
-    public LinearLayout temp;
-
 
     // Map Stuff
     public ViewGroup infoWindow;
@@ -166,6 +160,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     private HashMap<String, Bitmap> thumbnails = new HashMap<>();
     private boolean filter;
+    private boolean firstCall;
     private boolean isGPSEnabled;
     private boolean isNetworkEnabled;
     private boolean isLoading = false;
@@ -178,6 +173,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     public LatLngBounds.Builder latLngBounds;
     public Location currentLocation = null;
+    private LogoConverter logoConverter;
     public Marker lastOpened;
     public Marker myPosition;
     public Marker closestMarker;
@@ -208,6 +204,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     public LoadingDialog loadingDialog;
     public NetworkErrorDialog networkErrorDialog;
+    private boolean disableLoadMore = false;
 
     public HomeTab() {
         // Required empty public constructor
@@ -230,6 +227,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         final View rootView = inflater.inflate(R.layout.fragment_home_tab, container, false);
         ButterKnife.bind(this, rootView);
         MapsInitializer.initialize(getActivity().getApplicationContext());
+
+        logoConverter = new LogoConverter();
 
         // Loading Dialog
         loadingDialog = new LoadingDialog(getActivity(), R.style.Loading_Dialog);
@@ -267,13 +266,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         iconsList.clear();
 
         mapView.onCreate(savedInstanceState);
-
-        temp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(HomeTab.this.getActivity(), InterestsActivity.class));
-            }
-        });
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
@@ -340,8 +332,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         }
 
                         try {
-                            Log.v("VolleSnipet1", "" + markers.size());
-                            Log.v("VolleSnipet2", marker.getSnippet());
                             JSONObject res = new JSONObject(marker.getSnippet());
                             int count = res.getInt("count");
 
@@ -445,12 +435,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         mLinearLayoutManager.setOrientation(LinearLayoutManager.HORIZONTAL);
 
         adapter = new IconListAdapter(new ArrayList<Merchant>(), HomeTab.this, getActivity());
-
         iconListView.setAdapter(adapter);
-
         iconListView.setLayoutManager(mLinearLayoutManager);
-
-
         implementOnScrollListener();
 
         rootView.setFocusableInTouchMode(true);
@@ -613,6 +599,13 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      */
     public void setUpList() {
         showDialog(true);
+        if (!logoConverter.isCancelled()) {
+            logoConverter.cancel(true);
+        }
+
+        Log.v("ErrorCheck", "" + iconsList.size());
+        Log.v("ErrorCheck", "" + filter);
+        Log.v("ErrorCheck", "" + retrievingData);
         if (iconsList.size() > 0 && filter) {
             iconsList.clear();
             adapter.notifyDataSetChanged();
@@ -625,6 +618,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             markers.clear();
         }
 
+        disableLoadMore = false;
         filter = false;
 
         if (currentLocation != null) {
@@ -812,7 +806,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         if (myPosition != null) {
             LatLngBounds bounds = latLngBounds.build();
-            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 250));
+            mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 500, 500, 5));
         }
     }
 
@@ -864,7 +858,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            if (isLoading || (iconsList.size() / 5) != 0 || iconsList.size() < 5)
+            int size = iconsList.size() - 1;
+            if (isLoading || (size % 5) != 0 || size < 5 || disableLoadMore)
                 return;
 
             int visibleItemCount = mLinearLayoutManager.getChildCount();
@@ -876,6 +871,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        Log.v("CoupinIsLoading", "Load More");
                         loadMore();
                     }
                 }, 2000);
@@ -928,7 +924,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         adapter.notifyDataSetChanged();
                         page++;
 
-                        (new LogoConverter()).execute(false);
+                        logoConverter.execute(false);
                     } catch (Exception e) {
                         retrievingData = false;
                         isLoading = false;
@@ -939,6 +935,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 @Override
                 public void onErrorResponse(VolleyError error) {
                     isLoading = false;
+                    retrievingData = false;
                     loading();
 
                     if (HomeTab.this.isVisible()) {
@@ -951,13 +948,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     }
                                 });
                         } else if (error.networkResponse.statusCode == 404) {
-                            networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_more_title),
-                                getResources().getString(R.string.empty_more_details), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        networkErrorDialog.dismiss();
-                                    }
-                                });
+                            Toast.makeText(getActivity(), getResources().getString(R.string.empty_more_details), Toast.LENGTH_SHORT).show();
+                            disableLoadMore = true;
                         } else {
                             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                                 error.getMessage(), new View.OnClickListener() {

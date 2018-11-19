@@ -454,6 +454,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), "Error occurred while logging in with that account. Please try another", Toast.LENGTH_SHORT).show();
         }
     }
 

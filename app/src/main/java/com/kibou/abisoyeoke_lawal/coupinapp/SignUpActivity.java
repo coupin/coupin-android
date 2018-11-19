@@ -6,6 +6,7 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -29,12 +30,15 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.Scope;
+import com.google.android.gms.plus.Plus;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -49,7 +53,7 @@ import butterknife.ButterKnife;
 /**
  * A login screen that offers login via email/password.
  */
-public class SignUpActivity extends AppCompatActivity implements FacebookCallback<LoginResult> {
+public class SignUpActivity extends AppCompatActivity implements FacebookCallback<LoginResult>, GoogleApiClient.OnConnectionFailedListener {
     @BindView(R.id.back_to_login)
     public Button backToLogin;
     @BindView(R.id.facebook_signup)
@@ -71,14 +75,14 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     @BindView(R.id.sign_up_progress)
     public View mProgressView;
 
-    private static final int RC_SIGNUP_GOOGLE = 10006;
+    private static final int RC_SIGNUP_GOOGLE = 3002;
 
     // Volley Variables
     RequestQueue reqQueue = null;
     String url = "";
 
     public CallbackManager callbackManager;
-    public GoogleSignInClient gsc;
+    public GoogleApiClient gac;
     public GoogleSignInOptions gso;
 
     @Override
@@ -115,12 +119,18 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
         // Configure request for email, id and basic profile
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestScopes(new Scope(Scopes.PROFILE))
+            .requestScopes(new Scope(Scopes.PLUS_ME))
             .requestEmail()
-            .requestId()
             .requestProfile()
+            .requestId()
             .build();
 
-        gsc = GoogleSignIn.getClient(this, gso);
+        gac = new GoogleApiClient.Builder(this)
+            .enableAutoManage(this, this)
+            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+            .addApi(Plus.API)
+            .build();
 
         facebookSignUp.setOnClickListener(new OnClickListener() {
             @Override
@@ -149,8 +159,13 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
         switch (requestCode) {
             case RC_SIGNUP_GOOGLE:
-                Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-                handleGoogleSignUpResult(task);
+                try {
+                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                    handleGoogleSignUpResult(result);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    Toast.makeText(this, getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
+                }
                 break;
             default:
                 callbackManager.onActivityResult(requestCode, resultCode, data);
@@ -181,7 +196,8 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     finish();
                 } catch (Exception e) {
                     showProgress(false);
-                    Toast.makeText(SignUpActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext()
+                        , e.toString(), Toast.LENGTH_SHORT).show();
                     e.printStackTrace();
                 }
             }
@@ -360,23 +376,30 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
      * Google Signup
      */
     private void attemptGoogleSignUp() {
-        Intent signInIntend = gsc.getSignInIntent();
-        startActivityForResult(signInIntend, RC_SIGNUP_GOOGLE);
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(gac);
+        startActivityForResult(signInIntent, RC_SIGNUP_GOOGLE);
     }
 
     /**
      * Handles the returned account details
-     * @param completedTask
+     * @param result
      */
-    public void handleGoogleSignUpResult(Task<GoogleSignInAccount> completedTask) {
+    public void handleGoogleSignUpResult(GoogleSignInResult result) {
         try {
-            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            Log.v("GoogleAccount", "" + result.getStatus());
+            if (result.isSuccess()) {
+                GoogleSignInAccount account = result.getSignInAccount();
+                Log.v("GoogleAccount", account.toString());
 
-            registerUser(account.getDisplayName(), account.getEmail(), account.getId(), true,
-                account.getPhotoUrl().toString());
+                registerUser(account.getDisplayName(), account.getEmail(), account.getId(), true,
+                    account.getPhotoUrl().toString());
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -450,6 +473,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                         url);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "An error occurred while trying to register you through Facebook. Please try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -468,6 +492,11 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     @Override
     public void onError(FacebookException e) {
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getApplicationContext(), connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
     }
 }
 
