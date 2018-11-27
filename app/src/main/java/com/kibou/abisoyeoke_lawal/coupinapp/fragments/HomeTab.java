@@ -362,8 +362,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     banner.setImageBitmap(thumbnails.get(res.getString("_id")));
                                 }
 
-                                Log.v("VolleyLog", res.toString());
-
                                 String snippet = count > 1 ? count + " Rewards Available" :
                                     res.getJSONObject("reward").getString("name");
                                 infoButton.setText(snippet);
@@ -371,7 +369,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             }
                         }   catch (Exception e) {
                             e.printStackTrace();
-                            Log.v("VolleyOne", "Error " + e.getMessage());
                         }
 
                         return infoWindow;
@@ -386,7 +383,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 mGoogleMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
                     @Override
                     public void onInfoWindowClick(Marker marker) {
-                        Log.v("VolleySnippet", marker.getSnippet());
                         Intent merchantIntent = new Intent(getActivity(), MerchantActivity.class);
                         Bundle extra = new Bundle();
                         extra.putString("merchant", marker.getSnippet().toString());
@@ -603,9 +599,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             logoConverter.cancel(true);
         }
 
-        Log.v("ErrorCheck", "" + iconsList.size());
-        Log.v("ErrorCheck", "" + filter);
-        Log.v("ErrorCheck", "" + retrievingData);
         if (iconsList.size() > 0 && filter) {
             iconsList.clear();
             adapter.notifyDataSetChanged();
@@ -620,6 +613,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         disableLoadMore = false;
         filter = false;
+        page = 0;
 
         if (currentLocation != null) {
             longitude = new BigDecimal(currentLocation.getLongitude());
@@ -871,7 +865,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 handler.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        Log.v("CoupinIsLoading", "Load More");
                         loadMore();
                     }
                 }, 2000);
@@ -924,7 +917,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         adapter.notifyDataSetChanged();
                         page++;
 
-                        logoConverter.execute(false);
+                        (new LogoConverter()).execute(false);
                     } catch (Exception e) {
                         retrievingData = false;
                         isLoading = false;
@@ -1178,7 +1171,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         @Override
                         public void onLocationChanged(Location location) {
                             if (currentLocation == null) {
-                                Log.v("VolleySetup", "In location services");
                                 currentLocation = location;
                                 setUpList();
                             } else {
@@ -1189,7 +1181,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                     if (currentLocation == null) {
                         currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                        Log.v("VolleySetup", "In Current null");
                         setUpList();
                     }
 
@@ -1203,7 +1194,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                             switch (status.getStatusCode()) {
                                 case LocationSettingsStatusCodes.SUCCESS:
                                     currentLocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
-                                    Log.v("VolleySetup", "In location success");
                                     setUpList();
                                     break;
                                 case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
@@ -1267,8 +1257,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onItemClick(int position) {
-        Log.v("VolleyTesting", "Testing");
-        Toast.makeText(getActivity(), "This is a test", Toast.LENGTH_SHORT).show();
+        //TODO: Can't remember what this is for, find out. Good luck
 //        setUpList();
     }
 
@@ -1281,8 +1270,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             if (refresh[0]) {
                 thumbnails.clear();
             }
+            int j = (page - 1) * 5 ;
+            j++;
 
-            for(int i = 1; i < iconsList.size(); i++) {
+            for(int i = j; i < iconsList.size(); i++) {
                 try {
                     URL url = new URL(iconsList.get(i).getLogo());
                     HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();

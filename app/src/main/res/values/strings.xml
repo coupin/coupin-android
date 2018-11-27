@@ -49,7 +49,7 @@
 
     <!-- URls -->
     <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <!--<string name="base_url">https://9f7659b7.ngrok.io/api/v1</string>-->
+    <!--<string name="base_url">https://2981d5aa.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
     <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
 
@@ -305,4 +305,5 @@
     <string name="error_message">Message cannot be less than 10 characters.</string>
     <string name="help_success">Success! Thank you for the feedback/suggestion, we will keep working to make this a more pleasant experience.</string>
     <string name="error_google">\"Error occurred while signing you up with that account. Please try another\"</string>
+    <string name="recent">RECENT</string>
 </resources>

@@ -21,7 +21,8 @@
         android:paddingBottom="@dimen/padding_xs"
         android:paddingTop="@dimen/padding_xs">
 
-        <TextView
+        <Button
+            android:background="@android:color/transparent"
             android:id="@+id/filter_cancel"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -29,6 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/dialog_cancel"
+            android:textAllCaps="false"
             android:textColor="@color/text_light_grey"
             android:textSize="@dimen/medium_text"
             android:textStyle="bold"/>
@@ -43,7 +45,8 @@
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="bold"/>
 
-        <TextView
+        <Button
+            android:background="@android:color/transparent"
             android:id="@+id/filter_save"
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
@@ -51,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/bt_save"
+            android:textAllCaps="false"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/medium_text"
             android:textStyle="bold"/>

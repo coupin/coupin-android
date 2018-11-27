@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -26,6 +27,10 @@ import butterknife.ButterKnife;
  */
 
 public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
+    @BindView(R.id.filter_nd_cancel)
+    public Button fillNDCancel;
+    @BindView(R.id.filter_nd_save)
+    public Button fillNDSave;
     @BindView(R.id.fil_nd_ent)
     public LinearLayout fillNDEnt;
     @BindView(R.id.fil_nd_food)
@@ -40,10 +45,6 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
     public LinearLayout fillNDTickets;
     @BindView(R.id.fil_nd_travel)
     public LinearLayout fillNDTravel;
-    @BindView(R.id.filter_nd_cancel)
-    public TextView fillNDCancel;
-    @BindView(R.id.filter_nd_save)
-    public TextView fillNDSave;
 
     public ArrayList<String> selected = new ArrayList<>();
 

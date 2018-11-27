@@ -145,11 +145,13 @@
 
             <View
                 android:background="@color/white"
+                android:id="@+id/coupin_vertical_divided"
                 android:layout_height="25dp"
                 android:layout_marginEnd="@dimen/margin_xs"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:layout_marginTop="@dimen/margin_xs"
-                android:layout_width="1dp"/>
+                android:layout_width="1dp"
+                android:visibility="gone"/>
 
             <ImageView
                 android:background="@android:color/transparent"

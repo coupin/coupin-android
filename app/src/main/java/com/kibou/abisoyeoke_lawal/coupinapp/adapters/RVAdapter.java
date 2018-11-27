@@ -67,7 +67,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 holder.favIcon.setVisibility(View.VISIBLE);
             }
 
-            if (reward.hasVisited() && reward.isFav()) {
+            if (reward.hasVisited() && reward.isFavourited()) {
                 holder.divide.setVisibility(View.VISIBLE);
             }
 

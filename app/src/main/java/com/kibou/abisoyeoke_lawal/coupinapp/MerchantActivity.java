@@ -734,7 +734,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     coupin.setLongitude(item.getLongitude());
                     coupin.setMerchantLogo(item.getLogo());
                     coupin.setMerchantBanner(item.getBanner());
-                    coupin.setFav(item.isFavourite());
+                    coupin.setFavourited(item.isFavourite());
                     coupin.setVisited(item.isVisited());
 
                     coupin.setRewardDetails(object.getJSONArray("rewardId").toString());

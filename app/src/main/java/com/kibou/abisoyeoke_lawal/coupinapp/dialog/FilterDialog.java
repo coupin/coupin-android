@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.annotation.StyleRes;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -27,6 +28,10 @@ import butterknife.ButterKnife;
  */
 
 public class FilterDialog extends Dialog implements View.OnClickListener {
+    @BindView(R.id.filter_cancel)
+    public Button fillCancel;
+    @BindView(R.id.filter_save)
+    public Button fillSave;
     @BindView(R.id.distance)
     public DistanceSeekBar distanceSeekBar;
     @BindView(R.id.fil_ent)
@@ -45,10 +50,6 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
     public LinearLayout fillTickets;
     @BindView(R.id.fil_travel)
     public LinearLayout fillTravel;
-    @BindView(R.id.filter_cancel)
-    public TextView fillCancel;
-    @BindView(R.id.filter_save)
-    public TextView fillSave;
 
     public ArrayList<String> selected = new ArrayList<>();
 

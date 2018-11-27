@@ -70,6 +70,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public TextView merchantName;
     @BindView(R.id.list_merchant_address)
     public TextView merchantAddress;
+    @BindView(R.id.coupin_vertical_divided)
+    public View divider;
 
     ArrayList<Reward> coupinRewards;
     RewardListItem coupin;
@@ -91,8 +93,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         if (coupin.hasVisited()) {
             coupinVisited.setVisibility(View.VISIBLE);
         }
-        if (coupin.isFav()) {
+        if (coupin.isFavourited()) {
             coupinFav.setVisibility(View.VISIBLE);
+        }
+
+        if (coupin.isFavourited() && coupin.hasVisited()) {
+            divider.setVisibility(View.VISIBLE);
         }
         Glide.with(this).load(coupin.getMerchantBanner()).into(merchantBanner);
         Glide.with(this).load(coupin.getMerchantLogo()).into(merchantLogo);
