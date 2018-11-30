@@ -336,7 +336,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     public void setupNotifications() {
         if (!PreferenceMngr.getNotificationSelection()[0]) {
             Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK, 1);
+            calendar.set(Calendar.DAY_OF_WEEK, 2);
             calendar.set(Calendar.HOUR_OF_DAY, 11);
             calendar.set(Calendar.MINUTE, 00);
             NotificationScheduler.setReminder(LoginActivity.this, AlarmReceiver.class, calendar);

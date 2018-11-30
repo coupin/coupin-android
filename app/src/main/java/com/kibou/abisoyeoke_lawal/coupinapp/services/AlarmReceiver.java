@@ -34,11 +34,11 @@ public class AlarmReceiver extends BroadcastReceiver {
                 boolean[] options = PreferenceMngr.getNotificationSelection();
                 if (options != null && options[0]) {
                     if (options[1]) {
-                        calendar.set(Calendar.DAY_OF_WEEK, 5);
+                        calendar.set(Calendar.DAY_OF_WEEK, 6);
                         calendar.set(Calendar.HOUR_OF_DAY, 11);
                         calendar.set(Calendar.MINUTE, 00);
                     } else {
-                        calendar.set(Calendar.DAY_OF_WEEK, 1);
+                        calendar.set(Calendar.DAY_OF_WEEK, 2);
                         calendar.set(Calendar.HOUR_OF_DAY, 11);
                         calendar.set(Calendar.MINUTE, 00);
                     }

@@ -126,8 +126,7 @@ public class NotificationActivity extends AppCompatActivity {
                     }
 
                     if (toggleWeekdays.isChecked()) {
-//                        calendar.set(Calendar.DAY_OF_WEEK, 2);
-                        calendar.set(Calendar.DAY_OF_WEEK, 7);
+                        calendar.set(Calendar.DAY_OF_WEEK, 2);
                         NotificationScheduler.setReminder(
                             NotificationActivity.this,
                             AlarmReceiver.class,

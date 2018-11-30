@@ -141,7 +141,7 @@ public class InterestsActivity extends AppCompatActivity {
 
         PreferenceMngr.setInterests(false);
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, 1);
+        calendar.set(Calendar.DAY_OF_WEEK, 2);
         calendar.set(Calendar.HOUR, 11);
         calendar.set(Calendar.MINUTE, 00);
         NotificationScheduler.setReminder(InterestsActivity.this, AlarmReceiver.class, calendar);

@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -21,6 +22,7 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.SearchActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
@@ -37,6 +39,8 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class FavFragment extends Fragment implements MyOnClick {
+    @BindView(R.id.search_fav)
+    public ImageView favSearch;
     @BindView(R.id.fav_empty)
     public LinearLayout favEmpty;
     @BindView(R.id.fav_error)
@@ -76,6 +80,13 @@ public class FavFragment extends Fragment implements MyOnClick {
         favRecyclerView.setLayoutManager(linearLayoutManager);
         favRecyclerView.setHasFixedSize(true);
         favRecyclerView.setAdapter(rvAdapter);
+
+        favSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getActivity(), SearchActivity.class));
+            }
+        });
 
         getFavourites();
 
