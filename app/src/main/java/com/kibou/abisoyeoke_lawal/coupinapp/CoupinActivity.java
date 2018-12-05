@@ -105,8 +105,6 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         coupinRewards = new ArrayList<>();
 
-//        Glide.with(this).load("http://res.cloudinary.com/saintlawal/image/upload/v1510416300/Mask_Group_3_iv3arp.png").into(merchantBanner);
-
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(
             coupinRewards, this, this);

@@ -12,15 +12,8 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.cloudinary.android.MediaManager;
-import com.cloudinary.android.signed.Signature;
-import com.cloudinary.android.signed.SignatureProvider;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.HomeTab;
@@ -28,10 +21,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.RewardsTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
-
-import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -61,7 +50,6 @@ public class HomeActivity extends AppCompatActivity {
             requestQueue = Volley.newRequestQueue(this);
         }
 
-        getSignature();
         bottomNavigationView.enableItemShiftingMode(false);
         bottomNavigationView.enableShiftingMode(false);
         bottomNavigationView.enableAnimation(false);
@@ -162,58 +150,5 @@ public class HomeActivity extends AppCompatActivity {
         homeTab.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    }
-
-    /**
-     * Get signature for cloudinary uploads.
-     */
-    public void getSignature() {
-        final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-
-        String url = getString(R.string.base_url) + "/signature";
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(final String response) {
-                try {
-                    MediaManager.init(HomeActivity.this, new SignatureProvider() {
-                        @Override
-                        public Signature provideSignature(Map options) {
-                            return new Signature(response, getString(R.string.cloudinary_api_key), timestamp.getTime());
-                        }
-
-                        @Override
-                        public String getName() {
-                            return "CoupinSignatureProvider";
-                        }
-                    });
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                //TODO: Handle Error
-                error.printStackTrace();
-                Log.v("VolleyInit", error.toString());
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("timestamp", String.valueOf(timestamp.getTime()));
-
-                return params;
-            }
-        };
-
-        // TODO: Check if null
-        requestQueue.add(stringRequest);
     }
 }
