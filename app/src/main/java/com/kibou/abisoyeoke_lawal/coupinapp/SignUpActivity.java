@@ -30,15 +30,14 @@ import com.facebook.GraphRequest;
 import com.facebook.GraphResponse;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.Scopes;
+import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.Scope;
-import com.google.android.gms.plus.Plus;
+import com.google.android.gms.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -82,7 +81,8 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     String url = "";
 
     public CallbackManager callbackManager;
-    public GoogleApiClient gac;
+//    public GoogleApiClient gac;
+    public GoogleSignInClient gsc;
     public GoogleSignInOptions gso;
 
     @Override
@@ -119,18 +119,16 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
         // Configure request for email, id and basic profile
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-            .requestScopes(new Scope(Scopes.PROFILE))
-            .requestScopes(new Scope(Scopes.PLUS_ME))
             .requestEmail()
-            .requestProfile()
-            .requestId()
             .build();
 
-        gac = new GoogleApiClient.Builder(this)
-            .enableAutoManage(this, this)
-            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-            .addApi(Plus.API)
-            .build();
+
+        gsc = GoogleSignIn.getClient(this, gso);
+
+//        gac = new GoogleApiClient.Builder(this)
+//            .enableAutoManage(this, this)
+//            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+//            .build();
 
         facebookSignUp.setOnClickListener(new OnClickListener() {
             @Override
@@ -160,8 +158,9 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
         switch (requestCode) {
             case RC_SIGNUP_GOOGLE:
                 try {
-                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-                    handleGoogleSignUpResult(result);
+//                    GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+                    Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+                    handleGoogleSignUpResult(task);
                 } catch (Exception e) {
                     e.printStackTrace();
                     Toast.makeText(this, getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
@@ -376,26 +375,21 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
      * Google Signup
      */
     private void attemptGoogleSignUp() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(gac);
+        Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGNUP_GOOGLE);
     }
 
     /**
      * Handles the returned account details
-     * @param result
+     * @param completedTask
      */
-    public void handleGoogleSignUpResult(GoogleSignInResult result) {
+    public void handleGoogleSignUpResult(Task<GoogleSignInAccount> completedTask) {
         try {
-            Log.v("GoogleAccount", "" + result.getStatus());
-            if (result.isSuccess()) {
-                GoogleSignInAccount account = result.getSignInAccount();
-                Log.v("GoogleAccount", account.toString());
+            GoogleSignInAccount account = completedTask.getResult(ApiException.class);
+            Log.v("GoogleAccount", account.toString());
 
-                registerUser(account.getDisplayName(), account.getEmail(), account.getId(), true,
-                    account.getPhotoUrl().toString());
-            } else {
-                Toast.makeText(this, getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
-            }
+            registerUser(account.getDisplayName(), account.getEmail(), account.getId(), true,
+                account.getPhotoUrl().toString());
 
         } catch (Exception e) {
             e.printStackTrace();

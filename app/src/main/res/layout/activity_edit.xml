@@ -84,22 +84,11 @@
                     android:layout_width="@dimen/icon_lg"
                     android:paddingBottom="@dimen/padding_sm"
                     android:paddingTop="@dimen/padding_sm"
-                    android:src="@drawable/slide1"
+                    android:src="@drawable/ic_clogo"
+                    app:civ_circle_background_color="@color/white"
                     app:civ_border_color="@android:color/transparent"
                     app:civ_border_overlay="false"
                     app:civ_border_width="1dp"/>
-
-                <de.hdodenhof.circleimageview.CircleImageView
-                    android:id="@+id/edit_picture"
-                    android:layout_height="@dimen/icon_lg"
-                    android:layout_width="@dimen/icon_lg"
-                    android:padding="@dimen/padding_sm"
-                    android:src="@drawable/ic_camera_w"
-                    app:civ_border_color="@android:color/transparent"
-                    android:visibility="gone"
-                    app:civ_border_overlay="false"
-                    app:civ_border_width="1dp"
-                    app:civ_fill_color="@color/almost_trans"/>
 
             </RelativeLayout>
 

@@ -1,13 +1,8 @@
 package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.content.Context;
-import android.content.Intent;
-import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -25,10 +20,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.Glide;
-import com.cloudinary.android.MediaManager;
-import com.cloudinary.android.callback.ErrorInfo;
-import com.cloudinary.android.callback.UploadCallback;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ChangePasswordDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
@@ -36,7 +27,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import org.json.JSONObject;
 
-import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,8 +37,6 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
     @BindView(R.id.profile_password)
     public Button changePasswordBtn;
-    @BindView(R.id.edit_picture)
-    public CircleImageView editPicture;
     @BindView(R.id.profile_picture)
     public CircleImageView profilePicture;
     @BindView(R.id.edit_back)
@@ -70,10 +58,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     @BindView(R.id.profile_mobile)
     public TextView profileMobile;
 
-    private final int IMAGE_SELECTION = 1004;
-    private Toast toast;
-
-    private JSONObject picture = new JSONObject();
     private String email;
     private String gender;
     private String mobileNumber;
@@ -81,10 +65,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private boolean editMode = false;
     private boolean saveToast = false;
-    private boolean uploaded = false;
-    private boolean uploading = false;
-    private String url;
-    private String uploadedUrl;
 
     private PreferenceMngr preferenceMngr;
     private RequestQueue requestQueue;
@@ -112,6 +92,11 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 gender = adapterView.getItemAtPosition(i).toString().toLowerCase();
+                if (gender.equals("male")) {
+                    profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
+                } else if (gender.equals("female")) {
+                    profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
+                }
             }
 
             @Override
@@ -126,17 +111,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         editFalse.setOnClickListener(this);
         editTrue.setOnClickListener(this);
         editBack.setOnClickListener(this);
-        editPicture.setOnClickListener(this);
-    }
-
-    /**
-     * Select image from Gallery
-     */
-    private void selectImageFromGallery() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Image"), IMAGE_SELECTION);
     }
 
     /**
@@ -144,7 +118,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void setupDetails() {
         try {
-            Log.v("User", PreferenceMngr.getUser());
             user = new JSONObject(PreferenceMngr.getUser());
 
             String temp = user.getString("name");
@@ -160,19 +133,13 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
             if (user.has("sex") && user.getString("sex").equals("male")) {
                 profileGender.setSelection(1);
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
             } else if (user.has("sex") && user.getString("sex").equals("female")) {
                 profileGender.setSelection(2);
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
             }
 
             profileGender.setEnabled(false);
-
-            if (user.has("picture") && user.getJSONObject("picture").getString("url") != "null") {
-                Log.v("VolleyTired", user.getJSONObject("picture").toString());
-                JSONObject object = user.getJSONObject("picture");
-                Glide.with(this).load(object.getString("url")).into(profilePicture);
-            } else {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.avatar));
-            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -183,11 +150,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
      * Start Update process
      */
     private void updateInfo() {
-        if (uploading) {
-            Toast.makeText(this, "Profile is still uploading...", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
         boolean error = false;
         genderError.setVisibility(View.GONE);
         loadingDialog.show();
@@ -253,7 +215,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setFocusable(true);
             profileMobile .setFocusableInTouchMode(true);
             profileGender.setEnabled(true);
-            editPicture.setVisibility(View.VISIBLE);
         } else {
             editMode = false;
             profileEmail.setBackground(getResources().getDrawable(R.drawable.background_edit_false));
@@ -269,7 +230,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setFocusable(false);
             profileMobile .setFocusableInTouchMode(false);
             profileGender.setEnabled(false);
-            editPicture.setVisibility(View.GONE);
         }
 
         // Check if no view has focus:
@@ -286,7 +246,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void saveUser() {
         String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + preferenceMngr.getUserId();
-        uploading = true;
 
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
@@ -298,7 +257,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 editTrue.setVisibility(View.VISIBLE);
                 result("Profile updated successfully.");
                 saveToast = true;
-                uploading = false;
             }
         }, new Response.ErrorListener() {
             @Override
@@ -312,24 +270,18 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                     result(getString(R.string.error_general));
                 }
                 saveToast = true;
-                uploading = false;
             }
         }){
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> params = new HashMap<String, String>();
 
-                if (uploaded) {
-                    params.put("picture", picture.toString());
-                    uploaded = false;
-                } else {
-                    params.put("name", name);
-                    if (mobileNumber != null) {
-                        params.put("mobileNumber", mobileNumber);
-                    }
-                    params.put("email", email);
-                    params.put("sex", gender);
+                params.put("name", name);
+                if (mobileNumber != null) {
+                    params.put("mobileNumber", mobileNumber);
                 }
+                params.put("email", email);
+                params.put("sex", gender);
 
                 return params;
             }
@@ -386,84 +338,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             case R.id.edit_back:
                 onBackPressed();
                 break;
-            case R.id.edit_picture:
-                selectImageFromGallery();
-                break;
         }
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if (requestCode == IMAGE_SELECTION && resultCode == RESULT_OK && data != null) {
-            Uri selectedImage = data.getData();
-            String id = selectedImage.getPath();
-            id = id.split(":")[1];
-
-            Cursor cursor = getContentResolver().query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null,
-                MediaStore.Images.Media._ID + " = ? ", new String[]{id}, null);
-            cursor.moveToFirst();
-
-            String picturePath = cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-            cursor.close();
-
-            Upload(picturePath);
-        }
-    }
-
-    private void Upload(String picturePath) {
-        Timestamp time = new Timestamp(System.currentTimeMillis());
-        MediaManager.get()
-            .upload(picturePath)
-            .callback(new UploadCallback() {
-            @Override
-            public void onStart(String requestId) {
-                loadingDialog.show();
-            }
-
-            @Override
-            public void onProgress(String requestId, long bytes, long totalBytes) {
-                int percentage = (int)((bytes/totalBytes) * 100);
-                Log.v("VolleyProcess", String.valueOf(percentage) + "%");
-            }
-
-            @Override
-            public void onSuccess(String requestId, Map resultData) {
-                try {
-                    Toast.makeText(EditActivity.this, "Uploaded successfully.", Toast.LENGTH_SHORT).show();
-                    loadingDialog.dismiss();
-                    uploaded = true;
-
-                    String publicId = resultData.get("public_id").toString();
-                    uploadedUrl = resultData.get("url").toString();
-                    picture.put("id", publicId);
-                    picture.put("url", uploadedUrl);
-                    JSONObject object = new JSONObject();
-                    object.put("id", publicId);
-                    object.put("url", uploadedUrl);
-
-                    user.put("picture", object.toString());
-                    Glide.with(EditActivity.this).load(uploadedUrl).into(profilePicture);
-                    saveUser();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    loadingDialog.dismiss();
-                }
-            }
-
-            @Override
-            public void onError(String requestId, ErrorInfo error) {
-                Log.v("VolleyPictureError", error.getDescription());
-                Toast.makeText(EditActivity.this, error.getDescription(), Toast.LENGTH_SHORT).show();
-                loadingDialog.dismiss();
-            }
-
-            @Override
-            public void onReschedule(String requestId, ErrorInfo error) {
-                Toast.makeText(EditActivity.this, error.getDescription(), Toast.LENGTH_SHORT).show();
-                loadingDialog.dismiss();
-            }
-        }).dispatch();
     }
 }

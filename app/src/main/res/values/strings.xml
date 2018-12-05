@@ -5,7 +5,10 @@
     <!-- Keys -->
     <string name="facebook_app_id">134058260630791</string>
     <string name="fb_login_protocol_scheme">fb134058260630791</string>
-    <string name="google_id">coupin-170222</string>
+    <!--Client Id Dev-->
+    <string name="google_client_id">317929403701-vbciqi4cackgjvk0cr6dr0vi61332cbb.apps.googleusercontent.com</string>
+    <!--Client Id Prod-->
+    <!--<string name="google_id">317929403701-uvfrs1tgvkiqdr03domk69f4s9ldk3ng.apps.googleusercontent.com</string>-->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -48,10 +51,9 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <!--<string name="base_url">https://coupin-staging.herokuapp.com</string>-->
-    <!--<string name="base_url">https://2981d5aa.ngrok.io/api/v1</string>-->
-    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
+    <!--<string name="base_url">https://72a31641.ngrok.io/api/v1</string>-->
+    <string name="base_url">https://coupin.herokuapp.com/api/v1</string>
+    <!--<string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -277,9 +279,9 @@
 
 
     <!--DEV-->
-    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDc2fRklrB_6mm3r7dsc6tKbkk87XWz5Go</string>
+    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCIILzeDdDoT-fhBoKgakXdj8j2QGIuG3c</string>
     <!--PRO-->
-    <string name="google_maps_key_pro" templateMergeStrategy="preserve" translatable="false">AIzaSyCGfjpKAEXIAnnSWg0wwQQCbjxpQWAYscM</string>
+    <string name="google_maps_key_pro" templateMergeStrategy="preserve" translatable="false">AIzaSyCkqSAdMTvvCldNeXx3O8OmzZPfDo36W9o</string>
     <string name="cloudinary_api_key">254821729494622</string>
     <string name="update_now">Update Now</string>
     <string name="no_thank_you">Not Now</string>

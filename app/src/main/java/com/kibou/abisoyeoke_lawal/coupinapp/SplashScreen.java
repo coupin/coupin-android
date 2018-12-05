@@ -34,8 +34,7 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION,
         Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.GET_ACCOUNTS,
-        Manifest.permission.READ_CONTACTS
+        Manifest.permission.GET_ACCOUNTS
     };
 
     NotificationManager notificationManager;
@@ -134,7 +133,7 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
                         startActivity(new Intent(SplashScreen.this, InterestsActivity.class));
                         finish();
                     }
-                }else {
+                } else {
                     startActivity(new Intent(SplashScreen.this, LandingActivity.class));
                     finish();
                 }
