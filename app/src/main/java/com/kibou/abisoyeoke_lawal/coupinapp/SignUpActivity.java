@@ -81,7 +81,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     String url = "";
 
     public CallbackManager callbackManager;
-//    public GoogleApiClient gac;
     public GoogleSignInClient gsc;
     public GoogleSignInOptions gso;
 
@@ -124,11 +123,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
 
         gsc = GoogleSignIn.getClient(this, gso);
-
-//        gac = new GoogleApiClient.Builder(this)
-//            .enableAutoManage(this, this)
-//            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-//            .build();
 
         facebookSignUp.setOnClickListener(new OnClickListener() {
             @Override

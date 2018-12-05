@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.FacebookSdk;
@@ -29,9 +28,12 @@ public class LandingActivity extends AppCompatActivity {
 
     private MediaPlayer mediaPlayer;
 
-    String[] quotes = new String[]{"If one is to know himself, he must first discover freedom",
-            "Tell a man what your dreams are and he will be your nightmare",
-            "Balley was once in town for Reni, now Balley is no more"};
+    String[] titles = new String[]{"Explore Nearby Rewards",
+            "Browse Promotions",
+            "Redeem Coupins"};
+    String[] quotes = new String[]{"Discover promotions and discounts near you.",
+            "Browse and select desired promotion.",
+            "Generate and use your Coupin (promotion code)."};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +67,6 @@ public class LandingActivity extends AppCompatActivity {
                 startActivity(new Intent(LandingActivity.this, SplashScreen.class));
             }
         });
-
-        ((ImageView)findViewById(R.id.logo_wh)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LandingActivity.this, HomeActivity.class));
-            }
-        });
     }
 
     public void play() {
@@ -95,6 +90,8 @@ public class LandingActivity extends AppCompatActivity {
         @Override
         public View setViewForPosition(int position) {
             View customView = getLayoutInflater().inflate(R.layout.carousel_view, null);
+
+            ((TextView)customView.findViewById(R.id.quote_title)).setText(titles[position]);
             ((TextView)customView.findViewById(R.id.quote)).setText(quotes[position]);
 
             return customView;

@@ -21,6 +21,7 @@ import com.facebook.appevents.AppEventsLogger;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.UpdateService;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PermissionsMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import butterknife.BindView;
@@ -66,7 +67,7 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
 
         startService(new Intent(getApplicationContext(), UpdateService.class));
 
-        if (!permissionsCheck()) {
+        if (!PermissionsMngr.permissionsCheck(permissions, this)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
         } else {
             if (PreferenceMngr.updateAvailable()) {
@@ -102,23 +103,6 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
                 }
                 break;
         }
-    }
-
-    /**
-     * Check if we have all permissions needed
-     * @return true if we do and false otherwise.
-     */
-    private boolean permissionsCheck() {
-        boolean goodToGo = true;
-
-        for(String permission : permissions) {
-            if (ActivityCompat.checkSelfPermission(this, permission) != PackageManager.PERMISSION_GRANTED) {
-                goodToGo = false;
-                break;
-            }
-        }
-
-        return goodToGo;
     }
 
     public void proceed() {

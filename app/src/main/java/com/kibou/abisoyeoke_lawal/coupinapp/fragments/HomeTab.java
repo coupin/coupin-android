@@ -47,7 +47,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -85,7 +84,9 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.CustomClickListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkGPSUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PermissionsMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -112,6 +113,7 @@ import butterknife.ButterKnife;
 public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter, GoogleApiClient.ConnectionCallbacks,
     GoogleApiClient.OnConnectionFailedListener, MyOnClick {
     private static final int SERVICE_ID = 1002;
+    private final int PERMISSION_ALL = 1;
     @BindView(R.id.btn_mylocation)
     public FloatingActionButton btnMyLocation;
     @BindView(R.id.icon_loading)
@@ -140,6 +142,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     /** The default backoff multiplier */
     public static final float DEFAULT_BACKOFF_MULT = 1f;
+
+    private String[] permissions = {
+        Manifest.permission.ACCESS_COARSE_LOCATION,
+        Manifest.permission.ACCESS_FINE_LOCATION
+    };
 
 
     // Map Stuff
@@ -235,8 +242,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         loadingDialog.setCancelable(false);
 
         requestOptions = new RequestOptions();
-        requestOptions.placeholder(R.drawable.ic_placeholder);
-        requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
         setCategories();
 
         // Error Dialog
@@ -270,7 +275,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         if (!NetworkGPSUtils.isConnected(getContext())) {
-            //TODO: Show Dialog about network
             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                 getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
                     @Override
@@ -279,8 +283,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     }
                 });
             networkErrorDialog.show();
-        } else if (!NetworkGPSUtils.isLocationAvailable(getContext())) {
-            setUpClientG();
         } else {
             setLastKnownLocation();
         }
@@ -340,7 +342,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 TextView tempView = (TextView) infoWindow.findViewById(R.id.name);
                                 tempView.measure(0, 0);
                                 float initWidth =  tempView.getMeasuredWidth();
-                                tempView.setText(toTitleCase(res.getString("name")));
+                                tempView.setText(StringUtils.toTitleCase(res.getString("name")));
                                 adapter.clearPreviousView();
 
                                 marker1.setInfoWindowAnchor(2.5f, 0.85f);
@@ -555,27 +557,30 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
      * Set last known location
      */
     private void setLastKnownLocation() {
-        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        boolean networkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
-        if (gpsEnabled) {
-            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
-        } else {
-            mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, this);
-        }
-
-        currentLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), false));
-
-        // Get Current Location
-        if (currentLocation != null) {
-            setUpList();
-        } else {
-            if (googleApiClient == null) {
-                setUpClientG();
+        if (PermissionsMngr.permissionsCheck(permissions, getActivity())) {
+            if (networkEnabled ) {
+                mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 50, this);
             } else {
-                getMyLocation();
+                mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 50, this);
             }
-        }
 
+            currentLocation = mLocationManager.getLastKnownLocation(mLocationManager.getBestProvider(new Criteria(), false));
+
+            // Get Current Location
+            if (currentLocation != null) {
+                setUpList();
+            } else {
+                if (googleApiClient == null) {
+                    setUpClientG();
+                } else {
+                    getMyLocation();
+                }
+            }
+        } else {
+            ActivityCompat.requestPermissions(getActivity(), permissions, PERMISSION_ALL);
+        }
     }
 
     /**
@@ -728,6 +733,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                     }
                                 });
                             networkErrorDialog.show();
+                            center();
                         } else {
                             Toast.makeText(getContext(), getResources().getString(R.string.error_connection_detail), Toast.LENGTH_SHORT).show();
                         }
@@ -1012,7 +1018,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             if (markers.get(position).isInfoWindowShown()) {
                 markers.get(position).hideInfoWindow();
             } else {
-//            LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.009000, iconsList.get(position).getLongitude());
                 LatLng latLng = new LatLng(iconsList.get(position).getLatitude() + 0.000400, iconsList.get(position).getLongitude());
                 CameraPosition cameraPosition = new CameraPosition.Builder().target(latLng).zoom(19).build();
                 mGoogleMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition));
@@ -1144,10 +1149,26 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
-        int permissionLocation = ContextCompat.checkSelfPermission(getActivity(),
-            Manifest.permission.ACCESS_FINE_LOCATION);
-        if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
-            getMyLocation();
+        boolean valid = true;
+        if (requestCode == PERMISSION_ALL) {
+            for (int result: grantResults) {
+                if (result != PackageManager.PERMISSION_GRANTED) {
+                    valid = false;
+                }
+            }
+
+            if (grantResults.length > 0 && valid) {
+                getMyLocation();
+            } else {
+                networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
+                    getResources().getString(R.string.error_permissions), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            setLastKnownLocation();
+                        }
+                    });
+                networkErrorDialog.show();
+            }
         }
     }
 
@@ -1211,34 +1232,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 }
             }
         }
-    }
-
-    public static String toTitleCase(String str) {
-
-        if (str == null) {
-            return null;
-        }
-
-        boolean space = true;
-        StringBuilder builder = new StringBuilder(str);
-        final int len = builder.length();
-
-        for (int i = 0; i < len; ++i) {
-            char c = builder.charAt(i);
-            if (space) {
-                if (!Character.isWhitespace(c)) {
-                    // Convert to title case and switch out of whitespace mode.
-                    builder.setCharAt(i, Character.toTitleCase(c));
-                    space = false;
-                }
-            } else if (Character.isWhitespace(c)) {
-                space = true;
-            } else {
-                builder.setCharAt(i, Character.toLowerCase(c));
-            }
-        }
-
-        return builder.toString();
     }
 
     @Override
