@@ -93,7 +93,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 gender = adapterView.getItemAtPosition(i).toString().toLowerCase();
                 if (gender.equals("male")) {
-                    profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
+                    profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male2));
                 } else if (gender.equals("female")) {
                     profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
                 }
@@ -133,10 +133,13 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
             if (user.has("sex") && user.getString("sex").equals("male")) {
                 profileGender.setSelection(1);
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male2));
             } else if (user.has("sex") && user.getString("sex").equals("female")) {
                 profileGender.setSelection(2);
                 profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
+            } else {
+                profileGender.setSelection(1);
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male2));
             }
 
             profileGender.setEnabled(false);

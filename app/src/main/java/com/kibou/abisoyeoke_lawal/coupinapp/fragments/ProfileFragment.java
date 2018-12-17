@@ -76,9 +76,11 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             profileName.setText(StringUtils.capitalize(userObject.getString("name")));
 
             if (userObject.has("sex") && userObject.getString("sex").equals("male")) {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male2));
             } else if (userObject.has("sex") && userObject.getString("sex").equals("female")) {
                 profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
+            } else {
+                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male2));
             }
         } catch (Exception e) {
             e.printStackTrace();

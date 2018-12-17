@@ -9,7 +9,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -30,6 +29,7 @@ import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ExperienceDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.dialog.GalleryDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
@@ -48,13 +48,14 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
 
-public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick {
+public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, View.OnClickListener {
     @BindView(R.id.rewards_loading)
     public AVLoadingIndicatorView bottomLoadingView;
     @BindView(R.id.rewards_loadingview)
@@ -107,7 +108,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
     private ArrayList<Date> expiryDates;
     private ArrayList<String> blacklist;
-    private ArrayList<String> favourites;
+//    private ArrayList<String> favourites;
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
     private ArrayList<Reward> values;
@@ -115,6 +116,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
     private Date expiryDate;
+    private GalleryDialog imageDialog;
     private Handler handler;
     private int page = 0;
     private JSONArray userFavourites;
@@ -124,6 +126,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private JSONObject res;
     private JSONObject user;
     private RVPopUpAdapter rvPopUpAdapter;
+    private Set<String> favourites;
     private String merchantId;
     private String rewardHolder;
 
@@ -139,11 +142,16 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+
+        photo1.setOnClickListener(this);
+        photo2.setOnClickListener(this);
+        photo3.setOnClickListener(this);
+        photo4.setOnClickListener(this);
+
         Bundle extra = getIntent().getExtras();
         if (extra.getString("merchant", null) == null) {
             try {
                 item = (Merchant) extra.getSerializable("object");
-                Log.v("VolleyAllINeed", item.getDetails());
                 if (item.getRewards() != null) {
                     resArray = new JSONArray(item.getRewards());
                 } else {
@@ -285,7 +293,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             implementOnScrollListener();
 
             user = new JSONObject(PreferenceMngr.getInstance().getUser());
-            userFavourites = user.getJSONArray("favourites");
+//            userFavourites = user.getJSONArray("favourites");
             if (user.has("blacklist") && !user.isNull("blacklist")) {
                 JSONArray tempArray = user.getJSONArray("blacklist");
                 if (tempArray.length() > 0) {
@@ -307,8 +315,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             }
 
 
-            String temp = userFavourites.toString();
-            favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
+//            String temp = userFavourites.toString();
+//            favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
+            favourites = PreferenceMngr.getInstance().getFavourites();
             if (favourites.contains(item.getId())) {
                 favourite = true;
             }
@@ -797,12 +806,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             @Override
             public void onResponse(String response) {
                 favourites.add(id);
+                PreferenceMngr.getInstance().setFavourites(favourites);
                 Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
                 favourite = false;
                 invalidateOptionsMenu();
                 Toast.makeText(MerchantActivity.this, "Added Unsuccessfully.", Toast.LENGTH_SHORT).show();
@@ -839,13 +848,15 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                favourites.add(id);
+                favourites.remove(id);
+                PreferenceMngr.getInstance().setFavourites(favourites);
                 Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                error.printStackTrace();
+                Toast.makeText(MerchantActivity.this, "An error occured whilte removing this merchant from your favourite list.", Toast.LENGTH_SHORT).show();
             }
         }) {
             @Override
@@ -869,4 +880,21 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         requestQueue.add(stringRequest);
     }
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.photo_1:
+                (new GalleryDialog(MerchantActivity.this, pictures.get(0), pictures)).show();
+                break;
+            case R.id.photo_2:
+                (new GalleryDialog(MerchantActivity.this, pictures.get(1), pictures)).show();
+                break;
+            case R.id.photo_3:
+                (new GalleryDialog(MerchantActivity.this, pictures.get(2), pictures)).show();
+                break;
+            case R.id.photo_4:
+                (new GalleryDialog(MerchantActivity.this, pictures.get(3), pictures)).show();
+                break;
+        }
+    }
 }

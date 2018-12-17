@@ -53,7 +53,6 @@ public class AlarmReceiver extends BroadcastReceiver {
     }
 
     private void updateCheck(final Context context) {
-        Log.v("Testing", "notification service");
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         String url = context.getResources().getString(R.string.base_url)
             + context.getResources().getString(R.string.ep_api_merchant_new);
@@ -74,6 +73,7 @@ public class AlarmReceiver extends BroadcastReceiver {
             }, new Response.ErrorListener() {
                 @Override
                 public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
                     Log.v("VolleyError", error.toString());
                 }
             }

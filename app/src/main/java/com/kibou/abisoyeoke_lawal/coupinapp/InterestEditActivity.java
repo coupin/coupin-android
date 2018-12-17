@@ -2,7 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -128,7 +127,8 @@ public class InterestEditActivity extends AppCompatActivity {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                error.printStackTrace();
+                Toast.makeText(InterestEditActivity.this, "Your interest failed to update. Please try again later.", Toast.LENGTH_SHORT).show();
             }
         }){
             @Override

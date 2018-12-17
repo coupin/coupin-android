@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.ArrayAdapter;
@@ -44,7 +43,9 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -182,7 +183,9 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     JSONObject res = new JSONObject(response);
                     PreferenceMngr.setContext(SignUpActivity.this);
                     JSONObject object = res.getJSONObject("user");
-                    PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    String temp = object.getJSONArray("favourites").toString();
+                    Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);
@@ -199,7 +202,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
             public void onErrorResponse(VolleyError error) {
                 showProgress(false);
                 error.printStackTrace();
-                Log.v("VolleyError", error.toString());
 
                 if (error.toString().equals("com.android.volley.TimeoutError")) {
                     Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
@@ -253,7 +255,9 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     JSONObject res = new JSONObject(response);
                     PreferenceMngr.setContext(SignUpActivity.this);
                     JSONObject object = res.getJSONObject("user");
-                    PreferenceMngr.getInstance().setToken(res.getString("token"), object.getString("_id"), object.toString());
+                    String temp = object.getJSONArray("favourites").toString();
+                    Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);
@@ -269,8 +273,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
             public void onErrorResponse(VolleyError error) {
                 showProgress(false);
                 error.printStackTrace();
-                Log.v("VolleyError", error.toString());
-
                 if (error.toString().equals("com.android.volley.TimeoutError")) {
                     Toast.makeText(SignUpActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
                 } else {
@@ -380,7 +382,6 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     public void handleGoogleSignUpResult(Task<GoogleSignInAccount> completedTask) {
         try {
             GoogleSignInAccount account = completedTask.getResult(ApiException.class);
-            Log.v("GoogleAccount", account.toString());
 
             registerUser(account.getDisplayName(), account.getEmail(), account.getId(), true,
                 account.getPhotoUrl().toString());

@@ -5,7 +5,6 @@ import android.graphics.Color;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
@@ -14,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -193,13 +193,14 @@ public class InterestsActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PreferenceMngr.getInstance().setInterests(true);
+                PreferenceMngr.setInterests(true);
                 startActivity(new Intent(InterestsActivity.this, HomeActivity.class));
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.v("VolleyError", error.toString());
+                error.printStackTrace();
+                Toast.makeText(InterestsActivity.this, "An error occured while seding your interests.", Toast.LENGTH_SHORT).show();
             }
         }){
             @Override

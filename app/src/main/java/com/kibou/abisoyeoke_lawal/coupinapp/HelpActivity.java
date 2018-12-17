@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -133,7 +132,6 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendMessage(final String coupinCode, final String merchantName, final String message) {
-        Log.v("VolleyFeedback", "coupinCode " + coupinCode);
         String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_feedback);
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override

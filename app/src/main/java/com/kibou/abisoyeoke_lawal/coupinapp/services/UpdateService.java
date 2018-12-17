@@ -9,7 +9,6 @@ import android.content.pm.PackageManager;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -65,7 +64,6 @@ public class UpdateService extends Service {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    Log.v("VolleyUpdate", response);
                     PreferenceMngr.setContext(getApplicationContext());
                     int code = getVersionCode(getApplicationContext());
                     int newCode = Integer.valueOf(response);

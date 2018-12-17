@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -107,7 +106,6 @@ public class FavFragment extends Fragment implements MyOnClick {
                         JSONObject mainObject = jsonArray.getJSONObject(x);
                         responses.add(mainObject.toString());
                         JSONArray rewardObjects = mainObject.getJSONArray("rewards");
-                        Log.v("FavRewards", rewardObjects.toString());
 
                         RewardListItem item = new RewardListItem();
 

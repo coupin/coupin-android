@@ -1,7 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -34,7 +33,6 @@ public class InterestEditAdapter extends BaseAdapter {
         this.context = context;
         this.interests = interests;
         previouslySelected = PreferenceMngr.getUserInterests();
-        Log.v("VolleyPrevious", previouslySelected.toString());
     }
 
     @Override

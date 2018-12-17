@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by abisoyeoke-lawal on 4/22/17.
@@ -42,11 +43,20 @@ public class PreferenceMngr {
      * Method to set the token
      * @param token
      */
-    public static void setToken(String token, String uid, String user) {
+    public static void setToken(String token, String uid, String user, Set<String> favourites) {
+        preferences.edit().putBoolean("category" + uid, true).apply();
+        preferences.edit().putStringSet("favourites", favourites).apply();
         preferences.edit().putString("token", token).apply();
         preferences.edit().putString("uid", uid).apply();
         preferences.edit().putString("user", user).apply();
-        preferences.edit().putBoolean("category" + uid, true).apply();
+    }
+
+    public Set<String> getFavourites() {
+        return preferences.getStringSet("favourites", null);
+    }
+
+    public void setFavourites(Set<String> favourites) {
+        preferences.edit().putStringSet("favourites", favourites).apply();
     }
 
     /**

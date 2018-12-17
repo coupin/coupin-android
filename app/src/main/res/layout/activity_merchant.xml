@@ -147,9 +147,12 @@
                             android:padding="@dimen/padding_sm">
                             
                             <ImageView
+                                android:clickable="true"
+                                android:focusable="true"
                                 android:id="@+id/photo_1"
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
+                                android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_width="80dp"
                                 android:maxWidth="80dp"
@@ -157,9 +160,12 @@
                                 android:visibility="gone"/>
 
                             <ImageView
+                                android:clickable="true"
+                                android:focusable="true"
                                 android:id="@+id/photo_2"
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
+                                android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_width="80dp"
                                 android:maxWidth="80dp"
@@ -167,9 +173,12 @@
                                 android:visibility="gone"/>
 
                             <ImageView
+                                android:clickable="true"
+                                android:focusable="true"
                                 android:id="@+id/photo_3"
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
+                                android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_width="80dp"
                                 android:maxWidth="80dp"
@@ -177,9 +186,12 @@
                                 android:visibility="gone"/>
 
                             <ImageView
+                                android:clickable="true"
+                                android:focusable="true"
                                 android:id="@+id/photo_4"
                                 android:background="@color/text_dark_grey"
                                 android:layout_height="80dp"
+                                android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
                                 android:layout_width="80dp"
                                 android:maxWidth="80dp"
