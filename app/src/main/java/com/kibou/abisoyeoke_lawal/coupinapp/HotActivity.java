@@ -36,6 +36,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -59,6 +60,12 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public CarouselView hotCarousel;
     @BindView(R.id.hot_back)
     public ImageView hotBack;
+    @BindView(R.id.hot_fav_1)
+    public ImageView hotFav1;
+    @BindView(R.id.hot_fav_2)
+    public ImageView hotFav2;
+    @BindView(R.id.hot_fav_3)
+    public ImageView hotFav3;
     @BindView(R.id.hot_logo_1)
     public ImageView hotLogo1;
     @BindView(R.id.hot_logo_2)
@@ -107,6 +114,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     private RequestQueue requestQueue;
     private Runnable queryRun;
     private RVHotAdapter adapter;
+    private Set<String> favourites;
 
     private boolean isLoading = false;
     private boolean primeLoaded = false;
@@ -122,6 +130,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
 
         linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RVHotAdapter(merchants, this, this);
+        favourites = PreferenceMngr.getInstance().getFavourites();
 
         hotRecyclerView.setLayoutManager(linearLayoutManager);
         hotRecyclerView.setHasFixedSize(true);
@@ -202,16 +211,19 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
 
                     for (int x = 0; x < 3; x++) {
                         JSONObject featuredObject;
-                        View view;
+                        Merchant item = new Merchant();
+
                         if (x == 0) {
                             featuredObject = object.getJSONObject("featured").getJSONObject("first");
+                            item.setVisited(object.getJSONObject("visited").getBoolean("first"));
                         } else if (x == 1) {
                             featuredObject = object.getJSONObject("featured").getJSONObject("second");
+                            item.setVisited(object.getJSONObject("visited").getBoolean("second"));
                         } else {
                             featuredObject = object.getJSONObject("featured").getJSONObject("third");
+                            item.setVisited(object.getJSONObject("visited").getBoolean("third"));
                         }
 
-                        Merchant item = new Merchant();
                         item.setId(featuredObject.getString("_id"));
                         item.setBanner(featuredObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
                         item.setLogo(featuredObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
@@ -234,6 +246,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setRating(featuredObject.getJSONObject("merchantInfo").getJSONObject("rating").getInt("value"));
                         item.setLatitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
                         item.setLongitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
+                        item.setFavourite(favourites.contains(featuredObject.getString("_id")));
 
                         setUpFeatured(x, item);
                         featured.add(item);
@@ -250,7 +263,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setId(merchantObject.getString("_id"));
                         item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
                         item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + " " + merchantObject.getJSONObject("merchantInfo").getString("city"));
+                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + ", " + merchantObject.getJSONObject("merchantInfo").getString("city"));
                         item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
                         item.setEmail(merchantObject.getString("email"));
                         item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
@@ -327,7 +340,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         item.setId(merchantObject.getString("_id"));
                         item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
                         item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + " " + merchantObject.getJSONObject("merchantInfo").getString("city"));
+                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + ", " + merchantObject.getJSONObject("merchantInfo").getString("city"));
                         item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
                         item.setEmail(merchantObject.getString("email"));
                         item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
@@ -465,6 +478,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if (merchant.isVisited()) {
                     hotVisited1.setVisibility(View.VISIBLE);
                 }
+                if(merchant.isFavourite()) {
+                    hotFav1.setVisibility(View.VISIBLE);
+                }
                 Glide.with(this).load(merchant.getLogo()).into(hotLogo1);
                 break;
             case 1:
@@ -482,6 +498,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if (merchant.isVisited()) {
                     hotVisited2.setVisibility(View.VISIBLE);
                 }
+                if(merchant.isFavourite()) {
+                    hotFav2.setVisibility(View.VISIBLE);
+                }
                 Glide.with(this).load(merchant.getLogo()).into(hotLogo2);
                 break;
             case 2:
@@ -498,6 +517,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 hotrewards3.setText(rewardsText3);
                 if (merchant.isVisited()) {
                     hotVisited3.setVisibility(View.VISIBLE);
+                }
+                if(merchant.isFavourite()) {
+                    hotFav3.setVisibility(View.VISIBLE);
                 }
                 Glide.with(this).load(merchant.getLogo()).into(hotLogo3);
                 break;

@@ -59,7 +59,7 @@ public class GalleryDialog extends Dialog implements View.OnClickListener {
 
         Glide.with(getContext()).clear(pictureView);
         Glide.with(getContext()).load(pictureUrl).into(pictureView);
-        for(int x = 0; x < thumbnails.size(); x++) {
+        for(int x = 0; x < thumbnails.size() && x < 4; x++) {
             thumbViews[x].setOnClickListener(this);
             Glide.with(getContext()).load(thumbnails.get(x)).into(thumbViews[x]);
         }

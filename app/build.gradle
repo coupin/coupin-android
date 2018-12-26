@@ -9,8 +9,8 @@ android {
         // Set back to 26 for production
         // Set back to 22 for development
         targetSdkVersion 26
-        versionCode 38
-        versionName "0.0.38"
+        versionCode 40
+        versionName "0.0.40"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

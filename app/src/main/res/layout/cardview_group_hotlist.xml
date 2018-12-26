@@ -90,54 +90,50 @@
                 android:paddingRight="@dimen/margin_sm">
 
                 <ImageView
-                    android:id="@+id/hot_visited_1"
+                    android:id="@+id/hot_fav_1"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
                     android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_xs"
+                    android:layout_marginEnd="@dimen/margin_xxxs"
                     android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_marginRight="@dimen/margin_xxxs"
                     android:layout_marginStart="@dimen/margin_sm"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
+                    android:src="@drawable/ic_star"
+                    android:tint="@color/black"
+                    android:visibility="invisible"/>
+
+                <ImageView
+                    android:id="@+id/hot_visited_1"
+                    android:layout_centerVertical="true"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_toEndOf="@id/hot_fav_1"
+                    android:layout_toRightOf="@id/hot_fav_1"
+                    android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
                     android:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:ellipsize="marquee"
                     android:gravity="center_vertical"
                     android:id="@+id/hot_rewards_1"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/margin_lg"
-                    android:layout_marginLeft="@dimen/margin_lg"
-                    android:layout_marginRight="@dimen/margin_lg"
-                    android:layout_marginStart="@dimen/margin_lg"
                     android:layout_height="24dp"
-                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginStart="@dimen/margin_sm"
                     android:layout_toEndOf="@id/hot_visited_1"
                     android:layout_toRightOf="@id/hot_visited_1"
+                    android:layout_width="wrap_content"
                     android:singleLine="true"
                     android:text="@string/example_reward"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
-
-                <ImageView
-                    android:id="@+id/hot_fav_1"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_sm"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/ic_star"
-                    android:tint="@color/black"
-                    android:visibility="gone"/>
 
             </RelativeLayout>
 
@@ -229,54 +225,50 @@
                 android:paddingRight="@dimen/margin_sm">
 
                 <ImageView
-                    android:id="@+id/hot_visited_2"
+                    android:id="@+id/hot_fav_2"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
                     android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_xs"
+                    android:layout_marginEnd="@dimen/margin_xxxs"
                     android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_marginRight="@dimen/margin_xxxs"
                     android:layout_marginStart="@dimen/margin_sm"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
+                    android:src="@drawable/ic_star"
+                    android:tint="@color/black"
+                    android:visibility="invisible"/>
+
+                <ImageView
+                    android:id="@+id/hot_visited_2"
+                    android:layout_centerVertical="true"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_toEndOf="@id/hot_fav_2"
+                    android:layout_toRightOf="@id/hot_fav_2"
+                    android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
                     android:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:ellipsize="marquee"
                     android:gravity="center_vertical"
                     android:id="@+id/hot_rewards_2"
                     android:layout_centerVertical="true"
-                    android:layout_marginEnd="@dimen/margin_lg"
-                    android:layout_marginLeft="@dimen/margin_lg"
-                    android:layout_marginRight="@dimen/margin_lg"
-                    android:layout_marginStart="@dimen/margin_lg"
                     android:layout_height="24dp"
-                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginStart="@dimen/margin_sm"
                     android:layout_toEndOf="@id/hot_visited_2"
                     android:layout_toRightOf="@id/hot_visited_2"
+                    android:layout_width="wrap_content"
                     android:singleLine="true"
                     android:text="@string/example_reward"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
-
-                <ImageView
-                    android:id="@+id/hot_fav_2"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_sm"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/ic_star"
-                    android:tint="@color/black"
-                    android:visibility="gone"/>
 
             </RelativeLayout>
 
@@ -368,20 +360,32 @@
                 android:paddingRight="@dimen/margin_sm">
 
                 <ImageView
-                    android:id="@+id/hot_visited_3"
+                    android:id="@+id/hot_fav_3"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
                     android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_xs"
+                    android:layout_marginEnd="@dimen/margin_xxxs"
                     android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_xs"
+                    android:layout_marginRight="@dimen/margin_xxxs"
                     android:layout_marginStart="@dimen/margin_sm"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
+                    android:src="@drawable/ic_star"
+                    android:tint="@color/black"
+                    android:visibility="invisible"/>
+
+                <ImageView
+                    android:id="@+id/hot_visited_3"
+                    android:layout_centerVertical="true"
+                    android:layout_height="24dp"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_toEndOf="@id/hot_fav_3"
+                    android:layout_toRightOf="@id/hot_fav_3"
+                    android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
                     android:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="invisible"/>
 
                 <TextView
                     android:ellipsize="marquee"
@@ -389,33 +393,17 @@
                     android:id="@+id/hot_rewards_3"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
-                    android:layout_marginEnd="@dimen/margin_lg"
-                    android:layout_marginLeft="@dimen/margin_lg"
-                    android:layout_marginRight="@dimen/margin_lg"
-                    android:layout_marginStart="@dimen/margin_lg"
-                    android:layout_width="wrap_content"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginStart="@dimen/margin_sm"
                     android:layout_toEndOf="@id/hot_visited_3"
                     android:layout_toRightOf="@id/hot_visited_3"
+                    android:layout_width="wrap_content"
                     android:singleLine="true"
                     android:text="@string/example_reward"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
-
-                <ImageView
-                    android:id="@+id/hot_fav_3"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_centerVertical="true"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_sm"
-                    android:layout_width="wrap_content"
-                    android:src="@drawable/ic_star"
-                    android:tint="@color/black"
-                    android:visibility="gone"/>
 
             </RelativeLayout>
 
