@@ -18,13 +18,14 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Set;
 
 /**
  * Created by abisoyeoke-lawal on 8/13/17.
  */
 
 public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHolder> {
-    public ArrayList<String> blacklist;
+    public Set<String> blacklist;
     public ArrayList<Reward> rewards;
     public Context context;
     public boolean drawerVisible = false;
@@ -139,7 +140,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         });
     }
 
-    public void setBlacklist(ArrayList<String> blacklist) {
+    public void setBlacklist(Set<String> blacklist) {
         this.blacklist = blacklist;
     }
 

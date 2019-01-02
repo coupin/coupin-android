@@ -234,11 +234,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     @Override
     public void onBackPressed() {
         startActivity(new Intent(CoupinActivity.this, HomeActivity.class));
+        finish();
     }
 
     @Override
     public void onItemClick(int position) {
-
+        //TODO: Nothing
     }
 
     /**

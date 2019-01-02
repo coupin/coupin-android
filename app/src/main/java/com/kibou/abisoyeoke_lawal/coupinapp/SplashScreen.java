@@ -33,9 +33,7 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
     private int count = 0;
     private String[] permissions = {
         Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION,
-        Manifest.permission.READ_EXTERNAL_STORAGE,
-        Manifest.permission.GET_ACCOUNTS
+        Manifest.permission.ACCESS_FINE_LOCATION
     };
 
     NotificationManager notificationManager;
@@ -109,8 +107,8 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (PreferenceMngr.getInstance().isLoggedIn()) {
-                    if (PreferenceMngr.getInstance().interestsSelected()) {
+                if (PreferenceMngr.isLoggedIn()) {
+                    if (PreferenceMngr.interestsSelected()) {
                         startActivity(new Intent(SplashScreen.this, HomeActivity.class));
                         finish();
                     } else {

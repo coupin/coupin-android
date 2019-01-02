@@ -137,12 +137,14 @@ public class FavFragment extends Fragment implements MyOnClick {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                if (error != null && error.networkResponse.statusCode == 404) {
-                    favLoadingView.setVisibility(View.GONE);
-                    favEmpty.setVisibility(View.VISIBLE);
-                } else {
-                    favLoadingView.setVisibility(View.GONE);
-                    favError.setVisibility(View.VISIBLE);
+                if (FavFragment.this.isVisible()) {
+                    if (error != null && error.networkResponse.statusCode == 404) {
+                        favLoadingView.setVisibility(View.GONE);
+                        favEmpty.setVisibility(View.VISIBLE);
+                    } else {
+                        favLoadingView.setVisibility(View.GONE);
+                        favError.setVisibility(View.VISIBLE);
+                    }
                 }
             }
         }) {

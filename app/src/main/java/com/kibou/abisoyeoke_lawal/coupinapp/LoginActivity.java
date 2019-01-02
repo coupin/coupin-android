@@ -234,8 +234,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     JSONObject res = new JSONObject(response);
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
+                    String tempList = object.getJSONArray("blacklist").toString();
                     Set<String> tempArr = new HashSet<>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr);
+                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     setupNotifications();
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
@@ -292,8 +294,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     JSONObject res = new JSONObject(response);
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
+                    String tempList = object.getJSONArray("blacklist").toString();
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr);
+                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     setupNotifications();
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();

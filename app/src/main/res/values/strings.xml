@@ -51,7 +51,7 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <!--<string name="base_url">https://a08465ce.ngrok.io/api/v1</string>-->
+    <!--<string name="base_url">https://c8cb17eb.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
     <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
 
@@ -228,9 +228,9 @@
     <string-array name="age_range">
         <item>Select Age Range</item>
         <item>Under 15</item>
-        <item>15 &#8211; 25</item>
-        <item>25 &#8211; 35</item>
-        <item>35 &#8211; 45</item>
+        <item>15 - 25</item>
+        <item>25 - 35</item>
+        <item>35 - 45</item>
         <item>Above 45</item>
     </string-array>
 
@@ -305,8 +305,9 @@
     <string name="forgot_password">/auth/forgot-password</string>
     <string name="error_saved_failed">Reward(s) has been previously saved</string>
     <string name="error_message">Message cannot be less than 10 characters.</string>
-    <string name="help_success">Success! Thank you for the feedback/suggestion, we will keep working to make this a more pleasant experience.</string>
+    <string name="help_success">Success! Thank you for your feedback/suggestions we will keep working to make Coupin a more pleasant experience.</string>
     <string name="error_google">\"Error occurred while signing you up with that account. Please try another\"</string>
     <string name="recent">RECENT</string>
     <string name="error_permissions">All location permissions neither to get your location. Please try again</string>
+    <string name="empty_recommendations">No recommendations at this time please check back later</string>
 </resources>

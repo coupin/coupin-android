@@ -43,12 +43,21 @@ public class PreferenceMngr {
      * Method to set the token
      * @param token
      */
-    public static void setToken(String token, String uid, String user, Set<String> favourites) {
+    public static void setToken(String token, String uid, String user, Set<String> favourites, Set<String> blacklist) {
         preferences.edit().putBoolean("category" + uid, true).apply();
+        preferences.edit().putStringSet("blacklist", blacklist).apply();
         preferences.edit().putStringSet("favourites", favourites).apply();
         preferences.edit().putString("token", token).apply();
         preferences.edit().putString("uid", uid).apply();
         preferences.edit().putString("user", user).apply();
+    }
+
+    public Set<String> getBlacklist() {
+        return preferences.getStringSet("blacklist", null);
+    }
+
+    public void setBlacklist(Set<String> blacklist) {
+        preferences.edit().putStringSet("blacklist", blacklist).apply();
     }
 
     public Set<String> getFavourites() {

@@ -48,8 +48,29 @@
                 android:id="@+id/age_error"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/margin_sm_plus"
+                android:layout_marginStart="@dimen/margin_sm_plus"
                 android:layout_width="match_parent"
                 android:text="@string/select_age_prompt"
+                android:textAlignment="center"
+                android:textColor="@color/red"
+                android:textSize="@dimen/small_text"
+                android:visibility="gone"/>
+
+            <Spinner
+                android:id="@+id/gender"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs_plus"
+                android:layout_width="match_parent"
+                android:spinnerMode="dropdown"/>
+
+            <TextView
+                android:id="@+id/gender_error"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/margin_sm_plus"
+                android:layout_marginStart="@dimen/margin_sm_plus"
+                android:layout_width="match_parent"
+                android:text="@string/select_gender_prompt"
                 android:textAlignment="center"
                 android:textColor="@color/red"
                 android:textSize="@dimen/small_text"

@@ -44,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -107,7 +106,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     String url;
 
     private ArrayList<Date> expiryDates;
-    private ArrayList<String> blacklist;
+    private Set<String> blacklist;
 //    private ArrayList<String> favourites;
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
@@ -224,8 +223,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        // TODO: Show that it has been saved
                         MerchantActivity.super.onBackPressed();
+                        finish();
                     }
                 }, new Response.ErrorListener() {
                     @Override
@@ -292,26 +291,16 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             loadRewards();
             implementOnScrollListener();
 
-            user = new JSONObject(PreferenceMngr.getInstance().getUser());
-//            userFavourites = user.getJSONArray("favourites");
-            if (user.has("blacklist") && !user.isNull("blacklist")) {
-                JSONArray tempArray = user.getJSONArray("blacklist");
-                if (tempArray.length() > 0) {
-                    blacklist = new ArrayList<String>(Arrays.asList(tempArray.toString().substring(1, tempArray.length() - 1).replaceAll("\"", "").split(",")));
-                } else {
-                    blacklist = new ArrayList<>();
-                }
-                rvPopUpAdapter.setBlacklist(blacklist);
-            } else {
-                blacklist = new ArrayList<>();
-                rvPopUpAdapter.setBlacklist(blacklist);
-            }
+            user = new JSONObject(PreferenceMngr.getUser());
+            blacklist = PreferenceMngr.getInstance().getBlacklist();
+            rvPopUpAdapter.setBlacklist(blacklist);
 
             // Show Mobile and Gender Dialog
             if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
                 && (!user.has("mobileNumber") || !user.has("ageRange"))) {
                 experienceDialog = new ExperienceDialog(this, this, user);
                 requestGenderNumber = true;
+                experienceDialog.show();
             }
 
 
@@ -609,16 +598,20 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             return;
         }
 
+        Reward reward = values.get(index);
         if (selected) {
-            this.selected.add(values.get(index).getId());
-            this.expiryDates.add(values.get(index).getExpires());
+            this.selected.add(reward.getId());
+            this.expiryDates.add(reward.getExpires());
             selectedText.setText(this.selected.size() + " Items Selected");
             if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
+            if (!values.get(index).getMultiple()) {
+                blacklist.add(reward.getId());
+            }
         } else {
-            this.selected.remove(values.get(index).getId());
-            this.expiryDates.remove(values.get(index).getExpires());
+            this.selected.remove(reward.getId());
+            this.expiryDates.remove(reward.getExpires());
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
                 selectedHolder.setVisibility(GONE);
@@ -632,7 +625,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     @Override
     public void onItemClick(int position) {
-        if (position == 0) {
+        if (position < 0) {
+            //TODO: Nothing
+        } else if (position == 0) {
             infoDialog.dismiss();
         } else if (position == 1) {
             this.selected.clear();
@@ -738,7 +733,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     coupin.setBookingShortCode(object.getString("shortCode"));
                     coupin.setMerchantName(item.getTitle());
                     coupin.setMerchantAddress(item.getAddress());
-                    // TODO: Sort out the merchant logo
                     coupin.setLatitude(item.getLatitude());
                     coupin.setLongitude(item.getLongitude());
                     coupin.setMerchantLogo(item.getLogo());
@@ -749,10 +743,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
 
                     PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"));
+                    PreferenceMngr.getInstance().setBlacklist(blacklist);
 
                     Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
                     intent.putExtra("coupin", coupin);
                     startActivity(intent);
+                    finish();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -778,6 +774,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                 params.put("merchantId", item.getId());
                 params.put("rewardId", selected.toString());
+                params.put("blacklist", blacklist.toString());
                 params.put("expiryDate", expiryDate.toString());
 
                 return params;

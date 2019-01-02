@@ -184,8 +184,10 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     PreferenceMngr.setContext(SignUpActivity.this);
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
+                    String tempList = object.getJSONArray("blacklist").toString();
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr);
+                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);
@@ -256,8 +258,10 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     PreferenceMngr.setContext(SignUpActivity.this);
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
+                    String tempList = object.getJSONArray("favourites").toString();
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr);
+                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);

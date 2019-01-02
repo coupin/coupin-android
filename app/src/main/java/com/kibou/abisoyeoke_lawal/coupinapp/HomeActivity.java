@@ -127,7 +127,7 @@ public class HomeActivity extends AppCompatActivity {
             exiting = true;
             Toast.makeText(this, getResources().getString(R.string.exiting_msg), Toast.LENGTH_SHORT).show();
         } else {
-            finish();
+            finishAffinity();
         }
     }
 

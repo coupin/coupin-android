@@ -380,9 +380,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 } catch (Exception e) {
                     e.printStackTrace();
                     isLoading = false;
-                    if (merchants.size() > 0) {
-                        Toast.makeText(HotActivity.this, getResources().getString(R.string.error_now), Toast.LENGTH_SHORT).show();
-                    } else {
+                    if (merchants.size() == 0) {
                         loading(4);
                     }
 
@@ -400,15 +398,11 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                     loading(6);
                 }
                 if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                    if (merchants.size() > 0) {
-                        Toast.makeText(HotActivity.this, getResources().getString(R.string.empty_merchants), Toast.LENGTH_SHORT).show();
-                    } else {
+                    if (merchants.size() == 0) {
                         loading(3);
                     }
                 } else {
-                    if (merchants.size() > 0) {
-                        Toast.makeText(HotActivity.this, getResources().getString(R.string.error_recent), Toast.LENGTH_SHORT).show();
-                    } else {
+                    if (merchants.size() == 0) {
                         loading(4);
                     }
                 }

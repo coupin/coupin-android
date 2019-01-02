@@ -46,13 +46,16 @@ public class ExperienceDialog extends Dialog {
     private LinearLayout experienceMain;
     private RelativeLayout experienceSuccess;
     private Spinner ageSpinner;
+    private Spinner genderSpinner;
     private TextView ageError;
+    private TextView genderError;
     private TextView experienceClose;
 
     private Context context;
     private JSONObject user;
     private MyOnClick onClick;
     private String age;
+    private String gender;
     private String number;
     private String userId;
 
@@ -90,12 +93,18 @@ public class ExperienceDialog extends Dialog {
         experienceMain = (LinearLayout) findViewById(R.id.experience_main);
         experienceSuccess = (RelativeLayout) findViewById(R.id.experience_success);
         ageSpinner = (Spinner) findViewById(R.id.age);
+        genderSpinner = (Spinner) findViewById(R.id.gender);
         ageError = (TextView) findViewById(R.id.age_error);
+        genderError = (TextView) findViewById(R.id.gender_error);
         experienceClose = (TextView) findViewById(R.id.experience_close);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
             R.array.age_range, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter<CharSequence> adapter2 = ArrayAdapter.createFromResource(context,
+            R.array.genders, android.R.layout.simple_spinner_item);
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         try {
             userId = user.getString("_id");
@@ -142,6 +151,20 @@ public class ExperienceDialog extends Dialog {
             }
         });
 
+        genderSpinner.setAdapter(adapter2);
+        genderSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                gender = parent.getItemAtPosition(position).toString();
+                Toast.makeText(context, parent.getItemAtPosition(position).toString(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                gender = null;
+            }
+        });
+
         btnContinue.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -153,6 +176,11 @@ public class ExperienceDialog extends Dialog {
             if (age.toLowerCase().equals("select age range")) {
                 error = true;
                 ageError.setVisibility(View.VISIBLE);
+            }
+
+            if (gender.toLowerCase().equals("select gender")) {
+                error = true;
+                genderError.setVisibility(View.VISIBLE);
             }
 
             if (number == null || number.length() < 11 || !StringUtils.isPhoneNumber(number)) {
@@ -202,6 +230,7 @@ public class ExperienceDialog extends Dialog {
 
                 params.put("mobileNumber", phoneNumber.getEditableText().toString());
                 params.put("ageRange", age.toLowerCase());
+                params.put("sex", gender.toLowerCase());
 
                 return params;
             }
@@ -225,7 +254,7 @@ public class ExperienceDialog extends Dialog {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                onClick.onItemClick(2);
+                onClick.onItemClick(-1);
                 dismiss();
             }
         }, 3000);
