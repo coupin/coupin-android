@@ -46,6 +46,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -106,7 +107,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     String url;
 
     private ArrayList<Date> expiryDates;
-    private Set<String> blacklist;
+    private Set<String> tempBlackList = new HashSet<>();
 //    private ArrayList<String> favourites;
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
@@ -147,23 +148,67 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         photo3.setOnClickListener(this);
         photo4.setOnClickListener(this);
 
-        Bundle extra = getIntent().getExtras();
-        if (extra.getString("merchant", null) == null) {
-            try {
-                item = (Merchant) extra.getSerializable("object");
-                if (item.getRewards() != null) {
-                    resArray = new JSONArray(item.getRewards());
-                } else {
-                    resArray = new JSONArray();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
         expiryDates = new ArrayList<>();
         pictures = new ArrayList<>();
         selected = new ArrayList<>();
         values = new ArrayList<>();
+
+        linearLayoutManager = new LinearLayoutManager(this);
+        rvPopUpAdapter = new RVPopUpAdapter(values, this, this);
+        rvRewards.setLayoutManager(linearLayoutManager);
+        rvRewards.setHasFixedSize(true);
+        rvRewards.setAdapter(rvPopUpAdapter);
+
+        Bundle extra = getIntent().getExtras();
+        try {
+            if (extra.getString("merchant", null) == null) {
+                item = (Merchant) extra.getSerializable("object");
+            } else {
+                res = new JSONObject(extra.getString("merchant"));
+                item = new Merchant();
+                item.setId(res.getString("_id"));
+                item.setPicture(R.drawable.slide1);
+                item.setAddress(res.getString("address"));
+                item.setDetails(res.getString("details"));
+                item.setEmail(res.getString("email"));
+                item.setMobile(res.getString("mobile"));
+                item.setTitle(res.getString("name"));
+                item.setLatitude(res.getJSONObject("location").getDouble("lat"));
+                item.setLongitude(res.getJSONObject("location").getDouble("long"));
+                item.setRating(res.getInt("rating"));
+                item.setLogo(res.getJSONObject("logo").getString("url"));
+                item.setBanner(res.getJSONObject("banner").getString("url"));
+            }
+
+            merchantId = item.getId();
+            Glide.with(this).load(item.getBanner()).into(bannerHolder);
+            merchantName.setText(item.getTitle());
+            merchantAddress.setText(item.getAddress());
+            merchantPhone.setText("Tel: " + item.getMobile());
+            merchantRating.setRating(item.getRating());
+            ratingText.setText(String.valueOf(item.getRating()) + "/5");
+
+            user = new JSONObject(PreferenceMngr.getUser());
+            tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
+            rvPopUpAdapter.setBlacklist(tempBlackList);
+
+            // Show Mobile and Gender Dialog
+            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
+                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
+                experienceDialog = new ExperienceDialog(this, this, user);
+                requestGenderNumber = true;
+                experienceDialog.show();
+            }
+
+            favourites = PreferenceMngr.getInstance().getFavourites();
+            if (favourites.contains(item.getId())) {
+                favourite = true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        implementOnScrollListener();
+        loadRewards();
 
         infoDialog = new RewardInfoDialog(this, this);
         merchantPhone.setOnClickListener(new View.OnClickListener() {
@@ -178,12 +223,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 startActivity(intent);
             }
         });
-
-        linearLayoutManager = new LinearLayoutManager(this);
-        rvPopUpAdapter = new RVPopUpAdapter(values, this, this);
-        rvRewards.setLayoutManager(linearLayoutManager);
-        rvRewards.setHasFixedSize(true);
-        rvRewards.setAdapter(rvPopUpAdapter);
 
         handler = new Handler();
 
@@ -262,57 +301,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 requestQueue.add(stringRequest);
             }
         });
-
-        try {
-            if (item == null) {
-                res = new JSONObject(extra.getString("merchant"));
-                item = new Merchant();
-                item.setId(res.getString("_id"));
-                item.setPicture(R.drawable.slide1);
-                item.setAddress(res.getString("address"));
-                item.setDetails(res.getString("details"));
-                item.setEmail(res.getString("email"));
-                item.setMobile(res.getString("mobile"));
-                item.setTitle(res.getString("name"));
-                item.setLatitude(res.getJSONObject("location").getDouble("lat"));
-                item.setLongitude(res.getJSONObject("location").getDouble("long"));
-                item.setRating(res.getInt("rating"));
-                item.setLogo(res.getJSONObject("logo").getString("url"));
-                item.setBanner(res.getJSONObject("banner").getString("url"));
-                implementOnScrollListener();
-            }
-            merchantId = item.getId();
-            Glide.with(this).load(item.getBanner()).into(bannerHolder);
-            merchantName.setText(item.getTitle());
-            merchantAddress.setText(item.getAddress());
-            merchantPhone.setText("Tel: " + item.getMobile());
-            merchantRating.setRating(item.getRating());
-            ratingText.setText(String.valueOf(item.getRating()) + "/5");
-            loadRewards();
-            implementOnScrollListener();
-
-            user = new JSONObject(PreferenceMngr.getUser());
-            blacklist = PreferenceMngr.getInstance().getBlacklist();
-            rvPopUpAdapter.setBlacklist(blacklist);
-
-            // Show Mobile and Gender Dialog
-            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
-                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
-                experienceDialog = new ExperienceDialog(this, this, user);
-                requestGenderNumber = true;
-                experienceDialog.show();
-            }
-
-
-//            String temp = userFavourites.toString();
-//            favourites = new ArrayList<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-            favourites = PreferenceMngr.getInstance().getFavourites();
-            if (favourites.contains(item.getId())) {
-                favourite = true;
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**
@@ -606,8 +594,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
-            if (!values.get(index).getMultiple()) {
-                blacklist.add(reward.getId());
+            if (!reward.getMultiple()) {
+                tempBlackList.add(reward.getId());
             }
         } else {
             this.selected.remove(reward.getId());
@@ -615,6 +603,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
                 selectedHolder.setVisibility(GONE);
+            }
+            if (tempBlackList.contains(reward.getId())) {
+                tempBlackList.remove(reward.getId());
             }
         }
     }
@@ -743,7 +734,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
 
                     PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"));
-                    PreferenceMngr.getInstance().setBlacklist(blacklist);
+                    PreferenceMngr.getInstance().setBlacklist(tempBlackList);
 
                     Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
                     intent.putExtra("coupin", coupin);
@@ -774,7 +765,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                 params.put("merchantId", item.getId());
                 params.put("rewardId", selected.toString());
-                params.put("blacklist", blacklist.toString());
+                params.put("blacklist", tempBlackList.toString());
                 params.put("expiryDate", expiryDate.toString());
 
                 return params;

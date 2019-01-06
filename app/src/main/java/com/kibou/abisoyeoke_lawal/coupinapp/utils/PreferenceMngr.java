@@ -14,6 +14,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -53,7 +54,7 @@ public class PreferenceMngr {
     }
 
     public Set<String> getBlacklist() {
-        return preferences.getStringSet("blacklist", null);
+        return preferences.getStringSet("blacklist", new HashSet<String>());
     }
 
     public void setBlacklist(Set<String> blacklist) {
@@ -61,7 +62,7 @@ public class PreferenceMngr {
     }
 
     public Set<String> getFavourites() {
-        return preferences.getStringSet("favourites", null);
+        return preferences.getStringSet("favourites", new HashSet<String>());
     }
 
     public void setFavourites(Set<String> favourites) {

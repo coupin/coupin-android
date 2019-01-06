@@ -51,7 +51,7 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <!--<string name="base_url">https://c8cb17eb.ngrok.io/api/v1</string>-->
+    <!--<string name="base_url">https://a3f95481.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
     <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
 

@@ -194,6 +194,7 @@ public class InterestsActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 PreferenceMngr.setInterests(true);
+                PreferenceMngr.setUser(response);
                 startActivity(new Intent(InterestsActivity.this, HomeActivity.class));
             }
         }, new Response.ErrorListener() {
