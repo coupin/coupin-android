@@ -251,6 +251,48 @@
 
             </LinearLayout>
 
+            <LinearLayout
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:padding="@dimen/padding_sm"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_width="match_parent"
+                    android:text="@string/label_age"
+                    android:textColor="@color/text_med_grey"
+                    android:textSize="@dimen/large_text"/>
+
+                <Spinner
+                    android:background="@drawable/background_edit_false"
+                    android:clickable="false"
+                    android:focusable="false"
+                    android:id="@+id/profile_age"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:maxLines="1"
+                    android:spinnerMode="dropdown"
+                    android:padding="@dimen/padding_sm"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/large_text"/>
+
+                <TextView
+                    android:id="@+id/age_error"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_width="match_parent"
+                    android:text="@string/select_age_prompt"
+                    android:textColor="@color/red"
+                    android:textSize="@dimen/large_text"
+                    android:visibility="gone"/>
+
+            </LinearLayout>
+
             <Button
                 android:background="@drawable/round_edges_light_grey"
                 android:id="@+id/profile_password"

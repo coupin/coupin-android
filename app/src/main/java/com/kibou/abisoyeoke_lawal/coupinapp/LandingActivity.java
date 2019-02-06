@@ -71,7 +71,7 @@ public class LandingActivity extends AppCompatActivity {
 
     public void play() {
         try {
-            backVideo.setRawData(R.raw.back);
+            backVideo.setRawData(R.raw.back_small);
             backVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
                 @Override
                 public void onPrepared(MediaPlayer mp) {

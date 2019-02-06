@@ -34,19 +34,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
 
-public class EditActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener, View.OnClickListener {
+public class EditActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.profile_password)
     public Button changePasswordBtn;
     @BindView(R.id.profile_picture)
     public CircleImageView profilePicture;
     @BindView(R.id.edit_back)
     public ImageView editBack;
+    @BindView(R.id.profile_age)
+    public Spinner profileAgeRange;
     @BindView(R.id.profile_gender)
     public Spinner profileGender;
     @BindView(R.id.edit_false)
     public TextView editFalse;
     @BindView(R.id.edit_true)
     public TextView editTrue;
+    @BindView(R.id.age_error)
+    public TextView ageError;
     @BindView(R.id.gender_error)
     public TextView genderError;
     @BindView(R.id.profile_email)
@@ -58,6 +62,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
     @BindView(R.id.profile_mobile)
     public TextView profileMobile;
 
+    private String ageRange;
     private String email;
     private String gender;
     private String mobileNumber;
@@ -82,10 +87,24 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
         loadingDialog = new LoadingDialog(this, R.style.Loading_Dialog);
 
 
-        profileGender.setOnItemSelectedListener(this);
-
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.genders, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        ArrayAdapter<CharSequence> adapterAge = ArrayAdapter.createFromResource(this, R.array.age_range, android.R.layout.simple_spinner_item);
+        adapterAge.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        profileAgeRange.setAdapter(adapterAge);
+        profileAgeRange.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                ageRange = adapterView.getItemAtPosition(i).toString().toLowerCase();
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                ageRange = null;
+            }
+        });
 
         profileGender.setAdapter(adapter);
         profileGender.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -139,6 +158,27 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
             }
 
+            if(user.has("ageRange")) {
+                switch (user.getString("ageRange")) {
+                    case "under 15":
+                        profileAgeRange.setSelection(1);
+                        break;
+                    case "15 - 25":
+                        profileAgeRange.setSelection(2);
+                        break;
+                    case "25 - 35":
+                        profileAgeRange.setSelection(3);
+                        break;
+                    case "35 - 45":
+                        profileAgeRange.setSelection(4);
+                        break;
+                    case "above 45":
+                        profileAgeRange.setSelection(5);
+                        break;
+                }
+            }
+
+            profileAgeRange.setEnabled(false);
             profileGender.setEnabled(false);
 
         } catch (Exception e) {
@@ -151,6 +191,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
      */
     private void updateInfo() {
         boolean error = false;
+        ageError.setVisibility(View.GONE);
         genderError.setVisibility(View.GONE);
         loadingDialog.show();
 
@@ -176,6 +217,11 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             error = true;
             profileMobile.setError(getString(R.string.error_phone_number));
             profileMobile.requestFocus();
+        }
+
+        if (ageRange != null && ageRange.equals("select age range")) {
+            error = true;
+            ageError.setVisibility(View.VISIBLE);
         }
 
         if (gender != null && gender.equals("select gender")) {
@@ -214,6 +260,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setBackground(getResources().getDrawable(R.drawable.background_edit_true));
             profileMobile.setFocusable(true);
             profileMobile .setFocusableInTouchMode(true);
+            profileAgeRange.setEnabled(true);
             profileGender.setEnabled(true);
         } else {
             editMode = false;
@@ -229,6 +276,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
             profileMobile.setBackground(getResources().getDrawable(R.drawable.background_edit_false));
             profileMobile.setFocusable(false);
             profileMobile .setFocusableInTouchMode(false);
+            profileAgeRange.setEnabled(false);
             profileGender.setEnabled(false);
         }
 
@@ -282,6 +330,7 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
                 }
                 params.put("email", email);
                 params.put("sex", gender);
+                params.put("ageRange", ageRange);
 
                 return params;
             }
@@ -301,16 +350,6 @@ public class EditActivity extends AppCompatActivity implements AdapterView.OnIte
 
     private void result(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        gender = parent.getItemAtPosition(position).toString().toLowerCase();
-    }
-
-    @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-        gender = null;
     }
 
     /**

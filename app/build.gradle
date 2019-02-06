@@ -6,11 +6,9 @@ android {
     defaultConfig {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 16
-        // Set back to 26 for production
-        // Set back to 22 for development
         targetSdkVersion 26
-        versionCode 45
-        versionName "0.0.45"
+        versionCode 48
+        versionName "0.0.48"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

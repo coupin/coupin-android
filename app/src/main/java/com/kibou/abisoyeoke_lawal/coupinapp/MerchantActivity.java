@@ -616,9 +616,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     @Override
     public void onItemClick(int position) {
-        if (position < 0) {
-            //TODO: Nothing
-        } else if (position == 0) {
+        if (position == 0) {
             infoDialog.dismiss();
         } else if (position == 1) {
             this.selected.clear();

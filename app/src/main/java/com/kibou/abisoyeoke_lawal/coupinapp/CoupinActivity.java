@@ -34,7 +34,9 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -77,6 +79,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     RewardListItem coupin;
     RVCoupinAdapter rvAdapter;
     RequestQueue requestQueue;
+    Set<String> tempBlackList = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +107,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         Glide.with(this).load(coupin.getMerchantLogo()).into(merchantLogo);
 
         coupinRewards = new ArrayList<>();
+        tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(

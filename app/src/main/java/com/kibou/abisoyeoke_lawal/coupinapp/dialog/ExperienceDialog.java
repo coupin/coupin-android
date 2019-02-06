@@ -87,16 +87,16 @@ public class ExperienceDialog extends Dialog {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_experience);
 
-        phoneNumber = (AutoCompleteTextView) findViewById(R.id.phone_number);
-        loading = (AVLoadingIndicatorView) findViewById(R.id.experience_loading);
-        btnContinue = (Button) findViewById(R.id.experience_continue);
-        experienceMain = (LinearLayout) findViewById(R.id.experience_main);
-        experienceSuccess = (RelativeLayout) findViewById(R.id.experience_success);
-        ageSpinner = (Spinner) findViewById(R.id.age);
-        genderSpinner = (Spinner) findViewById(R.id.gender);
-        ageError = (TextView) findViewById(R.id.age_error);
-        genderError = (TextView) findViewById(R.id.gender_error);
-        experienceClose = (TextView) findViewById(R.id.experience_close);
+        phoneNumber = findViewById(R.id.phone_number);
+        loading = findViewById(R.id.experience_loading);
+        btnContinue = findViewById(R.id.experience_continue);
+        experienceMain = findViewById(R.id.experience_main);
+        experienceSuccess = findViewById(R.id.experience_success);
+        ageSpinner = findViewById(R.id.age);
+        genderSpinner = findViewById(R.id.gender);
+        ageError = findViewById(R.id.age_error);
+        genderError = findViewById(R.id.gender_error);
+        experienceClose = findViewById(R.id.experience_close);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context,
             R.array.age_range, android.R.layout.simple_spinner_item);
@@ -107,7 +107,7 @@ public class ExperienceDialog extends Dialog {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         try {
-            userId = user.getString("_id");
+            userId = PreferenceMngr.getInstance().getUserId();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -250,7 +250,7 @@ public class ExperienceDialog extends Dialog {
     private void showSuccess() {
         experienceMain.setVisibility(View.GONE);
         experienceSuccess.setVisibility(View.VISIBLE);
-        final Handler handler = new Handler();
+        Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
