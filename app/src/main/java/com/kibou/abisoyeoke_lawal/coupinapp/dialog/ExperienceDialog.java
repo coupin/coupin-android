@@ -254,7 +254,7 @@ public class ExperienceDialog extends Dialog {
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                onClick.onItemClick(-1);
+                onClick.onItemClick(-2);
                 dismiss();
             }
         }, 3000);
