@@ -617,6 +617,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     @Override
     public void onItemClick(int position) {
         if (position == -2) {
+            requestGenderNumber = false;
             return;
         } else if (position == 0) {
             infoDialog.dismiss();
