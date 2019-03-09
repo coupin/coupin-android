@@ -7,13 +7,19 @@ import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
-import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -38,8 +44,11 @@ public class NotificationActivity extends AppCompatActivity {
     @BindView(R.id.toggle_receive)
     public ToggleButton toggleReceive;
 
-    public boolean def = false;
-    public boolean[] previousSelection;
+    private boolean notify;
+    private boolean[] previousSelection;
+    private PreferenceMngr preferenceMngr;
+    private RequestQueue requestQueue;
+    private String days;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,7 +56,10 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
 
-        previousSelection = PreferenceMngr.getNotificationSelection();
+        preferenceMngr = PreferenceMngr.getInstance();
+        requestQueue = Volley.newRequestQueue(getApplicationContext());
+
+        previousSelection = preferenceMngr.getNotificationSelection();
 
         notificationBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,16 +69,14 @@ public class NotificationActivity extends AppCompatActivity {
         });
 
         if (previousSelection[0]) {
-            def = true;
             toggleReceive.setChecked(true);
             toggleReceived(true);
+            notify = true;
         }
 
         if (previousSelection[1]) {
             toggleWeekends.setChecked(true);
-        }
-
-        if (previousSelection[2]) {
+        } else {
             toggleWeekdays.setChecked(true);
         }
 
@@ -78,6 +88,7 @@ public class NotificationActivity extends AppCompatActivity {
                 } else {
                     toggleReceived(false);
                 }
+                notify = isChecked;
                 notificationButton.setVisibility(View.VISIBLE);
             }
         });
@@ -89,7 +100,8 @@ public class NotificationActivity extends AppCompatActivity {
                     toggleWeekdays.setChecked(false);
                 }
 
-                toggleWeekends.setChecked(isChecked);
+//                toggleWeekends.setChecked(isChecked);
+                days = "weekends";
                 notificationButton.setVisibility(View.VISIBLE);
             }
         });
@@ -101,7 +113,8 @@ public class NotificationActivity extends AppCompatActivity {
                     toggleWeekends.setChecked(false);
                 }
 
-                toggleWeekdays.setChecked(isChecked);
+//                toggleWeekdays.setChecked(isChecked);
+                days = "weekdays";
                 notificationButton.setVisibility(View.VISIBLE);
             }
         });
@@ -110,43 +123,56 @@ public class NotificationActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked(), toggleWeekdays.isChecked());
-                if (toggleReceive.isChecked()) {
-                    Calendar calendar = Calendar.getInstance();
-                    calendar.set(Calendar.HOUR_OF_DAY, 14);
-                    calendar.set(Calendar.MINUTE, 10);
-
-                    if (toggleWeekends.isChecked()) {
-                        calendar.set(Calendar.DAY_OF_WEEK, 6);
-                        NotificationScheduler.setReminder(
-                            NotificationActivity.this,
-                            AlarmReceiver.class,
-                            calendar
-                        );
-                    }
-
-                    if (toggleWeekdays.isChecked()) {
-                        calendar.set(Calendar.DAY_OF_WEEK, 2);
-                        NotificationScheduler.setReminder(
-                            NotificationActivity.this,
-                            AlarmReceiver.class,
-                            calendar
-                        );
-                    }
-                } else {
-                    NotificationScheduler.cancelReminder(NotificationActivity.this, AlarmReceiver.class);
-                }
-
-                onBackPressed();
+                preferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked());
+                notificationButton.setEnabled(false);
+                updateNotifications();
             }
         });
+    }
+
+    private void updateNotifications() {
+        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + preferenceMngr.getUserId();
+
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                PreferenceMngr.setUser(response);
+                onBackPressed();
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                error.printStackTrace();
+                notificationButton.setEnabled(true);
+                Toast.makeText(NotificationActivity.this, "Failed to update notifications.", Toast.LENGTH_SHORT).show();
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<String, String>();
+
+                params.put("notify", String.valueOf(notify));
+                params.put("days", days);
+
+                return params;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                Map<String, String> headers = new HashMap<>();
+                headers.put("Authorization", PreferenceMngr.getToken());
+
+                return headers;
+            }
+        };
+        requestQueue.add(stringRequest);
     }
 
     /**
      * Display view dependent on notification value
      * @param value
      */
-    public void toggleReceived(boolean value) {
+    private void toggleReceived(boolean value) {
         if (value) {
             toggleWeekdays.setClickable(true);
             toggleWeekends.setClickable(true);

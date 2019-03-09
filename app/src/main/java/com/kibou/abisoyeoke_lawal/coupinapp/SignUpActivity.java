@@ -81,15 +81,17 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
     RequestQueue reqQueue = null;
     String url = "";
 
-    public CallbackManager callbackManager;
-    public GoogleSignInClient gsc;
-    public GoogleSignInOptions gso;
+    private CallbackManager callbackManager;
+    private GoogleSignInClient gsc;
+    private GoogleSignInOptions gso;
+    private PreferenceMngr preferenceMngr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_up);
         ButterKnife.bind(this);
+        preferenceMngr = PreferenceMngr.getInstance();
         reqQueue = Volley.newRequestQueue(this);
 
         url = getString(R.string.base_url) + getString(R.string.ep_register_user);
@@ -188,6 +190,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
+                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);
@@ -255,13 +258,14 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
             public void onResponse(String response) {
                 try {
                     JSONObject res = new JSONObject(response);
-                    PreferenceMngr.setContext(SignUpActivity.this);
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
                     String tempList = object.getJSONArray("favourites").toString();
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
+                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
+
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);

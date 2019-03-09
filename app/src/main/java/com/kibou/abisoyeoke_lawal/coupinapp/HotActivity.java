@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -125,6 +126,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hot);
         ButterKnife.bind(this);
+
+        Log.v("Coupin Hot", "Got in");
+        Log.v("Coupin Hot", "Got in");
 
         requestQueue = Volley.newRequestQueue(this);
 
@@ -296,7 +300,12 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                     Toast.makeText(HotActivity.this,
                         "Something went wrong while getting your featured information.",
                         Toast.LENGTH_SHORT).show();
-                    HotActivity.this.onBackPressed();
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            HotActivity.this.onBackPressed();
+                        }
+                    }, 2000);
                 }
             }
         }, new Response.ErrorListener() {

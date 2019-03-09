@@ -48,16 +48,12 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
-import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -106,13 +102,14 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     public View mProgressView;
     public View focusView;
 
-    public RequestQueue requestQueue;
-    public String socialUrl;
-    public String url;
+    private RequestQueue requestQueue;
+    private String socialUrl;
+    private String url;
 
-    public CallbackManager callbackManager;
-    public GoogleSignInClient gsc;
-    public GoogleSignInOptions gso;
+    private CallbackManager callbackManager;
+    private GoogleSignInClient gsc;
+    private GoogleSignInOptions gso;
+    private PreferenceMngr preferenceMngr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,6 +118,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         ButterKnife.bind(this);
 
         PreferenceMngr.setContext(this);
+        preferenceMngr = PreferenceMngr.getInstance();
 
         // Set up the login form.
         populateAutoComplete();
@@ -238,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     Set<String> tempArr = new HashSet<>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
-                    setupNotifications();
+                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
                 } catch (Exception e) {
@@ -298,7 +296,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
-                    setupNotifications();
+                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
                 } catch (Exception e) {
@@ -339,18 +337,6 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         };
 
         requestQueue.add(stringRequest);
-    }
-
-    public void setupNotifications() {
-        if (!PreferenceMngr.getNotificationSelection()[0]) {
-            Calendar calendar = Calendar.getInstance();
-            calendar.set(Calendar.DAY_OF_WEEK, 2);
-            calendar.set(Calendar.HOUR_OF_DAY, 11);
-            calendar.set(Calendar.MINUTE, 00);
-            NotificationScheduler.setReminder(LoginActivity.this, AlarmReceiver.class, calendar);
-            PreferenceMngr.notificationSelection(true, false, true);
-            PreferenceMngr.setLastChecked((new Date()).toString());
-        }
     }
 
     /**

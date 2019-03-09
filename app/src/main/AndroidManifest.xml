@@ -25,12 +25,28 @@
         android:allowBackup="true"
         android:fullBackupContent="false">
 
-        <meta-data
-            android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/google_maps_key_pro"/>
         <!--<meta-data-->
             <!--android:name="com.google.android.maps.v2.API_KEY"-->
-            <!--android:value="@string/google_maps_key"/>-->
+            <!--android:value="@string/google_maps_key_pro"/>-->
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="@string/google_maps_key"/>
+
+        <!-- For GCM -->
+        <service android:name=".services.MyFirebaseMessagingService"
+                 android:stopWithTask="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_clogo"/>
+
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/colorAccent"/>
 
         <!-- For Facebook Login -->
         <meta-data

@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -29,6 +30,7 @@ import butterknife.ButterKnife;
 
 public class SplashScreen extends AppCompatActivity implements MyOnSelect {
     private boolean check = false;
+    private Bundle extras;
     private final int PERMISSION_ALL = 1;
     private int count = 0;
     private String[] permissions = {
@@ -72,6 +74,9 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
                 updateDialog = new UpdateDialog(this, this);
                 updateDialog.show();
             } else {
+                extras = getIntent().getExtras();
+                Log.v("Coupin Etras", extras.toString());
+                Log.v("Coupin Etras", "" + extras.getString("navigateTo"));
                 proceed();
             }
         }
@@ -108,11 +113,19 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
             @Override
             public void run() {
                 if (PreferenceMngr.isLoggedIn()) {
-                    if (PreferenceMngr.interestsSelected()) {
-                        startActivity(new Intent(SplashScreen.this, HomeActivity.class));
-                        finish();
-                    } else {
+                    if (!PreferenceMngr.interestsSelected()) {
                         startActivity(new Intent(SplashScreen.this, InterestsActivity.class));
+                        finish();
+                    } else if (extras != null) {
+                        if ("hot".equals(extras.getString("navigateTo"))) {
+                            startActivity(new Intent(SplashScreen.this, HotActivity.class));
+                            finish();
+                        } else {
+                            startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+                            finish();
+                        }
+                    } else {
+                        startActivity(new Intent(SplashScreen.this, HomeActivity.class));
                         finish();
                     }
                 } else {

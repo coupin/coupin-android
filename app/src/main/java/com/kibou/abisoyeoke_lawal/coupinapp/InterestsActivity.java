@@ -23,14 +23,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
-import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -138,15 +134,6 @@ public class InterestsActivity extends AppCompatActivity {
                 sendInterestInfo();
             }
         });
-
-        PreferenceMngr.setInterests(false);
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_WEEK, 2);
-        calendar.set(Calendar.HOUR, 11);
-        calendar.set(Calendar.MINUTE, 00);
-        NotificationScheduler.setReminder(InterestsActivity.this, AlarmReceiver.class, calendar);
-        PreferenceMngr.notificationSelection(true, true, false);
-        PreferenceMngr.setLastChecked((new Date()).toString());
     }
 
     private void play() {

@@ -18,7 +18,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
 
-import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,20 +29,20 @@ public class AlarmReceiver extends BroadcastReceiver {
         if (intent.getAction() != null && context != null) {
             if (intent.getAction().equalsIgnoreCase(Intent.ACTION_BOOT_COMPLETED)) {
                 Log.v(TAG, "Boot Completed");
-                Calendar calendar = Calendar.getInstance();
-                boolean[] options = PreferenceMngr.getNotificationSelection();
-                if (options != null && options[0]) {
-                    if (options[1]) {
-                        calendar.set(Calendar.DAY_OF_WEEK, 6);
-                        calendar.set(Calendar.HOUR_OF_DAY, 11);
-                        calendar.set(Calendar.MINUTE, 00);
-                    } else {
-                        calendar.set(Calendar.DAY_OF_WEEK, 2);
-                        calendar.set(Calendar.HOUR_OF_DAY, 11);
-                        calendar.set(Calendar.MINUTE, 00);
-                    }
-                    NotificationScheduler.setReminder(context, AlarmReceiver.class, calendar);
-                }
+//                Calendar calendar = Calendar.getInstance();
+//                boolean[] options = PreferenceMngr.getNotificationSelection();
+//                if (options != null && options[0]) {
+//                    if (options[1]) {
+//                        calendar.set(Calendar.DAY_OF_WEEK, 6);
+//                        calendar.set(Calendar.HOUR_OF_DAY, 11);
+//                        calendar.set(Calendar.MINUTE, 00);
+//                    } else {
+//                        calendar.set(Calendar.DAY_OF_WEEK, 2);
+//                        calendar.set(Calendar.HOUR_OF_DAY, 11);
+//                        calendar.set(Calendar.MINUTE, 00);
+//                    }
+//                    NotificationScheduler.setReminder(context, AlarmReceiver.class, calendar);
+//                }
                 return;
             }
         }

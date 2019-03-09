@@ -51,9 +51,9 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <!--<string name="base_url">https://af45cdf0.ngrok.io/api/v1</string>-->
+    <string name="base_url">https://c693b9ba.ngrok.io/api/v1</string>
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>
+    <!--<string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -74,6 +74,7 @@
     <string name="ep_api_user_category">/customer/category</string>
     <string name="ep_api_user_favourite">/customer/favourites</string>
     <string name="ep_api_user_feedback">/customer/feedback</string>
+    <string name="ep_api_user_notifications">/customer/notifications/%s</string>
 
     <!--Coupin Endpoints-->
     <string name="ep_generate_code">/coupin</string>

@@ -24,7 +24,6 @@ import java.util.Set;
 public class PreferenceMngr {
     private static PreferenceMngr ourInstance = new PreferenceMngr();
     private static SharedPreferences preferences = null;
-    private static Context currentContext = null;
     private RequestQueue requestQueue;
 
     public static PreferenceMngr getInstance() {
@@ -36,7 +35,6 @@ public class PreferenceMngr {
     }
 
     public static void setContext(Context context) {
-        currentContext = context;
         preferences = context.getSharedPreferences(context.getString(R.string.main_package), Context.MODE_PRIVATE);
     }
 
@@ -97,15 +95,6 @@ public class PreferenceMngr {
     }
 
     /**
-     * Method to get the token
-     * @return token
-     */
-
-    public static String getTimestamp() {
-        return preferences.getString("timestamp", null);
-    }
-
-    /**
      * Get mobile number
      * @return number
      */
@@ -119,14 +108,6 @@ public class PreferenceMngr {
      */
     public static void setMobileNumber(String number) {
         preferences.edit().putString("mobileNumber", number).apply();
-    }
-
-    /**
-     * Method to set the mobile number
-     * @param timestamp
-     */
-    public static void setTimestamp(String timestamp) {
-        preferences.edit().putString("timestamp", timestamp).apply();
     }
 
     /**
@@ -230,6 +211,14 @@ public class PreferenceMngr {
         }
     }
 
+    public String getNotificationToken() {
+        return preferences.getString("notificationId", null);
+    }
+
+    public void setNotificationToken(String token) {
+        preferences.edit().putString("notificationId", token).apply();
+    }
+
     /**
      * Get last checked date
      * @return
@@ -238,27 +227,24 @@ public class PreferenceMngr {
         return preferences.getString("lastChecked", null);
     }
 
-    public static void setLastChecked(String dateString) {
-        preferences.edit().putString("lastChecked", dateString).apply();
-    }
-
     /**
      * Set last checked date
-     * @param notify
-     * @param weekend
+     * @param notify notify or not
+     * @param isWeekend true if weekends
      */
-    public static void notificationSelection(boolean notify, boolean weekend, boolean weekday) {
+    public void notificationSelection(boolean notify, boolean isWeekend) {
+        String days = isWeekend ? "weekends" : "weekdays";
+        preferences.edit().putString("notifyDays", days).apply();
         preferences.edit().putBoolean("notify", notify).apply();
-        preferences.edit().putBoolean("weekend", weekend).apply();
-        preferences.edit().putBoolean("weekday", weekday).apply();
     }
 
     /**
      * Get previous notification selection
      * @return array of boolean values
      */
-    public static boolean[] getNotificationSelection() {
-        return new boolean[]{preferences.getBoolean("notify", false), preferences.getBoolean("weekend", false), preferences.getBoolean("weekday", false)};
+    public boolean[] getNotificationSelection() {
+        Boolean weekends =  "weekends".equals(preferences.getString("notifyDays", null));
+        return new boolean[]{preferences.getBoolean("notify", false), weekends};
     }
 
     public void setRequestQueue(RequestQueue requestQueue) {
