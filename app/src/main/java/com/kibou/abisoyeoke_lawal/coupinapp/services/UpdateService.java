@@ -64,13 +64,15 @@ public class UpdateService extends Service {
             StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    PreferenceMngr.setContext(getApplicationContext());
-                    int code = getVersionCode(getApplicationContext());
-                    int newCode = Integer.valueOf(response);
-                    if (code < newCode && PreferenceMngr.getLastAttempt() < newCode) {
-                        PreferenceMngr.getInstance().setUpdate(true);
-                    } else {
-                        PreferenceMngr.getInstance().setUpdate(false);
+                    if (!response.isEmpty()) {
+                        PreferenceMngr.setContext(getApplicationContext());
+                        int code = getVersionCode(getApplicationContext());
+                        int newCode = Integer.valueOf(response);
+                        if (code < newCode && PreferenceMngr.getLastAttempt() < newCode) {
+                            PreferenceMngr.getInstance().setUpdate(true);
+                        } else {
+                            PreferenceMngr.getInstance().setUpdate(false);
+                        }
                     }
                 }
             }, new Response.ErrorListener() {

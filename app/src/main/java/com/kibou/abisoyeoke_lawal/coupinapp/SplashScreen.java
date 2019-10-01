@@ -38,7 +38,6 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
         Manifest.permission.ACCESS_FINE_LOCATION
     };
 
-    NotificationManager notificationManager;
     private RequestQueue requestQueue1;
 
     Handler handler = new Handler();
@@ -75,8 +74,6 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
                 updateDialog.show();
             } else {
                 extras = getIntent().getExtras();
-                Log.v("Coupin Etras", extras.toString());
-                Log.v("Coupin Etras", "" + extras.getString("navigateTo"));
                 proceed();
             }
         }

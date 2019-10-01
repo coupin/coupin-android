@@ -127,9 +127,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_hot);
         ButterKnife.bind(this);
 
-        Log.v("Coupin Hot", "Got in");
-        Log.v("Coupin Hot", "Got in");
-
         requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);

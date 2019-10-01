@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CompoundButton;
@@ -45,7 +46,6 @@ public class NotificationActivity extends AppCompatActivity {
     public ToggleButton toggleReceive;
 
     private boolean notify;
-    private boolean[] previousSelection;
     private PreferenceMngr preferenceMngr;
     private RequestQueue requestQueue;
     private String days;
@@ -59,7 +59,7 @@ public class NotificationActivity extends AppCompatActivity {
         preferenceMngr = PreferenceMngr.getInstance();
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-        previousSelection = preferenceMngr.getNotificationSelection();
+        boolean[] previousSelection = preferenceMngr.getNotificationSelection();
 
         notificationBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,7 +100,7 @@ public class NotificationActivity extends AppCompatActivity {
                     toggleWeekdays.setChecked(false);
                 }
 
-//                toggleWeekends.setChecked(isChecked);
+                toggleWeekends.setChecked(isChecked);
                 days = "weekends";
                 notificationButton.setVisibility(View.VISIBLE);
             }
@@ -113,7 +113,7 @@ public class NotificationActivity extends AppCompatActivity {
                     toggleWeekends.setChecked(false);
                 }
 
-//                toggleWeekdays.setChecked(isChecked);
+                toggleWeekdays.setChecked(isChecked);
                 days = "weekdays";
                 notificationButton.setVisibility(View.VISIBLE);
             }
@@ -137,6 +137,7 @@ public class NotificationActivity extends AppCompatActivity {
             @Override
             public void onResponse(String response) {
                 PreferenceMngr.setUser(response);
+                Toast.makeText(NotificationActivity.this, "Notification Updated.", Toast.LENGTH_SHORT).show();
                 onBackPressed();
             }
         }, new Response.ErrorListener() {

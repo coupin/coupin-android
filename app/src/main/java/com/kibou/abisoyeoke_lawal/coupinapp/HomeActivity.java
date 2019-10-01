@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -123,7 +122,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onSuccess(InstanceIdResult instanceIdResult) {
                 String newToken = instanceIdResult.getToken();
                 String oldToken = PreferenceMngr.getInstance().getNotificationToken();
-                if (!newToken.equals(oldToken)) {
+                if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
                     setNotificationToken(newToken);
                 }
             }
@@ -136,7 +135,6 @@ public class HomeActivity extends AppCompatActivity {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                Log.v("Coupin Update", "Notification token updated");
                 PreferenceMngr.getInstance().setNotificationToken(newToken);
             }
         }, new Response.ErrorListener() {
