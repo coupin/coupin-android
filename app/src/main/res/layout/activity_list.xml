@@ -233,8 +233,9 @@
         android:layout_height="48dp"
         android:layout_width="48dp"
         android:src="@drawable/ic_nav_arrow"
-        app:elevation="10dp"
         app:backgroundTint="@color/text_med_grey"
+        app:elevation="10dp"
+        app:fabCustomSize="48dp"
         app:rippleColor="@color/black"/>
 
     <android.support.design.widget.FloatingActionButton
@@ -247,8 +248,9 @@
         android:layout_height="48dp"
         android:layout_width="48dp"
         android:src="@drawable/ic_share"
-        app:elevation="10dp"
         app:backgroundTint="@color/text_med_grey"
+        app:elevation="10dp"
+        app:fabCustomSize="48dp"
         app:rippleColor="@color/black"/>
 
 </RelativeLayout>

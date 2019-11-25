@@ -15,8 +15,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 60
-        versionName "0.0.60"
+        versionCode 61
+        versionName "0.0.61"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
@@ -25,7 +25,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable = true
+            debuggable = false
         }
     }
 }
