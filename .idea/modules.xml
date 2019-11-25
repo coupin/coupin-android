@@ -2,8 +2,10 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/CoupinApp.iml" filepath="$PROJECT_DIR$/CoupinApp.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/Coupin-coupin-android-app.iml" filepath="$PROJECT_DIR$/app/Coupin-coupin-android-app.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/coupin-android.iml" filepath="$PROJECT_DIR$/coupin-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/app/coupin-android-app.iml" filepath="$PROJECT_DIR$/app/coupin-android-app.iml" />
     </modules>
   </component>
 </project>

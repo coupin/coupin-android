@@ -244,7 +244,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         setCategories();
 
         // Error Dialog
-        networkErrorDialog = new NetworkErrorDialog(getContext());
+        networkErrorDialog = new NetworkErrorDialog(getActivity());
 
         // Filter Dialog
         final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);

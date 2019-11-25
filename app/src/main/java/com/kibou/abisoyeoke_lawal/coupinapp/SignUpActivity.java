@@ -191,6 +191,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
+                    preferenceMngr.notificationSelection(true, false);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);
@@ -265,7 +266,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
-
+                    preferenceMngr.notificationSelection(true, false);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);
