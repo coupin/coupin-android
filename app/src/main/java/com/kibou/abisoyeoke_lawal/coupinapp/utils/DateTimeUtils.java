@@ -1,5 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
+import android.util.Log;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -17,7 +19,7 @@ public class DateTimeUtils {
      */
     public static Date convertZString(String s) {
         try {
-            TimeZone tz = TimeZone.getTimeZone("Africa/Lagos");
+            TimeZone tz = TimeZone.getTimeZone("UTC");
             Calendar cal = Calendar.getInstance(tz);
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
             sdf.setCalendar(cal);

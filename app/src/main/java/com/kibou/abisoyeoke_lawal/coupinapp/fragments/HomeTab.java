@@ -742,7 +742,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 @Override
                 public Map<String, String> getHeaders() {
                     Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", PreferenceMngr.getToken());
+                    String token = PreferenceMngr.getToken();
+                    if (token != null) {
+                        headers.put("Authorization", token);
+                    }
 
                     return headers;
                 }

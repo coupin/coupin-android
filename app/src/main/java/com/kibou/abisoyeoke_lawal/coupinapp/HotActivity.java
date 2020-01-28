@@ -79,6 +79,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public ImageView hotVisited2;
     @BindView(R.id.hot_visited_3)
     public ImageView hotVisited3;
+    @BindView(R.id.featured_empty)
+    public LinearLayout featuredEmpty;
     @BindView(R.id.hotlist_group)
     public LinearLayout featuredHolder;
     @BindView(R.id.hot_empty)
@@ -87,6 +89,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public LinearLayout hotError;
     @BindView(R.id.hot_recyclerview)
     public RecyclerView hotRecyclerView;
+    @BindView(R.id.slides_empty)
+    public LinearLayout slidesEmpty;
     @BindView(R.id.hot_address_1)
     public TextView hotAddress1;
     @BindView(R.id.hot_address_2)
@@ -172,6 +176,10 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 hotRecyclerView.setVisibility(View.VISIBLE);
                 break;
             case 3:
+                slidesLoading.setVisibility(View.GONE);
+                slidesEmpty.setVisibility(View.VISIBLE);
+                featuredLoading.setVisibility(View.GONE);
+                featuredEmpty.setVisibility(View.VISIBLE);
                 recommendLoading.setVisibility(View.GONE);
                 hotEmpty.setVisibility(View.VISIBLE);
                 break;
@@ -309,10 +317,14 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onErrorResponse(VolleyError error) {
                 error.printStackTrace();
-                Toast.makeText(HotActivity.this,
-                    "Something went wrong while getting your featured information.",
-                    Toast.LENGTH_SHORT).show();
-                HotActivity.this.onBackPressed();
+                if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
+                    loading(3);
+                } else {
+                    Toast.makeText(HotActivity.this,
+                        "Something went wrong while getting your featured information.",
+                        Toast.LENGTH_SHORT).show();
+                    HotActivity.this.onBackPressed();
+                }
             }
         }) {
             @Override
@@ -338,6 +350,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onResponse(String response) {
                 try {
+                    Log.v("Recent Checking", response);
                     JSONArray recentArray = new JSONArray(response);
                     for (int x = 0; x < recentArray.length(); x++) {
                         JSONObject merchantObject = recentArray.getJSONObject(x);
