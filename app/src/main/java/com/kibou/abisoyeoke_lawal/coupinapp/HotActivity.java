@@ -350,7 +350,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onResponse(String response) {
                 try {
-                    Log.v("Recent Checking", response);
                     JSONArray recentArray = new JSONArray(response);
                     for (int x = 0; x < recentArray.length(); x++) {
                         JSONObject merchantObject = recentArray.getJSONObject(x);

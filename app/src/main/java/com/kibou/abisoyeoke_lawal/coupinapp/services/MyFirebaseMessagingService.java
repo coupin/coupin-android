@@ -21,9 +21,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private RequestQueue requestQueue;
 
     @Override
-    public void onMessageReceived(RemoteMessage message) {
-        super.onMessageReceived(message);
-    }
+    public void onMessageReceived(RemoteMessage message) { super.onMessageReceived(message); }
 
     @Override
     public void onNewToken(String token) {
