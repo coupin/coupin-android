@@ -24,8 +24,6 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
     public ArrayList<FaqModel> faqs = new ArrayList<>();
     public RVFaqAdapter rvFaqAdapter;
 
-    String faqTitles[] = new String[]{"How do I find?", "My Coupin is not answering me"};
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,10 +36,13 @@ public class FAQActivity extends AppCompatActivity implements View.OnClickListen
         rvFaq.setHasFixedSize(true);
         rvFaq.setAdapter(rvFaqAdapter);
 
+        String[] faqTitles = getResources().getStringArray(R.array.faqs_title);
+        String[] faqDetails = getResources().getStringArray(R.array.faqs_details);
+
         for(int x = 0; x < faqTitles.length; x++) {
             FaqModel model = new FaqModel();
             model.setTitle(faqTitles[x]);
-            model.setDetail(getResources().getString(R.string.example_description));
+            model.setDetail(faqDetails[x]);
             faqs.add(model);
         }
 

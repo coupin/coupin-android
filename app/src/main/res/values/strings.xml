@@ -47,6 +47,26 @@
         <item>N-Tel</item>
     </string-array>
 
+    <string-array name="faqs_title">
+        <item>I could not log in with Facebook or Google, why the error messages?</item>
+        <item>How can I find promotions/rewards from a specific preferred retailer?</item>
+        <item>Why did the app just suddenly close?</item>
+        <item>How do I set push notification preferences?</item>
+        <item>The app keeps closing when trying to fill the enhanced experience form, why is that?</item>
+        <item>How do I browse all the promotion/rewards available in my city?</item>
+        <item>How do I update my reward/promotion category preferences</item>
+    </string-array>
+
+    <string-array name="faqs_details">
+        <item>This may be from the privacy settings you have on your Facebook/google profile, which grants access to specific app types.</item>
+        <item>This can be done by searching for the specific retailer's name using the search icon on the app's home page.</item>
+        <item>The app was unable to determine your location or there is a break in data communication. Please check your device location is switched on and your data network is available.</item>
+        <item>This can be found in the profile section of the app under the Notifications tab.</item>
+        <item>Please check you have a stable internet connection. This generally occurs when there is break in communication from your network data provider.</item>
+        <item>Using the filter icon on the home section of the app, increase the radius to the maximum radius (10km). This should cover your entire city.</item>
+        <item>This can be done in the profile section of the app, under the Change Category tab.</item>
+    </string-array>
+
     <!-- Package -->
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
