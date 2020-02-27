@@ -51,13 +51,13 @@ public class InterestsActivity extends AppCompatActivity {
     private ArrayList<String> selected = new ArrayList<>();
     private MediaPlayer mediaPlayer;
 
-    public int[] categoryIcons = new int[]{R.drawable.int_ent, R.drawable.int_food, R.drawable.int_gadget,
-        R.drawable.int_groceries, R.drawable.int_beauty, R.drawable.int_fashion, R.drawable.int_ticket,
-        R.drawable.int_travel};
-    public String[] categories = new String[]{"Entertainment", "Food & Drink", "Gadgets", "Groceries",
-        "Health & Beauty", "Shopping", "Tickets", "Travel"};
-    public String[] categoryValues = new String[]{"\"entertainment\"", "\"foodndrink\"", "\"gadgets\"",
-        "\"groceries\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"", "\"travel\""};
+    public int[] categoryIcons = new int[]{R.drawable.int_ent, R.drawable.int_food,
+        R.drawable.int_groceries, R.drawable.int_beauty, R.drawable.int_fashion, R.drawable.int_gadget,
+        R.drawable.int_ticket, R.drawable.int_travel};
+    public String[] categories = new String[]{"Entertainment", "Food & Drink", "Groceries",
+        "Health & Beauty", "Shopping", "Technology", "Tickets", "Travel"};
+    public String[] categoryValues = new String[]{"\"entertainment\"", "\"foodndrink\"",
+        "\"groceries\"", "\"healthnbeauty\"", "\"shopping\"", "\"gadgets\"", "\"tickets\"", "\"travel\""};
 
     public RequestQueue requestQueue;
 
