@@ -15,8 +15,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 69
-        versionName "0.1.6"
+        versionCode 75
+        versionName "0.1.12"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

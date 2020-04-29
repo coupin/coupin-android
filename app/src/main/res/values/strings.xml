@@ -3,7 +3,8 @@
     <string name="app_link">https://play.google.com/store/apps/details?id=com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- Keys -->
-    <string name="facebook_app_id">134058260630791</string>
+    <string name="facebook_app_id">533567463993659</string>
+<!--    <string name="facebook_app_id">134058260630791</string>-->
     <string name="fb_login_protocol_scheme">fb134058260630791</string>
     <!--Client Id Dev-->
     <string name="google_client_id">317929403701-vbciqi4cackgjvk0cr6dr0vi61332cbb.apps.googleusercontent.com</string>
@@ -218,12 +219,12 @@
     <string name="interested">What are you interested in?</string>
     <string name="cat_ent">Entertainment</string>
     <string name="cat_food">Food &amp; Drinks</string>
-    <string name="cat_gadg">Gadgets</string>
+    <string name="cat_gadg">Electronics &amp; Tech</string>
     <string name="cat_groc">Groceries</string>
     <string name="cat_health">Health &amp; Beauty</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_ticket">Tickets</string>
-    <string name="cat_travel">Travel</string>
+    <string name="cat_travel">Travel &amp; Hotels</string>
     <string name="select_category">Select your category of interest</string>
     <string name="hi">Hi,</string>
     <string name="network_error">Network connection error. Please check connection and try again.</string>
