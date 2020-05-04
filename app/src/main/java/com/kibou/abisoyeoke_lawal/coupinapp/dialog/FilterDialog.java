@@ -104,7 +104,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
                 toggleTag(fillFood, "foodndrink");
                 break;
             case R.id.fil_gadget:
-                toggleTag(fillGadget, "gadgets");
+                toggleTag(fillGadget, "technology");
                 break;
             case R.id.fil_groceries:
                 toggleTag(fillGroceries, "groceries");

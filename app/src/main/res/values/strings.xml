@@ -71,7 +71,7 @@
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- URls -->
-    <!--<string name="base_url">https://b2c7b3fe.ngrok.io/api/v1</string>-->
+<!--    <string name="base_url">https://668c0bac.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
 <!--    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
     <string name="base_url">https://coupin-pro.herokuapp.com/api/v1</string>
@@ -218,7 +218,7 @@
     <string name="interested">What are you interested in?</string>
     <string name="cat_ent">Entertainment</string>
     <string name="cat_food">Food &amp; Drinks</string>
-    <string name="cat_gadg">Gadgets</string>
+    <string name="cat_gadg">Technology</string>
     <string name="cat_groc">Groceries</string>
     <string name="cat_health">Health &amp; Beauty</string>
     <string name="cat_shopping">Shopping</string>

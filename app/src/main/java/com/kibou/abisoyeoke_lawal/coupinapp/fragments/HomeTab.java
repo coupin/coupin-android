@@ -195,7 +195,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5};
     public ArrayList<Marker> markers = new ArrayList<>();
 
-    public int distance = 3;
+    public int distance = 10;
     public int page = 0;
     public int screenWidth;
     public float minZoom = 1;
@@ -495,7 +495,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             case "foodndrink":
                 x = R.drawable.int_food;
                 break;
-            case "gadgets":
+            case "technology":
                 x = R.drawable.int_gadget;
                 break;
             case "groceries":
