@@ -6,8 +6,12 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.facebook.FacebookSdk;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
@@ -17,14 +21,14 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class LandingActivity extends AppCompatActivity {
-    @BindView(R.id.back_video)
-    public ScalableVideoView backVideo;
     @BindView(R.id.sign_up_button)
     public Button signUpButton;
     @BindView(R.id.sign_in_button)
     public Button signInButton;
     @BindView(R.id.carouselView)
     public CarouselView carouselView;
+    @BindView(R.id.back_gif)
+    public ImageView backGif;
 
     private MediaPlayer mediaPlayer;
 
@@ -56,7 +60,10 @@ public class LandingActivity extends AppCompatActivity {
             }
         });
 
-        play();
+        Glide.with(this)
+                .load(R.raw.coupin_back)
+                .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
+                .into(backGif);
 
         carouselView.setPageCount(quotes.length);
         carouselView.setViewListener(viewListener);
@@ -69,22 +76,6 @@ public class LandingActivity extends AppCompatActivity {
         });
     }
 
-    public void play() {
-        try {
-            backVideo.setRawData(R.raw.back_small);
-            backVideo.prepareAsync(new MediaPlayer.OnPreparedListener() {
-                @Override
-                public void onPrepared(MediaPlayer mp) {
-                    mediaPlayer = mp;
-                    mediaPlayer.seekTo(5000);
-                    mediaPlayer.setLooping(true);
-                    mediaPlayer.start();
-                }
-            });
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 
     ViewListener viewListener = new ViewListener() {
         @Override
@@ -97,19 +88,4 @@ public class LandingActivity extends AppCompatActivity {
             return customView;
         }
     };
-
-    @Override
-    public void onResume() {
-        play();
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        if (mediaPlayer != null) {
-            mediaPlayer.stop();
-            mediaPlayer.reset();
-        }
-        super.onPause();
-    }
 }

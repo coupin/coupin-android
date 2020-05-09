@@ -11,12 +11,18 @@
         android:layout_width="match_parent"
         android:orientation="vertical">
 
+        <WebView
+            android:layout_height="match_parent"
+            android:layout_width="match_parent"
+            android:id="@+id/myWebView"/>
+
         <RelativeLayout
             android:background="@color/white"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_sm"
             android:layout_width="match_parent"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_sm"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/terms_back"
@@ -47,7 +53,8 @@
             android:lineSpacingExtra="@dimen/padding_xs"
             android:text="@string/terms_of_service"
             android:textColor="@color/text_med_grey"
-            android:textSize="@dimen/large_text"/>
+            android:textSize="@dimen/large_text"
+            android:visibility="gone"/>
 
     </LinearLayout>
 

@@ -44,7 +44,7 @@ public class InterestEditActivity extends AppCompatActivity {
     public String[] categories = new String[]{"Food & Drink", "Groceries", "Electronics & Tech",
             "Entertainment", "Health & Beauty", "Shopping", "Tickets", "Travel & Hotels"};
     public String[] categoryValues = new String[]{"\"foodndrink\"", "\"groceries\"",
-            "\"gadgets\"", "\"entertainment\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"",
+            "\"technology\"", "\"entertainment\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"",
             "\"travel\""};
 
     public RequestQueue requestQueue;

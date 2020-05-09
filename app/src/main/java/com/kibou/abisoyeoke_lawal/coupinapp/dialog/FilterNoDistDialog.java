@@ -34,6 +34,8 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
     @BindView(R.id.fil_nd_ent)
     public LinearLayout fillNDEnt;
     @BindView(R.id.fil_nd_food)
+    public LinearLayout fillNDGroceries;
+    @BindView(R.id.fil_groceries)
     public LinearLayout fillNDFood;
     @BindView(R.id.fil_nd_gadget)
     public LinearLayout fillNDGadget;
@@ -80,6 +82,7 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
         fillNDEnt.setOnClickListener(this);
         fillNDFood.setOnClickListener(this);
         fillNDGadget.setOnClickListener(this);
+        fillNDGroceries.setOnClickListener(this);
         fillNDHealth.setOnClickListener(this);
         fillNDShop.setOnClickListener(this);
         fillNDTickets.setOnClickListener(this);
@@ -92,25 +95,28 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fil_nd_ent:
-                toggleTag(fillNDEnt);
+                toggleTag(fillNDEnt, "entertainment");
                 break;
             case R.id.fil_nd_food:
-                toggleTag(fillNDFood);
+                toggleTag(fillNDFood, "foodndrink");
                 break;
             case R.id.fil_nd_gadget:
-                toggleTag(fillNDGadget);
+                toggleTag(fillNDGadget, "technology");
                 break;
             case R.id.fil_nd_health:
-                toggleTag(fillNDHealth);
+                toggleTag(fillNDHealth, "healthnbeauty");
+                break;
+            case R.id.fil_gadget:
+                toggleTag(fillNDGroceries, "groceries");
                 break;
             case R.id.fil_nd_shopping:
-                toggleTag(fillNDShop);
+                toggleTag(fillNDShop, "shopping");
                 break;
             case R.id.fil_nd_tickets:
-                toggleTag(fillNDTickets);
+                toggleTag(fillNDTickets, "tickets");
                 break;
             case R.id.fil_nd_travel:
-                toggleTag(fillNDTravel);
+                toggleTag(fillNDTravel, "travel");
                 break;
             case R.id.filter_nd_cancel:
                 dismiss();
@@ -124,11 +130,10 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
         dismiss();
     }
 
-    private void toggleTag(LinearLayout fillEnt) {
+    private void toggleTag(LinearLayout fillEnt, String query) {
         ImageView imageView = (ImageView) fillEnt.getChildAt(0);
         TextView textView = (TextView) fillEnt.getChildAt(1);
 
-        String query = textView.getText().toString().toLowerCase();
         if (selected.contains(getArrayString(query))) {
             selected.remove(getArrayString(query));
             fillEnt.setBackground(context.getResources().getDrawable(R.drawable.round_edges_light_grey));
