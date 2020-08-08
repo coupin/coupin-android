@@ -356,6 +356,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                             reward.setMultiple(false);
                         }
 
+                        reward.setIsDelivery(object.getBoolean("delivery"));
+
                         // Applicable days
                         reward.setDays(object.getJSONArray("applicableDays"));
 

@@ -10,6 +10,7 @@ import java.util.Date;
  */
 
 public class Reward implements Serializable {
+  private boolean isDelivery;
   private boolean isDiscount;
   private boolean isMultiple;
   private boolean isSelected = false;
@@ -39,6 +40,9 @@ public class Reward implements Serializable {
     this.id = id;
   }
 
+    public void setIsDelivery(boolean delivery) {
+        isDelivery = delivery;
+    }
     public void setIsDiscount(boolean discount) {
         isDiscount = discount;
     }
@@ -86,6 +90,10 @@ public class Reward implements Serializable {
   public String getId() {
     return id;
   }
+
+  public boolean getIsDelivery() {
+        return isDelivery;
+    }
 
   public boolean getIsDiscount() {
         return isDiscount;

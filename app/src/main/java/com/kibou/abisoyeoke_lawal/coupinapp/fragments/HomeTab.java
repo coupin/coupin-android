@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.fragments;
 
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -286,7 +287,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             setLastKnownLocation();
         }
 
-        mapView.onResume();
+//        mapView.onResume();
 
         btnMyLocation.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -555,6 +556,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     /**
      * Set last known location
      */
+    @SuppressLint("MissingPermission")
     private void setLastKnownLocation() {
         boolean networkEnabled = mLocationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
 
@@ -1210,6 +1212,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi
                         .checkLocationSettings(googleApiClient, builder.build());
                     result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+                        @SuppressLint("MissingPermission")
                         @Override
                         public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                             final Status status = locationSettingsResult.getStatus();

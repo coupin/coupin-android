@@ -81,7 +81,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
         setContentView(R.layout.dialog_filter);
         ButterKnife.bind(this);
 
-        distanceSeekBar.setProgress(30);
+        distanceSeekBar.setProgress(50);
         fillEnt.setOnClickListener(this);
         fillFood.setOnClickListener(this);
         fillGadget.setOnClickListener(this);

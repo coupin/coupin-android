@@ -152,6 +152,32 @@
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_groceries"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_sm">
+
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_groceries"
+                android:tint="@color/text_dark_grey"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_groc"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
             android:id="@+id/fil_nd_health"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"

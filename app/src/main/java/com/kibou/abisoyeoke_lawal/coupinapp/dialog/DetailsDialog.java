@@ -23,6 +23,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 
 import org.json.JSONArray;
+import org.w3c.dom.Text;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -45,6 +46,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public ArrayList<String> thumbnails = new ArrayList<>();
     public TextView fullDateEnd;
     public TextView fullDateStart;
+    public TextView fullDelivery;
     public TextView fullDescription;
     public TextView fullHeader;
     public TextView fullNewPrice;
@@ -113,6 +115,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         fullDateEnd = (TextView) findViewById(R.id.full_date_end);
         fullDateStart = (TextView) findViewById(R.id.full_date_start);
+        fullDelivery = (TextView) findViewById(R.id.full_delivers);
         fullDescription = (TextView) findViewById(R.id.full_description);
         fullHeader = (TextView) findViewById(R.id.full_header);
         fullHeaderImage = (ImageView) findViewById(R.id.full_header_tick);
@@ -191,6 +194,12 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullReusable.setText("YES");
         } else {
             fullReusable.setText("NO");
+        }
+
+        if (reward.getIsDelivery()) {
+            fullDelivery.setText("YES");
+        } else {
+            fullDelivery.setText("NO");
         }
 
         if (hideButton) {

@@ -261,7 +261,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
      */
     private void share() {
         String msg = "Coupin rewards for " + StringUtils.capitalize(coupin.getMerchantName()) + " to get " +
-            coupinRewards.get(0).getDetails() + "! https://www.example.com/tobe/replacedby/reallink";
+            coupinRewards.get(0).getDetails() + "! https://coupinapp.com/";
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("text/plain");
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Coupin Share!");
