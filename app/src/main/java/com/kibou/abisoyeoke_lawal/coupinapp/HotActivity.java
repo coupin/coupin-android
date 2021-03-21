@@ -266,7 +266,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                         JSONObject slideObject = slideObjects.getJSONObject(x);
                         JSONObject merchantObject = slideObject.getJSONObject("id");
 
-                        slides.add(slideObject.getString("url"));
+                        slides.add(slideObject.getString("url").replace("http", "https"));
 
                         Merchant item = new Merchant();
                         item.setId(merchantObject.getString("_id"));

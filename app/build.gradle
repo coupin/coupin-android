@@ -3,7 +3,7 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/abisoyeoke-lawal/Documents/Freelance/Coupin/KeyStore/AbisoyeEvans.jks')
+            storeFile file('/Users/abisoyeoke-lawal/Documents/Personal/Coupin/KeyStore/AbisoyeEvans.jks')
             storePassword 'Coop001'
             keyAlias = 'AbisoyeEvanskey'
             keyPassword 'Coop002'
@@ -15,8 +15,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 16
         targetSdkVersion 28
-        versionCode 83
-        versionName "0.1.20"
+        versionCode 84
+        versionName "0.1.21"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
