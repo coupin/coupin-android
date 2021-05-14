@@ -29,7 +29,7 @@
             <include
                 android:id="@+id/body"
                 layout="@layout/cardview_expand_body"
-                android:visibility="gone"/>
+                android:visibility="gone" />
 
         </LinearLayout>
 

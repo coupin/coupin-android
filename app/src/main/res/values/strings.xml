@@ -4,7 +4,7 @@
 
     <!-- Keys -->
     <string name="facebook_app_id">533567463993659</string>
-<!--    <string name="facebook_app_id">134058260630791</string>-->
+    <!--    <string name="facebook_app_id">134058260630791</string>-->
     <string name="fb_login_protocol_scheme">fb134058260630791</string>
     <!--Client Id Dev-->
     <string name="google_client_id">317929403701-vbciqi4cackgjvk0cr6dr0vi61332cbb.apps.googleusercontent.com</string>
@@ -74,7 +74,7 @@
     <!-- URls -->
     <!--<string name="base_url">https://b2c7b3fe.ngrok.io/api/v1</string>-->
     <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-<!--    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
+    <!--    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
     <string name="base_url">https://coupin-pro.herokuapp.com/api/v1</string>
 
     <!--Auth Endpoints-->
@@ -581,4 +581,9 @@
     <string name="label_age">Age Range</string>
     <string name="empty_featured">No featured merchants at this time, please check back later</string>
     <string name="empty_slides">No slides at the moment.</string>
+    <string name="pick_up">Pick up</string>
+    <string name="delivery">Delivery</string>
+    <string name="pickup_delivery_dialog_text">What method would you prefer to receive your order</string>
+    <string name="delivery_bonus">Delivery bonus</string>
+    <string name="delivery_bonus_text">Congratulations, you get N200 discount for your next delivery</string>
 </resources>
