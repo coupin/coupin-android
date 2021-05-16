@@ -14,7 +14,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.HotActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.HotActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
 import java.util.Calendar;

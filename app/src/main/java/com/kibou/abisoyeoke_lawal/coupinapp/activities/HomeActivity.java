@@ -1,4 +1,4 @@
-package com.kibou.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -22,6 +21,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
+import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.HomeTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment;

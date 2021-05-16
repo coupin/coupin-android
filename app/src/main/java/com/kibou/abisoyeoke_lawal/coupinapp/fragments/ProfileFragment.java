@@ -12,14 +12,14 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.AboutActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.EditActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.FAQActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.HelpActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.InterestEditActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.NotificationActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.AboutActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.EditActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.FAQActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.HelpActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.InterestEditActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.NotificationActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.TermsActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.TermsActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 

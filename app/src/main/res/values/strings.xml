@@ -586,4 +586,11 @@
     <string name="pickup_delivery_dialog_text">What method would you prefer to receive your order</string>
     <string name="delivery_bonus">Delivery bonus</string>
     <string name="delivery_bonus_text">Congratulations, you get N200 discount for your next delivery</string>
+    <string name="review_selection">Review Selection</string>
+    <string name="review_selection_message">Items contain deliverable and pick up items, kindly review to proceed.</string>
+    <string name="proceed">Proceed</string>
+    <string name="items_to_be_delivered">Items to be delivered</string>
+    <string name="items_to_be_picked_up">Items to be picked up</string>
+    <string name="address_book">Address Book</string>
+    <string name="add_a_different_address"> + Add a different address</string>
 </resources>

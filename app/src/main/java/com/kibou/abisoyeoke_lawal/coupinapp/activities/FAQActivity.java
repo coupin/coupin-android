@@ -1,4 +1,4 @@
-package com.kibou.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageView;
 
+import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVFaqAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.FaqModel;
 

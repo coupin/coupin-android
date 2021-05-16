@@ -19,7 +19,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.CoupinActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;

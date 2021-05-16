@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 
 import com.android.volley.RequestQueue;
-import com.kibou.abisoyeoke_lawal.coupinapp.LandingActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
 

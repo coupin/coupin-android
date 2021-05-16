@@ -1,4 +1,4 @@
-package com.kibou.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Intent;
 import android.net.Uri;
@@ -27,6 +27,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ExperienceDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.GalleryDialog;

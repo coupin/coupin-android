@@ -111,6 +111,25 @@
                 android:layout_width="match_parent"/>
 
             <TextView
+                android:drawableEnd="@drawable/ic_right_angle"
+                android:drawableRight="@drawable/ic_right_angle"
+                android:drawableTint="@color/text_light_grey"
+                android:gravity="center_vertical"
+                android:id="@+id/profile_address_book"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingBottom="@dimen/padding_sm_plus"
+                android:paddingTop="@dimen/padding_sm_plus"
+                android:text="@string/address_book"
+                android:textColor="@color/text_dark_grey"
+                android:textSize="@dimen/large_text"/>
+
+            <View
+                android:background="@color/lightGrey"
+                android:layout_height="2dp"
+                android:layout_width="match_parent"/>
+
+            <TextView
                 android:gravity="center_vertical"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_xs"

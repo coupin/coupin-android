@@ -1,4 +1,4 @@
-package com.kibou.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Intent;
 import android.media.MediaPlayer;
@@ -13,9 +13,9 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.FacebookSdk;
+import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ViewListener;
-import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -71,7 +71,7 @@ public class LandingActivity extends AppCompatActivity {
         ((TextView)findViewById(R.id.forgot_password)).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(LandingActivity.this, SplashScreen.class));
+                startActivity(new Intent(LandingActivity.this, SplashScreenActivity.class));
             }
         });
     }

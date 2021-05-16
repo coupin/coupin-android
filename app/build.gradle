@@ -13,7 +13,7 @@ android {
     buildToolsVersion "27.0.3"
     defaultConfig {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 28
         versionCode 84
         versionName "0.1.21"

@@ -1,7 +1,6 @@
-package com.kibou.abisoyeoke_lawal.coupinapp;
+package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.Manifest;
-import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -9,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -19,6 +17,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.appevents.AppEventsLogger;
+import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.UpdateService;
@@ -28,7 +27,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SplashScreen extends AppCompatActivity implements MyOnSelect {
+public class SplashScreenActivity extends AppCompatActivity implements MyOnSelect {
     private boolean check = false;
     private Bundle extras;
     private final int PERMISSION_ALL = 1;
@@ -111,22 +110,22 @@ public class SplashScreen extends AppCompatActivity implements MyOnSelect {
             public void run() {
                 if (PreferenceMngr.isLoggedIn()) {
                     if (!PreferenceMngr.interestsSelected()) {
-                        startActivity(new Intent(SplashScreen.this, InterestsActivity.class));
+                        startActivity(new Intent(SplashScreenActivity.this, InterestsActivity.class));
                         finish();
                     } else if (extras != null) {
                         if ("hot".equals(extras.getString("navigateTo"))) {
-                            startActivity(new Intent(SplashScreen.this, HotActivity.class));
+                            startActivity(new Intent(SplashScreenActivity.this, HotActivity.class));
                             finish();
                         } else {
-                            startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+                            startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
                             finish();
                         }
                     } else {
-                        startActivity(new Intent(SplashScreen.this, HomeActivity.class));
+                        startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
                         finish();
                     }
                 } else {
-                    startActivity(new Intent(SplashScreen.this, LandingActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, LandingActivity.class));
                     finish();
                 }
             }

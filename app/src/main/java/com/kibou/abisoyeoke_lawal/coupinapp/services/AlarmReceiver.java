@@ -11,7 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.HomeActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.HomeActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NotificationScheduler;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;

@@ -1,7 +1,8 @@
-package com.kibou.abisoyeoke_lawal.coupinapp
+package com.kibou.abisoyeoke_lawal.coupinapp.activities
 
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import com.kibou.abisoyeoke_lawal.coupinapp.R
 
 class ReviewSelectionActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

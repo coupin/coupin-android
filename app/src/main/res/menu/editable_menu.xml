@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto"
       xmlns:tools="http://schemas.android.com/tools"
-    tools:context=".EditActivity">
+    tools:context=".activities.EditActivity">
 
     <item
         android:icon="@drawable/ic_edit_true_47"

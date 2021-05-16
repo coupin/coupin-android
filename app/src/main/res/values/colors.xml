@@ -59,4 +59,8 @@
     <color name="signup">#00AD86</color>
     <color name="text_signup">#48FFD6</color>
     <color name="signin">#00CA9D</color>
+    <color name="light_grey">#e8e8e8</color>
+    <color name="red2">#ef1c23</color>
+    <color name="darkGrey2">#545263</color>
+    <color name="text_light_grey2" >#9d9bae</color>
 </resources>

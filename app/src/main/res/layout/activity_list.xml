@@ -6,7 +6,7 @@
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.CoupinActivity">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity">
 
     <LinearLayout
         android:animateLayoutChanges="true"

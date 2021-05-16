@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HotActivity">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.HotActivity">
 
 
     <LinearLayout

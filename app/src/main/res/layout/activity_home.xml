@@ -5,7 +5,7 @@
                                                  android:animateLayoutChanges="true"
                                                  android:layout_width="match_parent"
                                                  android:layout_height="match_parent"
-                                                 tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HomeActivity">
+                                                 tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.HomeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
