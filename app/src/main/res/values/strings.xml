@@ -60,7 +60,7 @@
 
     <string-array name="faqs_details">
         <item>This may be from the privacy settings you have on your Facebook/google profile, which grants access to specific app types.</item>
-        <item>This can be done by searching for the specific retailer's name using the search icon on the app's home page.</item>
+        <item>This can be done by searching for the specific retailer\'s name using the search icon on the app\'s home page.</item>
         <item>The app was unable to determine your location or there is a break in data communication. Please check your device location is switched on and your data network is available.</item>
         <item>This can be found in the profile section of the app under the Notifications tab.</item>
         <item>Please check you have a stable internet connection. This generally occurs when there is break in communication from your network data provider.</item>
@@ -593,4 +593,5 @@
     <string name="items_to_be_picked_up">Items to be picked up</string>
     <string name="address_book">Address Book</string>
     <string name="add_a_different_address"> + Add a different address</string>
+    <string name="address">Address</string>
 </resources>

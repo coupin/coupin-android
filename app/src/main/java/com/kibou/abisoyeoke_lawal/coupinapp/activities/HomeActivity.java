@@ -2,12 +2,12 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.appcompat.app.AppCompatActivity;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -17,9 +17,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+import com.google.firebase.installations.FirebaseInstallations;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment;
@@ -118,14 +116,11 @@ public class HomeActivity extends AppCompatActivity {
         FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
         ft.commit();
 
-        FirebaseInstanceId.getInstance().getInstanceId().addOnSuccessListener(new OnSuccessListener<InstanceIdResult>() {
-            @Override
-            public void onSuccess(InstanceIdResult instanceIdResult) {
-                String newToken = instanceIdResult.getToken();
-                String oldToken = PreferenceMngr.getInstance().getNotificationToken();
-                if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
-                    setNotificationToken(newToken);
-                }
+        FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener(installationTokenResult -> {
+            String newToken = installationTokenResult.getToken();
+            String oldToken = PreferenceMngr.getInstance().getNotificationToken();
+            if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
+                setNotificationToken(newToken);
             }
         });
     }

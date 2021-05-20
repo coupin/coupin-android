@@ -5,7 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.AboutActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.AddressActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.EditActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.FAQActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.HelpActivity;
@@ -55,6 +56,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView profileTerms;
     @BindView(R.id.profile_version)
     public TextView profileVersion;
+    @BindView(R.id.profile_address_book)
+    public TextView profileAddressBook;
 
     public JSONObject userObject;
 
@@ -92,6 +95,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profileFeedback.setOnClickListener(this);
         profileNotification.setOnClickListener(this);
         profileTerms.setOnClickListener(this);
+        profileAddressBook.setOnClickListener(this);
 
         try {
             PackageManager manager = getContext().getPackageManager();
@@ -133,6 +137,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.profile_terms:
                 startActivity(new Intent(getActivity(), TermsActivity.class));
                 break;
+            case R.id.profile_address_book:
+                startActivity(new Intent(getActivity(), AddressActivity.class));
         }
     }
 }

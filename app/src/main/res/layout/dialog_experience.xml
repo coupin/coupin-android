@@ -76,7 +76,7 @@
                 android:textSize="@dimen/small_text"
                 android:visibility="gone"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_xs"
                 android:layout_marginTop="@dimen/margin_xs"
@@ -95,7 +95,7 @@
                     android:textColor="@color/text_med_grey"
                     android:textSize="@dimen/medium_text"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
                 android:background="@drawable/round_edges_grey"

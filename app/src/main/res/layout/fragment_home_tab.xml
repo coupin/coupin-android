@@ -133,7 +133,7 @@
             android:layout_marginTop="1dp"
             android:layout_width="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/icon_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -154,7 +154,7 @@
         android:layout_width="match_parent"
         android:visibility="gone"/>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_mylocation"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"

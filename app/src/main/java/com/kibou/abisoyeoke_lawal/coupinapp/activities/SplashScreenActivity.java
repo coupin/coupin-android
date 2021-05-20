@@ -6,8 +6,8 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.ActivityCompat;
-import android.support.v7.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -50,7 +50,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
-        AppEventsLogger.activateApp(this);
+        AppEventsLogger.activateApp(getApplication());
         requestQueue1 = Volley.newRequestQueue(this);
 
         Glide.with(this)

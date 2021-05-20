@@ -2,7 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.support.v4.app.ActivityCompat;
+import androidx.core.app.ActivityCompat;
 
 public class PermissionsMngr {
     /**

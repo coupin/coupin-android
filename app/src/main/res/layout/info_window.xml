@@ -23,7 +23,7 @@
             android:layout_width="330dp"
             android:layout_height="160dp"/>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:id="@+id/first_card"
             android:layout_width="match_parent"
             android:layout_height="180dp"
@@ -133,9 +133,9 @@
             </LinearLayout>
 
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:layout_alignBottom="@id/first_card"
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
@@ -151,9 +151,9 @@
                 android:layout_width="wrap_content"
                 android:src="@drawable/ic_down_angle" />
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
             android:background="@drawable/round_edges_shadow"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
@@ -174,7 +174,7 @@
                 app:riv_border_color="#80000000"
                 app:riv_corner_radius="10dp" />
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
     </RelativeLayout>
 

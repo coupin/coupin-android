@@ -37,9 +37,11 @@
     <color name="off_white">#E5E5E5</color>
     <color name="lightGrey">#F2F2F2</color>
     <color name="lighterGrey">#F8F8F8</color>
+    <color name="lightGrey2">#4F4F4F</color>
 
     <!-- Text Colors -->
     <color name="text_dark_grey">#35343D</color>
+    <color name="text_dark_grey2">#8035343D</color>
     <color name="text_med_grey">#5F5D70</color>
     <color name="text_light_grey">#9B99A9</color>
     <color name="text_light_grey_plus">#BBBBBB</color>

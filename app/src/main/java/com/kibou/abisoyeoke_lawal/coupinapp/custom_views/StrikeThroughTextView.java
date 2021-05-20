@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 import android.util.AttributeSet;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -13,7 +13,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
  * Created by abisoyeoke-lawal on 8/12/17.
  */
 
-public class StrikeThroughTextView extends android.support.v7.widget.AppCompatTextView {
+public class StrikeThroughTextView extends androidx.appcompat.widget.AppCompatTextView {
     public Context context;
     public int dividerColor;
     private Paint paint;

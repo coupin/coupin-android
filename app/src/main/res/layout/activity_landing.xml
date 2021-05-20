@@ -33,7 +33,7 @@
         android:orientation="vertical"
         android:visibility="gone">
 
-        <android.support.v7.widget.AppCompatImageView
+        <androidx.appcompat.widget.AppCompatImageView
             android:contentDescription="@string/white_logo"
             android:id="@+id/logo_wh"
             android:layout_alignParentTop="true"

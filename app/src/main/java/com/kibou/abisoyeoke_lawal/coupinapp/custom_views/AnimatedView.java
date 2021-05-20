@@ -12,7 +12,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
  * Created by abisoyeoke-lawal on 5/20/17.
  */
 
-public class AnimatedView extends android.support.v7.widget.AppCompatImageView {
+public class AnimatedView extends androidx.appcompat.widget.AppCompatImageView {
 
     private Context mContext;
     int x = -1;
