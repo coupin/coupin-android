@@ -17,6 +17,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -293,6 +294,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
             public void onResponse(String response) {
                 try {
                     JSONObject res = new JSONObject(response);
+                    Log.d("simi-token", res.getString("token"));
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
                     String tempList = object.getJSONArray("blacklist").toString();

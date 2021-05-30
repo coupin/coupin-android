@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".fragments.AddressBookFragment">
+    tools:context=".activities.AddressBookActivity">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/address_book_title_layout"
         android:layout_width="match_parent"
@@ -40,29 +40,47 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/address_book_back"
             app:layout_constraintBottom_toBottomOf="@id/address_book_back"/>
+        <ProgressBar
+            android:id="@+id/progress_bar"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/address_book_title"
+            app:layout_constraintBottom_toBottomOf="@id/address_book_title"
+            android:layout_marginEnd="10dp"
+            android:indeterminate="true"
+            android:visibility="gone"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/address_recycler"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/address_book_title_layout"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"/>
+        android:paddingEnd="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address_book_title_layout"
+        android:layout_marginTop="10dp"/>
+
     <TextView
         android:id="@+id/add_address"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="@string/add_a_different_address"
-        android:textColor="@color/colorPrimary"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/address_recycler"
         android:background="?attr/selectableItemBackground"
         android:paddingStart="20dp"
-        android:paddingEnd="20dp"
         android:paddingTop="20dp"
-        android:paddingBottom="20dp"/>
+        android:paddingEnd="20dp"
+        android:paddingBottom="20dp"
+        android:text="@string/_add_address"
+        android:textColor="@color/colorPrimary"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.6"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/address_recycler"
+        app:layout_constraintVertical_bias="0.0" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

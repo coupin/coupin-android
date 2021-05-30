@@ -3,6 +3,8 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'androidx.navigation.safeargs.kotlin'
+apply plugin: 'dagger.hilt.android.plugin'
+
 
 android {
     signingConfigs {
@@ -29,6 +31,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             debuggable = false
+            Properties properties = new Properties()
+            if (rootProject.file("local.properties").exists()) {
+                properties.load(rootProject.file("local.properties").newDataInputStream())
+            }
+            it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
+        }
+        debug {
+            Properties properties = new Properties()
+            if (rootProject.file("local.properties").exists()) {
+                properties.load(rootProject.file("local.properties").newDataInputStream())
+            }
+            it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
         }
     }
     kotlinOptions {
@@ -85,6 +99,26 @@ dependencies {
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
     implementation "androidx.navigation:navigation-ui-ktx:$navigationVersion"
     androidTestImplementation "androidx.navigation:navigation-testing:$navigationVersion"
+
+    // Hilt
+    implementation "com.google.dagger:hilt-android:$dagger_hilt"
+    kapt "com.google.dagger:hilt-android-compiler:$dagger_hilt"
+    kapt "androidx.hilt:hilt-compiler:1.0.0"
+    implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0'
+
+    //Retrofit
+    def retrofitVersion = "2.8.1"
+    implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
+    implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+
+    // Google Places api
+    implementation 'com.google.android.libraries.places:places:2.4.0'
+
+    // Anko
+    implementation 'org.jetbrains.anko:anko-commons:0.10.8'
+
 }
 
 configurations {

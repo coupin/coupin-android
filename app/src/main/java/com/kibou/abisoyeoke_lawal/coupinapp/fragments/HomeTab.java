@@ -19,14 +19,18 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -111,7 +115,7 @@ import butterknife.ButterKnife;
  * A simple {@link Fragment} subclass.
  */
 public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter, GoogleApiClient.ConnectionCallbacks,
-    GoogleApiClient.OnConnectionFailedListener, MyOnClick {
+        GoogleApiClient.OnConnectionFailedListener, MyOnClick {
     private static final int SERVICE_ID = 1002;
     private final int PERMISSION_ALL = 1;
     @BindView(R.id.btn_mylocation)
@@ -144,8 +148,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public static final float DEFAULT_BACKOFF_MULT = 1f;
 
     private String[] permissions = {
-        Manifest.permission.ACCESS_COARSE_LOCATION,
-        Manifest.permission.ACCESS_FINE_LOCATION
+            Manifest.permission.ACCESS_COARSE_LOCATION,
+            Manifest.permission.ACCESS_FINE_LOCATION
     };
 
 
@@ -276,12 +280,12 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         if (!NetworkGPSUtils.isConnected(getContext())) {
             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        getActivity().finish();
-                    }
-                });
+                    getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            getActivity().finish();
+                        }
+                    });
             networkErrorDialog.show();
         } else {
             setLastKnownLocation();
@@ -303,7 +307,17 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(getActivity(), R.raw.style_json));
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
-                mGoogleMap.setMyLocationEnabled(false);
+                if (ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+                    // TODO: Consider calling
+                    //    ActivityCompat#requestPermissions
+                    // here to request the missing permissions, and then overriding
+                    //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                    //                                          int[] grantResults)
+                    // to handle the case where the user grants the permission. See the documentation
+                    // for ActivityCompat#requestPermissions for more details.
+                    mGoogleMap.setMyLocationEnabled(false);
+                    return;
+                }
                 mGoogleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(6.517693, 3.378371), 20));
                 mGoogleMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
                     @Override
@@ -315,10 +329,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 try {
                     if (geocoder.isPresent() && currentLocation != null) {
-                        addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-                        if (addresses.size() > 0) {
-                            street.setText(addresses.get(0).getThoroughfare().toString());
-                        }
+//                        addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
+//                        if (addresses.size() > 0) {
+//                            street.setText(addresses.get(0).getThoroughfare().toString());
+//                        }
                     }
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -745,6 +759,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 public Map<String, String> getHeaders() {
                     Map<String, String> headers = new HashMap<>();
                     String token = PreferenceMngr.getToken();
+                    Log.d("simi-token", token);
                     if (token != null) {
                         headers.put("Authorization", token);
                     }

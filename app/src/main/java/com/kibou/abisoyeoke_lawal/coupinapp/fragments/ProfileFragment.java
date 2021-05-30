@@ -13,7 +13,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.AboutActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.activities.AddressActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.AddressBookActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.EditActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.FAQActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.HelpActivity;
@@ -138,7 +138,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
                 startActivity(new Intent(getActivity(), TermsActivity.class));
                 break;
             case R.id.profile_address_book:
-                startActivity(new Intent(getActivity(), AddressActivity.class));
+                startActivity(new Intent(getActivity(), AddressBookActivity.class));
         }
     }
 }

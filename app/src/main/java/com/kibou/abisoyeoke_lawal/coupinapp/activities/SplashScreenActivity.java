@@ -80,16 +80,17 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String perms[], int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, perms, grantResults);
         boolean valid = true;
         switch (requestCode) {
             case PERMISSION_ALL:
-                for(int result : grantResults) {
+                for (int result : grantResults) {
                     if (result != PackageManager.PERMISSION_GRANTED) {
                         valid = false;
                     }
                 }
 
-                if(grantResults.length > 0 && valid) {
+                if (grantResults.length > 0 && valid) {
                     if (PreferenceMngr.updateAvailable()) {
                         updateDialog = new UpdateDialog(this, this);
                         updateDialog.show();
