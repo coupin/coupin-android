@@ -44,6 +44,9 @@ data class AddressResponseModel(val id : String?, val address : String?, val loc
 data class AddressLocation(val longitude: Double?, val latitude : Double?)
 data class GetAddressesResponseModel(val addresses : List<AddressResponseModel>)
 data class AddAddressResponseModel(val message : String, val address : AddressResponseModel?)
+enum class AddressSetTextFrom {
+    MAP_PIN, PLACE_SEARCH_RESULT, DEFAULT
+}
 
 
 /* API ERROR*/

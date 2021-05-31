@@ -12,6 +12,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressService
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.PlaceSearchService
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddAddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressModel
+import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressSetTextFrom
 import com.kibou.abisoyeoke_lawal.coupinapp.models.PlacesSearchResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
@@ -26,10 +27,12 @@ class AddAddressViewModel @Inject constructor(application: Application, @GoogleM
     private val userLatLngMLD : MutableLiveData<LatLng?> = MutableLiveData()
     val userLatLngLD : LiveData<LatLng?> get() = userLatLngMLD
 
+    val mldAddressSetTextFrom : MutableLiveData<AddressSetTextFrom> = MutableLiveData(AddressSetTextFrom.DEFAULT)
 
-    fun searchPlaces(searchString : String) : LiveData<Resource<PlacesSearchResponseModel>> {
+    fun searchPlaces(searchString : String): LiveData<Resource<PlacesSearchResponseModel>> {
         val placesSearchService = mapsRetrofit.create(PlaceSearchService::class.java)
-        return NetworkCall<PlacesSearchResponseModel>().makeCall(placesSearchService.searchPlace(searchString, BuildConfig.GOOGLE_PLACES_API))
+        return NetworkCall<PlacesSearchResponseModel>()
+                .makeCall(placesSearchService.searchPlace(searchString, BuildConfig.GOOGLE_PLACES_API))
     }
 
     fun setUserLatLng(latLng: LatLng?) = latLng.also { userLatLngMLD.value = it }
@@ -39,4 +42,5 @@ class AddAddressViewModel @Inject constructor(application: Application, @GoogleM
         return NetworkCall<AddAddressResponseModel>().makeCall(addressService.addAddress(addressModel.token,
                 addressModel.longitude, addressModel.latitude, addressModel.mobileNumber, addressModel.address))
     }
+
 }

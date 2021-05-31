@@ -3,11 +3,13 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -15,7 +17,6 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.common.api.ApiException
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -26,6 +27,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -34,13 +36,20 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPlacesSearchAdapter
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.PlacesSearchRecyclerClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressModel
+import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressSetTextFrom
 import com.kibou.abisoyeoke_lawal.coupinapp.models.PlacesSearchRecyclerResource
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.AddAddressViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_add_address.*
-import org.jetbrains.anko.alert
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import org.jetbrains.anko.toast
+import java.io.IOException
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.util.*
 
 
 @AndroidEntryPoint
@@ -52,28 +61,76 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
     private val recyclerViewResource = arrayListOf<PlacesSearchRecyclerResource>()
     val logTag = "AddAddressActivity"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var markerOptions : MarkerOptions
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_address)
-        location_back.setOnClickListener(this)
+        setUpOnClickListeners()
         setUpView()
+
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
         mapFragment?.run{
             getMapAsync(this@AddAddressActivity)
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@AddAddressActivity)
         }
-        save_btn.setOnClickListener{ addAddress() }
     }
 
+    private fun setUpOnClickListeners(){
+        save_btn.setOnClickListener(this)
+        location_back.setOnClickListener(this)
+    }
 
+    @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         centerMapInUsersLocation()
         mMap.setOnMyLocationButtonClickListener {
-            centerMapInUsersLocation()
+            if(::markerOptions.isInitialized){
+                val location = markerOptions.position
+                positionMap(location.latitude, location.longitude)
+            }
             true
         }
+        mMap.uiSettings.apply {
+            isMyLocationButtonEnabled = true
+        }
+        if(isLocationPermissionGranted()){
+            mMap.isMyLocationEnabled = true
+        }else requestLocationPermission()
+
+        setMapDragListener()
+    }
+
+    private fun setMapDragListener(){
+        mMap.setOnMarkerDragListener(object : GoogleMap.OnMarkerDragListener {
+            override fun onMarkerDragStart(p0: Marker) {}
+            override fun onMarkerDrag(p0: Marker) {}
+
+            override fun onMarkerDragEnd(marker: Marker) {
+                val latLng: LatLng = marker.position
+                positionMap(latLng.latitude, latLng.longitude)
+                markerOptions.position(marker.position)
+                val geocoder = Geocoder(this@AddAddressActivity, Locale.getDefault())
+                try {
+                    val df = DecimalFormat("#.0000")
+                    df.roundingMode = RoundingMode.HALF_EVEN
+
+                    val formattedLatitude = df.format(latLng.latitude).toDouble()
+                    val formattedLongitude = df.format(latLng.longitude).toDouble()
+                    GlobalScope.launch {
+                        val address = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1)[0]
+                        runOnUiThread {
+                            addAddressViewModel.mldAddressSetTextFrom.value = AddressSetTextFrom.MAP_PIN
+                            address_input.setText(address.getAddressLine(0))
+                            addAddressViewModel.setUserLatLng(LatLng(formattedLatitude, formattedLongitude)) // set formatted lat lng to api
+                        }
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+            }
+        })
     }
 
     @SuppressLint("MissingPermission")
@@ -81,65 +138,77 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
         if(isLocationPermissionGranted()){
             fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
                 location?.let {
-                    positionMap(it)
+                    positionMap(it.latitude, it.longitude)
+                    markerOptions = MarkerOptions().position(LatLng(it.latitude, it.longitude)).draggable(true)
+                    mMap.addMarker(markerOptions)
                 }
             }
         }else requestLocationPermission()
-        mMap.isMyLocationEnabled = true
-        mMap.uiSettings.apply {
-            isMyLocationButtonEnabled = true
-            isZoomControlsEnabled = true
-        }
     }
 
-    private fun positionMap(location: Location){
+    private fun positionMap(latitude: Double, longitude: Double){
         if(::mMap.isInitialized){
-            val userLatLng = LatLng(location.latitude, location.longitude)
+            val userLatLng = LatLng(latitude, longitude)
             val cameraPosition = CameraPosition.Builder().target(userLatLng).zoom(18F).build()
             mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
-            val markerOptions = MarkerOptions().position(userLatLng).draggable(true)
-            mMap.addMarker(markerOptions)
         }
     }
 
     override fun onClick(v: View?) {
         when(v?.id){
-            location_back.id -> {
-                onBackPressed()
+            location_back.id -> onBackPressed()
+            save_btn.id -> addAddress()
+        }
+    }
+
+    private fun preparePlaceSearch(searchString: String){
+        val addressInputFrom = addAddressViewModel.mldAddressSetTextFrom.value
+        addressInputFrom?.let {
+            if(it == AddressSetTextFrom.PLACE_SEARCH_RESULT){
+                performPlaceSearch(searchString)
+            }else if( it == AddressSetTextFrom.MAP_PIN) {
+                address_recycler.visibility = View.GONE
+            }else {
+                performPlaceSearch(searchString)
             }
         }
     }
 
-    private val textChangedListener = object : TextWatcher {
-        override fun afterTextChanged(s: Editable?) {}
-
-        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
-
-        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            s?.let {
-                if(s.isNotEmpty()){
-                    val searchString = s.toString().trim()
-                    addAddressViewModel.searchPlaces(searchString).observe(this@AddAddressActivity, Observer {
-                        when (it.status) {
-                            Resource.Status.LOADING -> {
-                            }
-                            Resource.Status.ERROR -> {
-                            }
-                            Resource.Status.SUCCESS -> {
-                                val recyclerViewResourceArray = arrayListOf<PlacesSearchRecyclerResource>()
-                                if (it.data != null) {
-                                    it.data.predictions.forEach {
-                                        recyclerViewResourceArray.add(PlacesSearchRecyclerResource(it.structured_formatting.main_text, it.structured_formatting.secondary_text, it.place_id))
-                                    }
-                                    RVPlacesSearchAdapter.updateViewResource(recyclerViewResourceArray)
-                                }
-                            }
+    private fun performPlaceSearch(searchString : String){
+        address_recycler.visibility = View.VISIBLE
+        addAddressViewModel.searchPlaces(searchString).observe(this@AddAddressActivity, {
+            when (it.status) {
+                Resource.Status.LOADING -> {
+                    progress_bar.visibility = View.VISIBLE
+                }
+                Resource.Status.ERROR -> {
+                    progress_bar.visibility = View.GONE
+                    toast("An error occured. Please try againn later.")
+                }
+                Resource.Status.SUCCESS -> {
+                    progress_bar.visibility = View.GONE
+                    val recyclerViewResourceArray = arrayListOf<PlacesSearchRecyclerResource>()
+                    if (it.data != null) {
+                        it.data.predictions.forEach {
+                            recyclerViewResourceArray.add(PlacesSearchRecyclerResource(it.structured_formatting.main_text, it.structured_formatting.secondary_text, it.place_id))
                         }
-                    })
+                        RVPlacesSearchAdapter.updateViewResource(recyclerViewResourceArray)
+                    }
                 }
             }
-        }
+        })
+    }
 
+    private val textChangedListener = object : TextWatcher {
+        override fun afterTextChanged(s: Editable?) {}
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+            s?.let {
+                addAddressViewModel.mldAddressSetTextFrom.value = AddressSetTextFrom.PLACE_SEARCH_RESULT
+                val searchString = s.toString().trim()
+                preparePlaceSearch(searchString)
+            }
+        }
     }
 
     private fun setUpView(){
@@ -160,6 +229,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
                 addressMain = "$mainText, "
             }
             val address = ("${addressMain ?: ""}${secText ?: ""}").trim()
+            addAddressViewModel.mldAddressSetTextFrom.value = AddressSetTextFrom.PLACE_SEARCH_RESULT
             address_input.setText(address)
 
             val fields: List<Place.Field> = listOf(Place.Field.ID, Place.Field.LAT_LNG)
@@ -170,6 +240,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
                             it?.let {
                                 Log.d(logTag, it.toString())
                                 addAddressViewModel.setUserLatLng(it.place.latLng)
+                                preparePlaceSearch("")  // to clear recycler view after click
                             }
                         }
                         .addOnFailureListener {
@@ -203,30 +274,27 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
         }
         val token = PreferenceMngr.getToken() ?: ""
         val addressModel = AddressModel(address, userLong, userLat, phoneNumber, token)
-
         addAddressViewModel.addUserAddress(addressModel).observe(this, {
             it?.let {
-                when(it.status){
-                    Resource.Status.ERROR ->{
+                when (it.status) {
+                    Resource.Status.ERROR -> {
                         save_btn.isEnabled = true
                         save_btn.text = getString(R.string.bt_save)
-                        alert( "Error adding address. Please try again later.").show()
+                        toast("Error adding address. Please try again later.")
                     }
-                    Resource.Status.SUCCESS ->{
+                    Resource.Status.SUCCESS -> {
                         save_btn.isEnabled = true
                         save_btn.text = getString(R.string.bt_save)
-                        alert( "Address added successfully.").show()
-                        address_input.setText("")
-                        phone_number_input.setText("")
+                        toast("Address added successfully.")
+                        finish()
                     }
-                    Resource.Status.LOADING ->{
+                    Resource.Status.LOADING -> {
                         save_btn.isEnabled = false
                         save_btn.text = getString(R.string.LOADING)
                     }
                 }
             }
         })
-
     }
 
     private fun requestLocationPermission(){
