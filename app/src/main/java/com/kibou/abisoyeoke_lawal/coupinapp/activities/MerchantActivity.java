@@ -5,10 +5,14 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
+
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -198,7 +202,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 && (!user.has("mobileNumber") || !user.has("ageRange"))) {
                 experienceDialog = new ExperienceDialog(this, this, user);
                 requestGenderNumber = true;
-                experienceDialog.show();
+//                experienceDialog.show();
             }
 
             favourites = PreferenceMngr.getInstance().getFavourites();
@@ -237,17 +241,19 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (requestGenderNumber) {
-                    experienceDialog.show();
-                } else {
-                    expiryDate = expiryDates.get(0);
-                    for (int i = 1; i < expiryDates.size(); i++) {
-                        if (expiryDates.get(i).after(expiryDate)) {
-                            expiryDate = expiryDates.get(i);
-                        }
-                    }
-                    generatePin();
-                }
+                displayReceiveOrderDialog();
+//                if (requestGenderNumber) {
+//                    experienceDialog.show();
+//                } else {
+//                    expiryDate = expiryDates.get(0);
+//                    for (int i = 1; i < expiryDates.size(); i++) {
+//                        if (expiryDates.get(i).after(expiryDate)) {
+//                            expiryDate = expiryDates.get(i);
+//                        }
+//                    }
+//                    generatePin();
+//
+//                }
             }
         });
 
@@ -628,13 +634,19 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             this.selected.clear();
             onBackPressed();
         } else {
-            expiryDate = expiryDates.get(0);
-            for (int i = 1; i < expiryDates.size(); i++) {
-                if (expiryDates.get(i).after(expiryDate)) {
-                    expiryDate = expiryDates.get(i);
+            try {
+                if(!expiryDates.isEmpty()){
+                    expiryDate = expiryDates.get(0);
+                    for (int i = 1; i < expiryDates.size(); i++) {
+                        if (expiryDates.get(i).after(expiryDate)) {
+                            expiryDate = expiryDates.get(i);
+                        }
+                    }
                 }
+                generatePin();
+            }catch (Exception e){
+                e.printStackTrace();
             }
-            generatePin();
         }
     }
 
@@ -740,10 +752,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"));
                     PreferenceMngr.getInstance().setBlacklist(tempBlackList);
 
-                    Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
-                    intent.putExtra("coupin", coupin);
-                    startActivity(intent);
-                    finish();
+//                    Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
+//                    intent.putExtra("coupin", coupin);
+//                    startActivity(intent);
+//                    finish();
+
+                    displayReceiveOrderDialog();
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -770,8 +784,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 params.put("merchantId", item.getId());
                 params.put("rewardId", selected.toString());
                 params.put("blacklist", tempBlackList.toString());
-                params.put("expiryDate", expiryDate.toString());
-
+                if(expiryDate != null){
+                    params.put("expiryDate", expiryDate.toString());
+                }
                 return params;
             }
 
@@ -785,6 +800,29 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         };
 
         requestQueue.add(stringRequest);
+    }
+
+    private void displayReceiveOrderDialog(){
+        View receiveOrderDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_pickup_delivery, null);
+        AlertDialog receiveOrderDialog = new AlertDialog.Builder(this).create();
+        receiveOrderDialog.setView(receiveOrderDialogView);
+        receiveOrderDialogView.findViewById(R.id.delivery_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                receiveOrderDialog.dismiss();
+                Intent intent = new Intent(MerchantActivity.this, DeliveryActivity.class);
+                startActivity(intent);
+            }
+        });
+        receiveOrderDialogView.findViewById(R.id.pickup_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                receiveOrderDialog.dismiss();
+                Intent intent = new Intent(MerchantActivity.this, CheckoutActivity.class);
+                startActivity(intent);
+            }
+        });
+        receiveOrderDialog.show();
     }
 
     /**

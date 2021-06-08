@@ -4,15 +4,10 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import androidx.room.RoomDatabase
 import com.kibou.abisoyeoke_lawal.coupinapp.database.AddressDAO
-import com.kibou.abisoyeoke_lawal.coupinapp.database.CoupinDatabase
 import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
-import com.kibou.abisoyeoke_lawal.coupinapp.di.GoogleMapsRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressService
-import com.kibou.abisoyeoke_lawal.coupinapp.models.AddAddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.DeleteAddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetAddressesResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
@@ -22,22 +17,12 @@ import retrofit2.Retrofit
 import javax.inject.Inject
 
 @HiltViewModel
-class AddressBookViewModel @Inject constructor(application: Application,
-                                               @CoupinRetrofit private val coupinRetrofit: Retrofit, private val addressDAO :
-                                               AddressDAO) : AndroidViewModel(application) {
+class DeliveryViewModel @Inject constructor(application: Application,@CoupinRetrofit private val coupinRetrofit: Retrofit,
+                                            private val addressDAO : AddressDAO) : AndroidViewModel(application) {
 
     fun getAddressesFromNetwork(token : String): LiveData<Resource<GetAddressesResponseModel>> {
         val addressService = coupinRetrofit.create(AddressService::class.java)
         return NetworkCall<GetAddressesResponseModel>().makeCall(addressService.getAddress(token))
-    }
-
-    fun deleteAddressFromNetwork(token : String, id : String) : LiveData<Resource<DeleteAddressResponseModel>>{
-        val addressService = coupinRetrofit.create(AddressService::class.java)
-        return NetworkCall<DeleteAddressResponseModel>().makeCall(addressService.deleteAddress(token, id))
-    }
-
-    fun getAddressesFromDB() : LiveData<List<AddressResponseModel>> {
-        return addressDAO.getAddresses()
     }
 
     fun addAddressesToDB(addresses : List<AddressResponseModel>){
@@ -46,9 +31,7 @@ class AddressBookViewModel @Inject constructor(application: Application,
         }
     }
 
-    fun deleteAddressFromDB(address : AddressResponseModel){
-        viewModelScope.launch {
-            addressDAO.deleteAddress(address)
-        }
+    fun getAddressesFromDB() : LiveData<List<AddressResponseModel>> {
+        return addressDAO.getAddresses()
     }
 }

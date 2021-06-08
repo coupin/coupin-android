@@ -1,9 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.interfaces
 
-import com.kibou.abisoyeoke_lawal.coupinapp.models.AddAddressResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetAddressesResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.PlacesSearchResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.ReverseGeocodingResponseModel
+import com.kibou.abisoyeoke_lawal.coupinapp.models.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -11,6 +8,13 @@ interface PlacesSearchRecyclerClickListener{
     fun onPlacesSearchRecyclerClick(mainText: String?, secText : String?, placeId: String?)
 }
 
+interface AddressBookItemClickListener{
+    fun onAddressCancelClick(addressModel : AddressResponseModel)
+}
+
+interface DeliveryAddressItemClickListener{
+    fun onAddressClick(addressModel : AddressResponseModel)
+}
 
 interface PlaceSearchService {
     @GET("maps/api/place/autocomplete/json?")
@@ -28,4 +32,7 @@ interface AddressService{
 
     @GET("customer/addresses")
     fun getAddress(@Header("Authorization") auth : String) : Call<GetAddressesResponseModel>
+
+    @DELETE("customer/addresses/{id}")
+    fun deleteAddress(@Header("Authorization") auth : String, @Path("id") id : String) : Call<DeleteAddressResponseModel>
 }

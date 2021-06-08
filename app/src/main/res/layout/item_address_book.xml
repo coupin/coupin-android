@@ -15,7 +15,7 @@
         android:text="address"
         android:textSize="16sp"
         android:textColor="@color/text_dark_grey"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cancel_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="10dp"/>
@@ -26,23 +26,24 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:text="PHONENUMBER"
-        android:textColor="@color/text_dark_grey"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/address"
+        android:textColor="@color/text_light_grey"
+        app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/address" />
 
-<!--    <ImageView
-        android:id="@+id/imageView"
+    <ImageButton
+        android:id="@+id/cancel_btn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:srcCompat="@drawable/right_angle_grey"
+        app:srcCompat="@drawable/ic_cancel_grey"
         tools:layout_editor_absoluteX="235dp"
         tools:layout_editor_absoluteY="11dp"
         app:layout_constraintTop_toTopOf="@id/address"
         app:layout_constraintBottom_toBottomOf="@id/phone_number"
         app:layout_constraintEnd_toEndOf="parent"
-        android:contentDescription="@null"/>-->
+        android:contentDescription="@null"
+        android:background="?attr/selectableItemBackground"
+        android:padding="10dp"/>
     <View
         android:layout_width="0dp"
         android:layout_height="1dp"

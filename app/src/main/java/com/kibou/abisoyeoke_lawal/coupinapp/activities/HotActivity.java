@@ -131,11 +131,16 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_hot);
         ButterKnife.bind(this);
 
+        PreferenceMngr.setContext(getApplicationContext());
         requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RVHotAdapter(merchants, this, this);
-        favourites = PreferenceMngr.getInstance().getFavourites();
+        try {
+            favourites = PreferenceMngr.getInstance().getFavourites();
+        }catch (Exception e){
+            e.printStackTrace();
+        }
 
         hotRecyclerView.setLayoutManager(linearLayoutManager);
         hotRecyclerView.setHasFixedSize(true);

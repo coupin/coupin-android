@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
-import android.view.KeyEvent
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -45,7 +44,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_add_address.*
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.toast
 import java.io.IOException
 import java.math.RoundingMode
 import java.text.DecimalFormat
@@ -62,36 +60,44 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
     val logTag = "AddAddressActivity"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var markerOptions : MarkerOptions
+    private lateinit var addressMarker : Marker
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_address)
-        setUpOnClickListeners()
-        setUpView()
 
         val mapFragment = supportFragmentManager.findFragmentById(R.id.map_view) as SupportMapFragment?
         mapFragment?.run{
             getMapAsync(this@AddAddressActivity)
             fusedLocationClient = LocationServices.getFusedLocationProviderClient(this@AddAddressActivity)
         }
+        setUpOnClickListeners()
+        setUpView()
     }
 
+    @SuppressLint("MissingPermission")
     private fun setUpOnClickListeners(){
         save_btn.setOnClickListener(this)
         location_back.setOnClickListener(this)
+
+        if(isLocationPermissionGranted()){
+            if(::mMap.isInitialized){
+                mMap.setOnMyLocationButtonClickListener {
+                    fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
+                        location?.let {
+                            positionMap(it.latitude, it.longitude)
+                        }
+                    }
+                    true
+                }
+            }
+        }else requestLocationPermission()
     }
 
     @SuppressLint("MissingPermission")
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
         centerMapInUsersLocation()
-        mMap.setOnMyLocationButtonClickListener {
-            if(::markerOptions.isInitialized){
-                val location = markerOptions.position
-                positionMap(location.latitude, location.longitude)
-            }
-            true
-        }
         mMap.uiSettings.apply {
             isMyLocationButtonEnabled = true
         }
@@ -140,7 +146,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
                 location?.let {
                     positionMap(it.latitude, it.longitude)
                     markerOptions = MarkerOptions().position(LatLng(it.latitude, it.longitude)).draggable(true)
-                    mMap.addMarker(markerOptions)
+                    addressMarker = mMap.addMarker(markerOptions)
                 }
             }
         }else requestLocationPermission()
@@ -157,7 +163,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
     override fun onClick(v: View?) {
         when(v?.id){
             location_back.id -> onBackPressed()
-            save_btn.id -> addAddress()
+            save_btn.id -> prepareToAddAddress()
         }
     }
 
@@ -183,7 +189,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
                 }
                 Resource.Status.ERROR -> {
                     progress_bar.visibility = View.GONE
-                    toast("An error occured. Please try againn later.")
+                    Toast.makeText(this@AddAddressActivity, "An error occured. Please try againn later.", Toast.LENGTH_SHORT).show()
                 }
                 Resource.Status.SUCCESS -> {
                     progress_bar.visibility = View.GONE
@@ -238,8 +244,14 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
                 Places.createClient(applicationContext).fetchPlace(request)
                         .addOnSuccessListener {
                             it?.let {
-                                Log.d(logTag, it.toString())
                                 addAddressViewModel.setUserLatLng(it.place.latLng)
+                                it.place.latLng?.let {
+                                    positionMap(it.latitude, it.longitude)
+                                    if(::addressMarker.isInitialized && ::markerOptions.isInitialized){
+                                        addressMarker.position = it
+                                        markerOptions.position(it)
+                                    }
+                                }
                                 preparePlaceSearch("")  // to clear recycler view after click
                             }
                         }
@@ -254,7 +266,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
         }
     }
 
-    private fun addAddress(){
+    private fun prepareToAddAddress(){
         val address = address_input.text.toString().trim()
         val phoneNumber = phone_number_input.text.toString().trim()
         if (address.isEmpty()) {
@@ -274,19 +286,28 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
         }
         val token = PreferenceMngr.getToken() ?: ""
         val addressModel = AddressModel(address, userLong, userLat, phoneNumber, token)
-        addAddressViewModel.addUserAddress(addressModel).observe(this, {
+        addAddressToNetwork(addressModel)
+    }
+
+    private fun addAddressToNetwork(addressModel: AddressModel){
+        addAddressViewModel.addAddressToNetwork(addressModel).observe(this, {
             it?.let {
                 when (it.status) {
                     Resource.Status.ERROR -> {
                         save_btn.isEnabled = true
                         save_btn.text = getString(R.string.bt_save)
-                        toast("Error adding address. Please try again later.")
+                        Toast.makeText(this@AddAddressActivity, "Error adding address. Please try again later.",  Toast.LENGTH_SHORT).show()
                     }
                     Resource.Status.SUCCESS -> {
                         save_btn.isEnabled = true
                         save_btn.text = getString(R.string.bt_save)
-                        toast("Address added successfully.")
-                        finish()
+                        it.data?.let {
+                            Toast.makeText(this@AddAddressActivity,"Address added successfully.",  Toast.LENGTH_SHORT).show()
+                            it.address?.let {
+                                addAddressViewModel.addAddressToDB(it)
+                            }
+                            finish()
+                        }
                     }
                     Resource.Status.LOADING -> {
                         save_btn.isEnabled = false

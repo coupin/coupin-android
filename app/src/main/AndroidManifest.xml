@@ -24,15 +24,17 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:allowBackup,android:fullBackupContent">
-        <activity android:name=".activities.AddAddressActivity" android:screenOrientation="portrait" />
+        <activity android:name=".activities.CheckoutActivity"></activity>
+        <activity android:name=".activities.DeliveryActivity" />
+        <activity
+            android:name=".activities.AddAddressActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".activities.AddressBookActivity" />
         <activity android:name=".activities.ReviewSelectionActivity" />
 
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
-
-
 
         <service
             android:name=".services.MyFirebaseMessagingService"
@@ -46,8 +48,6 @@
             android:enabled="true"
             android:exported="false" />
 
-
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_clogo" />
@@ -60,8 +60,6 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/google_maps_key" /> <!-- For GCM -->
-
-
         <receiver
             android:name=".services.AlarmReceiver"
             android:enabled="false">
@@ -69,9 +67,6 @@
                 <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-
-
-
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -89,7 +84,6 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity> <!-- For Facebook Login -->
-
         <activity
             android:name=".activities.LoginActivity"
             android:label="@string/app_name"

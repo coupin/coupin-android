@@ -546,7 +546,7 @@
     <string name="error_phone_number">Invalid Phone Number e.g. 08012345678</string>
 
 
-<!--    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDV4IoRqDH6N6pEoES3djLzQNOO9ZUs-uU</string>-->
+    <!--    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDV4IoRqDH6N6pEoES3djLzQNOO9ZUs-uU</string>-->
     <!--DEV-->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCIILzeDdDoT-fhBoKgakXdj8j2QGIuG3c</string>
     <!--PRO-->
@@ -596,4 +596,11 @@
     <string name="_add_address"> + Add address</string>
     <string name="address">Address</string>
     <string name="add_address">Add Address</string>
+    <string name="delete_address_dialog_header">Delete Address</string>
+    <string name="delete_address_dialog_body">Are you sure you want to delete this address?</string>
+    <string name="delete">delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="make_payment">Make payment</string>
+    <string name="_add_new_address">+ Add New Address</string>
+    <string name="delivery_address">Delivery Address</string>
 </resources>

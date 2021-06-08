@@ -1,17 +1,22 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.di
 
+import android.content.Context
+import androidx.room.Room
 import com.kibou.abisoyeoke_lawal.coupinapp.CoupinApp
 import com.kibou.abisoyeoke_lawal.coupinapp.R
+import com.kibou.abisoyeoke_lawal.coupinapp.database.CoupinDatabase
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.googleMapsApiBaseURL
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
+import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -52,4 +57,13 @@ object ApplicationModules {
                 .client(client)
                 .build()
     }
+
+    @Singleton // Tell Dagger-Hilt to create a singleton accessible everywhere in ApplicationCompenent (i.e. everywhere in the application)
+    @Provides
+    fun provideCoupinDatabase(@ApplicationContext context: Context) = Room.databaseBuilder(context,
+            CoupinDatabase::class.java, "coupin_database").build()
+
+    @Singleton
+    @Provides
+    fun provideAddressDAO(db: CoupinDatabase) = db.addressDao()
 }

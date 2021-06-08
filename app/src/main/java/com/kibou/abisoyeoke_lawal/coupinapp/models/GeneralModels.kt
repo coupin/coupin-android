@@ -1,5 +1,8 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.models
 
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+
 
 /* PLACE SEARCH*/
 /* PLACE SEARCH*/
@@ -40,10 +43,14 @@ data class Northeast (val lat : Double, val lng : Double)
 /* USER ADDRESS*/
 /* USER ADDRESS*/
 data class AddressModel(val address : String, val longitude : Double, val latitude : Double, val mobileNumber : String, val token : String)
-data class AddressResponseModel(val id : String?, val address : String?, val location : AddressLocation?, val mobileNumber : String?, val owner : String?)
+
+@Entity
+data class AddressResponseModel(@PrimaryKey val id : String, val address : String, val location : AddressLocation, val
+mobileNumber : String, val owner : String)
 data class AddressLocation(val longitude: Double?, val latitude : Double?)
-data class GetAddressesResponseModel(val addresses : List<AddressResponseModel>)
+data class GetAddressesResponseModel(val addresses : MutableList<AddressResponseModel>)
 data class AddAddressResponseModel(val message : String, val address : AddressResponseModel?)
+data class DeleteAddressResponseModel(val message : String)
 enum class AddressSetTextFrom {
     MAP_PIN, PLACE_SEARCH_RESULT, DEFAULT
 }
