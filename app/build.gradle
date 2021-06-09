@@ -36,6 +36,7 @@ android {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
             }
             it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
+            it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY", "")
         }
         debug {
             Properties properties = new Properties()
@@ -43,6 +44,8 @@ android {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
             }
             it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
+            it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY", "")
+
         }
     }
     kotlinOptions {

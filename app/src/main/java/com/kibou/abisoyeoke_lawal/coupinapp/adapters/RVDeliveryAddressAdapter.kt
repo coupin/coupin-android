@@ -19,7 +19,7 @@ import org.jetbrains.anko.find
 
 class RVDeliveryAddressAdapter(private val resource : MutableList<AddressResponseModel>,
                                private val deliveryAddressItemClickListener : DeliveryAddressItemClickListener, var
-                               selectedPosition: Int, private val context : Context)
+                               selectedPosition: Int?, private val context : Context)
     : RecyclerView.Adapter<RVDeliveryAddressAdapter.RVDeliveryAddressVH>() {
 
     class RVDeliveryAddressVH(view : View) : RecyclerView.ViewHolder(view) {

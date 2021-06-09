@@ -5,6 +5,7 @@ import androidx.room.Room
 import com.kibou.abisoyeoke_lawal.coupinapp.CoupinApp
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.database.CoupinDatabase
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.gokadaApiBaseURL
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.googleMapsApiBaseURL
 import dagger.Module
 import dagger.Provides
@@ -66,4 +67,22 @@ object ApplicationModules {
     @Singleton
     @Provides
     fun provideAddressDAO(db: CoupinDatabase) = db.addressDao()
+
+    @GokadaRetrofit
+    @Provides
+    fun getGokadaRetrofit() : Retrofit {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.level = HttpLoggingInterceptor.Level.BODY
+
+        val client = OkHttpClient.Builder()
+            .addInterceptor(interceptor)
+            .readTimeout(100, TimeUnit.SECONDS)
+            .build()
+
+        return Retrofit.Builder()
+            .baseUrl(gokadaApiBaseURL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .client(client)
+            .build()
+    }
 }

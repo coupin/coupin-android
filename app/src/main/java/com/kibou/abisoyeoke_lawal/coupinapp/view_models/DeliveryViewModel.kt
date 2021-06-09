@@ -6,9 +6,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.kibou.abisoyeoke_lawal.coupinapp.database.AddressDAO
 import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
+import com.kibou.abisoyeoke_lawal.coupinapp.di.GokadaRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressService
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.GokadaPriceEstimateService
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetAddressesResponseModel
+import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateRequestBody
+import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateResponse
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DeliveryViewModel @Inject constructor(application: Application,@CoupinRetrofit private val coupinRetrofit: Retrofit,
-                                            private val addressDAO : AddressDAO) : AndroidViewModel(application) {
+                                            private val addressDAO : AddressDAO, @GokadaRetrofit private val gokadaRetrofit :
+                                            Retrofit) : AndroidViewModel(application) {
 
     fun getAddressesFromNetwork(token : String): LiveData<Resource<GetAddressesResponseModel>> {
         val addressService = coupinRetrofit.create(AddressService::class.java)
@@ -33,5 +38,10 @@ class DeliveryViewModel @Inject constructor(application: Application,@CoupinRetr
 
     fun getAddressesFromDB() : LiveData<List<AddressResponseModel>> {
         return addressDAO.getAddresses()
+    }
+
+    fun getDeliveryEstimate(gokadaOrderEstimateRequestBody : GokadaOrderEstimateRequestBody): LiveData<Resource<GokadaOrderEstimateResponse>> {
+        val gokadaDeliveryService = gokadaRetrofit.create(GokadaPriceEstimateService::class.java)
+        return NetworkCall<GokadaOrderEstimateResponse>().makeCall(gokadaDeliveryService.getPriceEstimate(gokadaOrderEstimateRequestBody))
     }
 }

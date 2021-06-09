@@ -124,7 +124,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="15dp"
             android:text="Items cost: "
             android:textColor="@color/darkGrey"
             app:layout_constraintEnd_toStartOf="@+id/items_cost"
@@ -149,15 +149,15 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
-            android:text="Delivery cost:"
+            android:text="@string/delivery_cost_"
             android:textColor="@color/text_dark_grey2"
             android:textSize="14sp"
-            app:layout_constraintEnd_toStartOf="@+id/textView5"
+            app:layout_constraintEnd_toStartOf="@+id/delivery_cost"
             app:layout_constraintStart_toStartOf="@+id/items_cost_text"
             app:layout_constraintTop_toBottomOf="@+id/items_cost_text" />
 
         <TextView
-            android:id="@+id/textView5"
+            android:id="@+id/delivery_cost"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="N0.0"
@@ -173,13 +173,13 @@
             android:id="@+id/total_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="15dp"
             android:text="Total:"
             android:textColor="@color/black"
             android:textSize="16sp"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/delivery_time"
             app:layout_constraintEnd_toStartOf="@+id/total_cost"
             app:layout_constraintStart_toStartOf="@+id/delivery_cost_text"
             app:layout_constraintTop_toBottomOf="@+id/delivery_cost_text" />
@@ -192,10 +192,22 @@
             android:textColor="@color/black"
             android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/total_text"
-            app:layout_constraintEnd_toEndOf="@+id/textView5"
+            app:layout_constraintEnd_toEndOf="@+id/delivery_cost"
             app:layout_constraintStart_toEndOf="@+id/total_text"
             app:layout_constraintTop_toTopOf="@+id/total_text"
             android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/delivery_time"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@id/total_text"
+            app:layout_constraintTop_toBottomOf="@id/total_text"
+            app:layout_constraintEnd_toEndOf="@id/total_cost"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:textSize="12sp"
+            android:text="@string/estimated_time_of_delivery"
+            android:textColor="@color/text_dark_grey2"
+            android:layout_marginBottom="5dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <LinearLayout

@@ -59,3 +59,28 @@ enum class AddressSetTextFrom {
 /* API ERROR*/
 /* API ERROR*/
 data class APIError(val error : Boolean, val message : String, val data : Any? = null)
+
+
+/** GOKADA **/
+/** GOKADA **/
+data class GokadaOrderEstimateRequestBody(val api_key : String, val pickup_latitude : String, val pickup_longitude : String,
+                                    val delivery_latitude : String, val delivery_longitude : String)
+data class GokadaOrderEstimateResponse(val error : String?, val message : String?, val status : Int?, val distance : Int?,
+                                 val time : Int?, val fare : Int?)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

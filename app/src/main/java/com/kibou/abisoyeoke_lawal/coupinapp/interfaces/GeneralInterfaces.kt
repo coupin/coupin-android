@@ -36,3 +36,9 @@ interface AddressService{
     @DELETE("customer/addresses/{id}")
     fun deleteAddress(@Header("Authorization") auth : String, @Path("id") id : String) : Call<DeleteAddressResponseModel>
 }
+
+interface GokadaPriceEstimateService{
+
+    @POST("api/developer/order_estimate")
+    fun getPriceEstimate(@Body requestBody : GokadaOrderEstimateRequestBody) : Call<GokadaOrderEstimateResponse>
+}

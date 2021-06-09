@@ -9,3 +9,7 @@ annotation class GoogleMapsRetrofit
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
 annotation class CoupinRetrofit
+
+@Qualifier
+@Retention(AnnotationRetention.BINARY)
+annotation class GokadaRetrofit
