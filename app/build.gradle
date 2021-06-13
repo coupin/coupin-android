@@ -129,6 +129,9 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
+    // Flutterwave
+    implementation 'com.github.flutterwave.rave-android:rave_android:2.1.36'
+
 }
 
 configurations {

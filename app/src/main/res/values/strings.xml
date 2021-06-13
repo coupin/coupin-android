@@ -606,4 +606,5 @@
     <string name="estimated_time_of_delivery">Estimated time of delivery :</string>
     <string name="delivery_cost_">Delivery cost:</string>
     <string name="select_an_address">Select an address</string>
+    <string name="checkout">Checkout</string>
 </resources>

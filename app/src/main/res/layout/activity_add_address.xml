@@ -24,7 +24,7 @@
                 android:layout_height="@dimen/icon_sm"
                 android:layout_width="@dimen/icon_sm"
                 android:src="@drawable/ic_back"
-                android:tint="@color/text_dark_grey"
+                app:tint="@color/text_dark_grey"
                 android:background="?attr/selectableItemBackground"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -42,7 +42,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/location_back"
-                app:layout_constraintBottom_toBottomOf="@id/location_back"/>
+                app:layout_constraintBottom_toBottomOf="@id/location_back"
+                android:textStyle="bold"/>
             <ProgressBar
                 android:id="@+id/progress_bar"
                 android:layout_width="25dp"
