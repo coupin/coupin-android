@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".activities.ReviewSelectionActivity">
+    tools:context=".fragments.ReviewSelectionFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/title_layout"
@@ -22,7 +22,7 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_width="@dimen/icon_sm"
             android:src="@drawable/ic_back"
-            android:tint="@color/text_dark_grey"
+            app:tint="@color/text_dark_grey"
             android:background="?attr/selectableItemBackground"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -87,7 +87,8 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/deliverable_items_title"
-                android:layout_margin="10dp"/>
+                android:layout_margin="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
             <TextView
                 android:id="@+id/pickup_items_title"
@@ -108,7 +109,8 @@
                 app:layout_constraintTop_toBottomOf="@id/pickup_items_title"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="10dp">
+                android:layout_margin="10dp"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
 
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -120,12 +122,12 @@
         android:background="@color/light_grey"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toTopOf="@id/review_selection_btn"
+        app:layout_constraintBottom_toTopOf="@id/review_selection_proceed_btn"
         android:layout_marginBottom="12dp"
         android:layout_marginStart="5dp"
         android:layout_marginEnd="5dp"/>
     <Button
-        android:id="@+id/review_selection_btn"
+        android:id="@+id/review_selection_proceed_btn"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="20dp"

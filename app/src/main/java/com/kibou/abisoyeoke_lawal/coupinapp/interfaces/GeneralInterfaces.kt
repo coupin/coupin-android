@@ -16,6 +16,10 @@ interface DeliveryAddressItemClickListener{
     fun onAddressClick(addressModel : AddressResponseModel)
 }
 
+interface ReviewSelectionCancelClickListener{
+    fun onCancelClick(reward: Reward)
+}
+
 interface PlaceSearchService {
     @GET("maps/api/place/autocomplete/json?")
     fun searchPlace(@Query("input") input : String, @Query("key") key : String) : Call<PlacesSearchResponseModel>

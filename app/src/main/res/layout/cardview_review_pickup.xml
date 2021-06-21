@@ -23,16 +23,19 @@
 
         <TextView
             android:id="@+id/top_section_title"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginTop="8dp"
+            android:layout_marginEnd="10dp"
             android:text="Card shows all but only the header"
             android:textColor="@color/text_dark_grey"
             android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/discount_percent"
+            app:layout_constraintEnd_toStartOf="@+id/discount_percent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@id/discount_percent"
-            app:layout_constraintBottom_toBottomOf="@id/discount_percent"/>
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/discount_percent"

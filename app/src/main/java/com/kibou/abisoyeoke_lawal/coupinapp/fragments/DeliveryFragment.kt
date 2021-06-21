@@ -1,13 +1,18 @@
-package com.kibou.abisoyeoke_lawal.coupinapp.activities
+package com.kibou.abisoyeoke_lawal.coupinapp.fragments
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.AddAddressActivity
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVDeliveryAddressAdapter
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.DeliveryAddressItemClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
@@ -17,21 +22,23 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.DeliveryViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_address_book.*
-import kotlinx.android.synthetic.main.activity_delivery.*
-import kotlinx.android.synthetic.main.activity_delivery.address_recycler
-import kotlinx.android.synthetic.main.activity_delivery.progress_bar
+import kotlinx.android.synthetic.main.activity_address_book.address_recycler
+import kotlinx.android.synthetic.main.activity_address_book.progress_bar
+import kotlinx.android.synthetic.main.fragment_delivery.*
 import org.jetbrains.anko.toast
 import java.lang.Exception
 
 @AndroidEntryPoint
-class DeliveryActivity : AppCompatActivity(), View.OnClickListener, DeliveryAddressItemClickListener {
+class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemClickListener {
 
     private val deliveryViewModel : DeliveryViewModel by viewModels()
     private lateinit var addressAdapter : RVDeliveryAddressAdapter
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_delivery)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return layoutInflater.inflate(R.layout.fragment_delivery, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpOnClickListeners()
         setUpObservers()
         setUpViews()
@@ -43,21 +50,21 @@ class DeliveryActivity : AppCompatActivity(), View.OnClickListener, DeliveryAddr
     }
 
     private fun setUpObservers() {
-        deliveryViewModel.getAddressesFromDB().observe(this, {
+        deliveryViewModel.getAddressesFromDB().observe(viewLifecycleOwner, {
             it?.let {
-                addressAdapter = RVDeliveryAddressAdapter(it.toMutableList(), this@DeliveryActivity, null, this@DeliveryActivity)
+                addressAdapter = RVDeliveryAddressAdapter(it.toMutableList(), this@DeliveryFragment, null, requireContext())
                 address_recycler.adapter = addressAdapter
             }
         })
 
         try{
             val token = PreferenceMngr.getToken() ?: ""
-            deliveryViewModel.getAddressesFromNetwork(token).observe(this, {
+            deliveryViewModel.getAddressesFromNetwork(token).observe(viewLifecycleOwner, {
                 it?.let {
                     when(it.status){
                         Resource.Status.ERROR ->{
                             progress_bar.visibility = View.GONE
-                            Toast.makeText(this@DeliveryActivity,  "Error getting addresses. Please try again later.", Toast.LENGTH_SHORT)
+                            Toast.makeText(requireContext(),  "Error getting addresses. Please try again later.", Toast.LENGTH_SHORT)
                                     .show()
                         }
                         Resource.Status.SUCCESS ->{
@@ -84,14 +91,14 @@ class DeliveryActivity : AppCompatActivity(), View.OnClickListener, DeliveryAddr
     override fun onClick(v: View?) {
         when(v?.id){
             add_new_address.id -> {
-                startActivity(Intent(this@DeliveryActivity, AddAddressActivity::class.java))
+                startActivity(Intent(requireContext(), AddAddressActivity::class.java))
             }
             make_payment_btn.id -> {
-                val intent = Intent(this@DeliveryActivity, CheckoutActivity::class.java)
-                startActivity(intent)
+                val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
+                findNavController().navigate(action)
             }
             delivery_back.id -> {
-                onBackPressed()
+                requireActivity().onBackPressed()
             }
         }
     }
@@ -127,7 +134,7 @@ class DeliveryActivity : AppCompatActivity(), View.OnClickListener, DeliveryAddr
                     }
                     Resource.Status.ERROR -> {
                         progress_bar.visibility = View.GONE
-                        toast("Error getting delivery price estimate. Please try again later.").show()
+                        requireContext().toast("Error getting delivery price estimate. Please try again later.").show()
                     }
                     Resource.Status.LOADING -> progress_bar.visibility = View.VISIBLE
                 }

@@ -65,4 +65,5 @@
     <color name="red2">#ef1c23</color>
     <color name="darkGrey2">#545263</color>
     <color name="text_light_grey2" >#9d9bae</color>
+    <color name="grey">#dadada</color>
 </resources>

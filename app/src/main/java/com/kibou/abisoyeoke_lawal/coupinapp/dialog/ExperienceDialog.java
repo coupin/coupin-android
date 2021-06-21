@@ -244,7 +244,9 @@ public class ExperienceDialog extends Dialog {
             }
         };
 
-        PreferenceMngr.getInstance().getRequestQueue().add(stringRequest);
+        if(PreferenceMngr.getInstance().getRequestQueue() != null){
+            PreferenceMngr.getInstance().getRequestQueue().add(stringRequest);
+        }
     }
 
     private void showSuccess() {

@@ -607,4 +607,6 @@
     <string name="delivery_cost_">Delivery cost:</string>
     <string name="select_an_address">Select an address</string>
     <string name="checkout">Checkout</string>
+    <string name="delivery_method">Delivery Method</string>
+    <string name="how_do_you_want_your_order_delivered">How do you want your order delivered?</string>
 </resources>

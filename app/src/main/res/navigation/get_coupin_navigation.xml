@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/get_coupin_navigation"
+    app:startDestination="@id/deliveryMethodFragment">
+
+    <fragment
+        android:id="@+id/deliveryMethodFragment"
+        android:name="com.kibou.abisoyeoke_lawal.coupinapp.fragments.DeliveryMethodFragment"
+        android:label="fragment_delivery_method"
+        tools:layout="@layout/fragment_delivery_method" >
+        <action
+            android:id="@+id/action_deliveryMethodFragment_to_deliveryFragment"
+            app:destination="@id/deliveryFragment" />
+        <action
+            android:id="@+id/action_deliveryMethodFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+        <action
+            android:id="@+id/action_deliveryMethodFragment_to_reviewSelectionFragment"
+            app:destination="@id/reviewSelectionFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/deliveryFragment"
+        android:name="com.kibou.abisoyeoke_lawal.coupinapp.fragments.DeliveryFragment"
+        android:label="fragment_delivery"
+        tools:layout="@layout/fragment_delivery" >
+        <action
+            android:id="@+id/action_deliveryFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/reviewSelectionFragment"
+        android:name="com.kibou.abisoyeoke_lawal.coupinapp.fragments.ReviewSelectionFragment"
+        android:label="fragment_review_selection"
+        tools:layout="@layout/fragment_review_selection" >
+        <action
+            android:id="@+id/action_reviewSelectionFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/checkoutFragment"
+        android:name="com.kibou.abisoyeoke_lawal.coupinapp.fragments.CheckoutFragment"
+        android:label="fragment_checkout"
+        tools:layout="@layout/fragment_checkout" />
+</navigation>

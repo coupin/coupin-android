@@ -1,25 +1,28 @@
-package com.kibou.abisoyeoke_lawal.coupinapp.activities
+package com.kibou.abisoyeoke_lawal.coupinapp.fragments
 
 import android.content.Intent
 import android.os.Bundle
 import android.util.Patterns
+import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.flutterwave.raveandroid.RavePayActivity
 import com.flutterwave.raveandroid.RaveUiManager
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
 import com.kibou.abisoyeoke_lawal.coupinapp.R
-import kotlinx.android.synthetic.main.activity_checkout.*
+import kotlinx.android.synthetic.main.fragment_checkout.*
 import org.jetbrains.anko.toast
 
 
-class CheckoutActivity : AppCompatActivity(), View.OnClickListener {
+class CheckoutFragment : Fragment(), View.OnClickListener {
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_checkout)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.fragment_checkout, container, false)
+    }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpOnClickListeners()
     }
 
@@ -51,7 +54,7 @@ class CheckoutActivity : AppCompatActivity(), View.OnClickListener {
                 prepareForPayment()
             }
             checkout_back.id -> {
-                onBackPressed()
+                requireActivity().onBackPressed()
             }
         }
     }
@@ -62,17 +65,17 @@ class CheckoutActivity : AppCompatActivity(), View.OnClickListener {
         val lastName = last_name_input.text.toString().trim()
 
         if(!isEmailValid(email)){
-            toast("Enter a valid email address")
+            requireContext().toast("Enter a valid email address")
             return
         }
 
         if(firstName.isEmpty()){
-            toast("Enter a valid first name.")
+            requireContext().toast("Enter a valid first name.")
             return
         }
 
         if(lastName.isEmpty()){
-            toast("Enter a valid last name.")
+            requireContext().toast("Enter a valid last name.")
             return
         }
         val paymentData = PaymentData(email, firstName, lastName)
@@ -90,11 +93,11 @@ class CheckoutActivity : AppCompatActivity(), View.OnClickListener {
         if (requestCode == RaveConstants.RAVE_REQUEST_CODE) {
             val message = data?.getStringExtra("response")
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
-                Toast.makeText(this, "SUCCESS $message", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "SUCCESS $message", Toast.LENGTH_SHORT).show()
             } else if (resultCode == RavePayActivity.RESULT_ERROR) {
-                Toast.makeText(this, "ERROR $message", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "ERROR $message", Toast.LENGTH_SHORT).show()
             } else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
-                Toast.makeText(this, "CANCELLED $message", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "CANCELLED $message", Toast.LENGTH_SHORT).show()
             }
         }
     }

@@ -6,13 +6,12 @@ import android.os.Bundle;
 import android.os.Handler;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.view.LayoutInflater;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +30,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ExperienceDialog;
@@ -59,6 +59,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, View.OnClickListener {
     @BindView(R.id.rewards_loading)
@@ -134,6 +135,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private Set<String> favourites;
     private String merchantId;
     private String rewardHolder;
+    private String logTag = "MerchantActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -241,19 +243,19 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnPin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                displayReceiveOrderDialog();
-//                if (requestGenderNumber) {
-//                    experienceDialog.show();
-//                } else {
-//                    expiryDate = expiryDates.get(0);
-//                    for (int i = 1; i < expiryDates.size(); i++) {
-//                        if (expiryDates.get(i).after(expiryDate)) {
-//                            expiryDate = expiryDates.get(i);
-//                        }
-//                    }
-//                    generatePin();
-//
-//                }
+                if (requestGenderNumber) {
+                    experienceDialog.show();
+                } else {
+                    if(!expiryDates.isEmpty()){
+                        expiryDate = expiryDates.get(0);
+                        for (int i = 1; i < expiryDates.size(); i++) {
+                            if (expiryDates.get(i).after(expiryDate)) {
+                                expiryDate = expiryDates.get(i);
+                            }
+                        }
+                        getCoupin();
+                    }
+                }
             }
         });
 
@@ -265,47 +267,49 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     + getResources().getString(R.string.ep_generate_code)
                     + "?saved=true";
 
-                expiryDate = expiryDates.get(0);
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        MerchantActivity.super.onBackPressed();
-                        finish();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        toggleClickableButtons(false);
-                        error.printStackTrace();
-                        Toast.makeText(
-                            MerchantActivity.this,
-                            getResources().getString(R.string.error_saved_failed),
-                            Toast.LENGTH_SHORT
-                        ).show();
-                    }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
+                if(!expiryDates.isEmpty()){
+                    expiryDate = expiryDates.get(0);
+                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            MerchantActivity.super.onBackPressed();
+                            finish();
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            toggleClickableButtons(false);
+                            error.printStackTrace();
+                            Toast.makeText(
+                                    MerchantActivity.this,
+                                    getResources().getString(R.string.error_saved_failed),
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }){
+                        @Override
+                        protected Map<String, String> getParams() {
+                            Map<String, String> params = new HashMap<String, String>();
 
-                        params.put("merchantId", item.getId());
-                        params.put("rewardId", selected.toString());
-                        params.put("useNow", String.valueOf(false));
-                        params.put("expiryDate", expiryDate.toString());
+                            params.put("merchantId", item.getId());
+                            params.put("rewardId", selected.toString());
+                            params.put("useNow", String.valueOf(false));
+                            params.put("expiryDate", expiryDate.toString());
 
-                        return params;
-                    }
+                            return params;
+                        }
 
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", PreferenceMngr.getToken());
+                        @Override
+                        public Map<String, String> getHeaders() {
+                            Map<String, String> headers = new HashMap<>();
+                            headers.put("Authorization", PreferenceMngr.getToken());
 
-                        return headers;
-                    }
-                };
+                            return headers;
+                        }
+                    };
 
-                requestQueue.add(stringRequest);
+                    requestQueue.add(stringRequest);
+                }
             }
         });
     }
@@ -329,11 +333,15 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public void loadRewards() {
         String rewardUrl = getString(R.string.base_url) + getString(R.string.ep_api_reward) + "/" +
             merchantId + "?page=" + page;
+
+        Log.d(logTag, "get request url : " + rewardUrl);
+
         StringRequest stringRequest = new StringRequest(Request.Method.GET, rewardUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     resArray = new JSONArray(response);
+                    Log.d(logTag, "rewards resArray: " + resArray);
                     for (int x = 0; x < resArray.length(); x++) {
                         Reward reward = new Reward();
                         JSONObject object = resArray.getJSONObject(x);
@@ -378,7 +386,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                         values.add(reward);
                     }
-
+                    Log.d(logTag, "rewards values: " + values);
                     isLoading = false;
                     if (page == 0) {
                         if (values.size() == 0) {
@@ -436,6 +444,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", PreferenceMngr.getToken());
+
+                Log.d(logTag, "headers Authorization: " + PreferenceMngr.getToken());
 
                 return headers;
             }
@@ -643,7 +653,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         }
                     }
                 }
-                generatePin();
+//                generatePin();
+                getCoupin();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -757,8 +768,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 //                    startActivity(intent);
 //                    finish();
 
-                    displayReceiveOrderDialog();
-
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -802,27 +811,22 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         requestQueue.add(stringRequest);
     }
 
-    private void displayReceiveOrderDialog(){
-        View receiveOrderDialogView = LayoutInflater.from(this).inflate(R.layout.dialog_pickup_delivery, null);
-        AlertDialog receiveOrderDialog = new AlertDialog.Builder(this).create();
-        receiveOrderDialog.setView(receiveOrderDialogView);
-        receiveOrderDialogView.findViewById(R.id.delivery_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                receiveOrderDialog.dismiss();
-                Intent intent = new Intent(MerchantActivity.this, DeliveryActivity.class);
-                startActivity(intent);
+    private void getCoupin(){
+        if(!tempBlackList.isEmpty()){
+            ArrayList<Reward> selectedRewards = new ArrayList<>();
+            if(!values.isEmpty()){
+                for(Reward reward : values){
+                    if(tempBlackList.contains(reward.getId())){
+                        selectedRewards.add(reward);
+                    }
+                }
             }
-        });
-        receiveOrderDialogView.findViewById(R.id.pickup_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                receiveOrderDialog.dismiss();
-                Intent intent = new Intent(MerchantActivity.this, CheckoutActivity.class);
-                startActivity(intent);
-            }
-        });
-        receiveOrderDialog.show();
+
+            Intent intent = new Intent(this, GetCoupinActivity.class);
+            String rewards = new Gson().toJson(selectedRewards);
+            intent.putExtra(rewardsIntent, rewards);
+            startActivity(intent);
+        }
     }
 
     /**
