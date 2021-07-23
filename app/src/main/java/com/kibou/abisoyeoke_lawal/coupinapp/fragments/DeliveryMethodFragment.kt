@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.kibou.abisoyeoke_lawal.coupinapp.R
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import kotlinx.android.synthetic.main.fragment_delivery_method.*
 import kotlinx.android.synthetic.main.view_gokada_delivery_method.*
@@ -27,7 +26,7 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpOnClickListeners()
-        setUpDeliveryMethodSelectObservable()
+        setUpObservables()
     }
 
     private fun setUpOnClickListeners(){
@@ -39,7 +38,7 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
         delivery_btn.setOnClickListener(this)
     }
 
-    private fun setUpDeliveryMethodSelectObservable(){
+    private fun setUpObservables(){
         deliveryMethodVM.selectedDeliveryMethod.observe(viewLifecycleOwner, {
             it?.let {
                 when(it){
@@ -56,6 +55,15 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
                 }
             }
         })
+
+        deliveryMethodVM.selectedCoupinsLD.observe(viewLifecycleOwner, {
+            it?.let {
+                val deliveryStatuses = it.map { it.isDelivery }
+                if(!deliveryStatuses.contains(true)){
+                    deliveryMethodVM.selectedDeliveryMethod.value = R.id.pickup_delivery_method_layout
+                }
+            }
+        })
     }
 
     override fun onClick(v: View?) {
@@ -64,7 +72,15 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
                 deliveryMethodVM.selectedDeliveryMethod.value = R.id.pickup_delivery_method_layout
             }
             gokada_delivery_method_layout.id, delivery_btn.id -> {
-                deliveryMethodVM.selectedDeliveryMethod.value = R.id.gokada_delivery_method_layout
+                val deliveryStatuses = deliveryMethodVM.selectedCoupinsLD.value?.map { it.isDelivery }
+                deliveryStatuses?.let {
+                    if(!deliveryStatuses.contains(true)){
+                        deliveryMethodVM.selectedDeliveryMethod.value = R.id.pickup_delivery_method_layout
+                        requireContext().toast("No item in your reward(s) is deliverable")
+                    }else {
+                        deliveryMethodVM.selectedDeliveryMethod.value = R.id.gokada_delivery_method_layout
+                    }
+                }
             }
             proceed_btn.id -> proceedToNextPage()
             delivery_method_back.id -> requireActivity().onBackPressed()
@@ -79,6 +95,8 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
         }
 
         if(selectedDeliveryMethod == R.id.pickup_delivery_method_layout){
+            deliveryMethodVM.isDeliverableMLD.value = false
+            deliveryMethodVM.addressIdMLD.value = ""
             val action = DeliveryMethodFragmentDirections.actionDeliveryMethodFragmentToCheckoutFragment()
             findNavController().navigate(action)
             return

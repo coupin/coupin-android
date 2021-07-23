@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -44,6 +45,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         public TextView headTitle;
         public View head;
         public View rewardDivider;
+        public LinearLayout bacgroud;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -58,6 +60,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             headTitle = (TextView) head.findViewById(R.id.list_reward_title);
             rewardDivider = (View) head.findViewById(R.id.reward_divider);
             tickFrame = (FrameLayout) head.findViewById(R.id.tick_frame);
+            bacgroud = head.findViewById(R.id.background);
         }
     }
 
@@ -109,7 +112,8 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                     @Override
                     public void onItemClick(int place) {
                         if (place == 0) {
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_med_grey));
+                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                             holder.tickFrame.setVisibility(View.VISIBLE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
@@ -121,15 +125,16 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             reward.setIsSelected(true);
                             myOnSelect.onSelect(true, position);
                         } else {
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
                             holder.tickFrame.setVisibility(View.GONE);
-                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
-                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             reward.setIsSelected(false);
                             myOnSelect.onSelect(false, position);
                         }

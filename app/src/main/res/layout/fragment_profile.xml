@@ -1,16 +1,18 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-              android:background="@color/lighterGrey"
-              android:layout_height="match_parent"
-              android:layout_width="match_parent"
-             android:orientation="vertical"
-             tools:context="com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@color/background_default"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <RelativeLayout
-        android:background="@color/white"
+        android:id="@+id/top_section_layout"
+        android:background="@color/background"
         android:layout_width="match_parent"
-        android:layout_height="140dp">
+        android:layout_height="150dp">
         
         <ImageView
             android:layout_alignParentLeft="true"
@@ -37,7 +39,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/example_text_1"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textSize="@dimen/large_text"
             android:textStyle="bold"/>
 
@@ -48,213 +50,161 @@
         android:layout_height="match_parent">
 
         <LinearLayout
-            android:layout_height="match_parent"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/padding_sm">
+            android:paddingStart="@dimen/padding_sm"
+            android:paddingEnd="@dimen/padding_sm"
+            android:paddingBottom="@dimen/padding_sm"
+            >
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_edit"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/edit_profile"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/edit_profile" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_category"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/edit_category"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/edit_category" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_notifications"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/title_notifications"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/title_notifications" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_address_book"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/address_book"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/address_book" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/theme_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    android:text="Dark Theme"
+                    android:textSize="@dimen/large_text"
+                    android:textColor="@color/text_color_1"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:paddingBottom="@dimen/padding_sm"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/theme_switch"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/theme_text"
+                    app:layout_constraintBottom_toBottomOf="@id/theme_text" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="2dp"
+                android:background="@color/background_5" />
 
             <TextView
-                android:gravity="center_vertical"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/margin_xlg"
                 android:layout_marginBottom="@dimen/margin_xs"
-                android:layout_marginTop="@dimen/margin_lg"
-                android:layout_width="match_parent"
+                android:gravity="center_vertical"
                 android:text="@string/support"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/large_text"
-                android:textStyle="bold"/>
+                android:textStyle="bold" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_faq"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/faq"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/faq" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_feedback"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/feedback"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/feedback" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_about"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/about"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/about" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:drawableEnd="@drawable/ic_right_angle"
-                android:drawableRight="@drawable/ic_right_angle"
-                android:drawableTint="@color/text_light_grey"
-                android:gravity="center_vertical"
                 android:id="@+id/profile_terms"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
-                android:text="@string/terms"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/large_text"/>
+                style="@style/profile_item_style"
+                android:text="@string/terms" />
 
             <View
-                android:background="@color/lightGrey"
+                android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:background="@color/background_5" />
 
             <TextView
-                android:gravity="center_vertical"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_xs"
-                android:paddingTop="@dimen/padding_sm_plus"
+                android:layout_height="wrap_content"
                 android:text="@string/version_header"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
+                android:paddingTop="@dimen/padding_sm"
                 android:textSize="@dimen/large_text"/>
-
             <TextView
-                android:gravity="center_vertical"
                 android:id="@+id/profile_version"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingBottom="@dimen/padding_sm"
                 android:text="@string/feedback"
-                android:textColor="@color/text_light_grey"
-                android:textSize="@dimen/large_text"/>
-
-            <View
-                android:background="@color/lightGrey"
-                android:layout_height="2dp"
-                android:layout_width="match_parent"/>
+                android:textColor="@color/text_color_4"
+                android:textSize="@dimen/medium_text" />
 
             <Button
-                android:background="@drawable/round_edges_light_grey"
                 android:id="@+id/logout"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/margin_xxxlg"
                 android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_sm_plus"
-                android:paddingTop="@dimen/padding_sm_plus"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="60dp"
+                android:background="@color/background_5"
                 android:text="@string/logout"
-                android:textColor="@color/text_light_grey_plus"
+                android:textColor="@color/text_color_5"
                 android:textSize="@dimen/large_text"/>
-
         </LinearLayout>
 
     </ScrollView>
-
 </LinearLayout>

@@ -10,7 +10,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/text_med_grey">
+        android:background="@color/darkGrey">
 
         <ImageButton
             android:id="@+id/cancel_btn"
@@ -68,7 +68,7 @@
             android:id="@+id/discount_percent"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:text="-10%"
             android:textColor="@color/white"
             android:textSize="20sp"
@@ -93,20 +93,23 @@
 
         <TextView
             android:id="@+id/expiry_date"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
+            android:layout_marginEnd="5dp"
             android:text="25 JAN 2017"
             android:textColor="@color/white"
             app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            app:layout_constraintEnd_toStartOf="@+id/full_price"
             app:layout_constraintStart_toEndOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="@+id/textView4" />
+            app:layout_constraintTop_toTopOf="@+id/textView4"
+            android:singleLine="true"/>
 
         <TextView
             android:id="@+id/full_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="10dp"
+            android:layout_marginEnd="5dp"
             android:text="N7,580"
             android:textColor="@color/text_light_grey2"
             app:layout_constraintBottom_toBottomOf="@+id/textView4"
@@ -117,7 +120,7 @@
             android:id="@+id/discounted_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:text="N5,580"
             android:textColor="@color/white"
             android:textStyle="bold"

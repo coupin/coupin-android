@@ -177,10 +177,10 @@ public class NotificationActivity extends AppCompatActivity {
         if (value) {
             toggleWeekdays.setClickable(true);
             toggleWeekends.setClickable(true);
-            frequencyTitle.setTextColor(getResources().getColor(R.color.text_med_grey));
-            frequencyTitleSmall.setTextColor(getResources().getColor(R.color.text_med_grey));
-            frequencyTitleWeekends.setTextColor(getResources().getColor(R.color.text_med_grey));
-            frequencyTitleWeekendsSmall.setTextColor(getResources().getColor(R.color.text_med_grey));
+            frequencyTitle.setTextColor(getResources().getColor(R.color.text_color_3));
+            frequencyTitleSmall.setTextColor(getResources().getColor(R.color.text_color_3));
+            frequencyTitleWeekends.setTextColor(getResources().getColor(R.color.text_color_3));
+            frequencyTitleWeekendsSmall.setTextColor(getResources().getColor(R.color.text_color_3));
         } else {
             toggleWeekdays.setClickable(false);
             toggleWeekends.setClickable(false);

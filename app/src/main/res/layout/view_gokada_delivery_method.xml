@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
-
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -10,13 +9,14 @@
     app:layout_constraintTop_toBottomOf="@id/pickup_delivery_method_layout"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintEnd_toEndOf="parent"
-    android:layout_margin="20dp">
+    android:layout_margin="40dp">
 
     <ImageView
         android:id="@+id/gokada_logo_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/gokada_grey"
+
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -28,7 +28,7 @@
         android:layout_marginTop="15dp"
         android:gravity="center"
         android:text="0.5m x 0.5m Size Limit"
-        android:textColor="@color/text_dark_grey"
+        android:textColor="@color/text_color_1"
         android:textSize="12sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
         android:gravity="center"
         android:textSize="12sp"
         android:text="20Kg Max Weight"
-        android:textColor="@color/text_dark_grey"
+        android:textColor="@color/text_color_1"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/gokada_delivery_size"
         app:layout_constraintStart_toStartOf="parent"

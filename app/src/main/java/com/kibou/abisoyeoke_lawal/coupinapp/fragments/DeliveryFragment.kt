@@ -16,14 +16,18 @@ import com.kibou.abisoyeoke_lawal.coupinapp.activities.AddAddressActivity
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVDeliveryAddressAdapter
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.DeliveryAddressItemClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
+import com.kibou.abisoyeoke_lawal.coupinapp.models.DropOff
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateRequestBody
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.setAmountFormat
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.DeliveryViewModel
+import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_address_book.*
 import kotlinx.android.synthetic.main.activity_address_book.address_recycler
 import kotlinx.android.synthetic.main.activity_address_book.progress_bar
+import kotlinx.android.synthetic.main.fragment_checkout.*
 import kotlinx.android.synthetic.main.fragment_delivery.*
 import org.jetbrains.anko.toast
 import java.lang.Exception
@@ -32,7 +36,9 @@ import java.lang.Exception
 class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemClickListener {
 
     private val deliveryViewModel : DeliveryViewModel by viewModels()
+    private val getCoupinVM : GetCoupinViewModel by activityViewModels()
     private lateinit var addressAdapter : RVDeliveryAddressAdapter
+    private var rewardsCost = 0F
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return layoutInflater.inflate(R.layout.fragment_delivery, container, false)
@@ -80,6 +86,15 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
         }catch (e : Exception){
             e.printStackTrace()
         }
+
+        getCoupinVM.selectedCoupinsLD.observe(viewLifecycleOwner, {
+            it?.let {
+                val rewardCostSum = it.map { it.newPrice }.sum()
+                items_cost.text = "₦ ${setAmountFormat(rewardCostSum)}"
+                total_cost.text = "₦ ${setAmountFormat(rewardCostSum)}"
+                rewardsCost = rewardCostSum
+            }
+        })
     }
 
     private fun setUpOnClickListeners() {
@@ -94,8 +109,15 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
                 startActivity(Intent(requireContext(), AddAddressActivity::class.java))
             }
             make_payment_btn.id -> {
-                val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
-                findNavController().navigate(action)
+                if(::addressAdapter.isInitialized){
+                    if(addressAdapter.selectedPosition != null){
+                        getCoupinVM.isDeliverableMLD.value = true
+                        val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
+                        findNavController().navigate(action)
+                    }else{
+                        requireActivity().toast("Select an address")
+                    }
+                }
             }
             delivery_back.id -> {
                 requireActivity().onBackPressed()
@@ -108,18 +130,26 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
             addressAdapter.updateClickedView(addressModel)
             val deliveryLatitude = addressModel.location.latitude
             val deliveryLongitude = addressModel.location.longitude
+            val deliveryAddress = addressModel.address
+
+            getCoupinVM.addressIdMLD.value = addressModel.id
+
             if(deliveryLatitude != null && deliveryLongitude != null){
-                getPriceEstimate(deliveryLatitude.toString(), deliveryLongitude.toString())
+                getPriceEstimate(deliveryLatitude.toString(), deliveryLongitude.toString(), deliveryAddress)
             }
         }
     }
 
-    fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String){
-        val pickupLatitude = "6.6018" //ikeja
-        val pickupLongitude = "3.3515" //ikeja
+    fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String, deliveryAddress : String){
+        val merchant = getCoupinVM.merchantLD.value
+        val merchantLatitude = merchant?.latitude.toString()
+        val merchantLongitude = merchant?.longitude.toString()
+        val merchantAddress = merchant?.address ?: ""
 
-        val gokadaOrderEstimateRequestBody = GokadaOrderEstimateRequestBody(BuildConfig.GOKADA_DELIVERY_API_KEY,
-            pickupLatitude, pickupLongitude, deliveryLatitude, deliveryLongitude)
+        val dropOff = DropOff(deliveryAddress, deliveryLatitude, deliveryLongitude)
+
+        val gokadaOrderEstimateRequestBody = GokadaOrderEstimateRequestBody(BuildConfig.GOKADA_DELIVERY_API_KEY, merchantAddress,
+            merchantLatitude, merchantLongitude, listOf(dropOff))
 
         deliveryViewModel.getDeliveryEstimate(gokadaOrderEstimateRequestBody).observe(this, {
             it?.let {
@@ -127,9 +157,14 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
                     Resource.Status.SUCCESS -> {
                         progress_bar.visibility = View.GONE
                         it.data?.let {
-                            val cost = it.fare ?: 0
-                            delivery_cost.text = "\u20A6 $cost"
+                            val deliveryCost = it.fare ?: 0
+                            delivery_cost.text = "\u20A6 ${setAmountFormat(deliveryCost)}"
                             delivery_time.text = getString(R.string.estimated_time_of_delivery) + " " + it.time + "mins"
+
+                            val totalCostString = setAmountFormat(deliveryCost + rewardsCost)
+                            total_cost.text = "₦ $totalCostString"
+
+                            getCoupinVM.setDeliveryPrice(deliveryCost)
                         }
                     }
                     Resource.Status.ERROR -> {

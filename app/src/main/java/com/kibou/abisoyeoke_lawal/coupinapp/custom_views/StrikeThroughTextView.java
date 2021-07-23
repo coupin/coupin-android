@@ -41,7 +41,7 @@ public class StrikeThroughTextView extends androidx.appcompat.widget.AppCompatTe
         super.onDraw(canvas);
         Resources resources = context.getResources();
         //set strikethrough color
-        dividerColor = resources.getColor(R.color.text_lighter_grey);
+        dividerColor = resources.getColor(R.color.text_color_6);
         paint = new Paint();
         paint.setColor(dividerColor);
         paint.setStrikeThruText(true);

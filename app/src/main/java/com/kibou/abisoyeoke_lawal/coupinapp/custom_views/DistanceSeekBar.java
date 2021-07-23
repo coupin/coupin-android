@@ -26,7 +26,7 @@ public class DistanceSeekBar extends AppCompatSeekBar {
     }
 
     public DistanceSeekBar(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        super(context, attrs, android.R.attr.seekBarStyle);
 
         init();
     }
@@ -41,7 +41,7 @@ public class DistanceSeekBar extends AppCompatSeekBar {
         mThumbSize = getResources().getDimensionPixelSize(R.dimen.thumbSize);
 
         mTextPaint = new TextPaint();
-        mTextPaint.setColor(getResources().getColor(R.color.text_med_grey));
+        mTextPaint.setColor(getResources().getColor(android.R.color.white));
         mTextPaint.setTextSize(getResources().getDimensionPixelSize(R.dimen.small_text));
         mTextPaint.setTypeface(Typeface.DEFAULT_BOLD);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
@@ -61,10 +61,8 @@ public class DistanceSeekBar extends AppCompatSeekBar {
         int width = getWidth() - leftPadding - rightPadding;
         float progressRatio = (float) getProgress() / getMax();
         float thumbOffset = mThumbSize * (.5f - progressRatio);
-        float thumbX = progressRatio * width + leftPadding * 2 + thumbOffset;
+        float thumbX = progressRatio * width + leftPadding + thumbOffset;
         float thumbY = getHeight() / 2f + bounds.height() / 2f;
         canvas.drawText(progressText, thumbX, thumbY, mTextPaint);
-
-        setThumbOffset(getThumbOffset() + leftPadding);
     }
 }

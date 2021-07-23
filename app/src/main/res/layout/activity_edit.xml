@@ -3,7 +3,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/white"
+    android:background="@color/background_default"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.EditActivity">
@@ -19,7 +19,7 @@
             android:animateLayoutChanges="true">
 
             <RelativeLayout
-                android:background="@color/white"
+                android:background="@color/background"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:padding="@dimen/padding_sm">
@@ -31,7 +31,7 @@
                     android:layout_height="@dimen/icon_sm"
                     android:layout_width="@dimen/icon_sm"
                     android:src="@drawable/ic_back"
-                    android:tint="@color/text_dark_grey"/>
+                    app:tint="@color/text_color_1"/>
 
                 <TextView
                     android:layout_centerHorizontal="true"
@@ -39,7 +39,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/my_profile"
-                    android:textColor="@color/text_dark_grey"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/xxlarge_text"
                     android:textStyle="bold"/>
 
@@ -52,7 +52,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:text="Edit"
-                    android:textColor="@color/text_dark_grey"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/medium_text"
                     android:textStyle="bold"/>
 
@@ -84,6 +84,7 @@
                     android:layout_width="@dimen/icon_lg"
                     android:paddingBottom="@dimen/padding_sm"
                     android:paddingTop="@dimen/padding_sm"
+                    android:layout_marginTop="10dp"
                     android:src="@drawable/ic_clogo"
                     app:civ_circle_background_color="@color/white"
                     app:civ_border_color="@android:color/transparent"
@@ -104,7 +105,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_firstname"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -116,7 +117,7 @@
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
@@ -133,7 +134,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_lastname"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -145,7 +146,7 @@
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
@@ -162,7 +163,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_email"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -174,7 +175,7 @@
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
@@ -191,7 +192,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_mobile"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -204,7 +205,7 @@
                     android:maxLength="11"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
@@ -221,7 +222,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_gender"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <Spinner
@@ -235,7 +236,7 @@
                     android:maxLines="1"
                     android:spinnerMode="dropdown"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
                 <TextView
@@ -263,7 +264,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_age"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <Spinner
@@ -277,7 +278,7 @@
                     android:maxLines="1"
                     android:spinnerMode="dropdown"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
                 <TextView
@@ -302,7 +303,7 @@
                 android:text="@string/change_pass"
                 android:textAllCaps="true"
                 android:textStyle="bold"
-                android:textColor="@android:color/white"/>
+                android:textColor="@color/background"/>
 
         </LinearLayout>
         

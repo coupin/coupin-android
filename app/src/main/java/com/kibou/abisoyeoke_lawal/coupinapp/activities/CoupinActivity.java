@@ -111,8 +111,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
-        rvAdapter = new RVCoupinAdapter(
-            coupinRewards, this, this);
+        rvAdapter = new RVCoupinAdapter(coupinRewards, this, this);
         listView.setLayoutManager(layoutManager);
         listView.setHasFixedSize(true);
         listView.setAdapter(rvAdapter);
@@ -127,7 +126,13 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         try {
             JSONArray res = new JSONArray(coupin.getRewardDetails());
-            listCode.setText(coupin.getBookingShortCode());
+            String status = coupin.status;
+
+            if(status.equals("awaiting_payment")){
+                listCode.setText("Generating Coupin");
+            }else {
+                listCode.setText(coupin.getBookingShortCode());
+            }
 
             int total = res.length();
             listCount.setText("ACTIVE REWARDS - " + total);

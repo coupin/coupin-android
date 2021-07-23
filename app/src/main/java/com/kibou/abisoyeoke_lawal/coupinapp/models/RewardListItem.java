@@ -26,6 +26,7 @@ public class RewardListItem implements Serializable {
     public String rewardDetails;
     public String rewardDescription;
     public String rewardName;
+    public String status;
 
     public String getBookingId() {
         return bookingId;
@@ -85,6 +86,10 @@ public class RewardListItem implements Serializable {
 
     public String getRewardDetails() {
         return rewardDetails;
+    }
+
+    public String getStatus(){
+        return status;
     }
 
     public String getRewardDescription() {
@@ -169,5 +174,9 @@ public class RewardListItem implements Serializable {
 
     public void setVisited(boolean visited) {
         this.visited = visited;
+    }
+
+    public void setStatus(String status){
+        this.status = status;
     }
 }

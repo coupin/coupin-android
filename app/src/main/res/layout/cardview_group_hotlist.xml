@@ -9,13 +9,13 @@
               android:paddingStart="@dimen/margin_sm"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:visibility="gone">
+              android:visibility="visible"
+    android:background="@color/background">
 
     <androidx.cardview.widget.CardView
         android:background="@android:color/transparent"
         android:id="@+id/card1"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/margin_sm"
         android:layout_width="match_parent"
         app:cardCornerRadius="@dimen/cardview_custom_radius"
         app:cardElevation="5dp"
@@ -26,22 +26,28 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding_sm">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="5dp">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/merchant_logo"
                     android:background="@color/black"
                     android:layout_gravity="top|start"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     app:cardCornerRadius="@dimen/cardview_custom_radius"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
+                        android:background="@drawable/round_edges_corner_grey"
                         android:id="@+id/hot_logo_1"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
@@ -53,41 +59,47 @@
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/merchant_logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/merchant_logo"
+                    app:layout_constraintTop_toTopOf="@id/merchant_logo">
 
                     <TextView
                         android:id="@+id/hot_title_1"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
                         android:textAllCaps="true"
-                        android:textColor="@color/text_dark_grey"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:text="Yakubu's Tea"/>
 
                     <TextView
                         android:id="@+id/hot_address_1"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginLeft="@dimen/margin_sm"
-                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
-                        android:text="@string/example_address_1"
-                        android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/medium_text"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_sm"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@color/text_color_1"
+                        android:textSize="@dimen/medium_text"
+                        android:text="@string/example_address_1"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/margin_sm"
-                android:paddingLeft="@dimen/margin_sm"
-                android:paddingRight="@dimen/margin_sm">
+                android:paddingBottom="@dimen/margin_sm">
 
                 <ImageView
                     android:id="@+id/hot_fav_1"
@@ -102,7 +114,7 @@
                     android:layout_marginStart="@dimen/margin_sm"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_star"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     android:visibility="invisible"/>
 
                 <ImageView
@@ -114,17 +126,19 @@
                     android:layout_toRightOf="@id/hot_fav_1"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     android:visibility="invisible"/>
 
                 <TextView
                     android:ellipsize="marquee"
                     android:gravity="center_vertical"
                     android:id="@+id/hot_rewards_1"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginStart="@dimen/margin_sm"
+                    android:layout_marginStart="@dimen/margin_md"
+                    android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@id/hot_visited_1"
                     android:layout_toRightOf="@id/hot_visited_1"
                     android:layout_width="wrap_content"
@@ -157,26 +171,31 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding_sm">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="5dp">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/merchant_logo2"
                     android:background="@color/black"
                     android:layout_gravity="top|start"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     app:cardCornerRadius="@dimen/cardview_custom_radius"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:background="@drawable/round_edges_corner_grey"
                         android:id="@+id/hot_logo_2"
-                        android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_width="50dp"
                         android:src="@drawable/slide1"
                         app:riv_border_color="@color/white"
                         app:riv_border_width="2dp"
@@ -185,44 +204,47 @@
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/merchant_logo2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/merchant_logo2"
+                    app:layout_constraintTop_toTopOf="@id/merchant_logo2">
 
                     <TextView
                         android:id="@+id/hot_title_2"
-                        android:layout_alignParentBottom="true"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
                         android:layout_width="wrap_content"
-                        android:text="Yakubu's Tea"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
                         android:textAllCaps="true"
-                        android:textColor="@color/text_dark_grey"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:text="Yakubu's Tea"/>
 
                     <TextView
                         android:id="@+id/hot_address_2"
-                        android:layout_alignParentBottom="true"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginLeft="@dimen/margin_sm"
-                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
-                        android:text="@string/example_address_1"
-                        android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/medium_text"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_sm"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@color/text_color_1"
+                        android:textSize="@dimen/medium_text"
+                        android:text="@string/example_address_1"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/margin_sm"
-                android:paddingLeft="@dimen/margin_sm"
-                android:paddingRight="@dimen/margin_sm">
+                android:paddingBottom="@dimen/margin_sm">
 
                 <ImageView
                     android:id="@+id/hot_fav_2"
@@ -237,7 +259,7 @@
                     android:layout_marginStart="@dimen/margin_sm"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_star"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     android:visibility="invisible"/>
 
                 <ImageView
@@ -249,17 +271,19 @@
                     android:layout_toRightOf="@id/hot_fav_2"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     android:visibility="invisible"/>
 
                 <TextView
                     android:ellipsize="marquee"
                     android:gravity="center_vertical"
                     android:id="@+id/hot_rewards_2"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginStart="@dimen/margin_sm"
+                    android:layout_marginStart="@dimen/margin_md"
+                    android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@id/hot_visited_2"
                     android:layout_toRightOf="@id/hot_visited_2"
                     android:layout_width="wrap_content"
@@ -292,26 +316,31 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding_sm">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="5dp">
 
                 <androidx.cardview.widget.CardView
+                    android:id="@+id/merchant_logo3"
                     android:background="@color/black"
                     android:layout_gravity="top|start"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     app:cardCornerRadius="@dimen/cardview_custom_radius"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:background="@drawable/round_edges_corner_grey"
                         android:id="@+id/hot_logo_3"
-                        android:layout_width="50dp"
                         android:layout_height="50dp"
+                        android:layout_width="50dp"
                         android:src="@drawable/slide1"
                         app:riv_border_color="@color/white"
                         app:riv_border_width="2dp"
@@ -320,44 +349,47 @@
                 </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/merchant_logo3"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/merchant_logo3"
+                    app:layout_constraintTop_toTopOf="@id/merchant_logo3">
 
                     <TextView
                         android:id="@+id/hot_title_3"
-                        android:layout_alignParentBottom="true"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
                         android:layout_width="wrap_content"
-                        android:text="Yakubu's Tea"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
                         android:textAllCaps="true"
-                        android:textColor="@color/text_dark_grey"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
-                        android:textStyle="bold" />
+                        android:textStyle="bold"
+                        android:text="Yakubu's Tea"/>
 
                     <TextView
                         android:id="@+id/hot_address_3"
-                        android:layout_alignParentBottom="true"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginLeft="@dimen/margin_sm"
-                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
-                        android:text="@string/example_address_1"
-                        android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/medium_text"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_sm"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@color/text_color_1"
+                        android:textSize="@dimen/medium_text"
+                        android:text="@string/example_address_1"/>
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/margin_sm"
-                android:paddingLeft="@dimen/margin_sm"
-                android:paddingRight="@dimen/margin_sm">
+                android:paddingBottom="@dimen/margin_sm">
 
                 <ImageView
                     android:id="@+id/hot_fav_3"
@@ -372,7 +404,7 @@
                     android:layout_marginStart="@dimen/margin_sm"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_star"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     android:visibility="invisible"/>
 
                 <ImageView
@@ -384,17 +416,19 @@
                     android:layout_toRightOf="@id/hot_fav_3"
                     android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
-                    android:tint="@color/black"
+                    app:tint="@color/black"
                     android:visibility="invisible"/>
 
                 <TextView
                     android:ellipsize="marquee"
                     android:gravity="center_vertical"
                     android:id="@+id/hot_rewards_3"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginStart="@dimen/margin_sm"
+                    android:layout_marginStart="@dimen/margin_md"
+                    android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@id/hot_visited_3"
                     android:layout_toRightOf="@id/hot_visited_3"
                     android:layout_width="wrap_content"

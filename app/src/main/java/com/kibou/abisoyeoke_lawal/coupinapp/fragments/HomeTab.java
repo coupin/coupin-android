@@ -159,7 +159,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public ImageView category;
     public TextView title;
     public TextView address;
-    public Button infoButton;
+    public TextView infoButton;
 
     private Geocoder geocoder;
     private GoogleMap mGoogleMap;
@@ -369,7 +369,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 category = (ImageView) infoWindow.findViewById(R.id.marker_category);
                                 title = (TextView) infoWindow.findViewById(R.id.discount_1);
                                 address = (TextView) infoWindow.findViewById(R.id.discount_2);
-                                infoButton = (Button) infoWindow.findViewById(R.id.info_button);
+                                infoButton = (TextView) infoWindow.findViewById(R.id.info_button);
 
                                 title.setText(res.getString("name"));
                                 address.setText(res.getString("address"));

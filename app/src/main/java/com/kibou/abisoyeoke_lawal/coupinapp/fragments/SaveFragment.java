@@ -116,7 +116,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
                         item.setVisited(mainObject.getBoolean("visited"));
                         item.setFavourited(mainObject.getBoolean("favourite"));
                         item.setRewardCount(rewardObjects.length());
-
+                        item.setStatus(mainObject.getString("status"));
                         laterList.add(item);
                     }
                     isLoading = false;

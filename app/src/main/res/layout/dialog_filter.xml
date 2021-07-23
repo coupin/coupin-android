@@ -1,20 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-    android:background="@color/white"
+    android:background="@color/background"
     android:orientation="vertical"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
-    android:paddingBottom="@dimen/padding_md"
-    android:paddingEnd="@dimen/padding_sm"
-    android:paddingLeft="@dimen/padding_sm"
-    android:paddingRight="@dimen/padding_sm"
-    android:paddingStart="@dimen/padding_sm"
-    android:paddingTop="@dimen/padding_sm">
+    android:paddingBottom="@dimen/padding_md">
 
     <RelativeLayout
-        android:background="@color/white"
+        android:background="@color/background_default"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
         android:layout_width="match_parent"
@@ -31,7 +26,7 @@
             android:layout_width="wrap_content"
             android:text="@string/dialog_cancel"
             android:textAllCaps="false"
-            android:textColor="@color/text_light_grey"
+            android:textColor="@color/text_color_4"
             android:textSize="@dimen/medium_text"
             android:textStyle="bold"/>
 
@@ -41,7 +36,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/filters"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="bold"/>
 
@@ -65,32 +60,41 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="@dimen/padding_sm"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
         android:text="@string/distance"
-        android:textColor="@color/text_light_grey"
+        android:textColor="@color/text_color_4"
         android:textSize="@dimen/medium_text"/>
 
     <com.kibou.abisoyeoke_lawal.coupinapp.custom_views.DistanceSeekBar
         android:id="@+id/distance"
         android:layout_height="80dp"
-        android:layout_marginBottom="@dimen/margin_sm"
-        android:layout_marginTop="@dimen/margin_sm"
         android:layout_width="match_parent"
+        android:thumbTint="@color/colorAccent"
         android:progressDrawable="@drawable/distance_seekbar_progress"
         android:splitTrack="false"
-        android:thumb="@drawable/ic_thumb"/>
-        <!--android:thumb="@drawable/distance_seekbar_thumb"/>-->
+        android:thumb="@drawable/ic_thumb"
+        android:progressTint="@color/colorAccent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp" />
 
     <TextView
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="@dimen/padding_sm"
         android:text="@string/interested"
-        android:textColor="@color/text_light_grey"
-        android:textSize="@dimen/medium_text"/>
+        android:textColor="@color/text_color_4"
+        android:textSize="@dimen/medium_text"
+        android:paddingStart="20dp"
+        android:paddingEnd="20dp"/>
 
     <com.wefika.flowlayout.FlowLayout
         android:layout_height="wrap_content"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:paddingStart="10dp"
+        android:paddingEnd="10dp">
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
@@ -100,20 +104,20 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:src="@drawable/int_ent"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cat_ent"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>
@@ -126,24 +130,48 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:src="@drawable/int_food"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cat_food"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>
+        <LinearLayout
+            android:background="@drawable/round_edges_light_grey"
+            android:id="@+id/fil_tickets"
+            android:gravity="center_vertical"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/margin_xs"
+            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:padding="@dimen/padding_xs">
 
+            <ImageView
+                android:layout_height="20dp"
+                android:layout_width="20dp"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:src="@drawable/int_ticket"
+                app:tint="@color/text_color_1"/>
+
+            <TextView
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="@string/cat_ticket"
+                android:textColor="@color/text_color_1"
+                android:textSize="@dimen/small_text"/>
+
+        </LinearLayout>
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
             android:id="@+id/fil_gadget"
@@ -152,20 +180,20 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:src="@drawable/int_gadget"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cat_gadg"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>
@@ -178,50 +206,23 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:src="@drawable/int_groceries"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cat_groc"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>
-
-        <LinearLayout
-            android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_health"
-            android:gravity="center_vertical"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/margin_xs"
-            android:layout_width="wrap_content"
-            android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
-
-            <ImageView
-                android:layout_height="20dp"
-                android:layout_width="20dp"
-                android:layout_marginRight="@dimen/margin_xs"
-                android:src="@drawable/int_beauty"
-                android:tint="@color/text_dark_grey"/>
-
-            <TextView
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:text="@string/cat_health"
-                android:textColor="@color/text_dark_grey"
-                android:textSize="@dimen/small_text"/>
-
-        </LinearLayout>
-
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
             android:id="@+id/fil_shopping"
@@ -230,49 +231,52 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:src="@drawable/int_fashion"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cat_shopping"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>
-
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
-            android:id="@+id/fil_tickets"
+            android:id="@+id/fil_health"
             android:gravity="center_vertical"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
-                android:src="@drawable/int_ticket"
-                android:tint="@color/text_dark_grey"/>
+                android:src="@drawable/int_beauty"
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:text="@string/cat_ticket"
-                android:textColor="@color/text_dark_grey"
+                android:text="@string/cat_health"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>
+
+
+
+
 
         <LinearLayout
             android:background="@drawable/round_edges_light_grey"
@@ -282,20 +286,20 @@
             android:layout_margin="@dimen/margin_xs"
             android:layout_width="wrap_content"
             android:orientation="horizontal"
-            android:padding="@dimen/padding_sm">
+            android:padding="@dimen/padding_xs">
 
             <ImageView
                 android:layout_height="20dp"
                 android:layout_width="20dp"
                 android:layout_marginRight="@dimen/margin_xs"
                 android:src="@drawable/int_travel"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/cat_travel"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
         </LinearLayout>

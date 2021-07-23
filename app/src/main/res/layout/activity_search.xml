@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true"
-    android:background="@color/back_grey"
+    android:background="@color/background_default"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
@@ -17,7 +17,7 @@
         android:orientation="vertical">
 
         <LinearLayout
-            android:background="@color/white"
+            android:background="@color/background"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:orientation="vertical">
@@ -31,10 +31,10 @@
                 android:layout_margin="@dimen/margin_sm"
                 android:layout_width="match_parent"
                 android:orientation="horizontal"
-                android:paddingBottom="@dimen/padding_sm_plus"
+                android:paddingBottom="@dimen/padding_sm"
                 android:paddingLeft="@dimen/padding_sm"
                 android:paddingRight="@dimen/padding_sm"
-                android:paddingTop="@dimen/padding_sm_plus">
+                android:paddingTop="@dimen/padding_sm">
 
                 <ImageView
                     android:id="@+id/search_back"
@@ -42,12 +42,14 @@
                     android:layout_height="24dp"
                     android:layout_marginRight="@dimen/margin_xs"
                     android:layout_weight="1"
-                    android:layout_width="24dp"
+                    android:layout_width="30dp"
                     android:src="@drawable/ic_back_lg"
-                    android:tint="@color/text_dark_grey"/>
+                    app:tint="@color/background_4"
+                    android:layout_marginEnd="10dp"
+                    android:layout_marginStart="5dp"/>
 
                 <com.google.android.material.textfield.TextInputEditText
-                    android:background="@color/white"
+                    android:background="@color/background"
                     android:hint="@string/search"
                     android:id="@+id/search_edittext"
                     android:layout_gravity="center_vertical"
@@ -60,13 +62,14 @@
                     android:layout_height="32dp"
                     android:layout_weight="1"
                     android:layout_width="32dp"
-                    android:src="@drawable/ic_filter_lg"/>
+                    android:src="@drawable/ic_filter_lg"
+                    app:tint="@color/background_4"/>
 
             </LinearLayout>
 
             <co.lujun.androidtagview.TagContainerLayout
                 android:id="@+id/filter_tags"
-                android:background="@color/white"
+                android:background="@color/background"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:paddingBottom="@dimen/padding_xs"
@@ -75,14 +78,14 @@
                 android:paddingRight="@dimen/padding_sm"
                 android:paddingStart="@dimen/padding_sm"
                 android:paddingTop="@dimen/padding_xs"
-                app:container_background_color="@color/white"
-                app:container_border_color="@color/white"
+                app:container_background_color="@color/background"
+                app:container_border_color="@color/background"
                 app:container_enable_drag="false"
                 app:horizontal_interval="10dp"
                 app:tag_background_color="@color/colorAccent"
-                app:tag_border_color="@color/white"
+                app:tag_border_color="@color/background"
                 app:tag_clickable="true"
-                app:tag_text_color="@color/white"
+                app:tag_text_color="@color/background"
                 app:tag_theme="none"
                 app:vertical_interval="10dp">
 
@@ -117,7 +120,7 @@
                     android:paddingEnd="35dp"
                     android:paddingRight="35dp"
                     android:text="@string/example_near_me"
-                    android:textColor="@color/text_dark_grey"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/xlarge_text"
                     android:visibility="gone"/>
 

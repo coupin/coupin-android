@@ -273,11 +273,9 @@
         \n
         AppLeap Technologies,
         \n
-        3A Prince Tayo, Adesanya Street,
+        5 Jasper Ike Street,
         \n
-        Park View Estate,
-        \n
-        Victoria Island. Lagos.
+        Victoria Island Extension, Lagos.
         \n
         Email: care@coupinapp.com
     </string>
@@ -536,7 +534,7 @@
     <string name="prompt_phone">Phone Number</string>
     <string name="dialog_continue">Continue</string>
     <string name="other">Better Experience</string>
-    <string name="hot_list">Hot List</string>
+    <string name="hot_deals">Hot Deals</string>
     <string name="select_age_prompt">Please select age range</string>
     <string name="select_gender_prompt">Please select gender</string>
     <string name="gender_thanks">Your info has been saved. Thank you and enjoy your coupin :)</string>
@@ -558,12 +556,13 @@
     <string name="update_body">A new update is available. would you like to update now?</string>
     <string name="change_save">Save Password</string>
     <string name="empty_title">No Merchants Found</string>
-    <string name="empty_details">Sorry there are no merchants around you, increasing the radius and then try again.</string>
+    <string name="empty_details">Sorry there are no rewards/deals around you. Try expanding your search radius in filters at the
+        top right.</string>
     <string name="no_coupins">There are no more coupins.</string>
-    <string name="error_coupins">An error occured while getting your coupins, please try again or check your network.</string>
+    <string name="error_coupins">An error occurred while getting your coupins, please try again or check your network.</string>
     <string name="empty_reward">There are no current active rewards.</string>
-    <string name="error_reward">An error occured while getting the rewards.</string>
-    <string name="error_recent">An error occured while getting merchants with the most recent rewards</string>
+    <string name="error_reward">An error occurred while getting the rewards.</string>
+    <string name="error_recent">An error occurred while getting merchants with the most recent rewards</string>
     <string name="exiting_msg">Press back one more time to exit.</string>
     <string name="error_us">A error occurred on our end, please try again or contact the help desk.</string>
     <string name="permissions">All permissions must be granted to continue.</string>
@@ -608,5 +607,6 @@
     <string name="select_an_address">Select an address</string>
     <string name="checkout">Checkout</string>
     <string name="delivery_method">Delivery Method</string>
-    <string name="how_do_you_want_your_order_delivered">How do you want your order delivered?</string>
+    <string name="how_do_you_want_your_order_delivered">How do you want your <br/>order delivered?</string>
+    <string name="change_all_to_pickup">Change all to pickup</string>
 </resources>

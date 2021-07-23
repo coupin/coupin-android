@@ -28,7 +28,7 @@
                 android:paddingLeft="17dp"
                 android:paddingTop="17dp"
                 android:text="Single"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/large_text"
                 android:textStyle="bold"/>
 
@@ -40,7 +40,7 @@
                 android:layout_width="match_parent"
                 android:paddingLeft="17dp"
                 android:text="Details"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/large_text"
                 android:textStyle="normal"/>
             

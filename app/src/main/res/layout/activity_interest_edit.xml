@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
-    android:background="@color/white"
+    android:background="@color/background_default"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.InterestEditActivity">
@@ -16,7 +16,7 @@
 
         <RelativeLayout
             android:animateLayoutChanges="true"
-            android:background="@color/white"
+            android:background="@color/background"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:padding="@dimen/padding_sm">
@@ -28,7 +28,7 @@
                 android:layout_height="@dimen/icon_sm"
                 android:layout_width="@dimen/icon_sm"
                 android:src="@drawable/ic_back"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_centerHorizontal="true"
@@ -36,7 +36,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/cat"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/xxlarge_text"
                 android:textStyle="bold"/>
 
@@ -49,7 +49,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="Save"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"
                 android:visibility="gone"/>
@@ -63,7 +63,7 @@
             android:layout_marginBottom="@dimen/margin_sm_plus"
             android:layout_width="match_parent"
             android:text="@string/check_uncheck"
-            android:textColor="@color/text_med_grey"
+            android:textColor="@color/text_color_3"
             android:textSize="@dimen/large_text"
             android:textStyle="bold"/>
 

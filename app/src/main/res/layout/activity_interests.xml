@@ -91,7 +91,7 @@
         </LinearLayout>
 
         <TextView
-            android:background="@color/text_dark_grey"
+            android:background="@color/text_color_1"
             android:gravity="center"
             android:id="@+id/interest_continue"
             android:layout_alignParentBottom="true"

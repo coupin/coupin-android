@@ -46,6 +46,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -59,6 +60,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardObjectsIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, View.OnClickListener {
@@ -253,7 +258,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                                 expiryDate = expiryDates.get(i);
                             }
                         }
-                        getCoupin();
+                        try {
+                            getCoupin(expiryDate);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -652,9 +661,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                             expiryDate = expiryDates.get(i);
                         }
                     }
+                    getCoupin(expiryDate);
                 }
-//                generatePin();
-                getCoupin();
             }catch (Exception e){
                 e.printStackTrace();
             }
@@ -811,22 +819,66 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         requestQueue.add(stringRequest);
     }
 
-    private void getCoupin(){
+    private void getCoupin(Date expiryDate) throws JSONException {
         if(!tempBlackList.isEmpty()){
             ArrayList<Reward> selectedRewards = new ArrayList<>();
+            ArrayList<Boolean> isDeliverableList = new ArrayList<>();
+            ArrayList<String> rewardIds = new ArrayList<>();
+            ArrayList<JSONObject> rewardObjects = new ArrayList<>();
+
             if(!values.isEmpty()){
                 for(Reward reward : values){
                     if(tempBlackList.contains(reward.getId())){
                         selectedRewards.add(reward);
+                        rewardIds.add(reward.getId());
+                        isDeliverableList.add(reward.getIsDelivery());
                     }
                 }
             }
 
+            for(int i = 0; i < resArray.length(); i++){
+                JSONObject rewardObject = resArray.getJSONObject(i);
+                if(rewardIds.contains(rewardObject.getString("_id"))){
+                    rewardObjects.add(rewardObject);
+                }
+            }
+
+            Gson gson = new Gson();
+            String rewards = gson.toJson(selectedRewards);
+            String merchant = gson.toJson(item);
+            String rewardObjectsString = new JSONArray(rewardObjects).toString();
+
             Intent intent = new Intent(this, GetCoupinActivity.class);
-            String rewards = new Gson().toJson(selectedRewards);
             intent.putExtra(rewardsIntent, rewards);
+            intent.putExtra(merchantIntent, merchant);
+            intent.putExtra(expiryDateIntent, expiryDate.toString());
+            intent.putExtra(rewardObjectsIntent, rewardObjectsString);
+
+            if(!isDeliverableList.contains(true)){
+                intent.putExtra(intentExtraGoToPayment, true);
+            }
+
             startActivity(intent);
         }
+    }
+
+    private RewardListItem getRewardListItem(){
+        RewardListItem coupin = new RewardListItem();
+        //TODO: put rewardId and shortcode
+//        coupin.setBookingId(object.getString("_id"));
+//        coupin.setBookingShortCode(object.getString("shortCode"));
+        coupin.setMerchantName(item.getTitle());
+        coupin.setMerchantAddress(item.getAddress());
+        coupin.setLatitude(item.getLatitude());
+        coupin.setLongitude(item.getLongitude());
+        coupin.setMerchantLogo(item.getLogo());
+        coupin.setMerchantBanner(item.getBanner());
+        coupin.setFavourited(item.isFavourite());
+        coupin.setVisited(item.isVisited());
+
+        // TODO: put rewardId details
+//        coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
+        return coupin;
     }
 
     /**

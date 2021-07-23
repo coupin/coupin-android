@@ -1,7 +1,11 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
+
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -17,6 +22,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -71,7 +77,15 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 holder.divide.setVisibility(View.VISIBLE);
             }
 
+            holder.itemView.setOnClickListener(v -> {
+                myOnClick.onItemClick(position);
+            });
+
             if (reward.isFav()) {
+
+                Log.d("FavFragment", "rvadapter outside");
+
+
                 holder.favAddress.setText(reward.getMerchantAddress());
                 holder.activeRewardHolder.setVisibility(View.GONE);
                 holder.activeFavHolder.setVisibility(View.VISIBLE);
@@ -91,10 +105,32 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                     holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
             } else {
+
+                String status = reward.status;
+
+                if(status.equals("awaiting_payment")){
+                    holder.code.setVisibility(View.GONE);
+                    holder.status.setText("Awaiting Payment");
+                }
+                else {
+                    holder.code.setVisibility(View.VISIBLE);
+                    switch (status){
+                        case "paid":
+                            holder.status.setText("Paid");
+                        case "order_picked":
+                            holder.status.setText("Order Picked");
+                        case "delivered":
+                            holder.status.setText("Order Delivered");
+                        case "fulfilled":
+                            holder.status.setText("Order Fulfilled");
+                    }
+                }
+
                 holder.code.setText("Code: " + reward.getBookingShortCode());
 
                 for (int x = 0 ; x < reward.getRewardCount(); x++) {
                     JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
+                    Log.d("FavFragment", "rvadapter" + object);
                     if (x == 0) {
                         temp = DateTimeUtils.convertZString(object.getString("endDate"));
                     } else {
@@ -136,7 +172,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        holder.bind(position);
     }
 
     @Override
@@ -164,6 +199,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
         public TextView rewardOnePercent;
         public TextView rewardTwo;
         public TextView rewardTwoPercent;
+        public TextView status;
         public View divide;
 
 
@@ -188,15 +224,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             rewardTwo = (TextView) itemView.findViewById(R.id.active_reward_2);
             rewardTwoPercent = (TextView) itemView.findViewById(R.id.active_percent_2);
             visitedIcon = (ImageView) itemView.findViewById(R.id.visited);
-        }
-
-        public void bind(final int position) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myOnClick.onItemClick(position);
-                }
-            });
+            status = itemView.findViewById(R.id.status);
         }
     }
 

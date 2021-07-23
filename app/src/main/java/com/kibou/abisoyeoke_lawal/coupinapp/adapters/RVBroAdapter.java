@@ -17,6 +17,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -73,6 +74,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             }
 
             holder.code.setText("REDEEM REWARDS");
+            holder.status.setVisibility(View.GONE);
 
             for (int x = 0 ; x < reward.getRewardCount(); x++) {
                 JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
@@ -143,6 +145,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
         public TextView rewardTwo;
         public TextView rewardTwoPercent;
         public View divide;
+        public TextView status;
 
 
         public ItemViewHolder(View itemView) {
@@ -165,6 +168,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             rewardTwo = (TextView) itemView.findViewById(R.id.active_reward_2);
             rewardTwoPercent = (TextView) itemView.findViewById(R.id.active_percent_2);
             visitedIcon = (ImageView) itemView.findViewById(R.id.visited);
+            status = itemView.findViewById(R.id.status);
         }
 
         public void bind(final int position) {

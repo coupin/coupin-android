@@ -140,7 +140,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
         if (selected.contains(getArrayString(query))) {
             selected.remove(getArrayString(query));
             fillEnt.setBackground(context.getResources().getDrawable(R.drawable.round_edges_light_grey));
-            textView.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+            textView.setTextColor(context.getResources().getColor(R.color.text_color_1));
             imageView.setColorFilter(Color.argb(255, 53, 52, 61));
         } else {
             selected.add(getArrayString(query));

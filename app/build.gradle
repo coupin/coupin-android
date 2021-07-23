@@ -37,6 +37,8 @@ android {
             }
             it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
             it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY", "")
+            it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY", "")
+            it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY", "")
         }
         debug {
             Properties properties = new Properties()
@@ -45,7 +47,8 @@ android {
             }
             it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
             it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY", "")
-
+            it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY", "")
+            it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY", "")
         }
     }
     kotlinOptions {
@@ -132,6 +135,9 @@ dependencies {
     // Flutterwave
     implementation 'com.github.flutterwave.rave-android:rave_android:2.1.36'
 
+    // google play core sdk
+    implementation("com.google.android.play:core:1.10.0")
+    implementation("com.google.android.play:core-ktx:1.8.1")
 }
 
 configurations {

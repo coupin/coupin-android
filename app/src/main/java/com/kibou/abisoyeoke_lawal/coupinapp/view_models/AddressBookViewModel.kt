@@ -4,13 +4,9 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
-import androidx.room.RoomDatabase
 import com.kibou.abisoyeoke_lawal.coupinapp.database.AddressDAO
-import com.kibou.abisoyeoke_lawal.coupinapp.database.CoupinDatabase
 import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
-import com.kibou.abisoyeoke_lawal.coupinapp.di.GoogleMapsRetrofit
-import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressService
-import com.kibou.abisoyeoke_lawal.coupinapp.models.AddAddressResponseModel
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.CoupinServices
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.DeleteAddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetAddressesResponseModel
@@ -27,12 +23,12 @@ class AddressBookViewModel @Inject constructor(application: Application,
                                                AddressDAO) : AndroidViewModel(application) {
 
     fun getAddressesFromNetwork(token : String): LiveData<Resource<GetAddressesResponseModel>> {
-        val addressService = coupinRetrofit.create(AddressService::class.java)
+        val addressService = coupinRetrofit.create(CoupinServices::class.java)
         return NetworkCall<GetAddressesResponseModel>().makeCall(addressService.getAddress(token))
     }
 
     fun deleteAddressFromNetwork(token : String, id : String) : LiveData<Resource<DeleteAddressResponseModel>>{
-        val addressService = coupinRetrofit.create(AddressService::class.java)
+        val addressService = coupinRetrofit.create(CoupinServices::class.java)
         return NetworkCall<DeleteAddressResponseModel>().makeCall(addressService.deleteAddress(token, id))
     }
 

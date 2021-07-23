@@ -169,15 +169,9 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         }
 
         if (reward.isSelected()) {
-            fullHeader.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
-            fullHeaderImage.setColorFilter(context.getResources().getColor(R.color.white));
-            fullHeader.setTextColor(context.getResources().getColor(R.color.white));
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);
         } else {
-            fullHeader.setBackgroundColor(context.getResources().getColor(R.color.white));
-            fullHeaderImage.setColorFilter(context.getResources().getColor(R.color.white));
-            fullHeader.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
             fullRemove.setVisibility(View.GONE);
             fullPin.setVisibility(View.VISIBLE);
         }

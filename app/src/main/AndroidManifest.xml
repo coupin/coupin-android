@@ -27,14 +27,11 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon,android:allowBackup,android:fullBackupContent">
         <activity android:name=".activities.GetCoupinActivity"></activity>
-        <activity android:name=".fragments.DeliveryMethodFragment" />
-        <activity android:name=".fragments.CheckoutFragment" />
-        <activity android:name=".fragments.DeliveryFragment" />
+
         <activity
             android:name=".activities.AddAddressActivity"
             android:screenOrientation="portrait" />
         <activity android:name=".activities.AddressBookActivity" />
-        <activity android:name=".fragments.ReviewSelectionFragment" />
 
         <uses-library
             android:name="org.apache.http.legacy"

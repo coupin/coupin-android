@@ -6,11 +6,11 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".activities.GetCoupinActivity">
-    <androidx.fragment.app.FragmentContainerView
+    <fragment
         android:id="@+id/get_coupin_nav_host_fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:name="androidx.navigation.fragment.NavHostFragment"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/get_coupin_navigation"/>
+        app:navGraph="@navigation/get_coupin_navigation" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.DeliveryMethodFragment">
+    tools:context=".fragments.DeliveryMethodFragment"
+    android:background="@color/background_default">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/delivery_method_title_layout"
         android:layout_width="match_parent"
@@ -14,14 +15,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:padding="10dp"
-        android:background="@color/white">
+        android:background="@color/background">
         <ImageButton
             android:id="@+id/delivery_method_back"
             android:layout_alignParentStart="true"
             android:layout_height="@dimen/icon_sm"
             android:layout_width="@dimen/icon_sm"
             android:src="@drawable/ic_back"
-            app:tint="@color/text_dark_grey"
+            app:tint="@color/text_color_1"
             android:background="?attr/selectableItemBackground"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -34,8 +35,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/delivery_method"
-            android:textColor="@color/text_dark_grey"
-            android:textSize="@dimen/large_text"
+            android:textColor="@color/text_color_1"
+            android:textSize="@dimen/xxlarge_text"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@id/delivery_method_back"
@@ -51,7 +52,8 @@
         app:layout_constraintBottom_toTopOf="@id/proceed_layout">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            >
             <TextView
                 android:id="@+id/subtitle"
                 android:layout_width="0dp"
@@ -61,9 +63,10 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:text="@string/how_do_you_want_your_order_delivered"
                 android:gravity="center"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textStyle="bold"
-                android:layout_margin="20dp"/>
+                android:layout_margin="40dp"
+                android:textAllCaps="true"/>
             <include layout="@layout/view_pickup_delivery_method"
                 android:id="@+id/pickup_delivery_method_layout"/>
             <include layout="@layout/view_gokada_delivery_method"
@@ -77,7 +80,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
-        android:background="@color/white">
+        android:background="@color/background"
+        android:orientation="vertical">
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/background_default"
+            android:layout_marginStart="7dp"
+            android:layout_marginEnd="7dp"/>
         <Button
             android:id="@+id/proceed_btn"
             android:layout_width="match_parent"

@@ -4,17 +4,14 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.kibou.abisoyeoke_lawal.coupinapp.R
-import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressBookItemClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.DeliveryAddressItemClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.view_models.AddAddressViewModel
 import org.jetbrains.anko.find
 
 class RVDeliveryAddressAdapter(private val resource : MutableList<AddressResponseModel>,
@@ -46,9 +43,9 @@ class RVDeliveryAddressAdapter(private val resource : MutableList<AddressRespons
             holder.address.setTextColor(ContextCompat.getColor(context, R.color.white))
             holder.phoneNumber.setTextColor(ContextCompat.getColor(context, R.color.white))
         }else {
-            holder.baseLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.white))
-            holder.address.setTextColor(ContextCompat.getColor(context, R.color.text_dark_grey))
-            holder.phoneNumber.setTextColor(ContextCompat.getColor(context, R.color.text_light_grey))
+            holder.baseLayout.setBackgroundColor(ContextCompat.getColor(context, R.color.background))
+            holder.address.setTextColor(ContextCompat.getColor(context, R.color.text_color_1))
+            holder.phoneNumber.setTextColor(ContextCompat.getColor(context, R.color.text_color_4))
         }
     }
 

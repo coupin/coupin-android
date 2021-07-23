@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import com.kibou.abisoyeoke_lawal.coupinapp.database.AddressDAO
 import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.di.GokadaRetrofit
-import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressService
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.CoupinServices
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.GokadaPriceEstimateService
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetAddressesResponseModel
@@ -26,7 +26,7 @@ class DeliveryViewModel @Inject constructor(application: Application,@CoupinRetr
                                             Retrofit) : AndroidViewModel(application) {
 
     fun getAddressesFromNetwork(token : String): LiveData<Resource<GetAddressesResponseModel>> {
-        val addressService = coupinRetrofit.create(AddressService::class.java)
+        val addressService = coupinRetrofit.create(CoupinServices::class.java)
         return NetworkCall<GetAddressesResponseModel>().makeCall(addressService.getAddress(token))
     }
 

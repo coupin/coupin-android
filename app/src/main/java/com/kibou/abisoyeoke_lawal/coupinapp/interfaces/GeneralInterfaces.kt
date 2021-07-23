@@ -20,7 +20,7 @@ interface ReviewSelectionCancelClickListener{
     fun onCancelClick(reward: Reward)
 }
 
-interface PlaceSearchService {
+interface PlaceSearchServices {
     @GET("maps/api/place/autocomplete/json?")
     fun searchPlace(@Query("input") input : String, @Query("key") key : String) : Call<PlacesSearchResponseModel>
 
@@ -28,7 +28,7 @@ interface PlaceSearchService {
     fun getAddress(@Query("latlng") latlng : String, @Query("key") key : String) : Call<ReverseGeocodingResponseModel>
 }
 
-interface AddressService{
+interface CoupinServices{
     @FormUrlEncoded
     @POST("customer/addresses")
     fun addAddress(@Header("Authorization") auth : String, @Field("longitude") longitude : Double, @Field("latitude") latitude :
@@ -39,10 +39,13 @@ interface AddressService{
 
     @DELETE("customer/addresses/{id}")
     fun deleteAddress(@Header("Authorization") auth : String, @Path("id") id : String) : Call<DeleteAddressResponseModel>
+
+    @POST("coupin")
+    fun getCoupin(@Body requestBody : GetCoupinRequestModel, @Header("Authorization") auth : String)
+    : Call<GetCoupinResponseModel>
 }
 
 interface GokadaPriceEstimateService{
-
-    @POST("api/developer/order_estimate")
+    @POST("api/developer/v3/order_estimate")
     fun getPriceEstimate(@Body requestBody : GokadaOrderEstimateRequestBody) : Call<GokadaOrderEstimateResponse>
 }

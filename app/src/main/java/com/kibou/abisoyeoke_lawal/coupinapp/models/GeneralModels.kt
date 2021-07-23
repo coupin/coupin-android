@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import androidx.room.Transaction
 
 
 /* PLACE SEARCH*/
@@ -40,13 +41,13 @@ data class Northeast (val lat : Double, val lng : Double)
 
 
 
-/* USER ADDRESS*/
-/* USER ADDRESS*/
+/** USER ADDRESS **/
+/** USER ADDRESS **/
 data class AddressModel(val address : String, val longitude : Double, val latitude : Double, val mobileNumber : String, val token : String)
 
 @Entity
-data class AddressResponseModel(@PrimaryKey val id : String, val address : String, val location : AddressLocation, val
-mobileNumber : String, val owner : String)
+data class AddressResponseModel(@PrimaryKey val id : String, val address : String ="", val location : AddressLocation,
+                                val mobileNumber : String?, val owner : String?)
 data class AddressLocation(val longitude: Double?, val latitude : Double?)
 data class GetAddressesResponseModel(val addresses : MutableList<AddressResponseModel>)
 data class AddAddressResponseModel(val message : String, val address : AddressResponseModel?)
@@ -56,25 +57,34 @@ enum class AddressSetTextFrom {
 }
 
 
-/* API ERROR*/
-/* API ERROR*/
+/** API ERROR **/
+/** API ERROR **/
 data class APIError(val error : Boolean, val message : String, val data : Any? = null)
 
 
 /** GOKADA **/
 /** GOKADA **/
-data class GokadaOrderEstimateRequestBody(val api_key : String, val pickup_latitude : String, val pickup_longitude : String,
-                                    val delivery_latitude : String, val delivery_longitude : String)
-data class GokadaOrderEstimateResponse(val error : String?, val message : String?, val status : Int?, val distance : Int?,
+data class GokadaOrderEstimateRequestBody(val api_key : String, val pickup_address : String, val pickup_latitude : String,
+                                          val pickup_longitude : String, val dropoffs : List<DropOff>)
+data class DropOff(val address: String, val latitude: String, val longitude: String)
+data class GokadaOrderEstimateResponse(val error : String?, val message : String?, val status : Int?, val distance : Double?,
                                  val time : Int?, val fare : Int?)
 
 
 
+/** GENERATE COUPIN **/
+/** GENERATE COUPIN **/
+/** GENERATE COUPIN **/
+data class GetCoupinResponseModel (val data : Data?)
+data class Data(val booking: Booking?, val reference: String?)
+data class Booking (val userId: String?, val merchantId: String?, val rewardId: List<RewardID>?, val shortCode: String?,
+                    val useNow: Boolean?, val isActive: Boolean?, val createdAt : String?, val status: String?, val
+                    isDeliverable: Boolean?, val _id : String?, val expiryDate: String?, val deliveryAddress:
+                    AddressResponseModel?, val __v : Int?)
+data class RewardID (val _id: String?, val id : String?, val status: String?, val usedOn: String?, val singleUse : Boolean?)
 
-
-
-
-
+data class GetCoupinRequestModel(val saved : Boolean, val rewardId: List<String>, val deliveryAddress : String,
+                                 val isDeliverable : Boolean, val expiryDate : String, val merchantId : String)
 
 
 

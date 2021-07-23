@@ -591,4 +591,13 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public void onItemClick(int position) {
         goToMerchantPage(merchants.get(position));
     }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(this, HomeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        startActivity(intent);
+        finish();
+    }
 }

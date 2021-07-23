@@ -6,6 +6,7 @@
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background_default"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity">
 
     <LinearLayout
@@ -15,7 +16,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@color/text_dark_grey"
+            android:background="@color/text_color_1"
             android:layout_height="180dp"
             android:layout_width="match_parent">
 
@@ -91,7 +92,7 @@
             android:paddingRight="@dimen/padding_sm"
             android:paddingStart="@dimen/padding_sm"
             android:text=""
-            android:textColor="@color/text_med_grey"
+            android:textColor="@color/text_color_3"
             android:textSize="@dimen/medium_text"
             android:textStyle="normal"/>
 
@@ -200,7 +201,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:background="@color/text_med_grey"
+        android:background="@color/colorAccent"
         android:id="@+id/coupin_activate_holder"
         android:gravity="center"
         android:layout_alignParentBottom="true"
@@ -224,7 +225,7 @@
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:background="@color/text_med_grey"
+        android:background="@color/text_color_3"
         android:id="@+id/navigate"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -233,13 +234,14 @@
         android:layout_height="48dp"
         android:layout_width="48dp"
         android:src="@drawable/ic_nav_arrow"
-        app:backgroundTint="@color/text_med_grey"
+        android:tint="@color/background"
+        app:backgroundTint="@color/text_color_3"
         app:elevation="10dp"
         app:fabCustomSize="48dp"
         app:rippleColor="@color/black"/>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:background="@color/text_med_grey"
+        android:background="@color/text_color_3"
         android:id="@+id/share"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -248,9 +250,10 @@
         android:layout_height="48dp"
         android:layout_width="48dp"
         android:src="@drawable/ic_share"
-        app:backgroundTint="@color/text_med_grey"
+        app:backgroundTint="@color/text_color_3"
         app:elevation="10dp"
         app:fabCustomSize="48dp"
-        app:rippleColor="@color/black"/>
+        app:rippleColor="@color/black"
+        android:tint="@color/background"/>
 
 </RelativeLayout>

@@ -7,6 +7,8 @@ import android.os.Handler;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,99 +98,104 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     }
 
     private void getRewardsForNow() {
-        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?page=" + page;
+        if(this.isAdded()){
+            url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?page=" + page;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int x = 0; x < jsonArray.length(); x++) {
-                        JSONObject mainObject = jsonArray.getJSONObject(x);
-                        JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");
-                        JSONArray rewardObjects = mainObject.getJSONArray("rewardId");
+            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        Log.d("UseNowFragment", "response : " + jsonArray);
+                        for (int x = 0; x < jsonArray.length(); x++) {
+                            JSONObject mainObject = jsonArray.getJSONObject(x);
+                            JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");
+                            JSONArray rewardObjects = mainObject.getJSONArray("rewardId");
 
-                        RewardListItem item = new RewardListItem();
+                            RewardListItem item = new RewardListItem();
 
-                        item.setBookingId(mainObject.getString("_id"));
-                        item.setBookingShortCode(mainObject.getString("shortCode"));
-                        item.setMerchantName(merchantObject.getString("companyName"));
-                        item.setMerchantAddress(merchantObject.getString("address"));
-                        item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
-                        item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
-                        item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
-                        item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
-                        item.setVisited(mainObject.getBoolean("visited"));
-                        item.setFavourited(mainObject.getBoolean("favourite"));
+                            item.setBookingId(mainObject.getString("_id"));
+                            item.setBookingShortCode(mainObject.getString("shortCode"));
+                            item.setMerchantName(merchantObject.getString("companyName"));
+                            item.setMerchantAddress(merchantObject.getString("address"));
+                            item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
+                            item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
+                            item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
+                            item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
+                            item.setVisited(mainObject.getBoolean("visited"));
+                            item.setFavourited(mainObject.getBoolean("favourite"));
 
+                            String status = mainObject.getString("status");
+                            item.setStatus(status);
 
-                        item.setRewardDetails(rewardObjects.toString());
-                        item.setRewardCount(rewardObjects.length());
+                            item.setRewardDetails(rewardObjects.toString());
+                            item.setRewardCount(rewardObjects.length());
 
-                        nowList.add(item);
-                    }
-                    isLoading = false;
-                    if (page > 0) {
-                        loading(5);
-                    }
-                    rvAdapter.notifyDataSetChanged();
-                    if (jsonArray.length() == 0) {
-                        if (nowList.size() < 1) {
-                            loading(2);
-                        } else {
-                            showErrorToast(true);
+                            nowList.add(item);
                         }
-                    } else {
-                        loading(1);
-                    }
+                        isLoading = false;
+                        if (page > 0) {
+                            loading(5);
+                        }
+                        rvAdapter.notifyDataSetChanged();
+                        if (jsonArray.length() == 0) {
+                            if (nowList.size() < 1) {
+                                loading(2);
+                            } else {
+                                showErrorToast(true);
+                            }
+                        } else {
+                            loading(1);
+                        }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (nowList.size() < 1) {
-                        loading(3);
-                    } else {
-                        showErrorToast(false);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        if (nowList.size() < 1) {
+                            loading(3);
+                        } else {
+                            showErrorToast(false);
+                        }
                     }
                 }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                isLoading = false;
-                if (nowList.size() < 1) {
-                    if (error.networkResponse != null) {
-                        if (error.networkResponse.statusCode == 404) {
-                            loading(2);
+            }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    error.printStackTrace();
+                    isLoading = false;
+                    if (nowList.size() < 1) {
+                        if (error.networkResponse != null) {
+                            if (error.networkResponse.statusCode == 404) {
+                                loading(2);
+                            } else {
+                                loading(3);
+                            }
                         } else {
                             loading(3);
                         }
                     } else {
-                        loading(3);
+                        if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
+                            showErrorToast(true);
+                        } else {
+                            showErrorToast(false);
+                        }
                     }
-                } else {
-                    if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                        showErrorToast(true);
-                    } else {
-                        showErrorToast(false);
+
+                    if (page > 0) {
+                        loading(5);
                     }
                 }
+            }) {
+                @Override
+                public Map<String, String> getHeaders() {
+                    Map<String, String> headers = new HashMap<>();
+                    headers.put("Authorization", PreferenceMngr.getToken());
 
-                if (page > 0) {
-                    loading(5);
+                    return headers;
                 }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
+            };
 
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+            requestQueue.add(stringRequest);
+        }
     }
 
     /**

@@ -51,6 +51,14 @@ public class PreferenceMngr {
         preferences.edit().putString("user", user).apply();
     }
 
+    public static void putBoolean(String key, Boolean value){
+        preferences.edit().putBoolean(key, value).apply();
+    }
+
+    public static Boolean getBoolean(String key){
+        return preferences.getBoolean(key, false);
+    }
+
     public Set<String> getBlacklist() {
         return preferences.getStringSet("blacklist", new HashSet<String>());
     }

@@ -1,51 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.MerchantActivity">
+    <androidx.appcompat.widget.Toolbar
+        android:background="@color/background"
+        android:gravity="center"
+        android:id="@+id/merchant_toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:titleTextAppearance="@android:color/transparent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+        <TextView
+            android:id="@+id/toolbar_title"
+            android:layout_gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="@string/reward_det"
+            android:textColor="@color/text_color_1"
+            android:textSize="@dimen/xxlarge_text"
+            android:textStyle="bold"/>
+
+    </androidx.appcompat.widget.Toolbar>
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/merchant_toolbar"
+        app:layout_constraintBottom_toTopOf="@id/selected_holder">
         <LinearLayout
             android:layout_height="match_parent"
             android:layout_width="match_parent"
             android:orientation="vertical"
             android:descendantFocusability="blocksDescendants">
 
-            <androidx.appcompat.widget.Toolbar
-                android:background="@color/white"
-                android:gravity="center"
-                android:id="@+id/merchant_toolbar"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_width="match_parent"
-                android:elevation="4dp"
-                android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
-                app:titleTextAppearance="@android:color/transparent"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-                <TextView
-                    android:id="@+id/toolbar_title"
-                    android:layout_gravity="center"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="@string/reward_det"
-                    android:textColor="@color/text_dark_grey"
-                    android:textSize="@dimen/xxlarge_text"
-                    android:textStyle="bold"/>
-
-            </androidx.appcompat.widget.Toolbar>
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content">
 
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:background="@color/text_med_grey"
+                    android:background="@color/text_color_3"
                     android:id="@+id/merchant_navigation"
                     android:layout_alignParentEnd="true"
                     android:layout_alignParentRight="true"
@@ -55,7 +59,8 @@
                     android:layout_height="54dp"
                     android:layout_width="54dp"
                     android:src="@drawable/ic_nav_arrow"
-                    app:backgroundTint="@color/text_med_grey"
+                    android:tint="@color/background"
+                    app:backgroundTint="@color/text_color_3"
                     app:elevation="10dp"
                     app:useCompatPadding="true"
                     app:rippleColor="@color/black"/>
@@ -86,7 +91,7 @@
                             android:paddingBottom="10dp"
                             android:text="@string/testing"
                             android:textAllCaps="true"
-                            android:textColor="@color/text_dark_grey"
+                            android:textColor="@color/text_color_1"
                             android:textSize="@dimen/logo_text"
                             android:textStyle="bold"/>
 
@@ -108,7 +113,7 @@
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
                                 android:text="4.2/5.0"
-                                android:textColor="@color/text_light_grey"
+                                android:textColor="@color/text_color_4"
                                 android:textSize="@dimen/large_text"
                                 android:textStyle="normal"/>
 
@@ -121,7 +126,7 @@
                             android:paddingLeft="@dimen/padding_xs"
                             android:paddingRight="@dimen/padding_md"
                             android:paddingStart="@dimen/padding_xs"
-                            android:textColor="@color/text_dark_grey"
+                            android:textColor="@color/text_color_1"
                             android:textSize="@dimen/large_text"
                             android:textStyle="normal"/>
 
@@ -134,10 +139,11 @@
                             android:paddingRight="@dimen/padding_md"
                             android:paddingStart="@dimen/padding_xs"
                             android:inputType="phone"
-                            android:textColor="@color/text_dark_grey"
+                            android:textColor="@color/text_color_1"
                             android:textSize="@dimen/large_text"
-                            android:textStyle="normal"/>
-                        
+                            android:textStyle="normal"
+                            android:visibility="gone"/>
+
                         <LinearLayout
                             android:layout_height="wrap_content"
                             android:layout_marginBottom="@dimen/margin_sm"
@@ -145,12 +151,12 @@
                             android:layout_width="match_parent"
                             android:orientation="horizontal"
                             android:padding="@dimen/padding_sm">
-                            
+
                             <ImageView
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:id="@+id/photo_1"
-                                android:background="@color/text_dark_grey"
+                                android:background="@color/text_color_1"
                                 android:layout_height="80dp"
                                 android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
@@ -163,7 +169,7 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:id="@+id/photo_2"
-                                android:background="@color/text_dark_grey"
+                                android:background="@color/text_color_1"
                                 android:layout_height="80dp"
                                 android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
@@ -176,7 +182,7 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:id="@+id/photo_3"
-                                android:background="@color/text_dark_grey"
+                                android:background="@color/text_color_1"
                                 android:layout_height="80dp"
                                 android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
@@ -189,7 +195,7 @@
                                 android:clickable="true"
                                 android:focusable="true"
                                 android:id="@+id/photo_4"
-                                android:background="@color/text_dark_grey"
+                                android:background="@color/text_color_1"
                                 android:layout_height="80dp"
                                 android:layout_marginEnd="@dimen/margin_xs"
                                 android:layout_marginRight="@dimen/margin_xs"
@@ -217,7 +223,7 @@
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     android:text="@string/ongoing"
-                    android:textColor="@color/text_dark_grey"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"
                     android:textStyle="normal"/>
 
@@ -233,7 +239,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="@string/sort"
-                        android:textColor="@color/text_med_grey"
+                        android:textColor="@color/text_color_3"
                         android:textSize="@dimen/medium_text"
                         android:textStyle="normal"/>
 
@@ -263,7 +269,7 @@
                 android:layout_height="match_parent"
                 android:layout_width="match_parent"
                 android:minHeight="500dp"
-                android:visibility="gone"/>
+                android:visibility="visible"/>
 
             <LinearLayout
                 android:id="@+id/reward_empty"
@@ -314,16 +320,17 @@
         </LinearLayout>
 
     </ScrollView>
-
     <LinearLayout
         android:animateLayoutChanges="true"
-        android:background="@color/white"
+        android:background="@color/background"
         android:id="@+id/selected_holder"
-        android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:visibility="visible">
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
 
 
         <TextView
@@ -337,8 +344,8 @@
             android:paddingRight="@dimen/padding_xs"
             android:paddingStart="@dimen/padding_xs"
             android:paddingTop="@dimen/padding_xxs"
-            android:text="10 Selected"
-            android:textColor="@color/text_dark_grey"
+            android:text="None Selected"
+            android:textColor="@color/text_color_1"
             android:textSize="@dimen/medium_text"/>
 
         <LinearLayout
@@ -383,14 +390,14 @@
     <com.wang.avi.AVLoadingIndicatorView
         style="?android:attr/progressBarStyleLarge"
         android:id="@+id/rewards_loading"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
         android:layout_height="24dp"
-        android:layout_marginEnd="@dimen/margin_xxs"
-        android:layout_marginRight="@dimen/margin_xxs"
         android:layout_width="24dp"
         app:indicatorName="BallPulseIndicator"
         app:indicatorColor="@color/colorAccent"
-        android:visibility="gone"/>
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
 
-</RelativeLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

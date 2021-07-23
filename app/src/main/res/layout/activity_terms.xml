@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".activities.TermsActivity">
 
     <LinearLayout
@@ -31,7 +31,7 @@
                 android:layout_height="@dimen/icon_sm"
                 android:layout_width="@dimen/icon_sm"
                 android:src="@drawable/ic_back"
-                android:tint="@color/text_dark_grey"/>
+                app:tint="@color/text_color_1"/>
 
             <TextView
                 android:layout_centerHorizontal="true"
@@ -39,22 +39,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/terms_of_service_title"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/xxlarge_text"
                 android:textStyle="bold"/>
 
         </RelativeLayout>
-
-
-        <TextView
-            android:layout_height="match_parent"
-            android:layout_width="match_parent"
-            android:padding="@dimen/padding_sm"
-            android:lineSpacingExtra="@dimen/padding_xs"
-            android:text="@string/terms_of_service"
-            android:textColor="@color/text_med_grey"
-            android:textSize="@dimen/large_text"
-            android:visibility="gone"/>
 
     </LinearLayout>
 

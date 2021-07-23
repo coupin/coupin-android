@@ -2,12 +2,11 @@
 <androidx.cardview.widget.CardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/background"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:minWidth="400dp"
     android:orientation="vertical"
-    app:cardCornerRadius="@dimen/rounded_edge"
     app:cardElevation="5dp"
     app:cardPreventCornerOverlap="true">
 
@@ -17,29 +16,30 @@
         android:orientation="vertical">
 
         <TextView
-            android:background="@color/lightGrey"
+            android:background="@color/background_default"
             android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:padding="@dimen/padding_md"
             android:text="@string/delete_address_dialog_header"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textStyle="bold"/>
 
         <TextView
-            android:background="@color/white"
+            android:background="@color/background"
             android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:padding="@dimen/padding_md"
             android:text="@string/delete_address_dialog_body"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textStyle="bold"/>
 
         <LinearLayout
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            android:background="@color/background">
 
             <Button
                 android:background="@drawable/round_edges_grey"

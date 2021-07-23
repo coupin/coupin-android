@@ -5,6 +5,9 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -29,6 +32,8 @@ import org.json.JSONObject;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.isDarkModePref;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -58,6 +63,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView profileVersion;
     @BindView(R.id.profile_address_book)
     public TextView profileAddressBook;
+    @BindView(R.id.theme_switch)
+    public SwitchCompat switchCompat;
 
     public JSONObject userObject;
 
@@ -67,8 +74,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
@@ -96,6 +103,22 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profileNotification.setOnClickListener(this);
         profileTerms.setOnClickListener(this);
         profileAddressBook.setOnClickListener(this);
+
+        PreferenceMngr.setContext(requireContext());
+
+        Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
+        switchCompat.setChecked(isDarkMode);
+
+        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                PreferenceMngr.putBoolean(isDarkModePref, true);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else {
+                PreferenceMngr.putBoolean(isDarkModePref, false);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        });
 
         try {
             PackageManager manager = getContext().getPackageManager();
