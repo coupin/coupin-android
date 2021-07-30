@@ -97,6 +97,9 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         startActivity(intent);
     }
 
+    @Override
+    public void onItemClick(int position, int quantity) { }
+
     private void getRewardsForNow() {
         if(this.isAdded()){
             url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?page=" + page;

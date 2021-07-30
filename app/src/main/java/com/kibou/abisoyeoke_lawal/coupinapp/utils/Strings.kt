@@ -9,6 +9,7 @@ const val expiryDateIntent = "expiryDateIntent"
 const val rewardObjectsIntent = "rewardObjectsIntent"
 const val intentExtraGoToPayment = "intentExtraGoToPayment"
 const val rewardListItemIntent = "rewardListItemIntent"
+const val rewardQuantityIntent = "rewardQuantityIntent"
 
 const val currency = "NGN"
 const val isDarkModePref = "isDarkModePref"

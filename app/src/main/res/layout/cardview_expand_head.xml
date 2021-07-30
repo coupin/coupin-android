@@ -108,24 +108,31 @@
 
             <TextView
                 android:id="@+id/list_new_price"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/medium_text"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_toStartOf="@id/list_old_price"
+                android:layout_marginRight="10dp"/>
 
             <TextView
                 android:id="@+id/list_old_price"
-                android:layout_toLeftOf="@id/list_new_price"
-                android:layout_toStartOf="@id/list_new_price"
+                android:layout_toStartOf="@id/quantity_label"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_width="wrap_content"
                 android:textColor="@color/text_color_6"
                 android:textSize="@dimen/medium_text" />
-
+            <TextView
+                android:id="@+id/quantity_label"
+                android:layout_alignParentEnd="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text="x 1"
+                android:textColor="@color/text_color_1"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
         </RelativeLayout>
         
     </LinearLayout>

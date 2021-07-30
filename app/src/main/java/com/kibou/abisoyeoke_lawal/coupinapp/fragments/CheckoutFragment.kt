@@ -14,14 +14,11 @@ import com.flutterwave.raveandroid.RaveUiManager
 import com.flutterwave.raveandroid.rave_java_commons.Meta
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
 import com.google.android.play.core.review.ReviewManagerFactory
-import com.google.gson.Gson
-import com.google.gson.JsonArray
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinRequestModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.*
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
@@ -69,7 +66,15 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     private fun setUpObservables(){
         checkoutViewModel.selectedCoupinsLD.observe(viewLifecycleOwner, {
             it?.let {
-                val rewardsPrice = it.map { it.newPrice }.sum()
+                val rewardsQuantity = checkoutViewModel.rewardQuantityMLD.value ?: hashMapOf()
+                val rewardsPrice = it.map {
+                    val quantity = rewardsQuantity[it.id]
+                    if(quantity != null){
+                        it.newPrice * quantity;
+                    }else {
+                        it.newPrice
+                    }
+                }.sum()
                 val deliveryPrice = checkoutViewModel.deliveryPriceLD.value ?: 0
                 val totalAmount = rewardsPrice + deliveryPrice
                 pay_btn.text = "Pay ₦${setAmountFormat(totalAmount)}"
@@ -172,14 +177,27 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getCoupin(paymentData: PaymentData){
-        val rewards = checkoutViewModel.selectedCoupinsLD.value?.map { it.id } ?: listOf()
         val addressId = checkoutViewModel.addressIdMLD.value ?: ""
         val isDeliverable = checkoutViewModel.isDeliverableMLD.value ?: false
         val merchantId = checkoutViewModel.merchantLD.value?.id ?: ""
         val expiryDate = checkoutViewModel.expiryDateMLD.value ?: ""
-        val getCoupinRequestModel = GetCoupinRequestModel(false, rewards, addressId, isDeliverable, expiryDate, merchantId)
+
+        val rewardIdQuantityMap = checkoutViewModel.rewardQuantityMLD.value
+        val rewardsIdList = mutableListOf<String>()
+        rewardIdQuantityMap?.let {
+            it.forEach{
+                for (item in 1..it.value){
+                    rewardsIdList.add(it.key)
+                }
+            }
+        }
+
         PreferenceMngr.setContext(requireContext())
         val token = PreferenceMngr.getToken() ?: ""
+
+        val getCoupinRequestModel = GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId)
+
+        Log.d(logTag, "rewardIdQuantity : $rewardsIdList")
 
         checkoutViewModel.getCoupin(getCoupinRequestModel, token).observe(viewLifecycleOwner, {
             it?.let {
@@ -224,7 +242,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         rewardObjectsString?.let {
             val rewardObjects = JSONArray(it)
 
-            rewardObjects.let {rewardObjectsJSONArray ->
+            rewardObjects.let { rewardObjectsJSONArray ->
 
                 val list = mutableListOf<JSONObject>()
                 for(i in 0 until rewardObjectsJSONArray.length()){

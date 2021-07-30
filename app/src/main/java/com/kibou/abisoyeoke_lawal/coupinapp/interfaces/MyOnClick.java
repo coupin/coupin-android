@@ -8,4 +8,5 @@ import org.json.JSONException;
 
 public interface MyOnClick {
     public void onItemClick(final int position);
+    public void onItemClick(final int position, int quantity);
 }

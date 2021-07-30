@@ -248,9 +248,10 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     }
 
     @Override
-    public void onItemClick(int position) {
-        //TODO: Nothing
-    }
+    public void onItemClick(int position) { }
+
+    @Override
+    public void onItemClick(int position, int quantity) { }
 
     /**
      * Navigate to address

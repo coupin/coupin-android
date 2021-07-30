@@ -18,7 +18,7 @@
             android:layout_height="wrap_content"
             android:gravity="center|bottom"
             android:orientation="vertical"
-            android:background="@drawable/round_edges"
+            android:background="@drawable/round_edges_info_window"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/center_marker"

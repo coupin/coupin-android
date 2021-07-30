@@ -10,9 +10,12 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -51,6 +54,12 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     public TextView fullOldPrice;
     public TextView fullPercentage;
     public TextView fullReusable;
+    public TextView quantityTextView;
+    public ConstraintLayout quantityLayout;
+    public EditText quantityEditText;
+    public ImageView addBtn;
+    public ImageView subtractBtn;
+    public View bottomButtonsBarrier;
 
     public MyOnClick myOnClick;
     private GalleryDialog imageDialog;
@@ -121,6 +130,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullOldPrice = (TextView) findViewById(R.id.full_old_price);
         fullPercentage = (TextView) findViewById(R.id.full_percentage);
         fullReusable = (TextView) findViewById(R.id.full_reusable);
+        quantityTextView = findViewById(R.id.available_status);
+        quantityEditText = findViewById(R.id.quantity_edittext);
+        quantityLayout = findViewById(R.id.quantity_layout);
+        bottomButtonsBarrier = findViewById(R.id.bottom_button_barrier);
+        addBtn = findViewById(R.id.add_quantity);
+        subtractBtn = findViewById(R.id.subtract_quantity);
+        addBtn.setOnClickListener(this);
+        subtractBtn.setOnClickListener(this);
 
         fullDescription.setText(reward.getDetails());
         fullHeader.setText(reward.getTitle());
@@ -138,6 +155,10 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullPercentage.setVisibility(View.VISIBLE);
             fullNewPrice.setVisibility(View.VISIBLE);
             fullOldPrice.setVisibility(View.VISIBLE);
+            quantityLayout.setVisibility(View.VISIBLE);
+            String quantityString = String.valueOf(reward.getQuantity());
+            quantityTextView.setText(quantityString);
+            bottomButtonsBarrier.setVisibility(View.VISIBLE);
         }
 
         pictures = reward.getPictures();
@@ -183,9 +204,16 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         // Reusable
         if (reward.getMultiple()) {
-            fullReusable.setText("YES");
+            quantityEditText.setText(String.valueOf(1));
+            addBtn.setEnabled(true);
+            subtractBtn.setEnabled(true);
+            String quantityString = reward.getQuantity() + "in stock";
+            quantityTextView.setText(quantityString);
         } else {
-            fullReusable.setText("NO");
+            quantityTextView.setText("Limited to 1 per Customer");
+            addBtn.setEnabled(false);
+            subtractBtn.setEnabled(false);
+            quantityEditText.setText(String.valueOf(1));
         }
 
         if (reward.getIsDelivery()) {
@@ -262,16 +290,46 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                 showImageDialog(3);
                 break;
             case R.id.btn_pin:
-                myOnClick.onItemClick(0);
-                dismiss();
+                String enteredQuantity = quantityEditText.getText().toString().trim();
+                if(isQuantityValid(enteredQuantity)){
+                    myOnClick.onItemClick(0, Integer.parseInt(enteredQuantity));
+                    dismiss();
+                }
                 break;
             case R.id.btn_remove:
-                myOnClick.onItemClick(1);
+                myOnClick.onItemClick(1, 0);
                 dismiss();
                 break;
             case R.id.cancel:
                 dismiss();
                 break;
+            case R.id.add_quantity:
+                int quantityInEdittext = Integer.parseInt(quantityEditText.getText().toString().trim());
+                int newQuantity = quantityInEdittext + 1;
+                quantityEditText.setText(String.valueOf(newQuantity));
+                break;
+            case R.id.subtract_quantity:
+                int quantityInEdittextSubtract = Integer.parseInt(quantityEditText.getText().toString().trim());
+                if(quantityInEdittextSubtract>0){
+                    int newQuantitySubtract = quantityInEdittextSubtract - 1;
+                    quantityEditText.setText(String.valueOf(newQuantitySubtract));
+                }
+                break;
         }
     }
+
+    private boolean isQuantityValid(String enteredQuantity){
+        int availableQuantity = reward.getQuantity();
+        if(enteredQuantity.isEmpty()){
+            quantityEditText.setError("Enter a Quantity");
+            return false;
+        }
+
+        if(!(Integer.parseInt(enteredQuantity) <= availableQuantity)){
+            quantityEditText.setError("Quantity is not valid");
+            return false;
+        }
+        return true;
+    }
+
 }

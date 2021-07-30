@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.google.gson.Gson
@@ -13,6 +14,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_get_coupin.*
 import java.util.*
+import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class GetCoupinActivity : AppCompatActivity() {
@@ -28,6 +30,7 @@ class GetCoupinActivity : AppCompatActivity() {
         setExpiryDate()
         setUpFragmentNavigation()
         getRewardsObject()
+        setRewardQuantity()
     }
 
     private fun getIntentRewards(){
@@ -62,6 +65,11 @@ class GetCoupinActivity : AppCompatActivity() {
         expiryDateString?.let {
             getCoupinVM.expiryDateMLD.value = it
         }
+    }
+
+    private fun setRewardQuantity(){
+        val rewardQuantity = intent.getSerializableExtra(rewardQuantityIntent) as HashMap<String, Int>
+        getCoupinVM.rewardQuantityMLD.value = rewardQuantity
     }
 
     private fun setUpFragmentNavigation(){

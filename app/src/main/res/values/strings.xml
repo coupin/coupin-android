@@ -111,7 +111,7 @@
     <string name="code">Code:</string>
     <string name="coupin">Coupin</string>
     <string name="coupins">Coupins</string>
-    <string name="pin_reward">Pin Reward</string>
+    <string name="pin_reward">Pin Reward(s)</string>
     <string name="save_select">Save Selection</string>
 
 
@@ -609,4 +609,5 @@
     <string name="delivery_method">Delivery Method</string>
     <string name="how_do_you_want_your_order_delivered">How do you want your <br/>order delivered?</string>
     <string name="change_all_to_pickup">Change all to pickup</string>
+    <string name="quantity">Quantity</string>
 </resources>

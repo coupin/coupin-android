@@ -334,6 +334,9 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         startActivity(merchantIntent);
     }
 
+    @Override
+    public void onItemClick(int position, int quantity) { }
+
     /**
      * Showing the appropriate view after and before loading
      * @param opt

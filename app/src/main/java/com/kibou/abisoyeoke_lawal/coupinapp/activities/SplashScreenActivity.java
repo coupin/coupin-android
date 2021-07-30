@@ -143,4 +143,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
             proceed();
         }
     }
+
+    @Override
+    public void onSelect(boolean selected, int index, int quantity) { }
 }

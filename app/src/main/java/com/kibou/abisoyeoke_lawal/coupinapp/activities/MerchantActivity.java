@@ -64,6 +64,7 @@ import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateInt
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardObjectsIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardQuantityIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, View.OnClickListener {
@@ -141,6 +142,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private String merchantId;
     private String rewardHolder;
     private String logTag = "MerchantActivity";
+    private HashMap<String, Integer> rewardQuantity = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -357,6 +359,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         reward.setId(object.getString("_id"));
                         reward.setTitle(object.getString("name"));
                         reward.setDetails(object.getString("description"));
+                        reward.setQuantity(object.getInt("quantity"));
 
                         // Date
                         reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
@@ -601,6 +604,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         }
     }
 
+    @Override
+    public void onSelect(boolean selected, int index) {
+        if (index == -1) {
+            Toast.makeText(MerchantActivity.this, "Sorry this reward can only be used once. ", Toast.LENGTH_SHORT).show();
+            return;
+        }
+    }
+
     /**
      * Custom on select being used for the recycler view that covers
      * rewards selected and unselected
@@ -608,12 +619,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * @param index
      */
     @Override
-    public void onSelect(boolean selected, int index) {
-        if (index == -1) {
-            Toast.makeText(MerchantActivity.this, "Sorry this reward can only be used once. ", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
+    public void onSelect(boolean selected, int index, int quantity) {
         Reward reward = values.get(index);
         if (selected) {
             this.selected.add(reward.getId());
@@ -625,6 +631,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if (!reward.getMultiple()) {
                 tempBlackList.add(reward.getId());
             }
+            rewardQuantity.put(reward.getId(), quantity);
         } else {
             this.selected.remove(reward.getId());
             this.expiryDates.remove(reward.getExpires());
@@ -635,8 +642,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if (tempBlackList.contains(reward.getId())) {
                 tempBlackList.remove(reward.getId());
             }
+            rewardQuantity.remove(reward.getId());
         }
     }
+
+    @Override
+    public void onItemClick(int position, int quantity) { }
 
     /**
      * Custom on item click
@@ -853,6 +864,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             intent.putExtra(merchantIntent, merchant);
             intent.putExtra(expiryDateIntent, expiryDate.toString());
             intent.putExtra(rewardObjectsIntent, rewardObjectsString);
+            intent.putExtra(rewardQuantityIntent, rewardQuantity);
 
             if(!isDeliverableList.contains(true)){
                 intent.putExtra(intentExtraGoToPayment, true);

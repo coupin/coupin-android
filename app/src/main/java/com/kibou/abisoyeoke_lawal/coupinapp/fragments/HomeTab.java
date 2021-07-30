@@ -1274,6 +1274,11 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 //        setUpList();
     }
 
+    @Override
+    public void onItemClick(int position, int quantity) {
+
+    }
+
     /**
      * An async class to convert url to bitmaps in the background
      */

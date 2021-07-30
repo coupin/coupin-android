@@ -593,6 +593,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     }
 
     @Override
+    public void onItemClick(int position, int quantity) { }
+
+    @Override
     public void onBackPressed() {
         super.onBackPressed();
         Intent intent = new Intent(this, HomeActivity.class);

@@ -168,4 +168,9 @@ public class FavFragment extends Fragment implements MyOnClick {
         intent.putExtras(extra);
         startActivity(intent);
     }
+
+    @Override
+    public void onItemClick(int position, int quantity) {
+
+    }
 }

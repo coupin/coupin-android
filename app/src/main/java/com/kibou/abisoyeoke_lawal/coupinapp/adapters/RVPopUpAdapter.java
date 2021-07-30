@@ -10,6 +10,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
@@ -46,6 +47,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         public View head;
         public View rewardDivider;
         public LinearLayout bacgroud;
+        public TextView quantityLabel;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -61,6 +63,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             rewardDivider = (View) head.findViewById(R.id.reward_divider);
             tickFrame = (FrameLayout) head.findViewById(R.id.tick_frame);
             bacgroud = head.findViewById(R.id.background);
+            quantityLabel = head.findViewById(R.id.quantity_label);
         }
     }
 
@@ -110,7 +113,10 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
                 detailsDialog.setClickListener(new MyOnClick() {
                     @Override
-                    public void onItemClick(int place) {
+                    public void onItemClick(int position) { }
+
+                    @Override
+                    public void onItemClick(int place, int quantity) {
                         if (place == 0) {
                             holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
@@ -122,8 +128,12 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.quantityLabel.setVisibility(View.VISIBLE);
+                            holder.quantityLabel.setText("x " + quantity);
                             reward.setIsSelected(true);
-                            myOnSelect.onSelect(true, position);
+                            myOnSelect.onSelect(true, position, quantity);
+
                         } else {
                             holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
@@ -135,8 +145,10 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
                             holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.quantityLabel.setVisibility(View.GONE);
                             reward.setIsSelected(false);
-                            myOnSelect.onSelect(false, position);
+                            myOnSelect.onSelect(false, position, quantity);
                         }
                     }
                 });

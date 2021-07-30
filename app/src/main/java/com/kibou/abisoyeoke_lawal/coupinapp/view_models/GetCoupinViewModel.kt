@@ -19,6 +19,7 @@ import java.nio.channels.NetworkChannel
 import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @HiltViewModel
 class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRetrofit private val coupinRetrofit: Retrofit) : AndroidViewModel(application) {
@@ -41,6 +42,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     val coupinResponseModelMLD = MutableLiveData<GetCoupinResponseModel>()
     val rewardObjectsString = MutableLiveData<String>()
 
+    val rewardQuantityMLD = MutableLiveData<HashMap<String, Int>>()
 
     fun setSelectedCoupins(coupins : Array<Reward>){
         selectedCoupinsMLD.value = coupins.toCollection(ArrayList())

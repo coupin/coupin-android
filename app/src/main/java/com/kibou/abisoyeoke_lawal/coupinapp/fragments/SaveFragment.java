@@ -259,6 +259,11 @@ public class SaveFragment extends Fragment implements MyOnClick {
     }
 
     @Override
+    public void onItemClick(int position, int quantity) {
+
+    }
+
+    @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(this.getActivity(), CoupinActivity.class);
         intent.putExtra("coupin", laterList.get(position));
