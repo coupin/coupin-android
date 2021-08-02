@@ -110,7 +110,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text" />
 
             </LinearLayout>
@@ -138,7 +138,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
@@ -163,10 +163,12 @@
                     android:id="@+id/profile_help_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:minLines="3"
+                    android:inputType="textMultiLine"
+                    android:lines="8"
+                    android:minLines="6"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
+                    android:gravity="top|start"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
