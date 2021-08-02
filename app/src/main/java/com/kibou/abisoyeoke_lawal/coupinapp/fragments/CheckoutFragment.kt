@@ -14,6 +14,7 @@ import com.flutterwave.raveandroid.RaveUiManager
 import com.flutterwave.raveandroid.rave_java_commons.Meta
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
 import com.google.android.play.core.review.ReviewManagerFactory
+import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity
@@ -237,48 +238,29 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         val bookingId = getCoupinResponseModel.data?.booking?._id
         val shortCode = getCoupinResponseModel.data?.booking?.shortCode
         val merchant = checkoutViewModel.merchantLD.value
-        val rewardObjectsString = checkoutViewModel.rewardObjectsString.value
+        val rewardCount = getCoupinResponseModel.data?.booking?.rewardId?.size ?: 0
+        val rewards = Gson().toJson(getCoupinResponseModel.data?.booking?.rewardId)
 
-        rewardObjectsString?.let {
-            val rewardObjects = JSONArray(it)
+        merchant?.let {
+            val coupin = RewardListItem()
+            coupin.setBookingId(bookingId)
+            coupin.setBookingShortCode(shortCode)
+            coupin.setMerchantName(merchant.getTitle())
+            coupin.setMerchantAddress(merchant.getAddress())
+            coupin.setLatitude(merchant.getLatitude())
+            coupin.setLongitude(merchant.getLongitude())
+            coupin.setMerchantLogo(merchant.getLogo())
+            coupin.setMerchantBanner(merchant.getBanner())
+            coupin.isFavourited = merchant.isFavourite
+            coupin.setVisited(merchant.isVisited)
+            coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
+            coupin.setRewardDetails(rewards)
+            coupin.setRewardCount(rewardCount)
 
-            rewardObjects.let { rewardObjectsJSONArray ->
-
-                val list = mutableListOf<JSONObject>()
-                for(i in 0 until rewardObjectsJSONArray.length()){
-                    val rewardObject = rewardObjects.getJSONObject(i)
-                    list.add(rewardObject)
-                }
-                val jsonObjectList = arrayListOf<JSONObject>()
-                list.forEach{
-                    val jsonObject = JSONObject()
-                    jsonObject.put("id", it)
-                    jsonObjectList.add(jsonObject)
-                }
-                Log.d(logTag, "rewardDetailsString : $rewardObjectsString")
-
-                merchant?.let {
-                    val coupin = RewardListItem()
-                    coupin.setBookingId(bookingId)
-                    coupin.setBookingShortCode(shortCode)
-                    coupin.setMerchantName(merchant.getTitle())
-                    coupin.setMerchantAddress(merchant.getAddress())
-                    coupin.setLatitude(merchant.getLatitude())
-                    coupin.setLongitude(merchant.getLongitude())
-                    coupin.setMerchantLogo(merchant.getLogo())
-                    coupin.setMerchantBanner(merchant.getBanner())
-                    coupin.isFavourited = merchant.isFavourite
-                    coupin.setVisited(merchant.isVisited)
-                    coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
-                    coupin.setRewardDetails(JSONArray(jsonObjectList).toString())
-                    coupin.setRewardCount(list.size)
-
-                    val intent = Intent(requireContext(), CoupinActivity::class.java)
-                    intent.putExtra("coupin", coupin)
-                    startActivity(intent)
-                    requireActivity().finishAffinity()
-                }
-            }
+            val intent = Intent(requireContext(), CoupinActivity::class.java)
+            intent.putExtra("coupin", coupin)
+            startActivity(intent)
+            requireActivity().finishAffinity()
         }
     }
 

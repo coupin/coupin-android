@@ -155,7 +155,6 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullPercentage.setVisibility(View.VISIBLE);
             fullNewPrice.setVisibility(View.VISIBLE);
             fullOldPrice.setVisibility(View.VISIBLE);
-            quantityLayout.setVisibility(View.VISIBLE);
             String quantityString = String.valueOf(reward.getQuantity());
             quantityTextView.setText(quantityString);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
@@ -207,7 +206,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             quantityEditText.setText(String.valueOf(1));
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
-            String quantityString = reward.getQuantity() + "in stock";
+            String quantityString = reward.getQuantity() + " in stock";
             quantityTextView.setText(quantityString);
         } else {
             quantityTextView.setText("Limited to 1 per Customer");
@@ -224,6 +223,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         if (hideButton) {
             buttonHolder.setVisibility(View.GONE);
+            quantityLayout.setVisibility(View.GONE);
         }
 
         for (int x = 0; x < reward.getDays().length(); x++) {
@@ -310,7 +310,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                 break;
             case R.id.subtract_quantity:
                 int quantityInEdittextSubtract = Integer.parseInt(quantityEditText.getText().toString().trim());
-                if(quantityInEdittextSubtract>0){
+                if(quantityInEdittextSubtract>1){
                     int newQuantitySubtract = quantityInEdittextSubtract - 1;
                     quantityEditText.setText(String.valueOf(newQuantitySubtract));
                 }

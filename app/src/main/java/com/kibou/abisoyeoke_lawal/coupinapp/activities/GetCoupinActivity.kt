@@ -29,7 +29,6 @@ class GetCoupinActivity : AppCompatActivity() {
         setMerchant()
         setExpiryDate()
         setUpFragmentNavigation()
-        getRewardsObject()
         setRewardQuantity()
     }
 
@@ -40,13 +39,6 @@ class GetCoupinActivity : AppCompatActivity() {
             rewardsArray?.let {
                 getCoupinVM.setSelectedCoupins(it)
             }
-        }
-    }
-
-    private fun getRewardsObject(){
-        val rewardObjectString = intent.getStringExtra(rewardObjectsIntent)
-        rewardObjectString?.let {
-            getCoupinVM.rewardObjectsString.value = it
         }
     }
 

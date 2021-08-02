@@ -77,16 +77,29 @@ data class GokadaOrderEstimateResponse(val error : String?, val message : String
 /** GENERATE COUPIN **/
 data class GetCoupinResponseModel (val data : Data?)
 data class Data(val booking: Booking?, val reference: String?)
-data class Booking (val userId: String?, val merchantId: String?, val rewardId: List<RewardID>?, val shortCode: String?,
+data class Booking (val userId: String?, val merchantId: String?, val rewardId: List<RewardId>?, val shortCode: String?,
                     val useNow: Boolean?, val isActive: Boolean?, val createdAt : String?, val status: String?, val
                     isDeliverable: Boolean?, val _id : String?, val expiryDate: String?, val deliveryAddress:
                     AddressResponseModel?, val __v : Int?)
-data class RewardID (val _id: String?, val id : String?, val status: String?, val usedOn: String?, val singleUse : Boolean?)
 
 data class GetCoupinRequestModel(val saved : Boolean, val rewardId: List<String>, val deliveryAddress : String,
                                  val isDeliverable : Boolean, val expiryDate : String, val merchantId : String)
 
+data class RewardId (val status: String?, val singleUse: Boolean?, val usedOn: Any? = null, val _id: String, val id: ID)
 
+data class ID (val multiple: Multiple?, val price: Price?, val categories: List<String>?, val createdDate: String?,
+               val applicableDays: List<Long>?, val status: String?, val isActive: Boolean?, val delivery: Boolean?,
+               val notify: Boolean?, val _id: String?,
+               val name: String?, val merchantID: String?, val description: String?, val startDate: String?, val endDate: String?,
+               val pictures: List<Picture>?, val review: List<Review>?, val __v: Long?, val modifiedDate: String?)
+
+data class Multiple (val status: Boolean?)
+
+data class Picture (val _id: String?, val id: String?, val url: String?)
+
+data class Price (val old: Long?, val new: Long?)
+
+data class Review (val comment: String?, val timeStamp: String?, val seen: Boolean?, val _id: String?, val admin: String?)
 
 
 

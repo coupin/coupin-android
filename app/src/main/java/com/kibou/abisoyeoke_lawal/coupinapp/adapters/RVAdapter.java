@@ -114,16 +114,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                 }
                 else {
                     holder.code.setVisibility(View.VISIBLE);
-                    switch (status){
-                        case "paid":
-                            holder.status.setText("Paid");
-                        case "order_picked":
-                            holder.status.setText("Order Picked");
-                        case "delivered":
-                            holder.status.setText("Order Delivered");
-                        case "fulfilled":
-                            holder.status.setText("Order Fulfilled");
-                    }
+                    holder.status.setText("Payment Confirmed");
                 }
 
                 holder.code.setText("Code: " + reward.getBookingShortCode());

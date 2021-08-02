@@ -129,7 +129,6 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
                             holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
                             holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.quantityLabel.setVisibility(View.VISIBLE);
                             holder.quantityLabel.setText("x " + quantity);
                             reward.setIsSelected(true);
                             myOnSelect.onSelect(true, position, quantity);
@@ -146,7 +145,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
                             holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.quantityLabel.setVisibility(View.GONE);
+                            holder.quantityLabel.setText("");
                             reward.setIsSelected(false);
                             myOnSelect.onSelect(false, position, quantity);
                         }

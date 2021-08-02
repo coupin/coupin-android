@@ -40,7 +40,6 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     val expiryDateMLD = MutableLiveData<String>()
 
     val coupinResponseModelMLD = MutableLiveData<GetCoupinResponseModel>()
-    val rewardObjectsString = MutableLiveData<String>()
 
     val rewardQuantityMLD = MutableLiveData<HashMap<String, Int>>()
 

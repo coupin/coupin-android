@@ -120,7 +120,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
     private ArrayList<Date> expiryDates;
     private Set<String> tempBlackList = new HashSet<>();
-//    private ArrayList<String> favourites;
+    private Set<Reward> selectedRewards = new HashSet<>();
+    //    private ArrayList<String> favourites;
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
     private ArrayList<Reward> values;
@@ -359,7 +360,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         reward.setId(object.getString("_id"));
                         reward.setTitle(object.getString("name"));
                         reward.setDetails(object.getString("description"));
-                        reward.setQuantity(object.getInt("quantity"));
+
+                        if(object.has("quantity")){
+                            reward.setQuantity(object.getInt("quantity"));
+                        }else {
+                            reward.setQuantity(1);
+                        }
 
                         // Date
                         reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
@@ -631,6 +637,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if (!reward.getMultiple()) {
                 tempBlackList.add(reward.getId());
             }
+            selectedRewards.add(reward);
             rewardQuantity.put(reward.getId(), quantity);
         } else {
             this.selected.remove(reward.getId());
@@ -641,6 +648,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             }
             if (tempBlackList.contains(reward.getId())) {
                 tempBlackList.remove(reward.getId());
+            }
+            if(selectedRewards.contains(reward)){
+                selectedRewards.remove(reward);
             }
             rewardQuantity.remove(reward.getId());
         }
@@ -831,39 +841,26 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     }
 
     private void getCoupin(Date expiryDate) throws JSONException {
-        if(!tempBlackList.isEmpty()){
-            ArrayList<Reward> selectedRewards = new ArrayList<>();
+        if(!selectedRewards.isEmpty()){
             ArrayList<Boolean> isDeliverableList = new ArrayList<>();
             ArrayList<String> rewardIds = new ArrayList<>();
             ArrayList<JSONObject> rewardObjects = new ArrayList<>();
 
             if(!values.isEmpty()){
-                for(Reward reward : values){
-                    if(tempBlackList.contains(reward.getId())){
-                        selectedRewards.add(reward);
-                        rewardIds.add(reward.getId());
-                        isDeliverableList.add(reward.getIsDelivery());
-                    }
-                }
-            }
-
-            for(int i = 0; i < resArray.length(); i++){
-                JSONObject rewardObject = resArray.getJSONObject(i);
-                if(rewardIds.contains(rewardObject.getString("_id"))){
-                    rewardObjects.add(rewardObject);
+                for(Reward reward : selectedRewards){
+                    rewardIds.add(reward.getId());
+                    isDeliverableList.add(reward.getIsDelivery());
                 }
             }
 
             Gson gson = new Gson();
             String rewards = gson.toJson(selectedRewards);
             String merchant = gson.toJson(item);
-            String rewardObjectsString = new JSONArray(rewardObjects).toString();
 
             Intent intent = new Intent(this, GetCoupinActivity.class);
             intent.putExtra(rewardsIntent, rewards);
             intent.putExtra(merchantIntent, merchant);
             intent.putExtra(expiryDateIntent, expiryDate.toString());
-            intent.putExtra(rewardObjectsIntent, rewardObjectsString);
             intent.putExtra(rewardQuantityIntent, rewardQuantity);
 
             if(!isDeliverableList.contains(true)){
