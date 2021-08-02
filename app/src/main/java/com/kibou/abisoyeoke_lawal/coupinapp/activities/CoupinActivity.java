@@ -129,7 +129,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             String status = coupin.status;
 
             if(status.equals("awaiting_payment")){
-                listCode.setText("Generating Coupin");
+                listCode.setText("Confirming Payment");
             }else {
                 listCode.setText(coupin.getBookingShortCode());
             }
