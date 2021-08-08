@@ -27,7 +27,6 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_checkout.*
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
-import org.json.JSONArray
 import org.json.JSONObject
 
 @AndroidEntryPoint
@@ -89,9 +88,6 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         val totalCost = (rewardsCost + deliveryCost).toDouble()
         val reference = getCoupinResponseModel.data?.reference ?: ""
         val coupinId = getCoupinResponseModel.data?.booking?._id ?: ""
-
-        Log.d(logTag, "reference : $reference")
-        Log.d(logTag, "coupinId : $coupinId")
 
         RaveUiManager(this)
             .setAmount(totalCost)
@@ -158,6 +154,14 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
                 requireActivity().longToast("Payment Successful")
                 setPaymentBtn(false)
                 Log.d(logTag, "payment success : $message")
+
+                val user = JSONObject(PreferenceMngr.getUser())
+                PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"))
+                checkoutViewModel.tempBlackListMLD.value?.let {
+                    Log.d(logTag, "tempblacklist : $it")
+                    PreferenceMngr.getInstance().blacklist = it
+                }
+
                 checkoutViewModel.coupinResponseModelMLD.value?.let {
                     reviewApplication(it)
                 }

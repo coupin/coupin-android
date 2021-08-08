@@ -60,6 +60,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 import static android.view.View.GONE;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
@@ -263,7 +264,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         }
                         try {
                             getCoupin(expiryDate);
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
                     }
@@ -840,11 +841,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         requestQueue.add(stringRequest);
     }
 
-    private void getCoupin(Date expiryDate) throws JSONException {
+    private void getCoupin(Date expiryDate){
         if(!selectedRewards.isEmpty()){
             ArrayList<Boolean> isDeliverableList = new ArrayList<>();
             ArrayList<String> rewardIds = new ArrayList<>();
-            ArrayList<JSONObject> rewardObjects = new ArrayList<>();
 
             if(!values.isEmpty()){
                 for(Reward reward : selectedRewards){
@@ -856,12 +856,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             Gson gson = new Gson();
             String rewards = gson.toJson(selectedRewards);
             String merchant = gson.toJson(item);
+            String blackList = gson.toJson(tempBlackList);
 
             Intent intent = new Intent(this, GetCoupinActivity.class);
             intent.putExtra(rewardsIntent, rewards);
             intent.putExtra(merchantIntent, merchant);
             intent.putExtra(expiryDateIntent, expiryDate.toString());
             intent.putExtra(rewardQuantityIntent, rewardQuantity);
+            intent.putExtra(blackListIntent, blackList);
 
             if(!isDeliverableList.contains(true)){
                 intent.putExtra(intentExtraGoToPayment, true);

@@ -2,7 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.viewModels
 import androidx.navigation.fragment.NavHostFragment
 import com.google.gson.Gson
@@ -30,6 +29,7 @@ class GetCoupinActivity : AppCompatActivity() {
         setExpiryDate()
         setUpFragmentNavigation()
         setRewardQuantity()
+        setBlackList()
     }
 
     private fun getIntentRewards(){
@@ -73,5 +73,13 @@ class GetCoupinActivity : AppCompatActivity() {
             navGraph.startDestination = R.id.checkoutFragment
         }
         navHost.navController.graph = navGraph
+    }
+
+    private fun setBlackList(){
+        val blacklistIntent = intent.getStringExtra(blackListIntent)
+        blacklistIntent?.let {
+            val blackList = Gson().fromJson(it, Set::class.java)?.map { it as String }?.toSet()
+            blackList?.let { getCoupinVM.tempBlackListMLD.value = it }
+        }
     }
 }

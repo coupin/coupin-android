@@ -182,7 +182,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 break;
             case 3:
                 slidesLoading.setVisibility(View.GONE);
-                slidesEmpty.setVisibility(View.VISIBLE);
+//                slidesEmpty.setVisibility(View.VISIBLE);
                 featuredLoading.setVisibility(View.GONE);
                 featuredEmpty.setVisibility(View.VISIBLE);
                 recommendLoading.setVisibility(View.GONE);
