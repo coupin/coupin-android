@@ -137,13 +137,17 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             int total = res.length();
             listCount.setText("ACTIVE REWARDS - " + total);
 
+
+
             for(int x = 0; x < total; x++) {
                 JSONObject object = res.getJSONObject(x).getJSONObject("id");
+                int quantity = res.getJSONObject(x).getInt("quantity");
 
                 Reward reward = new Reward();
                 reward.setId(object.getString("_id"));
                 reward.setTitle(object.getString("name"));
                 reward.setDetails(object.getString("description"));
+                reward.setQuantity(quantity);
 
                 if (object.has("price")
                     && !object.isNull("price")) {

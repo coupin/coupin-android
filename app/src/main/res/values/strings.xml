@@ -607,7 +607,14 @@
     <string name="select_an_address">Select an address</string>
     <string name="checkout">Checkout</string>
     <string name="delivery_method">Delivery Method</string>
-    <string name="how_do_you_want_your_order_delivered">How do you want your <br/>order delivered?</string>
+    <string name="how_do_you_want_your_order_delivered">How do you want your <br />order delivered?</string>
     <string name="change_all_to_pickup">Change all to pickup</string>
     <string name="quantity">Quantity</string>
+    <string name="next">Next</string>
+    <string name="onboarding_1">Onboarding text 1</string>
+    <string name="onboarding_2">Onboarding text 2</string>
+    <string name="onboarding_3">Onboarding text 3</string>
+    <string name="onboarding_4">Onboarding text 4</string>
+    <string name="skip">Skip</string>
+    <string name="let_s_start">Let\'s Start</string>
 </resources>

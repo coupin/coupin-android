@@ -57,6 +57,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
                 holder.priceNew.setText("N" + String.valueOf(((int) newPrice)));
                 holder.priceOld.setText("N" + String.valueOf((int) oldPrice));
                 holder.priceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+                holder.quantity.setText("x " + reward.getQuantity());
             }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -91,6 +92,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
         public TextView priceOld;
         public TextView title;
         public View head;
+        public TextView quantity;
 
 
         public ItemViewHolder(View itemView) {
@@ -102,6 +104,8 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
             priceNew = (TextView) itemView.findViewById(R.id.list_new_price);
             priceOld = (TextView) itemView.findViewById(R.id.list_old_price);
             title = (TextView) itemView.findViewById(R.id.list_reward_title);
+            quantity = (TextView) itemView.findViewById(R.id.quantity_label);
+
         }
 
         public void bind(final int position) {
