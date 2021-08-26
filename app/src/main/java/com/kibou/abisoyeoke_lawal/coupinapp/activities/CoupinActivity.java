@@ -4,9 +4,13 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -21,6 +25,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
+import com.google.android.play.core.review.ReviewInfo;
+import com.google.android.play.core.review.ReviewManager;
+import com.google.android.play.core.review.ReviewManagerFactory;
+import com.google.android.play.core.tasks.OnCompleteListener;
+import com.google.android.play.core.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
@@ -241,6 +250,22 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
                 };
 
                 requestQueue.add(stringRequest);
+            }
+        });
+        reviewApplication();
+    }
+
+    private void reviewApplication(){
+        ReviewManager reviewManager = ReviewManagerFactory.create(this);
+        Task<ReviewInfo> request = reviewManager.requestReviewFlow();
+
+        request.addOnCompleteListener(task -> {
+            if (task.isSuccessful()){
+                ReviewInfo reviewInfo = task.getResult();
+                Task<Void> flow = reviewManager.launchReviewFlow(CoupinActivity.this, reviewInfo);
+                flow.addOnCompleteListener(task1 -> Log.d("CoupinActivity", "Review Success"));
+            }else {
+                Log.d("CoupinActivity", "review exception : " + task.getException());
             }
         });
     }

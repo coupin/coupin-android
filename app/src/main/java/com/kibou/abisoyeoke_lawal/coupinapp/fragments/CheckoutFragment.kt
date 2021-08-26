@@ -102,6 +102,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             .acceptCardPayments(true)
             .allowSaveCardFeature(true)
             .shouldDisplayFee(true)
+            .onStagingEnv(false)
             .setMeta(listOf(Meta(paymentTypeText, coupinText), Meta(coupinIdText, coupinId)))
             .withTheme(R.style.RaveCustomTheme)
             .initialize()
@@ -163,7 +164,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
                 }
 
                 checkoutViewModel.coupinResponseModelMLD.value?.let {
-                    reviewApplication(it)
+                    proceedToCoupinView(it)
                 }
             }
 
@@ -265,24 +266,6 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             intent.putExtra("coupin", coupin)
             startActivity(intent)
             requireActivity().finishAffinity()
-        }
-    }
-
-    private fun reviewApplication(getCoupinResponseModel: GetCoupinResponseModel){
-        val manager = ReviewManagerFactory.create(requireContext())
-        val request = manager.requestReviewFlow()
-        request.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val reviewInfo = task.result
-                val flow = manager.launchReviewFlow(requireActivity(), reviewInfo)
-                flow.addOnCompleteListener { _ ->
-                    Log.d(logTag, "review success")
-                    proceedToCoupinView(getCoupinResponseModel)
-                }
-            } else {
-                Log.d(logTag, "review exception: ${task.exception}")
-                proceedToCoupinView(getCoupinResponseModel)
-            }
         }
     }
 }
