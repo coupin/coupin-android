@@ -102,7 +102,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             .acceptCardPayments(true)
             .allowSaveCardFeature(true)
             .shouldDisplayFee(true)
-            .onStagingEnv(false)
+            .onStagingEnv(true)
             .setMeta(listOf(Meta(paymentTypeText, coupinText), Meta(coupinIdText, coupinId)))
             .withTheme(R.style.RaveCustomTheme)
             .initialize()

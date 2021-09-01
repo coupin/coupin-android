@@ -12,7 +12,8 @@
     <FrameLayout
         android:id="@+id/intro_holder"
         android:layout_height="match_parent"
-        android:layout_width="match_parent">
+        android:layout_width="match_parent"
+        android:visibility="gone">
 
         <com.yqritc.scalablevideoview.ScalableVideoView
             android:id="@+id/intro_video"
@@ -26,7 +27,7 @@
         android:id="@+id/interest_holder"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <LinearLayout
             android:layout_height="match_parent"

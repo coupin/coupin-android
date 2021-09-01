@@ -110,8 +110,12 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
             @Override
             public void run() {
                 if (PreferenceMngr.isLoggedIn()) {
+
                     if (!PreferenceMngr.interestsSelected()) {
                         startActivity(new Intent(SplashScreenActivity.this, InterestsActivity.class));
+                        finish();
+                    } else if(!PreferenceMngr.isOnboardingDone()){
+                        startActivity(new Intent(SplashScreenActivity.this, OnboardingActivity.class));
                         finish();
                     } else if (extras != null) {
                         if ("hot".equals(extras.getString("navigateTo"))) {

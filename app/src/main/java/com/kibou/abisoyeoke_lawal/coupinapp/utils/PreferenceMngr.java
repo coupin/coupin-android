@@ -118,12 +118,12 @@ public class PreferenceMngr {
         preferences.edit().putString("mobileNumber", number).apply();
     }
 
-    public static void setIsFirstRun(Boolean isFirstRun) {
-        preferences.edit().putBoolean("isFirstRun", isFirstRun).apply();
+    public static void setOnboardingDone(Boolean isFirstRun) {
+        preferences.edit().putBoolean("isOnboardingDone", isFirstRun).apply();
     }
 
-    public static Boolean getIsFirstRun() {
-        return preferences.getBoolean("isFirstRun", false);
+    public static Boolean isOnboardingDone() {
+        return preferences.getBoolean("isOnboardingDone", false);
     }
 
 

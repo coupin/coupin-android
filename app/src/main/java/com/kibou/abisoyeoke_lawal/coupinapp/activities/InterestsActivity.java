@@ -71,7 +71,7 @@ public class InterestsActivity extends AppCompatActivity {
 
         requestQueue = Volley.newRequestQueue(this);
 
-        play();
+//        play();
 
         Intent receivedIntent = getIntent();
 
@@ -184,7 +184,7 @@ public class InterestsActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 PreferenceMngr.setInterests(true);
                 PreferenceMngr.setUser(response);
-                startActivity(new Intent(InterestsActivity.this, HomeActivity.class));
+                startActivity(new Intent(InterestsActivity.this, OnboardingActivity.class));
             }
         }, new Response.ErrorListener() {
             @Override
