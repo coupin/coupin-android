@@ -75,11 +75,11 @@
 
         <com.wang.avi.AVLoadingIndicatorView
             style="?android:attr/progressBarStyleLarge"
-            android:layout_centerInParent="true"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            app:indicatorName="BallScaleMultipleIndicator"
-            app:indicatorColor="@color/colorAccent" />
+            android:layout_centerInParent="true"
+            app:indicatorColor="@color/colorAccent"
+            app:indicatorName="BallScaleMultipleIndicator" />
 
     </RelativeLayout>
 

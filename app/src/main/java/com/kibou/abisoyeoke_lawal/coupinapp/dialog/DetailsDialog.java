@@ -203,7 +203,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         // Reusable
         if (reward.getMultiple()) {
-            quantityEditText.setText(String.valueOf(1));
+            quantityEditText.setText(String.valueOf(reward.getSelectedQuantity()));
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
             String quantityString = reward.getQuantity() + " in stock";

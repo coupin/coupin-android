@@ -617,4 +617,6 @@
     <string name="onboarding_4">Onboarding text 4</string>
     <string name="skip">Skip</string>
     <string name="let_s_start">Let\'s Start</string>
+    <string name="review_cart">Review Cart</string>
+    <string name="empty_cart">Cart is empty</string>
 </resources>

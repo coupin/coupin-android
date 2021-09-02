@@ -66,7 +66,6 @@ public class HomeActivity extends AppCompatActivity {
         float d = getResources().getDisplayMetrics().density;
 
         bottomNavigationView.setIconSize(42, 42);
-        bottomNavigationView.setCurrentItem(0);
         bottomNavigationView.setSaveEnabled(true);
 
         bottomNavigationView.setItemHeight((int)(55 * d));
@@ -112,9 +111,19 @@ public class HomeActivity extends AppCompatActivity {
             }
         });
 
-        FragmentManager fm = getSupportFragmentManager();
-        FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
-        ft.commit();
+        boolean fromCoupinActivity = getIntent().getBooleanExtra("fromCoupin", false);
+
+        if(fromCoupinActivity){
+            bottomNavigationView.setCurrentItem(1);
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, rewardsTab);
+            ft.commit();
+        }else {
+            bottomNavigationView.setCurrentItem(0);
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
+            ft.commit();
+        }
 
         FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener(installationTokenResult -> {
             String newToken = installationTokenResult.getToken();

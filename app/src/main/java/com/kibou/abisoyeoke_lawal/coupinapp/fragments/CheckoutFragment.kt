@@ -13,7 +13,6 @@ import com.flutterwave.raveandroid.RavePayActivity
 import com.flutterwave.raveandroid.RaveUiManager
 import com.flutterwave.raveandroid.rave_java_commons.Meta
 import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
-import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
@@ -41,7 +40,6 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpOnClickListeners()
-        setUpObservables()
         fillInUserDetails()
     }
     
@@ -56,6 +54,8 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             first_name_input.setText(names[0])
             last_name_input.setText(names[1])
         }
+
+        pay_btn.text = "Pay ₦${setAmountFormat(getTotalAmount())}"
     }
 
     private fun setUpOnClickListeners(){
@@ -63,34 +63,29 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         checkout_back.setOnClickListener(this)
     }
 
-    private fun setUpObservables(){
-        checkoutViewModel.selectedCoupinsLD.observe(viewLifecycleOwner, {
-            it?.let {
-                val rewardsQuantity = checkoutViewModel.rewardQuantityMLD.value ?: hashMapOf()
-                val rewardsPrice = it.map {
-                    val quantity = rewardsQuantity[it.id]
-                    if(quantity != null){
-                        it.newPrice * quantity;
-                    }else {
-                        it.newPrice
-                    }
-                }.sum()
-                val deliveryPrice = checkoutViewModel.deliveryPriceLD.value ?: 0
-                val totalAmount = rewardsPrice + deliveryPrice
-                pay_btn.text = "Pay ₦${setAmountFormat(totalAmount)}"
+    private fun getTotalAmount(): Double {
+        val rewards = checkoutViewModel.selectedCoupinsLD.value
+        val rewardsQuantity = checkoutViewModel.rewardQuantityMLD.value ?: hashMapOf()
+        val rewardsPrice = rewards?.map {
+            val quantity = rewardsQuantity[it.id]
+            if (quantity != null) {
+                it.newPrice * quantity;
+            } else {
+                it.newPrice
             }
-        })
+        }?.sum() ?: 0F
+
+        val deliveryPrice = checkoutViewModel.deliveryPriceLD.value ?: 0
+        return (rewardsPrice + deliveryPrice).toDouble()
     }
 
     private fun payWithFlutterwave(paymentData: PaymentData, getCoupinResponseModel: GetCoupinResponseModel){
-        val rewardsCost = checkoutViewModel.selectedCoupinsLD.value?.map { it.newPrice }?.sum() ?: 0F
-        val deliveryCost = checkoutViewModel.deliveryPriceLD.value ?: 0
-        val totalCost = (rewardsCost + deliveryCost).toDouble()
+
         val reference = getCoupinResponseModel.data?.reference ?: ""
         val coupinId = getCoupinResponseModel.data?.booking?._id ?: ""
 
         RaveUiManager(this)
-            .setAmount(totalCost)
+            .setAmount(getTotalAmount())
             .setCurrency(currency)
             .setEmail(paymentData.email)
             .setfName(paymentData.firstName)
@@ -240,6 +235,8 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun proceedToCoupinView(getCoupinResponseModel: GetCoupinResponseModel){
+        Log.d(logTag, "coupinRespModel : $getCoupinResponseModel")
+
         val bookingId = getCoupinResponseModel.data?.booking?._id
         val shortCode = getCoupinResponseModel.data?.booking?.shortCode
         val merchant = checkoutViewModel.merchantLD.value
@@ -264,6 +261,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
 
             val intent = Intent(requireContext(), CoupinActivity::class.java)
             intent.putExtra("coupin", coupin)
+            intent.putExtra("fromPurchase", true)
             startActivity(intent)
             requireActivity().finishAffinity()
         }

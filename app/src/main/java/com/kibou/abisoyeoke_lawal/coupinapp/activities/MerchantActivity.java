@@ -639,6 +639,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 tempBlackList.add(reward.getId());
             }
             selectedRewards.add(reward);
+            reward.setSelectedQuantity(quantity);
+            reward.setIsSelected(true);
             rewardQuantity.put(reward.getId(), quantity);
         } else {
             this.selected.remove(reward.getId());
@@ -654,6 +656,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 selectedRewards.remove(reward);
             }
             rewardQuantity.remove(reward.getId());
+            reward.setIsSelected(false);
+            reward.setSelectedQuantity(0);
         }
     }
 
@@ -761,84 +765,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             selectedBtnPin.setClickable(true);
             selectedBtnSave.setClickable(true);
         }
-    }
-
-    /**
-     * Gnerate coupin pin
-     */
-    private void generatePin() {
-        toggleClickableButtons(true);
-        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_generate_code);
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject object = new JSONObject(response);
-
-                    RewardListItem coupin = new RewardListItem();
-                    coupin.setBookingId(object.getString("_id"));
-                    coupin.setBookingShortCode(object.getString("shortCode"));
-                    coupin.setMerchantName(item.getTitle());
-                    coupin.setMerchantAddress(item.getAddress());
-                    coupin.setLatitude(item.getLatitude());
-                    coupin.setLongitude(item.getLongitude());
-                    coupin.setMerchantLogo(item.getLogo());
-                    coupin.setMerchantBanner(item.getBanner());
-                    coupin.setFavourited(item.isFavourite());
-                    coupin.setVisited(item.isVisited());
-
-                    coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
-
-                    PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"));
-                    PreferenceMngr.getInstance().setBlacklist(tempBlackList);
-
-//                    Intent intent = new Intent(MerchantActivity.this, CoupinActivity.class);
-//                    intent.putExtra("coupin", coupin);
-//                    startActivity(intent);
-//                    finish();
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                toggleClickableButtons(false);
-                error.printStackTrace();
-                if (error.getMessage() != null) {
-                    Toast.makeText(MerchantActivity.this, error.getMessage(), Toast.LENGTH_SHORT).show();
-                } else if (error.networkResponse != null && error.networkResponse.statusCode == 409 ) {
-                    Toast.makeText(MerchantActivity.this, "This coupin has already been created.", Toast.LENGTH_SHORT).show();
-                } else {
-                    Toast.makeText(MerchantActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
-                }
-            }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("merchantId", item.getId());
-                params.put("rewardId", selected.toString());
-                params.put("blacklist", tempBlackList.toString());
-                if(expiryDate != null){
-                    params.put("expiryDate", expiryDate.toString());
-                }
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
     }
 
     private void getCoupin(Date expiryDate){

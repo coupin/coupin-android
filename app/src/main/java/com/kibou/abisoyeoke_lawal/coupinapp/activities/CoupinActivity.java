@@ -101,6 +101,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         coupin = (RewardListItem) getIntent().getSerializableExtra("coupin");
 
+        boolean activityFromPurchase = getIntent().getBooleanExtra("fromPurchase", false);
+
         merchantName.setText(coupin.getMerchantName());
         merchantAddress.setText(coupin.getMerchantAddress());
         if (coupin.hasVisited()) {
@@ -138,7 +140,17 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             String status = coupin.status;
 
             if(status.equals("awaiting_payment")){
-                listCode.setText("Confirming Payment");
+                if(activityFromPurchase){
+                    listCode.setText("View Coupins");
+                    listCode.setOnClickListener(v -> {
+                        Intent intent = new Intent(CoupinActivity.this, HomeActivity.class);
+                        intent.putExtra("fromCoupin", true);
+                        startActivity(intent);
+                        finishAffinity();
+                    });
+                }else {
+                    listCode.setText("Awaiting Payment");
+                }
             }else {
                 listCode.setText(coupin.getBookingShortCode());
             }

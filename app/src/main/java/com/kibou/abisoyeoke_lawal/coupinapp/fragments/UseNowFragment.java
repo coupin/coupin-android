@@ -109,7 +109,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                 public void onResponse(String response) {
                     try {
                         JSONArray jsonArray = new JSONArray(response);
-                        Log.d("UseNowFragment", "response : " + jsonArray.get(1));
+                        Log.d("UseNowFragment", "response : " + jsonArray);
                         for (int x = 0; x < jsonArray.length(); x++) {
                             JSONObject mainObject = jsonArray.getJSONObject(x);
                             JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");

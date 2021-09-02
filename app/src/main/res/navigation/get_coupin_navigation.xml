@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/get_coupin_navigation"
-    app:startDestination="@id/deliveryMethodFragment">
+    app:startDestination="@id/cartFragment">
 
     <fragment
         android:id="@+id/deliveryMethodFragment"
@@ -43,4 +43,13 @@
         android:name="com.kibou.abisoyeoke_lawal.coupinapp.fragments.CheckoutFragment"
         android:label="fragment_checkout"
         tools:layout="@layout/fragment_checkout" />
+    <fragment
+        android:id="@+id/cartFragment"
+        android:name="com.kibou.abisoyeoke_lawal.coupinapp.fragments.CartFragment"
+        android:label="fragment_cart"
+        tools:layout="@layout/fragment_cart" >
+        <action
+            android:id="@+id/action_cartFragment_to_deliveryMethodFragment"
+            app:destination="@id/deliveryMethodFragment" />
+    </fragment>
 </navigation>

@@ -122,21 +122,21 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                             holder.tickFrame.setVisibility(View.VISIBLE);
-                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             holder.quantityLabel.setText("x " + quantity);
                             reward.setIsSelected(true);
                             myOnSelect.onSelect(true, position, quantity);
 
                         } else {
-                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
+                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
+                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                             holder.tickFrame.setVisibility(View.GONE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
@@ -154,6 +154,21 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                 detailsDialog.show();
             }
         });
+
+        if(reward.isSelected()){
+            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
+            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
+            holder.tickFrame.setVisibility(View.VISIBLE);
+            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.quantityLabel.setText("x " + reward.getSelectedQuantity());
+        }
     }
 
     public void setBlacklist(Set<String> blacklist) {
@@ -163,5 +178,11 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
     @Override
     public int getItemCount() {
         return rewards.size();
+    }
+
+    public void updateResource(ArrayList<Reward> newRewards){
+        this.rewards.clear();
+        this.rewards.addAll(newRewards);
+        this.notifyDataSetChanged();
     }
 }

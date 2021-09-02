@@ -722,11 +722,15 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     iconsList.add(first);
 
                     if (currentLocation != null) {
-                        markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
-                            .title("Hello!")
-                            .snippet("You are here")
-                            .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                        try {
+                            markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
+                                    .title("Hello!")
+                                    .snippet("You are here")
+                                    .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
                     }
 
                     adapter.setIconList(iconsList);

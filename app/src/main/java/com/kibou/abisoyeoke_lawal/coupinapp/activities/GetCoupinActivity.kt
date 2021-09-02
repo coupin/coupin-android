@@ -65,14 +65,14 @@ class GetCoupinActivity : AppCompatActivity() {
     }
 
     private fun setUpFragmentNavigation(){
-        val navHost = get_coupin_nav_host_fragment as NavHostFragment
-        val navGraph = navHost.navController.navInflater.inflate(R.navigation.get_coupin_navigation)
-
-        val goToPayment = intent.getBooleanExtra(intentExtraGoToPayment, false)
-        if(goToPayment){
-            navGraph.startDestination = R.id.checkoutFragment
-        }
-        navHost.navController.graph = navGraph
+//        val navHost = get_coupin_nav_host_fragment as NavHostFragment
+//        val navGraph = navHost.navController.navInflater.inflate(R.navigation.get_coupin_navigation)
+//
+//        val goToPayment = intent.getBooleanExtra(intentExtraGoToPayment, false)
+//        if(goToPayment){
+//            navGraph.startDestination = R.id.checkoutFragment
+//        }
+//        navHost.navController.graph = navGraph
     }
 
     private fun setBlackList(){

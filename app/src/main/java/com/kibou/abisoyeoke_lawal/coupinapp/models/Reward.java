@@ -10,20 +10,25 @@ import java.util.Date;
  */
 
 public class Reward implements Serializable {
-  private boolean isDelivery;
-  private boolean isDiscount;
-  private boolean isMultiple;
-  private boolean isSelected = false;
-  private Date expires;
-  private Date starting;
-  private float newPrice;
-  private float oldPrice;
-  private JSONArray days;
-  private JSONArray pictures;
-  private String details;
-  private String id;
-  private String title;
+    private boolean isDelivery;
+    private boolean isDiscount;
+    private boolean isMultiple;
+    private boolean isSelected = false;
+    private Date expires;
+    private Date starting;
+    private float newPrice;
+    private float oldPrice;
+    private JSONArray days;
+    private JSONArray pictures;
+    private String details;
+    private String id;
+    private String title;
     private int quantity;
+    private int selectedQuantity = 1;
+
+    public int getSelectedQuantity() { return selectedQuantity;}
+    public void setSelectedQuantity(int quantity) {this.selectedQuantity = quantity;}
+
 
     public int getQuantity() {
         return quantity;
