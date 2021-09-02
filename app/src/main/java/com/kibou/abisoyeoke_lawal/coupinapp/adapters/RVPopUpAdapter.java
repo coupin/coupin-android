@@ -1,7 +1,11 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.isDarkModePref;
+
 import android.content.Context;
 import android.graphics.Paint;
+
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,6 +21,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,7 +36,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
     public ArrayList<Reward> rewards;
     public Context context;
     public boolean drawerVisible = false;
-
+    private boolean isCart = false;
     static public MyOnSelect myOnSelect;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -67,10 +72,11 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         }
     }
 
-    public RVPopUpAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect) {
+    public RVPopUpAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
         this.context = context;
         this.myOnSelect = myOnSelect;
         this.rewards = rewards;
+        this.isCart = isCart;
     }
 
     @Override
@@ -109,7 +115,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                     return;
                 }
 
-                DetailsDialog detailsDialog = new DetailsDialog(context, reward);
+                DetailsDialog detailsDialog = new DetailsDialog(context, reward, isCart);
 
                 detailsDialog.setClickListener(new MyOnClick() {
                     @Override
@@ -122,21 +128,28 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                             holder.tickFrame.setVisibility(View.VISIBLE);
-                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
+                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
                             holder.quantityLabel.setText("x " + quantity);
                             reward.setIsSelected(true);
                             myOnSelect.onSelect(true, position, quantity);
 
                         } else {
-                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
-                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
+                            Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
+                            if(isDarkMode){
+                                holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                                holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
+
+                            }else{
+                                holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
+                                holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
+                            }
+                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.tickFrame.setVisibility(View.GONE);
                             holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
                             holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
@@ -160,13 +173,13 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
             holder.tickFrame.setVisibility(View.VISIBLE);
-            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
-            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
-            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
-            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
-            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
-            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
-            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
+            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
+            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
             holder.quantityLabel.setText("x " + reward.getSelectedQuantity());
         }
     }
@@ -180,9 +193,4 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         return rewards.size();
     }
 
-    public void updateResource(ArrayList<Reward> newRewards){
-        this.rewards.clear();
-        this.rewards.addAll(newRewards);
-        this.notifyDataSetChanged();
-    }
 }

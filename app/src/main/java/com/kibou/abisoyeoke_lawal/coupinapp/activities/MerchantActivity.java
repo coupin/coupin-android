@@ -144,7 +144,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private String merchantId;
     private String rewardHolder;
     private String logTag = "MerchantActivity";
-    private HashMap<String, Integer> rewardQuantity = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -170,7 +169,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         values = new ArrayList<>();
 
         linearLayoutManager = new LinearLayoutManager(this);
-        rvPopUpAdapter = new RVPopUpAdapter(values, this, this);
+        rvPopUpAdapter = new RVPopUpAdapter(values, this, this, false);
         rvRewards.setLayoutManager(linearLayoutManager);
         rvRewards.setHasFixedSize(true);
         rvRewards.setAdapter(rvPopUpAdapter);
@@ -641,7 +640,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             selectedRewards.add(reward);
             reward.setSelectedQuantity(quantity);
             reward.setIsSelected(true);
-            rewardQuantity.put(reward.getId(), quantity);
         } else {
             this.selected.remove(reward.getId());
             this.expiryDates.remove(reward.getExpires());
@@ -655,9 +653,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if(selectedRewards.contains(reward)){
                 selectedRewards.remove(reward);
             }
-            rewardQuantity.remove(reward.getId());
             reward.setIsSelected(false);
-            reward.setSelectedQuantity(0);
+            reward.setSelectedQuantity(1);
         }
     }
 
@@ -788,7 +785,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             intent.putExtra(rewardsIntent, rewards);
             intent.putExtra(merchantIntent, merchant);
             intent.putExtra(expiryDateIntent, expiryDate.toString());
-            intent.putExtra(rewardQuantityIntent, rewardQuantity);
             intent.putExtra(blackListIntent, blackList);
 
             if(!isDeliverableList.contains(true)){

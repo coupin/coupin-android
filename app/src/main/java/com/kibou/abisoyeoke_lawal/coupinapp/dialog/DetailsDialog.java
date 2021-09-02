@@ -67,6 +67,8 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     private Context context;
     private Reward reward;
 
+    private boolean isCart = false;
+
     // Applicable days
     public int applicableDays[] = new int[]{R.id.full_day0, R.id.full_day1,
         R.id.full_day2, R.id.full_day3, R.id.full_day4, R.id.full_day5,
@@ -86,10 +88,11 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         super(context, cancelable, cancelListener);
     }
 
-    public DetailsDialog(@NonNull Context context, Reward reward) {
+    public DetailsDialog(@NonNull Context context, Reward reward, boolean isCart) {
         super(context);
         this.context = context;
         this. reward = reward;
+        this.isCart = isCart;
     }
 
     public void setClickListener(MyOnClick myOnClick) {
@@ -188,7 +191,10 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             }
         }
 
-        if (reward.isSelected()) {
+        if(isCart){
+            fullRemove.setVisibility(View.GONE);
+            fullPin.setVisibility(View.VISIBLE);
+        }else if (reward.isSelected()) {
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);
         } else {

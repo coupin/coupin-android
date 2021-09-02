@@ -41,7 +41,6 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
 
     val coupinResponseModelMLD = MutableLiveData<GetCoupinResponseModel>()
 
-    val rewardQuantityMLD = MutableLiveData<HashMap<String, Int>>()
     val tempBlackListMLD = MutableLiveData<Set<String>>()
 
 

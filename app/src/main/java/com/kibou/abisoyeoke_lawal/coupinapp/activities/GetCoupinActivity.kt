@@ -28,7 +28,6 @@ class GetCoupinActivity : AppCompatActivity() {
         setMerchant()
         setExpiryDate()
         setUpFragmentNavigation()
-        setRewardQuantity()
         setBlackList()
     }
 
@@ -57,11 +56,6 @@ class GetCoupinActivity : AppCompatActivity() {
         expiryDateString?.let {
             getCoupinVM.expiryDateMLD.value = it
         }
-    }
-
-    private fun setRewardQuantity(){
-        val rewardQuantity = intent.getSerializableExtra(rewardQuantityIntent) as HashMap<String, Int>
-        getCoupinVM.rewardQuantityMLD.value = rewardQuantity
     }
 
     private fun setUpFragmentNavigation(){

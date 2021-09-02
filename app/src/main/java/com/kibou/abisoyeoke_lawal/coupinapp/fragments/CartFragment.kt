@@ -13,9 +13,11 @@ import androidx.navigation.fragment.findNavController
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.setAmountFormat
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import kotlinx.android.synthetic.main.fragment_cart.*
+import java.util.ArrayList
 
 
 class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
@@ -40,23 +42,36 @@ class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
             R.id.cart_back -> requireActivity().onBackPressed()
             R.id.cart_proceed_btn -> {
                 if(::rvPopUpAdapter.isInitialized && rvPopUpAdapter.rewards.isNotEmpty()){
-                    val action = CartFragmentDirections.actionCartFragmentToDeliveryMethodFragment()
-                    findNavController().navigate(action)
+                    if(proceedToPayment()){
+                        val action = CartFragmentDirections.actionCartFragmentToCheckoutFragment()
+                        findNavController().navigate(action)
+                    }else {
+                        val action = CartFragmentDirections.actionCartFragmentToDeliveryMethodFragment()
+                        findNavController().navigate(action)
+                    }
                 }
             }
         }
     }
 
+    // check if the rewards does not contain any item that can be delivered, if no item is delivery send user to checkout.
+    // no need showing next page to select delivery option
+    private fun proceedToPayment(): Boolean {
+        val isDeliverableList = ArrayList<Boolean>()
+
+        val selectedRewards = cartViewModel.selectedCoupinsLD.value
+        selectedRewards?.let {
+            for (reward in selectedRewards) {
+                isDeliverableList.add(reward.isDelivery)
+            }
+        }
+        return !isDeliverableList.contains(true)
+    }
+
     private fun getTotalAmount(): Double {
         val rewards = cartViewModel.selectedCoupinsLD.value
-        val rewardsQuantity = cartViewModel.rewardQuantityMLD.value ?: hashMapOf()
         val rewardsPrice = rewards?.map {
-            val quantity = rewardsQuantity[it.id]
-            if (quantity != null) {
-                it.newPrice * quantity;
-            } else {
-                it.newPrice
-            }
+            it.newPrice * it.selectedQuantity
         }?.sum() ?: 0F
 
         val deliveryPrice = cartViewModel.deliveryPriceLD.value ?: 0
@@ -67,7 +82,7 @@ class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
     private fun setUpRecycler(){
         cartViewModel.selectedCoupinsLD.observe(viewLifecycleOwner, {
             it?.let {
-                rvPopUpAdapter = RVPopUpAdapter(it, requireContext(), this)
+                rvPopUpAdapter = RVPopUpAdapter(it, requireContext(), this, true)
                 val blackList = cartViewModel.tempBlackListMLD.value
                 rvPopUpAdapter.blacklist = blackList
                 cart_recycler.adapter = rvPopUpAdapter
@@ -92,10 +107,10 @@ class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
     }
 
     override fun onSelect(selected: Boolean, index: Int, quantity: Int) {
-        if(!selected){
+        if(selected){
             val rewards = cartViewModel.selectedCoupinsLD.value
             rewards?.let {
-                it.removeAt(index)
+                it[index].selectedQuantity = quantity
                 cartViewModel.setSelectedCoupins(it.toTypedArray())
             }
         }

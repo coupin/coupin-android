@@ -9,15 +9,21 @@
         <entry key="app/src/main/res/drawable-hdpi/selected_indicator.xml" value="0.26216216216216215" />
         <entry key="app/src/main/res/drawable/green_btn_curved.xml" value="0.17777777777777778" />
         <entry key="app/src/main/res/drawable/green_round_edges.xml" value="0.17777777777777778" />
+        <entry key="app/src/main/res/layout/activity_hot.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/activity_interests.xml" value="0.26182432432432434" />
+        <entry key="app/src/main/res/layout/activity_list.xml" value="0.2591973244147157" />
+        <entry key="app/src/main/res/layout/activity_merchant.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/activity_onboarding.xml" value="0.165" />
         <entry key="app/src/main/res/layout/cardview_expand_head.xml" value="0.2491638795986622" />
         <entry key="app/src/main/res/layout/cardview_expand_item.xml" value="0.2491638795986622" />
+        <entry key="app/src/main/res/layout/dialog_experience.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/dialog_full_reward_details.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/fragment_cart.xml" value="0.2516891891891892" />
+        <entry key="app/src/main/res/layout/fragment_checkout.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/fragment_delivery.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/fragment_fav.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/fragment_review_selection.xml" value="0.24375" />
+        <entry key="app/src/main/res/layout/fragment_rewards_tab.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/onboarding_slider.xml" value="0.26182432432432434" />
       </map>
     </option>

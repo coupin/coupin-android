@@ -66,7 +66,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
             holder.head.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    DetailsDialog detailsDialog = new DetailsDialog(context, reward);
+                    DetailsDialog detailsDialog = new DetailsDialog(context, reward, false);
                     detailsDialog.hideButtonGroup();
                     detailsDialog.show();
                 }

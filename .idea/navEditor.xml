@@ -53,6 +53,11 @@
                         </option>
                         <option name="myPositions">
                           <map>
+                            <entry key="action_cartFragment_to_checkoutFragment">
+                              <value>
+                                <LayoutPositions />
+                              </value>
+                            </entry>
                             <entry key="action_cartFragment_to_deliveryMethodFragment">
                               <value>
                                 <LayoutPositions />
@@ -101,8 +106,8 @@
                       <LayoutPositions>
                         <option name="myPosition">
                           <Point>
-                            <option name="x" value="-275" />
-                            <option name="y" value="110" />
+                            <option name="x" value="-306" />
+                            <option name="y" value="-127" />
                           </Point>
                         </option>
                         <option name="myPositions">

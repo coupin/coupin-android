@@ -51,5 +51,8 @@
         <action
             android:id="@+id/action_cartFragment_to_deliveryMethodFragment"
             app:destination="@id/deliveryMethodFragment" />
+        <action
+            android:id="@+id/action_cartFragment_to_checkoutFragment"
+            app:destination="@id/checkoutFragment" />
     </fragment>
 </navigation>

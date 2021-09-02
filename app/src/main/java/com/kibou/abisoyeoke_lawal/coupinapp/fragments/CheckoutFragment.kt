@@ -65,14 +65,9 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
 
     private fun getTotalAmount(): Double {
         val rewards = checkoutViewModel.selectedCoupinsLD.value
-        val rewardsQuantity = checkoutViewModel.rewardQuantityMLD.value ?: hashMapOf()
         val rewardsPrice = rewards?.map {
-            val quantity = rewardsQuantity[it.id]
-            if (quantity != null) {
-                it.newPrice * quantity;
-            } else {
-                it.newPrice
-            }
+            val quantity = it.selectedQuantity
+            it.newPrice * quantity
         }?.sum() ?: 0F
 
         val deliveryPrice = checkoutViewModel.deliveryPriceLD.value ?: 0
@@ -183,12 +178,13 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         val merchantId = checkoutViewModel.merchantLD.value?.id ?: ""
         val expiryDate = checkoutViewModel.expiryDateMLD.value ?: ""
 
-        val rewardIdQuantityMap = checkoutViewModel.rewardQuantityMLD.value
+        val rewards = checkoutViewModel.selectedCoupinsLD.value
         val rewardsIdList = mutableListOf<String>()
-        rewardIdQuantityMap?.let {
-            it.forEach{
-                for (item in 1..it.value){
-                    rewardsIdList.add(it.key)
+
+        rewards?.let {
+            for(item in it){
+                for(i in 1..item.selectedQuantity){
+                    rewardsIdList.add(item.id)
                 }
             }
         }
@@ -227,10 +223,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             pay_btn.text = getString(R.string.LOADING)
         }else{
             pay_btn.isEnabled = true
-            val rewardsCost = checkoutViewModel.selectedCoupinsLD.value?.map { it.newPrice }?.sum() ?: 0F
-            val deliveryCost = checkoutViewModel.deliveryPriceLD.value ?: 0
-            val totalAmount = rewardsCost + deliveryCost
-            pay_btn.text = "Pay ₦${setAmountFormat(totalAmount)}"
+            pay_btn.text = "Pay ₦${setAmountFormat(getTotalAmount())}"
         }
     }
 
