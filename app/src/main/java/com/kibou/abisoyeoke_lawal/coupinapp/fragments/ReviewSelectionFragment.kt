@@ -32,7 +32,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
     }
 
     private fun setUpAdapters(){
-        pickupRecyclerAdapter = RVReviewSelectionPickup(mutableListOf())
+        pickupRecyclerAdapter = RVReviewSelectionPickup(mutableListOf(), this)
         pickup_recycler.adapter = pickupRecyclerAdapter
 
         deliveryRecyclerAdapter = RVReviewSelectionDelivery(mutableListOf(), this)
@@ -57,7 +57,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
                 val pickupRewards = it.filter { !it.isDelivery }
                 val deliveryRewards = it.filter {it.isDelivery}
                 setPickupAndDeliveryViews(pickupRewards, deliveryRewards)
-                setProceedBtnText(deliveryRewards)
+                setProceedBtnText(deliveryRewards, pickupRewards)
             }
         })
     }
@@ -67,7 +67,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
             pickupRecyclerAdapter.setResource(pickupRewards)
         }
         setResourceForDeliverableAdapter(deliveryRewards)
-        setProceedBtnText(deliveryRewards)
+        setProceedBtnText(deliveryRewards, pickupRewards)
     }
 
     private fun setResourceForDeliverableAdapter(deliveryRewards : List<Reward>){
@@ -89,16 +89,43 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
         val newRewardsList = reviewSelectionViewModel.removeCoupin(reward)
         newRewardsList?.let{
             val deliveryRewards = it.filter {it.isDelivery}
+            val pickupRewards = it.filter { !it.isDelivery }
             setResourceForDeliverableAdapter(deliveryRewards)
-            setProceedBtnText(deliveryRewards)
+            setResourceForPickupAdapter(pickupRewards)
+            setProceedBtnText(deliveryRewards, pickupRewards)
         }
     }
 
-    private fun setProceedBtnText(deliveryRewards : List<Reward>){
-        if(deliveryRewards.isNotEmpty()){
+    private fun setResourceForPickupAdapter(pickupRewards: List<Reward>) {
+        if(::pickupRecyclerAdapter.isInitialized){
+            if(pickupRewards.isEmpty()){
+                pickup_items_title.visibility = View.GONE
+                pickup_recycler.visibility = View.GONE
+                review_selection_message.visibility = View.GONE
+            }else{
+                pickup_items_title.visibility = View.VISIBLE
+                pickup_recycler.visibility = View.VISIBLE
+                review_selection_message.visibility = View.VISIBLE
+            }
+            pickupRecyclerAdapter.setResource(pickupRewards)
+        }
+    }
+
+    private fun setProceedBtnText(deliveryRewards : List<Reward>, pickupRewards: List<Reward>){
+        if(deliveryRewards.isNotEmpty() && pickupRewards.isNotEmpty()){
             review_selection_proceed_btn.text = getString(R.string.change_all_to_pickup)
-        }else {
+            empty_cart_layout.visibility = View.GONE
+        }else if(deliveryRewards.isEmpty() && pickupRewards.isNotEmpty()){
+            review_selection_message.visibility = View.GONE
             review_selection_proceed_btn.text = getString(R.string.proceed)
+            empty_cart_layout.visibility = View.GONE
+        }else if (deliveryRewards.isEmpty() && pickupRewards.isEmpty()){
+            review_selection_proceed_btn.isEnabled = false
+            empty_cart_layout.visibility = View.VISIBLE
+        }else if(deliveryRewards.isNotEmpty() && pickupRewards.isEmpty()){
+            review_selection_message.visibility = View.GONE
+            review_selection_proceed_btn.text = getString(R.string.proceed)
+            empty_cart_layout.visibility = View.GONE
         }
     }
 

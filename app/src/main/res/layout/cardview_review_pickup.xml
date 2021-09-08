@@ -11,13 +11,24 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/background_8">
+        <ImageButton
+            android:id="@+id/cancel_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            app:srcCompat="@drawable/white_cancel"
+            android:background="@color/red2"
+            android:padding="5dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            android:contentDescription="@null"/>
 
         <View
             android:id="@+id/view2"
             android:layout_width="0dp"
             android:layout_height="1dp"
             android:background="@color/background_9"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/cancel_btn"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/discount_percent"
             android:layout_marginTop="8dp"/>
@@ -47,7 +58,7 @@
             android:textSize="20sp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/view2"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
             app:layout_constraintTop_toTopOf="parent"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"/>
@@ -95,12 +106,26 @@
             android:id="@+id/discounted_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
+            android:layout_marginEnd="8dp"
             android:text="N5,580"
             android:textColor="@color/colorAccent"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@+id/textView4"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/quantity_label"
             app:layout_constraintTop_toTopOf="@+id/textView4" />
+        <TextView
+            android:id="@+id/quantity_label"
+            android:layout_alignParentEnd="true"
+            android:layout_height="wrap_content"
+            android:layout_width="wrap_content"
+            android:text="x1"
+            android:textSize="18sp"
+            android:textColor="@color/text_color_1"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            app:layout_constraintEnd_toStartOf="@+id/cancel_btn"
+            app:layout_constraintEnd_toEndOf="@id/cancel_btn"
+            app:layout_constraintTop_toTopOf="@+id/textView4"
+            android:layout_marginEnd="8dp"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.cardview.widget.CardView>

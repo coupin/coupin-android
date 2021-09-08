@@ -95,31 +95,31 @@
 
                 <ImageView
                     android:id="@+id/hot_fav"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_xxxs"
-                    android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_xxxs"
-                    android:layout_marginStart="@dimen/margin_sm"
                     android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/margin_sm"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginEnd="@dimen/margin_xxxs"
+                    android:layout_marginRight="@dimen/margin_xxxs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:src="@drawable/ic_star"
-                    app:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:tint="@color/colorAccent" />
 
                 <ImageView
                     android:id="@+id/hot_visited"
-                    android:layout_centerVertical="true"
+                    android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/margin_xs"
                     android:layout_toEndOf="@id/hot_fav"
                     android:layout_toRightOf="@id/hot_fav"
-                    android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
-                    app:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:tint="@color/colorAccent" />
 
                 <TextView
                     android:ellipsize="marquee"

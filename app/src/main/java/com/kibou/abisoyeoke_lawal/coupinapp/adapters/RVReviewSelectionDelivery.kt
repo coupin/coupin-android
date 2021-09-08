@@ -16,6 +16,7 @@ import java.util.*
 
 class RVReviewSelectionDelivery(private val resource : MutableList<Reward>,
                                 private val reviewSelectionCancelClickListener : ReviewSelectionCancelClickListener)
+
     : RecyclerView.Adapter<RVReviewSelectionDelivery.RVReviewSelectionDeliveryVH>() {
 
     class RVReviewSelectionDeliveryVH(view : View) : RecyclerView.ViewHolder(view) {
@@ -26,6 +27,7 @@ class RVReviewSelectionDelivery(private val resource : MutableList<Reward>,
         val discountedPrice = view.find<TextView>(R.id.discounted_price)
         val discountPercent = view.find<TextView>(R.id.discount_percent)
         val cancelBtn = view.find<ImageButton>(R.id.cancel_btn)
+        val quantityLabel = view.find<TextView>(R.id.quantity_label)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RVReviewSelectionDeliveryVH {
@@ -54,6 +56,8 @@ class RVReviewSelectionDelivery(private val resource : MutableList<Reward>,
             cancelBtn.setOnClickListener{
                 reviewSelectionCancelClickListener.onCancelClick(viewResource)
             }
+
+            quantityLabel.text = "x${viewResource.selectedQuantity}"
         }
     }
 
