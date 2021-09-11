@@ -30,7 +30,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     private val merchantMLD = MutableLiveData<Merchant>()
     val merchantLD : LiveData<Merchant> get() = merchantMLD
 
-    private val deliveryPriceMLD = MutableLiveData(0)
+    private val deliveryPriceMLD = MutableLiveData<Int>()
     val deliveryPriceLD : LiveData<Int> get() = deliveryPriceMLD
 
     val selectedDeliveryMethod = MutableLiveData<Int>()
@@ -52,7 +52,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
         merchantMLD.value = merchant
     }
 
-    fun setDeliveryPrice(price : Int){
+    fun setDeliveryPrice(price : Int?){
         deliveryPriceMLD.value = price
     }
 

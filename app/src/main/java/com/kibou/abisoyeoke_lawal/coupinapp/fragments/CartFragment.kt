@@ -74,8 +74,7 @@ class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
             it.newPrice * it.selectedQuantity
         }?.sum() ?: 0F
 
-        val deliveryPrice = cartViewModel.deliveryPriceLD.value ?: 0
-        return (rewardsPrice + deliveryPrice).toDouble()
+        return rewardsPrice.toDouble()
     }
 
 

@@ -63,9 +63,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
     }
 
     private fun setPickupAndDeliveryViews(pickupRewards : List<Reward>, deliveryRewards : List<Reward>){
-        if(::pickupRecyclerAdapter.isInitialized){
-            pickupRecyclerAdapter.setResource(pickupRewards)
-        }
+        setResourceForPickupAdapter(pickupRewards)
         setResourceForDeliverableAdapter(deliveryRewards)
         setProceedBtnText(deliveryRewards, pickupRewards)
     }
@@ -85,17 +83,6 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
         }
     }
 
-    override fun onCancelClick(reward: Reward) {
-        val newRewardsList = reviewSelectionViewModel.removeCoupin(reward)
-        newRewardsList?.let{
-            val deliveryRewards = it.filter {it.isDelivery}
-            val pickupRewards = it.filter { !it.isDelivery }
-            setResourceForDeliverableAdapter(deliveryRewards)
-            setResourceForPickupAdapter(pickupRewards)
-            setProceedBtnText(deliveryRewards, pickupRewards)
-        }
-    }
-
     private fun setResourceForPickupAdapter(pickupRewards: List<Reward>) {
         if(::pickupRecyclerAdapter.isInitialized){
             if(pickupRewards.isEmpty()){
@@ -108,6 +95,17 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
                 review_selection_message.visibility = View.VISIBLE
             }
             pickupRecyclerAdapter.setResource(pickupRewards)
+        }
+    }
+
+    override fun onCancelClick(reward: Reward) {
+        val newRewardsList = reviewSelectionViewModel.removeCoupin(reward)
+        newRewardsList?.let{
+            val deliveryRewards = it.filter {it.isDelivery}
+            val pickupRewards = it.filter { !it.isDelivery }
+            setResourceForDeliverableAdapter(deliveryRewards)
+            setResourceForPickupAdapter(pickupRewards)
+            setProceedBtnText(deliveryRewards, pickupRewards)
         }
     }
 
@@ -130,8 +128,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
     }
 
     private fun onProceedBtnClicked(){
-        val btnText = review_selection_proceed_btn.text.toString()
-        when(btnText){
+        when(review_selection_proceed_btn.text.toString()){
             getString(R.string.change_all_to_pickup) -> {
                 reviewSelectionViewModel.selectedCoupinsLD.value?.forEach {
                     it.isDelivery = false
@@ -139,10 +136,20 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
                 setUpRewardsViews()
             }
             getString(R.string.proceed) -> {
-                reviewSelectionViewModel.isDeliverableMLD.value = false
-                reviewSelectionViewModel.addressIdMLD.value = ""
-                val action = ReviewSelectionFragmentDirections.actionReviewSelectionFragmentToCheckoutFragment()
-                findNavController().navigate(action)
+                val rewards =  reviewSelectionViewModel.selectedCoupinsLD.value
+                rewards?.let {
+                    val deliveryRewards = it.filter { it.isDelivery }
+                    if(deliveryRewards.isEmpty()){
+                        reviewSelectionViewModel.isDeliverableMLD.value = false
+                        reviewSelectionViewModel.addressIdMLD.value = ""
+                        val action = ReviewSelectionFragmentDirections.actionReviewSelectionFragmentToCheckoutFragment()
+                        findNavController().navigate(action)
+                    }else{
+                        reviewSelectionViewModel.isDeliverableMLD.value = true
+                        val action = ReviewSelectionFragmentDirections.actionReviewSelectionFragmentToDeliveryFragment()
+                        findNavController().navigate(action)
+                    }
+                }
             }
         }
     }

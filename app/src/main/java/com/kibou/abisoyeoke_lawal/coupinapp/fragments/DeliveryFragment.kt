@@ -113,9 +113,13 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
             make_payment_btn.id -> {
                 if(::addressAdapter.isInitialized){
                     if(addressAdapter.selectedPosition != null){
-                        getCoupinVM.isDeliverableMLD.value = true
-                        val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
-                        findNavController().navigate(action)
+                        if(getCoupinVM.deliveryPriceLD.value != null){
+                            getCoupinVM.isDeliverableMLD.value = true
+                            val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
+                            findNavController().navigate(action)
+                        }else {
+                            requireActivity().toast("Gokada delivery is unavailable at this time")
+                        }
                     }else{
                         requireActivity().toast("Select an address")
                     }
@@ -142,7 +146,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
         }
     }
 
-    fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String, deliveryAddress : String){
+    private fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String, deliveryAddress : String){
         val merchant = getCoupinVM.merchantLD.value
         val merchantLatitude = merchant?.latitude.toString()
         val merchantLongitude = merchant?.longitude.toString()
@@ -170,6 +174,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
                         }
                     }
                     Resource.Status.ERROR -> {
+                        getCoupinVM.setDeliveryPrice(null)
                         progress_bar.visibility = View.GONE
                         requireContext().toast("Error getting delivery price estimate. Please try again later.").show()
                     }
