@@ -26,5 +26,6 @@ progaurd/
 .idea/dictionaries
 .idea/libraries
 .idea/caches
+*.aab
 /app/google-services.json
 /app/src/release/res/values/google_maps_api.xml
