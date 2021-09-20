@@ -88,6 +88,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             .setPublicKey(BuildConfig.COUPIN_FLUTTERWAVE_PUBLIC_KEY)
             .setEncryptionKey(BuildConfig.COUPIN_ENCRYPTION_KEY)
             .setTxRef(reference)
+            .showStagingLabel(false)
             .acceptAccountPayments(true)
             .acceptCardPayments(true)
             .allowSaveCardFeature(true)
