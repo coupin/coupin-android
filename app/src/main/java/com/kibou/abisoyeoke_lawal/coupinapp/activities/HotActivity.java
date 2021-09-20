@@ -154,12 +154,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         implementOnScrollListener();
 
         hotBack.setOnClickListener(this);
-        hotCarousel.setImageClickListener(new ImageClickListener() {
-            @Override
-            public void onClick(int position) {
-                goToMerchantPage(hotlist.get(position));
-            }
-        });
+        hotCarousel.setImageClickListener(position -> goToMerchantPage(hotlist.get(position)));
     }
 
     /**
@@ -201,13 +196,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         }
     }
 
-    ImageListener imageListener = new ImageListener() {
-        @Override
-        public void setImageForPosition(int position, ImageView imageView) {
-            Glide.with(HotActivity.this).load(slides.get(position))
-                .apply(RequestOptions.fitCenterTransform()).into(imageView);
-        }
-    };
+    ImageListener imageListener = (position, imageView) -> Glide.with(HotActivity.this).load(slides.get(position))
+        .apply(RequestOptions.fitCenterTransform()).into(imageView);
 
     /**
      * Request prime information from API

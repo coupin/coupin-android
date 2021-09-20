@@ -212,7 +212,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 && (!user.has("mobileNumber") || !user.has("ageRange"))) {
                 experienceDialog = new ExperienceDialog(this, this, user);
                 requestGenderNumber = true;
-//                experienceDialog.show();
+                experienceDialog.show();
             }
 
             favourites = PreferenceMngr.getInstance().getFavourites();
@@ -241,87 +241,76 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
         handler = new Handler();
 
-        navigationBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                navigate();
-            }
-        });
+        navigationBtn.setOnClickListener(view -> navigate());
 
-        selectedBtnPin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (requestGenderNumber) {
-                    experienceDialog.show();
-                } else {
-                    if(!expiryDates.isEmpty()){
-                        expiryDate = expiryDates.get(0);
-                        for (int i = 1; i < expiryDates.size(); i++) {
-                            if (expiryDates.get(i).after(expiryDate)) {
-                                expiryDate = expiryDates.get(i);
-                            }
+        selectedBtnPin.setOnClickListener(v -> {
+            if (requestGenderNumber) {
+                experienceDialog.show();
+            } else {
+                if(!expiryDates.isEmpty()){
+                    expiryDate = expiryDates.get(0);
+                    for (int i = 1; i < expiryDates.size(); i++) {
+                        if (expiryDates.get(i).after(expiryDate)) {
+                            expiryDate = expiryDates.get(i);
                         }
-                        try {
-                            getCoupin(expiryDate);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+                    }
+                    try {
+                        getCoupin(expiryDate);
+                    } catch (Exception e) {
+                        e.printStackTrace();
                     }
                 }
             }
         });
 
-        selectedBtnSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                toggleClickableButtons(true);
-                url = getResources().getString(R.string.base_url)
-                    + getResources().getString(R.string.ep_generate_code)
-                    + "?saved=true";
+        selectedBtnSave.setOnClickListener(v -> {
+            toggleClickableButtons(true);
+            url = getResources().getString(R.string.base_url)
+                + getResources().getString(R.string.ep_generate_code)
+                + "?saved=true";
 
-                if(!expiryDates.isEmpty()){
-                    expiryDate = expiryDates.get(0);
-                    StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            MerchantActivity.super.onBackPressed();
-                            finish();
-                        }
-                    }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            toggleClickableButtons(false);
-                            error.printStackTrace();
-                            Toast.makeText(
-                                    MerchantActivity.this,
-                                    getResources().getString(R.string.error_saved_failed),
-                                    Toast.LENGTH_SHORT
-                            ).show();
-                        }
-                    }){
-                        @Override
-                        protected Map<String, String> getParams() {
-                            Map<String, String> params = new HashMap<String, String>();
+            if(!expiryDates.isEmpty()){
+                expiryDate = expiryDates.get(0);
+                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        MerchantActivity.super.onBackPressed();
+                        finish();
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        toggleClickableButtons(false);
+                        error.printStackTrace();
+                        Toast.makeText(
+                                MerchantActivity.this,
+                                getResources().getString(R.string.error_saved_failed),
+                                Toast.LENGTH_SHORT
+                        ).show();
+                    }
+                }){
+                    @Override
+                    protected Map<String, String> getParams() {
+                        Map<String, String> params = new HashMap<String, String>();
 
-                            params.put("merchantId", item.getId());
-                            params.put("rewardId", selected.toString());
-                            params.put("useNow", String.valueOf(false));
-                            params.put("expiryDate", expiryDate.toString());
+                        params.put("merchantId", item.getId());
+                        params.put("rewardId", selected.toString());
+                        params.put("useNow", String.valueOf(false));
+                        params.put("expiryDate", expiryDate.toString());
 
-                            return params;
-                        }
+                        return params;
+                    }
 
-                        @Override
-                        public Map<String, String> getHeaders() {
-                            Map<String, String> headers = new HashMap<>();
-                            headers.put("Authorization", PreferenceMngr.getToken());
+                    @Override
+                    public Map<String, String> getHeaders() {
+                        Map<String, String> headers = new HashMap<>();
+                        headers.put("Authorization", PreferenceMngr.getToken());
 
-                            return headers;
-                        }
-                    };
+                        return headers;
+                    }
+                };
 
-                    requestQueue.add(stringRequest);
-                }
+                requestQueue.add(stringRequest);
             }
         });
     }
