@@ -9,7 +9,7 @@ apply plugin: 'dagger.hilt.android.plugin'
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/abisoyeoke-lawal/Documents/Personal/Coupin/KeyStore/AbisoyeEvans.jks')
+            storeFile file('/Users/abisoyeoke-lawal/Documents/Personal/Coupin/Keys/AbisoyeEvans.jks')
             storePassword 'Coop001'
             keyAlias = 'AbisoyeEvanskey'
             keyPassword 'Coop002'
@@ -20,12 +20,12 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 85
-        versionName "1.0.0"
-        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
-//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
-        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
-//        resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
+        versionCode 86
+        versionName "1.0.1"
+//        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
+        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
+//        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
+        resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -34,7 +34,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable = false
+            debuggable = true
             resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1")
             resValue("string", "base_url_v2", "https://coupin-pro.herokuapp.com/api/v1/")
             Properties properties = new Properties()
@@ -87,7 +87,7 @@ dependencies {
     implementation 'com.synnapps:carouselview:0.1.5'
     implementation 'com.yqritc:android-scalablevideoview:1.0.4'
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
-    implementation 'com.facebook.android:facebook-android-sdk:[5,6]'
+    implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'

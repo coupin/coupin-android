@@ -110,7 +110,7 @@ public class Reward implements Serializable {
     }
 
   public boolean getIsDiscount() {
-        return isDiscount;
+        return oldPrice > 0 && newPrice > 0;
     }
 
     public boolean isSelected() {

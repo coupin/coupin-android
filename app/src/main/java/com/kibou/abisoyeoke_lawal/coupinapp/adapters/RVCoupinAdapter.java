@@ -2,6 +2,8 @@ package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
+
+import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -23,9 +25,7 @@ import java.util.List;
 
 public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter.ItemViewHolder> {
     public List<Reward> rewardListItems;
-
     static public MyOnClick myOnClick;
-
     public Context context;
 
     @Override
@@ -36,7 +36,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
     }
 
     public RVCoupinAdapter(List<Reward> rewardListItems, MyOnClick myOnClick, Context context) {
-        this.myOnClick = myOnClick;
+        RVCoupinAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
         this.context = context;
     }
@@ -58,18 +58,19 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
                 holder.priceOld.setText("N" + String.valueOf((int) oldPrice));
                 holder.priceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
                 holder.quantity.setText("x " + reward.getQuantity());
+            } else {
+                float oldPrice = reward.getOldPrice();
+                String oldPriceString = "N" + (int) oldPrice;
+                holder.priceOld.setText(oldPriceString);
             }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
             holder.expiry.setText(simpleDateFormat.format(reward.getExpires()));
 
-            holder.head.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    DetailsDialog detailsDialog = new DetailsDialog(context, reward, false);
-                    detailsDialog.hideButtonGroup();
-                    detailsDialog.show();
-                }
+            holder.head.setOnClickListener(view -> {
+                DetailsDialog detailsDialog = new DetailsDialog(context, reward, false);
+                detailsDialog.hideButtonGroup();
+                detailsDialog.show();
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -119,7 +120,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 }

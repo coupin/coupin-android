@@ -919,24 +919,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     if (HomeTab.this.isVisible()) {
                         if (error.networkResponse == null) {
                             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                                getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        getActivity().finish();
-                                    }
-                                });
+                                getResources().getString(R.string.error_connection_detail), view -> requireActivity().finish());
                             networkErrorDialog.show();
                         } else if (error.networkResponse.statusCode == 404) {
                             Toast.makeText(getActivity(), getResources().getString(R.string.empty_more_details), Toast.LENGTH_LONG).show();
                             disableLoadMore = true;
                         } else {
                             networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                                error.getMessage(), new View.OnClickListener() {
-                                    @Override
-                                    public void onClick(View view) {
-                                        getActivity().finish();
-                                    }
-                                });
+                                error.getMessage(), view -> requireActivity().finish());
                             networkErrorDialog.show();
                         }
                     }

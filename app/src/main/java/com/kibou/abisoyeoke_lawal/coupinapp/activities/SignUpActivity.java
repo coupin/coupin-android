@@ -131,7 +131,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
         facebookSignUp.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
-                loginManager.logInWithReadPermissions(SignUpActivity.this, Arrays.asList(new String[]{"public_profile", "email"}));
+                loginManager.logInWithReadPermissions(SignUpActivity.this, Arrays.asList("public_profile", "email"));
             }
         });
 
@@ -268,6 +268,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
                     preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     preferenceMngr.notificationSelection(true, false);
+                    showProgress(false);
                     Intent nextIntent = new Intent(SignUpActivity.this, InterestsActivity.class);
                     nextIntent.putExtra("name", name);
                     startActivity(nextIntent);

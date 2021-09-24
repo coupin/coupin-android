@@ -294,7 +294,6 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
             public void onResponse(String response) {
                 try {
                     JSONObject res = new JSONObject(response);
-                    Log.d("simi-token", res.getString("token"));
                     JSONObject object = res.getJSONObject("user");
                     String temp = object.getJSONArray("favourites").toString();
                     String tempList = object.getJSONArray("blacklist").toString();
@@ -304,6 +303,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     boolean isWeekends = object.getJSONObject("notification").getString("days").equals("weekends");
                     preferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
+                    showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
                 } catch (Exception e) {
@@ -352,6 +352,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
