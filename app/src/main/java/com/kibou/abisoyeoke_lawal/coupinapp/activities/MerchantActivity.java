@@ -39,10 +39,12 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
@@ -135,7 +137,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private int page = 0;
     private JSONArray userFavourites;
     private LinearLayoutManager linearLayoutManager;
-    private Merchant item;
+//    private Merchant item;
+    private MerchantV2 item;
     private JSONArray resArray;
     private JSONObject res;
     private JSONObject user;
@@ -176,32 +179,19 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
         Bundle extra = getIntent().getExtras();
         try {
-            if (extra.getString("merchant", null) == null) {
-                item = (Merchant) extra.getSerializable("object");
-            } else {
-                res = new JSONObject(extra.getString("merchant"));
-                item = new Merchant();
-                item.setId(res.getString("_id"));
-                item.setPicture(R.drawable.slide1);
-                item.setAddress(res.getString("address"));
-                item.setDetails(res.getString("details"));
-                item.setEmail(res.getString("email"));
-                item.setMobile(res.getString("mobile"));
-                item.setTitle(res.getString("name"));
-                item.setLatitude(res.getJSONObject("location").getDouble("lat"));
-                item.setLongitude(res.getJSONObject("location").getDouble("long"));
-                item.setRating(res.getInt("rating"));
-                item.setLogo(res.getJSONObject("logo").getString("url"));
-                item.setBanner(res.getJSONObject("banner").getString("url"));
-            }
+            assert extra != null;
+            item = (MerchantV2) TypeUtils.stringToObject(extra.getString("merchant"));
 
-            merchantId = item.getId();
-            Glide.with(this).load(item.getBanner()).into(bannerHolder);
-            merchantName.setText(item.getTitle());
-            merchantAddress.setText(item.getAddress());
-            merchantPhone.setText("Tel: " + item.getMobile());
-            merchantRating.setRating(item.getRating());
-            ratingText.setText(String.valueOf(item.getRating()) + "/5");
+            assert item != null;
+            merchantId = item.id;
+            Glide.with(this).load(item.banner.url).into(bannerHolder);
+            merchantName.setText(item.title);
+            merchantAddress.setText(item.address);
+            String merchantPhoneString = "Tel: " + item.mobile;
+            merchantPhone.setText(merchantPhoneString);
+            merchantRating.setRating(item.rating);
+            String ratingString = String.valueOf(item.rating) + "/5";
+            ratingText.setText(ratingString);
 
             user = new JSONObject(PreferenceMngr.getUser());
             tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
@@ -216,7 +206,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             }
 
             favourites = PreferenceMngr.getInstance().getFavourites();
-            if (favourites.contains(item.getId())) {
+            if (favourites.contains(item.id)) {
                 favourite = true;
             }
         } catch (Exception e) {
@@ -229,7 +219,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         merchantPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String phone = item.getMobile();
+                String phone = item.mobile;
                 if (!"0".equals(String.valueOf(phone.charAt(0)))) {
                     phone = "+234" + phone;
                 }
@@ -293,7 +283,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     protected Map<String, String> getParams() {
                         Map<String, String> params = new HashMap<String, String>();
 
-                        params.put("merchantId", item.getId());
+                        params.put("merchantId", item.id);
                         params.put("rewardId", selected.toString());
                         params.put("useNow", String.valueOf(false));
                         params.put("expiryDate", expiryDate.toString());
@@ -319,12 +309,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * Navigate to restaurant
      */
     private void navigate() {
-        String parsedAddress = item.getAddress().replace(" ", "+");
+        String parsedAddress = item.address.replace(" ", "+");
         parsedAddress = parsedAddress.replace(",", "");
 
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
-        navigateIntent.setData(Uri.parse("geo:" + item.getLatitude() + "," + item.getLongitude() +
-            "?q=" + item.getLatitude() + "," + item.getLongitude()));
+        navigateIntent.setData(Uri.parse("geo:" + item.location.latitude + "," + item.location.latitude +
+            "?q=" + item.location.latitude + "," + item.location.latitude));
         startActivity(navigateIntent);
     }
 
@@ -733,11 +723,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     private void makeFav(boolean like) {
         if (like) {
-            addToFav(item.getId());
+            addToFav(item.id);
             favourite = true;
             invalidateOptionsMenu();
         } else {
-            removeFromFav(item.getId());
+            removeFromFav(item.id);
             favourite = false;
             invalidateOptionsMenu();
         }
@@ -789,14 +779,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         //TODO: put rewardId and shortcode
 //        coupin.setBookingId(object.getString("_id"));
 //        coupin.setBookingShortCode(object.getString("shortCode"));
-        coupin.setMerchantName(item.getTitle());
-        coupin.setMerchantAddress(item.getAddress());
-        coupin.setLatitude(item.getLatitude());
-        coupin.setLongitude(item.getLongitude());
-        coupin.setMerchantLogo(item.getLogo());
-        coupin.setMerchantBanner(item.getBanner());
-        coupin.setFavourited(item.isFavourite());
-        coupin.setVisited(item.isVisited());
+        coupin.setMerchantName(item.title);
+        coupin.setMerchantAddress(item.address);
+        coupin.setLatitude(item.location.latitude);
+        coupin.setLongitude(item.location.longitude);
+        coupin.setMerchantLogo(item.logo.url);
+        coupin.setMerchantBanner(item.banner.url);
+        coupin.setFavourited(item.favourite);
+        coupin.setVisited(item.visited);
 
         // TODO: put rewardId details
 //        coupin.setRewardDetails(object.getJSONArray("rewardId").toString());

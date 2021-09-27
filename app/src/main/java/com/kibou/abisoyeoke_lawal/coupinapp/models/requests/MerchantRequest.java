@@ -13,6 +13,9 @@ public class MerchantRequest implements Serializable {
     public int distance;
     @SerializedName("limit")
     public int limit;
+    @SerializedName("page")
+    public int page;
     @SerializedName("categories")
     public String categories;
+
 }

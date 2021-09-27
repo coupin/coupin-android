@@ -12,9 +12,12 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,10 +26,10 @@ import java.util.List;
 
 public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemViewHolder> {
     private Context context;
-    private List<Merchant> searchList;
+    private List<MerchantV2> searchList;
     private static MyOnClick myOnClick;
 
-    public RVSearchAdapter(List<Merchant> searchList, MyOnClick myOnClick, Context context) {
+    public RVSearchAdapter(List<MerchantV2> searchList, MyOnClick myOnClick, Context context) {
         this.context = context;
         this.searchList = searchList;
         this.myOnClick = myOnClick;
@@ -41,31 +44,28 @@ public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemVi
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        Merchant item = searchList.get(position);
+        MerchantV2 item = searchList.get(position);
+        ArrayList<RewardV2> rewardArray = item.rewards;
 
-        try {
-            JSONArray rewardArray = new JSONArray(item.getRewards());
+        Glide.with(context).load(item.logo.url).into(holder.searchLogo);
+        holder.searchTitle.setText(item.name);
+        holder.searchAddress.setText(item.address);
 
-            Glide.with(context).load(item.getLogo()).into(holder.searchLogo);
-            holder.searchTitle.setText(item.getTitle());
-            holder.searchAddress.setText(item.getAddress());
-
-            if (item.isFavourite()) {
-                holder.searchFavourite.setVisibility(View.VISIBLE);
-            }
-
-            if (item.isVisited()) {
-                holder.searchVisited.setVisibility(View.VISIBLE);
-            }
-
-            if (rewardArray.length() > 1) {
-                holder.searchRewards.setText(rewardArray.length() + " REWARDS");
-            } else {
-                holder.searchRewards.setText(rewardArray.getJSONObject(0).getString("name"));
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (item.favourite) {
+            holder.searchFavourite.setVisibility(View.VISIBLE);
         }
+
+        if (item.visited) {
+            holder.searchVisited.setVisibility(View.VISIBLE);
+        }
+
+        if (rewardArray.size() > 1) {
+            String lengthString = rewardArray.size() + " REWARDS";
+            holder.searchRewards.setText(lengthString);
+        } else {
+            holder.searchRewards.setText(rewardArray.get(0).name);
+        }
+
         holder.bind(position);
     }
 

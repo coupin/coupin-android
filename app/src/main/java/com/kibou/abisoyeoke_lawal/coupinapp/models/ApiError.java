@@ -1,7 +1,5 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.models;
 
-import androidx.appcompat.content.res.AppCompatResources;
-
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;

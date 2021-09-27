@@ -37,26 +37,11 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
     private View parent;
     private View previousView;
 
-//    public IconListAdapter(ArrayList<Merchant> items) {
-//        iconList = items;
-//    }
-//
-//    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener) {
-//        iconList = items;
-//        this.mClickListener = mClickListener;
-//    }
-
     public IconListAdapter(ArrayList<?> items, CustomClickListener.OnItemClickListener mClickListener, Context context) {
         iconList = items;
         this.context = context;
         this.mClickListener = mClickListener;
     }
-//
-//    public IconListAdapter(ArrayList<MerchantV2> items, CustomClickListener.OnItemClickListener mClickListener, Context context) {
-//        iconListV2 = items;
-//        this.context = context;
-//        this.mClickListener = mClickListener;
-//    }
 
     @Override
     public IconListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

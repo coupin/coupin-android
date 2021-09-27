@@ -33,13 +33,13 @@ public class ApiClient {
     }
 
     public static ApiError parseError(retrofit2.Response<?> response) {
-        Converter<ResponseBody, ApiError> converter = retrofit.responseBodyConverter(
-                ApiError.class, new Annotation[0]
-        );
-
         ApiError error;
 
         try {
+            Converter<ResponseBody, ApiError> converter = retrofit.responseBodyConverter(
+                    ApiError.class, new Annotation[0]
+            );
+
             error = converter.convert(response.errorBody());
             assert error != null;
             error.statusCode = response.code();

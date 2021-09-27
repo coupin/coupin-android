@@ -21,11 +21,8 @@ import android.os.Bundle;
 import android.os.Handler;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.bumptech.glide.Glide;
 import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationAvailability;
 import com.google.android.gms.location.LocationCallback;
 import com.google.android.gms.location.LocationResult;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -45,12 +42,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -58,16 +53,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.request.RequestOptions;
-import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
@@ -131,7 +120,6 @@ import retrofit2.internal.EverythingIsNonNull;
  * A simple {@link Fragment} subclass.
  */
 public class HomeTab extends Fragment implements LocationListener, CustomClickListener.OnItemClickListener, MyFilter, MyOnClick {
-    private static final int SERVICE_ID = 1002;
     private final int PERMISSION_ALL = 1;
     @BindView(R.id.btn_mylocation)
     public FloatingActionButton btnMyLocation;
@@ -184,9 +172,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     private HashMap<String, Bitmap> thumbnails = new HashMap<>();
     private boolean filter;
-    private boolean firstCall;
-    private boolean isGPSEnabled;
-    private boolean isNetworkEnabled;
     private boolean isLoading = false;
     private boolean onMarker = false;
     private boolean retrievingData = false;
@@ -219,7 +204,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public int distance = 10;
     public int page = 0;
     public int screenWidth;
-    public float minZoom = 1;
     private double tempDist;
     public ArrayList<String> categories = new ArrayList<>();
 
@@ -313,8 +297,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 
-//        mapView.onResume();
-
         btnMyLocation.setOnClickListener(v -> center());
 
         mapView.getMapAsync(new OnMapReadyCallback() {
@@ -357,17 +339,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     }
                 });
 
-                try {
-                    if (Geocoder.isPresent() && currentLocation != null) {
-//                        addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
-//                        if (addresses.size() > 0) {
-//                            street.setText(addresses.get(0).getThoroughfare().toString());
-//                        }
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
                 infoWindowAdapter = new GoogleMap.InfoWindowAdapter() {
                     @Override
                     public View getInfoWindow(@NonNull Marker marker) {
@@ -404,13 +375,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 address.setText(merchant.address);
 
                                 assert merchant.logo != null;
-                                Log.v("Coupin Logo", merchant.logo.url);
                                 if (merchant.logo != null && merchant.logo.url != null) {
                                     banner.setImageBitmap(thumbnails.get(merchant.id));
-//                                    Glide.with(requireActivity())
-//                                            .load(merchant.logo.url)
-//                                            .apply(requestOptions)
-//                                            .into(banner);
                                 }
 
                                 String snippet = merchant.rewardsCount > 1 ? merchant.rewardsCount + " Rewards Available" :
@@ -515,38 +481,24 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     }
 
     public int getCategoryImage(String cat) {
-        int x = 0;
         switch(cat) {
             case "entertainment":
-                x = R.drawable.int_ent;
-                break;
-            case "foodndrink":
-                x = R.drawable.int_food;
-                break;
+                return R.drawable.int_ent;
             case "gadgets":
-                x = R.drawable.int_gadget;
-                break;
+                return R.drawable.int_gadget;
             case "groceries":
-                x = R.drawable.int_groceries;
-                break;
+                return R.drawable.int_groceries;
             case "healthnbeauty":
-                x = R.drawable.int_beauty;
-                break;
+                return R.drawable.int_beauty;
             case "shopping":
-                x = R.drawable.int_fashion;
-                break;
+                return R.drawable.int_fashion;
             case "tickets":
-                x = R.drawable.int_ticket;
-                break;
+                return R.drawable.int_ticket;
             case "travel":
-                x = R.drawable.int_travel;
-                break;
+                return R.drawable.int_travel;
             default:
-                x = R.drawable.int_food;
-                break;
+                return R.drawable.int_food;
         }
-
-        return x;
     }
 
     /**
@@ -728,7 +680,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 } else {
                     ApiError error = ApiClient.parseError(response);
 
-                    adapter.setIconList(iconsList);
+                    adapter.setIconList(iconsListV2);
                     adapter.notifyDataSetChanged();
 
                     retrievingData = false;
@@ -851,7 +803,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                 isLoading = true;
                 loading();
-                handler.postDelayed(() -> loadMore(), 2000);
+                handler.postDelayed(() -> setupListV2(), 2000);
             }
             }
         });
