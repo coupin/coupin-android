@@ -118,7 +118,7 @@ data class RewardID (
 
     val _id: String?,
 
-    val id: ID?
+    val id: String?
 )
 
 data class ID (

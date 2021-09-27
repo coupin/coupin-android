@@ -132,10 +132,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
     private Date expiryDate;
-    private GalleryDialog imageDialog;
     private Handler handler;
     private int page = 0;
-    private JSONArray userFavourites;
     private LinearLayoutManager linearLayoutManager;
 //    private Merchant item;
     private MerchantV2 item;
@@ -145,7 +143,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private RVPopUpAdapter rvPopUpAdapter;
     private Set<String> favourites;
     private String merchantId;
-    private String rewardHolder;
     private String logTag = "MerchantActivity";
 
     @Override
@@ -351,22 +348,17 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                         reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
 
                         // Price Details
-                        if (object.has("price")
-                            && !object.getJSONObject("price").isNull("new")
-                            && !object.getJSONObject("price").isNull("old")) {
-                            reward.setIsDiscount(true);
-                            reward.setNewPrice(object.getJSONObject("price").getInt("new"));
-                            reward.setOldPrice(object.getJSONObject("price").getInt("old"));
-                        } else {
-                            reward.setIsDiscount(false);
-                        }
+                        reward.setIsDiscount(!object.getJSONObject("price").isNull("new")
+                                && !object.getJSONObject("price").isNull("old"));
+
+                        if (!object.getJSONObject("price").isNull("new"))
+                        reward.setNewPrice(object.getJSONObject("price").getInt("new"));
+
+                        if (!object.getJSONObject("price").isNull("old"))
+                        reward.setOldPrice(object.getJSONObject("price").getInt("old"));
 
                         // Multiple Use details
-                        if (object.getJSONObject("multiple").getBoolean("status")) {
-                            reward.setMultiple(true);
-                        } else {
-                            reward.setMultiple(false);
-                        }
+                        reward.setMultiple(object.getJSONObject("multiple").getBoolean("status"));
 
                         reward.setIsDelivery(object.getBoolean("delivery"));
 
@@ -772,25 +764,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
             startActivity(intent);
         }
-    }
-
-    private RewardListItem getRewardListItem(){
-        RewardListItem coupin = new RewardListItem();
-        //TODO: put rewardId and shortcode
-//        coupin.setBookingId(object.getString("_id"));
-//        coupin.setBookingShortCode(object.getString("shortCode"));
-        coupin.setMerchantName(item.title);
-        coupin.setMerchantAddress(item.address);
-        coupin.setLatitude(item.location.latitude);
-        coupin.setLongitude(item.location.longitude);
-        coupin.setMerchantLogo(item.logo.url);
-        coupin.setMerchantBanner(item.banner.url);
-        coupin.setFavourited(item.favourite);
-        coupin.setVisited(item.visited);
-
-        // TODO: put rewardId details
-//        coupin.setRewardDetails(object.getJSONArray("rewardId").toString());
-        return coupin;
     }
 
     /**

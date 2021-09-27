@@ -7,6 +7,8 @@ import android.graphics.Paint;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +24,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -51,7 +54,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         public TextView headTitle;
         public View head;
         public View rewardDivider;
-        public LinearLayout bacgroud;
+        public LinearLayout backgroud;
         public TextView quantityLabel;
 
         public ViewHolder(View itemView) {
@@ -67,7 +70,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             headTitle = (TextView) head.findViewById(R.id.list_reward_title);
             rewardDivider = (View) head.findViewById(R.id.reward_divider);
             tickFrame = (FrameLayout) head.findViewById(R.id.tick_frame);
-            bacgroud = head.findViewById(R.id.background);
+            backgroud = head.findViewById(R.id.background);
             quantityLabel = head.findViewById(R.id.quantity_label);
         }
     }
@@ -92,14 +95,24 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         final Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.getDetails());
+        Log.v("Is Discount", " - " + reward.getIsDiscount());
+        Log.v("Is NEw", " - " + reward.getNewPrice());
+        Log.v("Is Old", " - " + reward.getOldPrice());
         if (reward.getIsDiscount()) {
             float oldPrice = reward.getOldPrice();
             float newPrice = reward.getNewPrice();
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-            holder.headPercentage.setText(String.valueOf((int) discount) + "%");
-            holder.headPriceNew.setText("N" + String.valueOf(((int) newPrice)));
-            holder.headPriceOld.setText("N" + String.valueOf((int) oldPrice));
+            holder.headPercentage.setText(StringUtils.currencyFormatter((int) discount) + "%");
+            holder.headPriceNew.setText("N" + StringUtils.currencyFormatter((int) newPrice));
+            holder.headPriceOld.setText("N" + StringUtils.currencyFormatter((int) oldPrice));
             holder.headPriceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        } else if (reward.getOldPrice() > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.getOldPrice());
+            holder.headPriceOld.setText(priceString);
+        } else if (reward.getNewPrice() > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.getNewPrice());
+            holder.headPriceOld.setText(priceString);
+            holder.headPriceOld.setTextColor(context.getResources().getColor(R.color.colorAccent));
         }
 
         holder.headTitle.setText(String.valueOf(reward.getTitle()));
@@ -124,7 +137,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                     @Override
                     public void onItemClick(int place, int quantity) {
                         if (place == 0) {
-                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                             holder.tickFrame.setVisibility(View.VISIBLE);
@@ -142,11 +155,11 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                         } else {
                             Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
                             if(isDarkMode){
-                                holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                                holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                                 holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
 
                             }else{
-                                holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
+                                holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
                                 holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
                             }
                             holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
@@ -169,7 +182,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         });
 
         if(reward.isSelected()){
-            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
             holder.tickFrame.setVisibility(View.VISIBLE);

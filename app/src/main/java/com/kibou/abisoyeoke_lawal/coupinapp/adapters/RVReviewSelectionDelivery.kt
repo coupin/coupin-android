@@ -45,13 +45,18 @@ class RVReviewSelectionDelivery(private val resource : MutableList<Reward>,
             val simpleDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
             expiryDate.text = simpleDateFormat.format(viewResource.expires)
 
-            fullPrice.text =  "\u20A6 ${viewResource.oldPrice}"
-            fullPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
+            if (viewResource.oldPrice > 0) {
+                fullPrice.text = "\u20A6 ${viewResource.oldPrice}"
+                fullPrice.paintFlags = Paint.STRIKE_THRU_TEXT_FLAG or Paint.ANTI_ALIAS_FLAG
+            }
 
+            if (viewResource.newPrice > 0)
             discountedPrice.text = "\u20A6 ${viewResource.newPrice}"
 
-            val discount = ((viewResource.oldPrice - viewResource.newPrice) / viewResource.oldPrice * 100).toInt()
-            discountPercent.text = "-$discount%"
+            if (viewResource.newPrice > 0 && viewResource.oldPrice > 0) {
+                val discount = ((viewResource.oldPrice - viewResource.newPrice) / viewResource.oldPrice * 100).toInt()
+                discountPercent.text = "-$discount%"
+            }
 
             cancelBtn.setOnClickListener{
                 reviewSelectionCancelClickListener.onCancelClick(viewResource)

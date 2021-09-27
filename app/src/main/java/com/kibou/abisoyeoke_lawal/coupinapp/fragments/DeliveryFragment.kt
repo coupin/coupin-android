@@ -148,8 +148,8 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
 
     private fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String, deliveryAddress : String){
         val merchant = getCoupinVM.merchantLD.value
-        val merchantLatitude = merchant?.latitude.toString()
-        val merchantLongitude = merchant?.longitude.toString()
+        val merchantLatitude = merchant?.location?.latitude.toString()
+        val merchantLongitude = merchant?.location?.longitude.toString()
         val merchantAddress = merchant?.address ?: ""
 
         val dropOff = DropOff(deliveryAddress, deliveryLatitude, deliveryLongitude)

@@ -17,6 +17,7 @@ import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.HomeActivity
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinRequestModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem
@@ -88,7 +89,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             .setPublicKey(BuildConfig.COUPIN_FLUTTERWAVE_PUBLIC_KEY)
             .setEncryptionKey(BuildConfig.COUPIN_ENCRYPTION_KEY)
             .setTxRef(reference)
-//            .showStagingLabel(false)
+            .showStagingLabel(false)
             .acceptAccountPayments(true)
             .acceptCardPayments(true)
             .allowSaveCardFeature(true)
@@ -145,12 +146,10 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
                 requireActivity().longToast("Payment Successful")
                 setPaymentBtn(false)
-                Log.d(logTag, "payment success : $message")
 
                 val user = JSONObject(PreferenceMngr.getUser())
                 PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"))
                 checkoutViewModel.tempBlackListMLD.value?.let {
-                    Log.d(logTag, "tempblacklist : $it")
                     PreferenceMngr.getInstance().blacklist = it
                 }
 
@@ -162,13 +161,11 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             else if (resultCode == RavePayActivity.RESULT_ERROR) {
                 requireActivity().toast("Payment error")
                 setPaymentBtn(false)
-                Log.d(logTag, "payment error : $message")
             }
 
             else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
                 requireActivity().toast("Payment cancelled")
                 setPaymentBtn(false)
-                Log.d(logTag, "payment cancelled : $message")
             }
         }
     }
@@ -194,8 +191,6 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         val token = PreferenceMngr.getToken() ?: ""
 
         val getCoupinRequestModel = GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId)
-
-        Log.d(logTag, "rewardIdQuantity : $rewardsIdList")
 
         checkoutViewModel.getCoupin(getCoupinRequestModel, token).observe(viewLifecycleOwner, {
             it?.let {
@@ -229,35 +224,39 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun proceedToCoupinView(getCoupinResponseModel: GetCoupinResponseModel){
-        Log.d(logTag, "coupinRespModel : $getCoupinResponseModel")
-
         val bookingId = getCoupinResponseModel.data?.booking?._id
         val shortCode = getCoupinResponseModel.data?.booking?.shortCode
         val merchant = checkoutViewModel.merchantLD.value
         val rewardCount = getCoupinResponseModel.data?.booking?.rewardId?.size ?: 0
         val rewards = Gson().toJson(getCoupinResponseModel.data?.booking?.rewardId)
 
-        merchant?.let {
-            val coupin = RewardListItem()
-            coupin.setBookingId(bookingId)
-            coupin.setBookingShortCode(shortCode)
-            coupin.setMerchantName(merchant.getTitle())
-            coupin.setMerchantAddress(merchant.getAddress())
-            coupin.setLatitude(merchant.getLatitude())
-            coupin.setLongitude(merchant.getLongitude())
-            coupin.setMerchantLogo(merchant.getLogo())
-            coupin.setMerchantBanner(merchant.getBanner())
-            coupin.isFavourited = merchant.isFavourite
-            coupin.setVisited(merchant.isVisited)
-            coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
-            coupin.setRewardDetails(rewards)
-            coupin.setRewardCount(rewardCount)
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        intent.putExtra("fromCoupin", true)
+        startActivity(intent)
+        requireActivity().finishAffinity()
 
-            val intent = Intent(requireContext(), CoupinActivity::class.java)
-            intent.putExtra("coupin", coupin)
-            intent.putExtra("fromPurchase", true)
-            startActivity(intent)
-            requireActivity().finishAffinity()
-        }
+        // TODO: Uncomment once you convert to retrofit
+//        merchant?.let {
+//            val coupin = RewardListItem()
+//            coupin.setBookingId(bookingId)
+//            coupin.setBookingShortCode(shortCode)
+//            coupin.setMerchantName(merchant.name)
+//            coupin.setMerchantAddress(merchant.address)
+//            coupin.setLatitude(merchant.location.latitude)
+//            coupin.setLongitude(merchant.location.longitude)
+//            coupin.setMerchantLogo(merchant.logo.url)
+//            coupin.setMerchantBanner(merchant.banner.url)
+//            coupin.isFavourited = merchant.favourite
+//            coupin.setVisited(merchant.visited)
+//            coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
+//            coupin.setRewardDetails(rewards)
+//            coupin.setRewardCount(rewardCount)
+//
+//            val intent = Intent(requireContext(), CoupinActivity::class.java)
+//            intent.putExtra("coupin", coupin)
+//            intent.putExtra("fromPurchase", true)
+//            startActivity(intent)
+//            requireActivity().finishAffinity()
+//        }
     }
 }

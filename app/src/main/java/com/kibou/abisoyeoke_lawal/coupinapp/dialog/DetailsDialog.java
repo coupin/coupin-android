@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -24,6 +25,7 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import org.json.JSONArray;
 
@@ -152,14 +154,24 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             float oldPrice = reward.getOldPrice();
             float newPrice = reward.getNewPrice();
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-            fullPercentage.setText(String.valueOf((int) discount) + "%");
-            fullNewPrice.setText("N" + String.valueOf(((int) newPrice)));
-            fullOldPrice.setText("N" + String.valueOf((int) oldPrice));
+            fullPercentage.setText(StringUtils.currencyFormatter((int) discount) + "%");
+            fullNewPrice.setText("N" + StringUtils.currencyFormatter(((int) newPrice)));
+            fullOldPrice.setText("N" + StringUtils.currencyFormatter((int) oldPrice));
             fullPercentage.setVisibility(View.VISIBLE);
             fullNewPrice.setVisibility(View.VISIBLE);
             fullOldPrice.setVisibility(View.VISIBLE);
             String quantityString = String.valueOf(reward.getQuantity());
             quantityTextView.setText(quantityString);
+            bottomButtonsBarrier.setVisibility(View.VISIBLE);
+        } else if (reward.getOldPrice() > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.getOldPrice());
+            fullOldPrice.setText(priceString);
+            fullOldPrice.setVisibility(View.VISIBLE);
+            bottomButtonsBarrier.setVisibility(View.VISIBLE);
+        } else if (reward.getNewPrice() > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.getNewPrice());
+            fullNewPrice.setText(priceString);
+            fullNewPrice.setVisibility(View.VISIBLE);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
         }
 

@@ -6,10 +6,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.CoupinServices
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinRequestModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
+import com.kibou.abisoyeoke_lawal.coupinapp.models.*
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
@@ -27,8 +24,8 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     private val selectedCoupinsMLD = MutableLiveData<ArrayList<Reward>>()
     val selectedCoupinsLD : LiveData<ArrayList<Reward>> get() = selectedCoupinsMLD
 
-    private val merchantMLD = MutableLiveData<Merchant>()
-    val merchantLD : LiveData<Merchant> get() = merchantMLD
+    private val merchantMLD = MutableLiveData<MerchantV2>()
+    val merchantLD : LiveData<MerchantV2> get() = merchantMLD
 
     private val deliveryPriceMLD = MutableLiveData<Int>()
     val deliveryPriceLD : LiveData<Int> get() = deliveryPriceMLD
@@ -48,7 +45,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
         selectedCoupinsMLD.value = coupins.toCollection(ArrayList())
     }
 
-    fun setMerchant(merchant : Merchant){
+    fun setMerchant(merchant : MerchantV2){
         merchantMLD.value = merchant
     }
 

@@ -141,7 +141,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                     float oldPrice = first.getJSONObject("price").getInt("old");
                     float newPrice = first.getJSONObject("price").getInt("new");
                     float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                    holder.rewardOnePercent.setText(String.valueOf((int) discount) + "%");
+                    holder.rewardOnePercent.setText(((int) discount) + "%");
                 }
 
                 if (rewardArray.length() > 1) {
@@ -152,7 +152,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                         float oldPrice = second.getJSONObject("price").getInt("old");
                         float newPrice = second.getJSONObject("price").getInt("new");
                         float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                        holder.rewardTwoPercent.setText(String.valueOf((int) discount) + "%");
+                        holder.rewardTwoPercent.setText(((int) discount) + "%");
                     }
                 } else {
                     holder.activeRewardHolder2.setVisibility(View.GONE);

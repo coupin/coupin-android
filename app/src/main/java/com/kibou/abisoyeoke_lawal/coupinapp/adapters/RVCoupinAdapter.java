@@ -53,15 +53,17 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
                 float oldPrice = reward.getOldPrice();
                 float newPrice = reward.getNewPrice();
                 float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                holder.discount.setText(String.valueOf((int) discount) + "%");
-                holder.priceNew.setText("N" + String.valueOf(((int) newPrice)));
-                holder.priceOld.setText("N" + String.valueOf((int) oldPrice));
+                holder.discount.setText(((int) discount) + "%");
+                holder.priceNew.setText("N" + (((int) newPrice)));
+                holder.priceOld.setText("N" + ((int) oldPrice));
                 holder.priceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
                 holder.quantity.setText("x " + reward.getQuantity());
-            } else {
-                float oldPrice = reward.getOldPrice();
-                String oldPriceString = "N" + (int) oldPrice;
+            } else if (reward.getOldPrice() > 0) {
+                String oldPriceString = "N" + (int) reward.getOldPrice();
                 holder.priceOld.setText(oldPriceString);
+            } else if (reward.getNewPrice() > 0) {
+                String newPriceString = "N" + (int) reward.getNewPrice();
+                holder.priceOld.setText(newPriceString);
             }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");

@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.*
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
@@ -44,7 +45,7 @@ class GetCoupinActivity : AppCompatActivity() {
     private fun setMerchant(){
         val merchantString = intent.getStringExtra(merchantIntent)
         merchantString?.let {
-            val merchant = Gson().fromJson(it, Merchant::class.java)
+            val merchant = Gson().fromJson(it, MerchantV2::class.java)
             merchant?.let {
                 getCoupinVM.setMerchant(it)
             }
