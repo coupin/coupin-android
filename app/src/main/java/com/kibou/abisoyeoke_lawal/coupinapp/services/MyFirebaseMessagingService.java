@@ -34,7 +34,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
     private void sendToServer(final String token) {
         String url = getApplicationContext().getResources().getString(R.string.base_url) +
-            getApplicationContext().getResources().getString(R.string.ep_api_user_notifications, PreferenceMngr.getInstance().getUserId());
+            getApplicationContext().getResources().getString(R.string.ep_api_user_notifications, PreferenceMngr.getUserId());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

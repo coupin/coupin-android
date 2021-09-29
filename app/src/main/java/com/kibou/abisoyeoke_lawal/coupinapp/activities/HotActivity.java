@@ -7,40 +7,41 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVHotAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.LocationV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.synnapps.carouselview.CarouselView;
-import com.synnapps.carouselview.ImageClickListener;
 import com.synnapps.carouselview.ImageListener;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class HotActivity extends AppCompatActivity implements View.OnClickListener, MyOnClick {
     @BindView(R.id.slides_loading_view)
@@ -110,19 +111,18 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     @BindView(R.id.hot_title_3)
     public TextView hotTitle3;
 
-    private ArrayList<Merchant> featured = new ArrayList<>();
-    private ArrayList<Merchant> hotlist = new ArrayList<>();
-    private ArrayList<Merchant> merchants = new ArrayList<>();
+    private ApiCalls apiCalls;
+    private ArrayList<MerchantV2> featuredV2 = new ArrayList<>();
+    private ArrayList<MerchantV2> hotlistV2 = new ArrayList<>();
+    private ArrayList<MerchantV2> merchantsV2 = new ArrayList<>();
     private ArrayList<String> slides = new ArrayList<>();
     private Handler handler = new Handler();
     private LinearLayoutManager linearLayoutManager;
     private RequestQueue requestQueue;
-    private Runnable queryRun;
     private RVHotAdapter adapter;
     private Set<String> favourites;
 
     private boolean isLoading = false;
-    private boolean primeLoaded = false;
     private int page = 0;
 
     @Override
@@ -132,12 +132,13 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         ButterKnife.bind(this);
 
         PreferenceMngr.setContext(getApplicationContext());
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
         requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);
-        adapter = new RVHotAdapter(merchants, this, this);
+        adapter = new RVHotAdapter(merchantsV2, this, this);
         try {
-            favourites = PreferenceMngr.getInstance().getFavourites();
+            favourites = PreferenceMngr.getFavourites();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -151,10 +152,11 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         cardView3.setOnClickListener(this);
 
         getPrime();
+        getMostRecentV2();
         implementOnScrollListener();
 
         hotBack.setOnClickListener(this);
-        hotCarousel.setImageClickListener(position -> goToMerchantPage(hotlist.get(position)));
+        hotCarousel.setImageClickListener(position -> goToMerchantV2Page(hotlistV2.get(position)));
     }
 
     /**
@@ -164,24 +166,29 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public void loading(int index) {
         switch (index) {
             case 0:
+                slidesEmpty.setVisibility(View.GONE);
                 slidesLoading.setVisibility(View.GONE);
                 hotCarousel.setVisibility(View.VISIBLE);
                 break;
             case 1:
+                featuredEmpty.setVisibility(View.GONE);
                 featuredLoading.setVisibility(View.GONE);
                 featuredHolder.setVisibility(View.VISIBLE);
                 break;
             case 2:
+                hotError.setVisibility(View.GONE);
                 recommendLoading.setVisibility(View.GONE);
                 hotRecyclerView.setVisibility(View.VISIBLE);
                 break;
             case 3:
+                hotCarousel.setVisibility(View.GONE);
                 slidesLoading.setVisibility(View.GONE);
-//                slidesEmpty.setVisibility(View.VISIBLE);
+                slidesEmpty.setVisibility(View.VISIBLE);
+                featuredHolder.setVisibility(View.GONE);
                 featuredLoading.setVisibility(View.GONE);
                 featuredEmpty.setVisibility(View.VISIBLE);
-                recommendLoading.setVisibility(View.GONE);
-                hotEmpty.setVisibility(View.VISIBLE);
+//                recommendLoading.setVisibility(View.GONE);
+//                hotEmpty.setVisibility(View.VISIBLE);
                 break;
             case 4:
                 recommendLoading.setVisibility(View.GONE);
@@ -193,6 +200,16 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             case 6:
                 bottomLoading.setVisibility(View.GONE);
                 break;
+            case 7:
+                featuredLoading.setVisibility(View.GONE);
+                featuredHolder.setVisibility(View.GONE);
+                featuredEmpty.setVisibility(View.VISIBLE);
+                break;
+            case 8:
+                recommendLoading.setVisibility(View.GONE);
+                hotRecyclerView.setVisibility(View.GONE);
+                hotEmpty.setVisibility(View.VISIBLE);
+                break;
         }
     }
 
@@ -200,237 +217,153 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         .apply(RequestOptions.fitCenterTransform()).into(imageView);
 
     /**
-     * Request prime information from API
+     * Request Prime V2
      */
     public void getPrime() {
-        String url = getResources().getString(R.string.base_url) +
-            getResources().getString(R.string.ep_api_get_prime) + "?page=" + page;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        Call<Prime> request = apiCalls.getFavouriteMerchants(page);
+        request.enqueue(new Callback<Prime>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject object = new JSONObject(response);
-                    JSONArray slideObjects = object.getJSONArray("hotlist");
+            public void onResponse(Call<Prime> call, retrofit2.Response<Prime> response) {
+                if (response.isSuccessful()) {
+                    Prime prime = response.body();
 
+                    // Sort Featured Merchant Section
                     for (int x = 0; x < 3; x++) {
-                        JSONObject featuredObject;
-                        Merchant item = new Merchant();
-
-                        if (x == 0) {
-                            featuredObject = object.getJSONObject("featured").getJSONObject("first");
-                            item.setVisited(object.getJSONObject("visited").getBoolean("first"));
-                        } else if (x == 1) {
-                            featuredObject = object.getJSONObject("featured").getJSONObject("second");
-                            item.setVisited(object.getJSONObject("visited").getBoolean("second"));
-                        } else {
-                            featuredObject = object.getJSONObject("featured").getJSONObject("third");
-                            item.setVisited(object.getJSONObject("visited").getBoolean("third"));
+                        if (x == 0 && prime.featured.first != null) {
+                            MerchantV2 merchantV2 = convertInnerItemToMerchantV2(prime.featured.first, prime.visited.first);
+                            setUpFeaturedV2(x, merchantV2);
+                            featuredV2.add(merchantV2);
+                        } else if (x == 1 && prime.featured.second != null) {
+                            MerchantV2 merchantV2 = convertInnerItemToMerchantV2(prime.featured.second, prime.visited.second);
+                            setUpFeaturedV2(x, merchantV2);
+                            featuredV2.add(merchantV2);
+                        } else if (x == 2 && prime.featured.third != null) {
+                            MerchantV2 merchantV2 = convertInnerItemToMerchantV2(prime.featured.third, prime.visited.third);
+                            setUpFeaturedV2(x, merchantV2);
+                            featuredV2.add(merchantV2);
                         }
-
-                        item.setId(featuredObject.getString("_id"));
-                        item.setBanner(featuredObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
-                        item.setLogo(featuredObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                        item.setAddress(featuredObject.getJSONObject("merchantInfo").getString("address") + " " + featuredObject.getJSONObject("merchantInfo").getString("city"));
-                        item.setDetails(featuredObject.getJSONObject("merchantInfo").getString("companyDetails"));
-                        item.setEmail(featuredObject.getString("email"));
-                        item.setMobile(featuredObject.getJSONObject("merchantInfo").getString("mobileNumber"));
-                        item.setTitle(featuredObject.getJSONObject("merchantInfo").getString("companyName"));
-                        if (
-                            featuredObject.getJSONObject("merchantInfo").has("rewards")
-                                && !featuredObject.getJSONObject("merchantInfo").isNull("rewards")
-                                && !featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards")
-                                .isNull(0)) {
-                            item.setReward(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
-                            item.setRewards(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
-                            item.setRewardsCount(featuredObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
-                        } else {
-                            item.setRewardsCount(0);
-                        }
-                        item.setRating(featuredObject.getJSONObject("merchantInfo").getJSONObject("rating").getInt("value"));
-                        item.setLatitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
-                        item.setLongitude(featuredObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
-                        item.setFavourite(favourites.contains(featuredObject.getString("_id")));
-
-                        setUpFeatured(x, item);
-                        featured.add(item);
-                    }
-                    loading(1);
-
-                    for (int x = 0; x < slideObjects.length(); x++) {
-                        JSONObject slideObject = slideObjects.getJSONObject(x);
-                        JSONObject merchantObject = slideObject.getJSONObject("id");
-
-                        slides.add(slideObject.getString("url").replace("http", "https"));
-
-                        Merchant item = new Merchant();
-                        item.setId(merchantObject.getString("_id"));
-                        item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
-                        item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + ", " + merchantObject.getJSONObject("merchantInfo").getString("city"));
-                        item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
-                        item.setEmail(merchantObject.getString("email"));
-                        item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
-                        item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
-                        if (
-                            merchantObject.getJSONObject("merchantInfo").has("rewards")
-                                && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
-                                && !merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
-                                .isNull(0)) {
-                            item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
-                                .getJSONObject(0)
-                                .getString("name"));
-                            item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
-                            item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
-                        } else {
-                            item.setRewardsCount(0);
-                        }
-                        item.setRating(merchantObject.getJSONObject("merchantInfo").getJSONObject("rating").getInt("value"));
-                        item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
-                        item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
-
-                        hotlist.add(item);
                     }
 
+                    loading(prime.featured.first != null ? 1 : 7);
+
+                    for (Prime.HotList hotList : prime.hotList) {
+                        slides.add(hotList.url);
+                        hotlistV2.add(convertInnerItemToMerchantV2(hotList.merchant, false));
+                    }
                     hotCarousel.setImageListener(imageListener);
                     hotCarousel.setPageCount(slides.size());
                     loading(0);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    Toast.makeText(HotActivity.this,
-                        "Something went wrong while getting your featured information.",
-                        Toast.LENGTH_SHORT).show();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            HotActivity.this.onBackPressed();
-                        }
-                    }, 2000);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                    loading(3);
+
                 } else {
-                    Toast.makeText(HotActivity.this,
-                        "Something went wrong while getting your featured information.",
-                        Toast.LENGTH_SHORT).show();
-                    HotActivity.this.onBackPressed();
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(HotActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                    loading(error.statusCode == 404 ? 7 : 3);
                 }
             }
-        }) {
+
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
+            public void onFailure(Call<Prime> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(HotActivity.this,
+                        "Something went wrong while getting your featured information.",
+                        Toast.LENGTH_SHORT).show();
+                HotActivity.this.onBackPressed();
             }
-        };
+        });
+    }
 
-        requestQueue.add(stringRequest);
-        getMostRecent();
+    /**
+     * Convert inner item into merchant v2
+     * @param item
+     * @param visited
+     * @return
+     */
+    private MerchantV2 convertInnerItemToMerchantV2(Prime.InnerItem item, boolean visited) {
+        MerchantV2 merchant = new MerchantV2();
+        Prime.MerchantInfo merchantInfo = item.merchantInfo;
+
+        merchant.banner = merchantInfo.banner;
+        merchant.logo = merchantInfo.logo;
+        merchant.address = merchantInfo.address;
+        merchant.details = merchantInfo.companyDetails;
+        merchant.email = item.email;
+        merchant.mobile = merchantInfo.mobileNumber;
+        merchant.title = merchantInfo.companyName;
+        if (merchantInfo.rewards != null && merchantInfo.rewards.size() > 0) {
+            merchant.reward = merchantInfo.rewards.get(0);
+            merchant.rewards = merchantInfo.rewards;
+            merchant.rewardsCount = merchantInfo.rewards.size();
+        } else {
+            merchant.rewardsCount = 0;
+        }
+        merchant.rating = merchantInfo.rating.value;
+        merchant.location = new LocationV2();
+        merchant.location.longitude = merchantInfo.location[0];
+        merchant.location.latitude = merchantInfo.location[1];
+
+        merchant.id = item.id;
+        merchant.favourite = favourites.contains(item.id);
+        merchant.visited = visited;
+
+        return merchant;
     }
 
     /**
      * Get most recent merchants
      */
-    public void getMostRecent() {
-        String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_merchant_recent) + "?page=" + page;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+    public void getMostRecentV2() {
+        Call<ArrayList<Prime.InnerItem>> request = apiCalls.getMostRecentMerchants(page);
+        request.enqueue(new Callback<ArrayList<Prime.InnerItem>>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray recentArray = new JSONArray(response);
-                    for (int x = 0; x < recentArray.length(); x++) {
-                        JSONObject merchantObject = recentArray.getJSONObject(x);
-
-                        Merchant item = new Merchant();
-                        item.setId(merchantObject.getString("_id"));
-                        item.setBanner(merchantObject.getJSONObject("merchantInfo").getJSONObject("banner").getString("url"));
-                        item.setLogo(merchantObject.getJSONObject("merchantInfo").getJSONObject("logo").getString("url"));
-                        item.setAddress(merchantObject.getJSONObject("merchantInfo").getString("address") + ", " + merchantObject.getJSONObject("merchantInfo").getString("city"));
-                        item.setDetails(merchantObject.getJSONObject("merchantInfo").getString("companyDetails"));
-                        item.setEmail(merchantObject.getString("email"));
-                        item.setMobile(merchantObject.getJSONObject("merchantInfo").getString("mobileNumber"));
-                        item.setTitle(merchantObject.getJSONObject("merchantInfo").getString("companyName"));
-                        if (
-                            merchantObject.getJSONObject("merchantInfo").has("rewards")
-                                && !merchantObject.getJSONObject("merchantInfo").isNull("rewards")
-                                && !merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards")
-                                .isNull(0)) {
-                            item.setReward(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").getJSONObject(0).getString("name"));
-                            item.setRewards(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").toString());
-                            item.setRewardsCount(merchantObject.getJSONObject("merchantInfo").getJSONArray("rewards").length());
-                        } else {
-                            item.setRewardsCount(0);
-                        }
-
-                        item.setRating(merchantObject.getJSONObject("merchantInfo").getInt("rating"));
-                        item.setLatitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(1));
-                        item.setLongitude(merchantObject.getJSONObject("merchantInfo").getJSONArray("location").getDouble(0));
-                        item.setFavourite(merchantObject.getBoolean("favourite"));
-                        item.setVisited(merchantObject.getBoolean("visited"));
-
-                        merchants.add(item);
+            public void onResponse(Call<ArrayList<Prime.InnerItem>> call, retrofit2.Response<ArrayList<Prime.InnerItem>> response) {
+                if (response.isSuccessful()) {
+                    for (Prime.InnerItem item : response.body()) {
+                        MerchantV2 merchantV2 = convertInnerItemToMerchantV2(item, item.visited);
+                        merchantV2.favourite = item.favourite;
+                        merchantsV2.add(merchantV2);
                     }
 
                     isLoading = false;
                     adapter.notifyDataSetChanged();
-                    if (merchants.size() > 0) {
+                    if (merchantsV2.size() > 0) {
                         loading(2);
                     } else {
-                        loading(3);
+                        loading(8);
                     }
 
                     if (page > 0) {
                         loading(6);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    isLoading = false;
-                    if (merchants.size() == 0) {
-                        loading(4);
-                    }
-
-                    if (page > 0) {
-                        loading(6);
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isLoading = false;
-                error.printStackTrace();
-                if (page > 0) {
-                    loading(6);
-                }
-                if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                    if (merchants.size() == 0) {
-                        loading(3);
                     }
                 } else {
-                    if (merchants.size() == 0) {
-                        loading(4);
+                    isLoading = false;
+                    ApiError error = ApiClient.parseError(response);
+
+                    if (page > 0) {
+                        loading(6);
+                    } else {
+                        loading(error.statusCode == 404 ? 8 : 4);
                     }
+                    Toast.makeText(HotActivity.this, error.message, Toast.LENGTH_SHORT).show();
                 }
             }
-        }) {
+
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
+            public void onFailure(Call<ArrayList<Prime.InnerItem>> call, Throwable t) {
+                isLoading = false;
+                if (page > 0) {
+                    loading(6);
+                    Toast.makeText(HotActivity.this,
+                            "Something went wrong while getting your featured information.",
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    loading(4);
+                }
             }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**
@@ -442,7 +375,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLoading || (merchants.size() % 10) != 0 || merchants.size() < 10)
+                if (isLoading || (merchantsV2.size() % 10) != 0 || merchantsV2.size() < 10)
                     return;
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -451,13 +384,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     isLoading = true;
                     loading(5);
-                    page = merchants.size() / 10;
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            getMostRecent();
-                        }
-                    }, 2000);
+                    page = merchantsV2.size() / 10;
+                    handler.postDelayed(() -> getMostRecentV2(), 2000);
                 }
             }
         });
@@ -466,69 +394,69 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     /**
      * Set the featured information
      * @param index
-     * @param merchant
+     * @param merchant MerchantV2
      */
-    private void setUpFeatured(int index, Merchant merchant) {
+    private void setUpFeaturedV2(int index, MerchantV2 merchant) {
         switch (index) {
             case 0:
-                hotTitle1.setText(merchant.getTitle());
-                hotAddress1.setText(merchant.getAddress());
+                hotTitle1.setText(merchant.title);
+                hotAddress1.setText(merchant.address);
                 String rewardsText1 = "";
-                if (merchant.getRewardsCount() == 1) {
-                    rewardsText1 = merchant.getReward();
-                } else if (merchant.getRewardsCount() > 1) {
-                    rewardsText1 = merchant.getRewardsCount() + " REWARDS";
+                if (merchant.rewardsCount == 1) {
+                    rewardsText1 = merchant.rewards.get(0).name;
+                } else if (merchant.rewardsCount > 1) {
+                    rewardsText1 = merchant.rewardsCount + " REWARDS";
                 } else {
                     rewardsText1 = "No Rewards";
                 }
                 hotrewards1.setText(rewardsText1);
-                if (merchant.isVisited()) {
+                if (merchant.visited) {
                     hotVisited1.setVisibility(View.VISIBLE);
                 }
-                if(merchant.isFavourite()) {
+                if(merchant.favourite) {
                     hotFav1.setVisibility(View.VISIBLE);
                 }
-                Glide.with(this).load(merchant.getLogo()).into(hotLogo1);
+                Glide.with(this).load(merchant.logo.url).into(hotLogo1);
                 break;
             case 1:
-                hotTitle2.setText(merchant.getTitle());
-                hotAddress2.setText(merchant.getAddress());
+                hotTitle2.setText(merchant.title);
+                hotAddress2.setText(merchant.address);
                 String rewardsText2 = "";
-                if (merchant.getRewardsCount() == 1) {
-                    rewardsText2 = merchant.getReward();
-                } else if (merchant.getRewardsCount() > 1) {
-                    rewardsText2 = merchant.getRewardsCount() + " REWARDS";
+                if (merchant.rewardsCount == 1) {
+                    rewardsText2 = merchant.rewards.get(0).name;
+                } else if (merchant.rewardsCount > 1) {
+                    rewardsText2 = merchant.rewardsCount + " REWARDS";
                 } else {
                     rewardsText2 = "No Rewards";
                 }
                 hotrewards2.setText(rewardsText2);
-                if (merchant.isVisited()) {
+                if (merchant.visited) {
                     hotVisited2.setVisibility(View.VISIBLE);
                 }
-                if(merchant.isFavourite()) {
+                if(merchant.favourite) {
                     hotFav2.setVisibility(View.VISIBLE);
                 }
-                Glide.with(this).load(merchant.getLogo()).into(hotLogo2);
+                Glide.with(this).load(merchant.logo.url).into(hotLogo2);
                 break;
             case 2:
-                hotTitle3.setText(merchant.getTitle());
-                hotAddress3.setText(merchant.getAddress());
+                hotTitle3.setText(merchant.title);
+                hotAddress3.setText(merchant.address);
                 String rewardsText3 = "";
-                if (merchant.getRewardsCount() == 1) {
-                    rewardsText3 = merchant.getReward();
-                } else if (merchant.getRewardsCount() > 1) {
-                    rewardsText3 = merchant.getRewardsCount() + " REWARDS";
+                if (merchant.rewardsCount == 1) {
+                    rewardsText3 = merchant.rewards.get(0).name;
+                } else if (merchant.rewardsCount > 1) {
+                    rewardsText3 = merchant.rewardsCount + " REWARDS";
                 } else {
                     rewardsText3 = "No Rewards";
                 }
                 hotrewards3.setText(rewardsText3);
-                if (merchant.isVisited()) {
+                if (merchant.visited) {
                     hotVisited3.setVisibility(View.VISIBLE);
                 }
-                if(merchant.isFavourite()) {
+                if(merchant.favourite) {
                     hotFav3.setVisibility(View.VISIBLE);
                 }
-                Glide.with(this).load(merchant.getLogo()).into(hotLogo3);
+                Glide.with(this).load(merchant.logo.url).into(hotLogo3);
                 break;
         }
     }
@@ -537,10 +465,10 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
      * Navigate user to merchant page
      * @param merchant
      */
-    public void goToMerchantPage(Merchant merchant) {
+    public void goToMerchantV2Page(MerchantV2 merchant) {
         Intent merchantIntent = new Intent(this, MerchantActivity.class);
         Bundle extra = new Bundle();
-        extra.putSerializable("object", merchant);
+        extra.putString("merchant", TypeUtils.objectToString(merchant));
         merchantIntent.putExtras(extra);
         startActivity(merchantIntent);
     }
@@ -552,13 +480,13 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 onBackPressed();
                 break;
             case R.id.card1:
-                goToMerchantPage(featured.get(0));
+                goToMerchantV2Page(featuredV2.get(0));
                 break;
             case R.id.card2:
-                goToMerchantPage(featured.get(1));
+                goToMerchantV2Page(featuredV2.get(1));
                 break;
             case R.id.card3:
-                goToMerchantPage(featured.get(2));
+                goToMerchantV2Page(featuredV2.get(2));
                 break;
         }
     }
@@ -579,7 +507,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
 
     @Override
     public void onItemClick(int position) {
-        goToMerchantPage(merchants.get(position));
+        goToMerchantV2Page(merchantsV2.get(position));
     }
 
     @Override

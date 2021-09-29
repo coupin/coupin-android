@@ -33,7 +33,6 @@ import org.json.JSONObject
 class CheckoutFragment : Fragment(), View.OnClickListener {
 
     private val checkoutViewModel : GetCoupinViewModel by activityViewModels()
-    private val logTag = "CheckoutFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_checkout, container, false)
@@ -150,7 +149,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
                 val user = JSONObject(PreferenceMngr.getUser())
                 PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"))
                 checkoutViewModel.tempBlackListMLD.value?.let {
-                    PreferenceMngr.getInstance().blacklist = it
+                    PreferenceMngr.setBlacklist(it)
                 }
 
                 checkoutViewModel.coupinResponseModelMLD.value?.let {

@@ -17,7 +17,6 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -50,6 +49,11 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.SignInRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import org.json.JSONObject;
@@ -64,6 +68,9 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -108,10 +115,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     private String socialUrl;
     private String url;
 
+    private ApiCalls apiCalls;
     private CallbackManager callbackManager;
     private GoogleSignInClient gsc;
     private GoogleSignInOptions gso;
-    private PreferenceMngr preferenceMngr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -120,11 +127,11 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         ButterKnife.bind(this);
 
         PreferenceMngr.setContext(this);
-        preferenceMngr = PreferenceMngr.getInstance();
 
         // Set up the login form.
         populateAutoComplete();
 
+        apiCalls = ApiClient.getInstance().getCalls(getApplicationContext(), false);
         requestQueue = Volley.newRequestQueue(this);
         url = getString(R.string.base_url) + getString(R.string.ep_login_user);
         socialUrl = getResources().getString(R.string.base_url) +
@@ -238,9 +245,9 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     Set<String> tempArr = new HashSet<>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
-                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
+                    PreferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     boolean isWeekends = object.getJSONObject("notification").getString("days").equals("weekends");
-                    preferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
+                    PreferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
                 } catch (Exception e) {
@@ -300,9 +307,95 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
                     Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
                     PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
-                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
+                    PreferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
                     boolean isWeekends = object.getJSONObject("notification").getString("days").equals("weekends");
-                    preferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
+                    PreferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
+                    showProgress(false);
+                    startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                    finish();
+                } catch (Exception e) {
+                    showProgress(false);
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                showProgress(false);
+                if (error.toString().equals("com.android.volley.TimeoutError")) {
+                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
+                } else {
+                    if (error.networkResponse != null && error.networkResponse.data != null) {
+                        if (error.networkResponse.statusCode == 401) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
+                        } else if (error.networkResponse.statusCode == 404) {
+                            Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
+                        }
+                    } else {
+                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            }
+        }){
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+
+                params.put("email", email);
+                params.put("password", password);
+
+                return params;
+            }
+        };
+
+        requestQueue.add(stringRequest);
+    }
+    /**
+     * Normal login
+     * @param email
+     * @param password
+     */
+    private void loginUserV2(final String email, final String password) {
+        Call<User> request = apiCalls.signIn(new SignInRequest(email, password));
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                if (response.isSuccessful()) {
+                    User user = response.body();
+                    assert user != null;
+                    PreferenceMngr.setCurrentUserDetails(user);
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(getApplicationContext(), error.message, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                String message = t.getMessage() != null ? t.getMessage() : getResources().getString(R.string.error_us);
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject res = new JSONObject(response);
+                    JSONObject object = res.getJSONObject("user");
+                    String temp = object.getJSONArray("favourites").toString();
+                    String tempList = object.getJSONArray("blacklist").toString();
+                    Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
+                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
+                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
+                    PreferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
+                    boolean isWeekends = object.getJSONObject("notification").getString("days").equals("weekends");
+                    PreferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();

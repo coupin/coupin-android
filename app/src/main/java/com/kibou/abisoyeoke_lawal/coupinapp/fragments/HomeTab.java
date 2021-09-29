@@ -81,7 +81,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.NetworkErrorDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.MerchantRequest;
@@ -153,7 +153,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     private ApiCalls apiCalls;
 
-
     // Map Stuff
     public ViewGroup infoWindow;
     public ImageView banner;
@@ -190,7 +189,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public String url;
     public RequestQueue requestQueue;
 
-    private ArrayList<Merchant> iconsList = new ArrayList<>();
     private ArrayList<MerchantV2> iconsListV2 = new ArrayList<>();
 
     public int icons[] = new int[]{R.drawable.slide1, R.drawable.slide2,
@@ -291,7 +289,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         url = getString(R.string.base_url) + getString(R.string.ep_api_merchant);
 
         // Clear list if it exists
-        iconsList.clear();
+        iconsListV2.clear();
 
         mapView.onCreate(savedInstanceState);
 
@@ -672,7 +670,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         (new LogoConverter()).execute(true);
                     } catch (Exception e) {
                         e.printStackTrace();
-                        adapter.setIconList(iconsList);
+                        adapter.setIconList(iconsListV2);
                         adapter.notifyDataSetChanged();
                         retrievingData = false;
                         showDialog(false);
@@ -793,7 +791,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
-            int size = iconsList.size() - 1;
+            int size = iconsListV2.size() - 1;
             if (isLoading || (size % 5) != 0 || size < 5 || disableLoadMore)
                 return;
 
@@ -807,116 +805,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             }
             }
         });
-    }
-
-    /**
-     * Load more merchants
-     */
-    // TODO: Continue Convertion to Retrofit
-    private void loadMore() {
-        try {
-            StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                @Override
-                public void onResponse(String response) {
-                    try {
-                        JSONArray resArr = new JSONArray(response);
-
-                        for (int j = 0; j < resArr.length(); j++) {
-                            JSONObject res = resArr.getJSONObject(j);
-                            Merchant item = new Merchant();
-                            item.setId(res.getString("_id"));
-                            item.setPicture(icons[j]);
-                            item.setAddress(res.getString("address"));
-                            item.setDetails(res.getString("details"));
-                            item.setEmail(res.getString("email"));
-                            item.setMobile(res.getString("mobile"));
-                            item.setTitle(res.getString("name"));
-                            item.setRewards(res.getJSONArray("rewards").toString());
-                            item.setLatitude(res.getJSONObject("location").getDouble("lat"));
-                            item.setLongitude(res.getJSONObject("location").getDouble("long"));
-                            item.setLogo(res.getJSONObject("logo").getString("url"));
-                            markers.add(mGoogleMap.addMarker(new MarkerOptions()
-                                .title(res.getString("name"))
-                                .snippet(res.toString())
-                                .position(new LatLng(item.getLatitude(), item.getLongitude()))
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
-                            iconsList.add(item);
-                        }
-
-                        spots.setText(iconsList.size() - 1 + " Rewards ");
-
-                        // TODO: Set the bounds properly
-                        setBounds();
-
-                        retrievingData = false;
-                        isLoading = false;
-                        loading();
-                        adapter.notifyDataSetChanged();
-                        page++;
-
-                        (new LogoConverter()).execute(false);
-                    } catch (Exception e) {
-                        retrievingData = false;
-                        isLoading = false;
-                        e.printStackTrace();
-                    }
-                }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    isLoading = false;
-                    retrievingData = false;
-                    loading();
-
-                    if (HomeTab.this.isVisible()) {
-                        if (error.networkResponse == null) {
-                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                                getResources().getString(R.string.error_connection_detail), view -> requireActivity().finish());
-                            networkErrorDialog.show();
-                        } else if (error.networkResponse.statusCode == 404) {
-                            Toast.makeText(getActivity(), getResources().getString(R.string.empty_more_details), Toast.LENGTH_LONG).show();
-                            disableLoadMore = true;
-                        } else {
-                            networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
-                                error.getMessage(), view -> requireActivity().finish());
-                            networkErrorDialog.show();
-                        }
-                    }
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Authorization", PreferenceMngr.getToken());
-
-                    return headers;
-                }
-
-                @Override
-                protected Map<String, String> getParams() {
-                    Map<String, String> params = new HashMap<>();
-                    if (longitude != null && latitude != null) {
-                        params.put("longitude", String.valueOf(longitude.doubleValue()));
-                        params.put("latitude", String.valueOf(latitude.doubleValue()));
-                    } else {
-                        params.put("longitude", "undefined");
-                        params.put("latitude", "undefined");
-                    }
-                    params.put("distance", String.valueOf(distance));
-                    params.put("categories", categories.toString());
-                    params.put("page", String.valueOf(page));
-
-                    return params;
-                }
-            };
-
-            if (!retrievingData) {
-                retrievingData = true;
-                requestQueue.add(stringRequest);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     /**

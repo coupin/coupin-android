@@ -7,7 +7,6 @@ import com.google.gson.GsonBuilder;
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import java.lang.annotation.Annotation;

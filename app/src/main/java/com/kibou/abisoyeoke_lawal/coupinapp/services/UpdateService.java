@@ -69,9 +69,9 @@ public class UpdateService extends Service {
                         int code = getVersionCode(getApplicationContext());
                         int newCode = Integer.valueOf(response);
                         if (code < newCode && PreferenceMngr.getLastAttempt() < newCode) {
-                            PreferenceMngr.getInstance().setUpdate(true);
+                            PreferenceMngr.setUpdate(true);
                         } else {
-                            PreferenceMngr.getInstance().setUpdate(false);
+                            PreferenceMngr.setUpdate(false);
                         }
                     }
                 }

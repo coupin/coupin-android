@@ -107,7 +107,7 @@ public class ExperienceDialog extends Dialog {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         try {
-            userId = PreferenceMngr.getInstance().getUserId();
+            userId = PreferenceMngr.getUserId();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -244,8 +244,8 @@ public class ExperienceDialog extends Dialog {
             }
         };
 
-        if(PreferenceMngr.getInstance().getRequestQueue() != null){
-            PreferenceMngr.getInstance().getRequestQueue().add(stringRequest);
+        if(PreferenceMngr.getRequestQueue() != null){
+            PreferenceMngr.getRequestQueue().add(stringRequest);
         }
     }
 

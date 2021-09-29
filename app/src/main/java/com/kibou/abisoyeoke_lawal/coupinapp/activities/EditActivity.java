@@ -72,7 +72,6 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     private boolean editMode = false;
     private boolean saveToast = false;
 
-    private PreferenceMngr preferenceMngr;
     private RequestQueue requestQueue;
     private LoadingDialog loadingDialog;
     private JSONObject user;
@@ -84,7 +83,6 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
 
         requestQueue = Volley.newRequestQueue(this);
-        preferenceMngr = PreferenceMngr.getInstance();
         loadingDialog = new LoadingDialog(this, R.style.Loading_Dialog);
 
 
@@ -294,7 +292,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
      * Do call to save user details
      */
     private void saveUser() {
-        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + preferenceMngr.getUserId();
+        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + PreferenceMngr.getUserId();
 
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
@@ -346,7 +344,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         };
 
         DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        preferenceMngr.getRequestQueue().add(stringRequest).setRetryPolicy(retryPolicy);
+        PreferenceMngr.getRequestQueue().add(stringRequest).setRetryPolicy(retryPolicy);
     }
 
     private void result(String message) {

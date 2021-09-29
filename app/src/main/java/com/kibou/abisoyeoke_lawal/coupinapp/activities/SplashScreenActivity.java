@@ -8,6 +8,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -18,17 +20,28 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.appevents.AppEventsLogger;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.UpdateService;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PermissionsMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class SplashScreenActivity extends AppCompatActivity implements MyOnSelect {
+    private ApiCalls apiCalls;
     private boolean check = false;
+    private boolean isLoggedIn = false;
+    private boolean interestsSelected = false;
+    private boolean isOnboardingDone = false;
     private Bundle extras;
     private final int PERMISSION_ALL = 1;
     private int count = 0;
@@ -58,10 +71,16 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
             .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
             .into(gifView);
 
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
+
         PreferenceMngr.setContext(getApplicationContext());
-        if (PreferenceMngr.getInstance().getRequestQueue() == null) {
-            PreferenceMngr.getInstance().setRequestQueue(requestQueue1);
+        if (PreferenceMngr.getRequestQueue() == null) {
+            PreferenceMngr.setRequestQueue(requestQueue1);
         }
+
+        isLoggedIn = PreferenceMngr.isLoggedIn();
+        interestsSelected = PreferenceMngr.interestsSelected();
+        isOnboardingDone = PreferenceMngr.isOnboardingDone();
 
         startService(new Intent(getApplicationContext(), UpdateService.class));
 
@@ -73,7 +92,11 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
                 updateDialog.show();
             } else {
                 extras = getIntent().getExtras();
-                proceed();
+                if (PreferenceMngr.isLoggedIn()) {
+                    updateUserInfo();
+                } else {
+                    proceed();
+                }
             }
         }
     }
@@ -95,7 +118,11 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
                         updateDialog = new UpdateDialog(this, this);
                         updateDialog.show();
                     } else {
-                        proceed();
+                        if (PreferenceMngr.isLoggedIn()) {
+                            updateUserInfo();
+                        } else {
+                            proceed();
+                        }
                     }
                 } else {
                     Toast.makeText(this, getResources().getString(R.string.permissions), Toast.LENGTH_SHORT).show();
@@ -106,33 +133,28 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
     }
 
     public void proceed() {
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (PreferenceMngr.isLoggedIn()) {
-
-                    if (!PreferenceMngr.interestsSelected()) {
-                        startActivity(new Intent(SplashScreenActivity.this, InterestsActivity.class));
-                        finish();
-                    } else if(!PreferenceMngr.isOnboardingDone()){
-                        startActivity(new Intent(SplashScreenActivity.this, OnboardingActivity.class));
-                        finish();
-                    } else if (extras != null) {
-                        if ("hot".equals(extras.getString("navigateTo"))) {
-                            startActivity(new Intent(SplashScreenActivity.this, HotActivity.class));
-                            finish();
-                        } else {
-                            startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
-                            finish();
-                        }
+        handler.postDelayed(() -> {
+            if (isLoggedIn) {
+                if (!interestsSelected) {
+                    startActivity(new Intent(SplashScreenActivity.this, InterestsActivity.class));
+                    finish();
+                } else if(!isOnboardingDone) {
+                    startActivity(new Intent(SplashScreenActivity.this, OnboardingActivity.class));
+                    finish();
+                } else if (extras != null) {
+                    if ("hot".equals(extras.getString("navigateTo"))) {
+                        startActivity(new Intent(SplashScreenActivity.this, HotActivity.class));
                     } else {
                         startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
-                        finish();
                     }
+                    finish();
                 } else {
-                    startActivity(new Intent(SplashScreenActivity.this, LandingActivity.class));
+                    startActivity(new Intent(SplashScreenActivity.this, HomeActivity.class));
                     finish();
                 }
+            } else {
+                startActivity(new Intent(SplashScreenActivity.this, LandingActivity.class));
+                finish();
             }
         }, 2000);
     }
@@ -142,7 +164,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         if (selected) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_link))));
         } else {
-            PreferenceMngr.getInstance().setUpdate(false);
+            PreferenceMngr.setUpdate(false);
             PreferenceMngr.setLastUpdate(version);
             proceed();
         }
@@ -150,4 +172,26 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
 
     @Override
     public void onSelect(boolean selected, int index, int quantity) { }
+
+    private void updateUserInfo() {
+        Call<User> request = apiCalls.getCurrentUserInfo();
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    PreferenceMngr.setCurrentUser(response.body());
+                }
+
+                proceed();
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                proceed();
+            }
+        });
+    }
 }

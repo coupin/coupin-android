@@ -42,6 +42,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
@@ -124,7 +125,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private ArrayList<Date> expiryDates;
     private Set<String> tempBlackList = new HashSet<>();
     private Set<Reward> selectedRewards = new HashSet<>();
-    //    private ArrayList<String> favourites;
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
     private ArrayList<Reward> values;
@@ -135,7 +135,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private Handler handler;
     private int page = 0;
     private LinearLayoutManager linearLayoutManager;
-//    private Merchant item;
     private MerchantV2 item;
     private JSONArray resArray;
     private JSONObject res;
@@ -143,7 +142,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private RVPopUpAdapter rvPopUpAdapter;
     private Set<String> favourites;
     private String merchantId;
-    private String logTag = "MerchantActivity";
+    private User userV2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -151,6 +150,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         setContentView(R.layout.activity_merchant);
         ButterKnife.bind(this);
         requestQueue = Volley.newRequestQueue(this);
+
+        userV2 = PreferenceMngr.getCurrentUser();
 
         setSupportActionBar(merchantToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -191,18 +192,24 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             ratingText.setText(ratingString);
 
             user = new JSONObject(PreferenceMngr.getUser());
-            tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
+            tempBlackList.addAll(PreferenceMngr.getBlacklist());
             rvPopUpAdapter.setBlacklist(tempBlackList);
 
             // Show Mobile and Gender Dialog
+//            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
+//                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
+//                experienceDialog = new ExperienceDialog(this, this, user);
+//                requestGenderNumber = true;
+//                experienceDialog.show();
+//            }
             if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
-                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
+                && (userV2.mobileNumber == null || userV2.ageRange == null)) {
                 experienceDialog = new ExperienceDialog(this, this, user);
                 requestGenderNumber = true;
                 experienceDialog.show();
             }
 
-            favourites = PreferenceMngr.getInstance().getFavourites();
+            favourites = PreferenceMngr.getFavourites();
             if (favourites.contains(item.id)) {
                 favourite = true;
             }
@@ -306,9 +313,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * Navigate to restaurant
      */
     private void navigate() {
-        String parsedAddress = item.address.replace(" ", "+");
-        parsedAddress = parsedAddress.replace(",", "");
-
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
         navigateIntent.setData(Uri.parse("geo:" + item.location.latitude + "," + item.location.latitude +
             "?q=" + item.location.latitude + "," + item.location.latitude));
@@ -322,14 +326,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         String rewardUrl = getString(R.string.base_url) + getString(R.string.ep_api_reward) + "/" +
             merchantId + "?page=" + page;
 
-        Log.d(logTag, "get request url : " + rewardUrl);
-
         StringRequest stringRequest = new StringRequest(Request.Method.GET, rewardUrl, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
                 try {
                     resArray = new JSONArray(response);
-                    Log.d(logTag, "rewards resArray: " + resArray);
                     for (int x = 0; x < resArray.length(); x++) {
                         Reward reward = new Reward();
                         JSONObject object = resArray.getJSONObject(x);
@@ -375,7 +376,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                         values.add(reward);
                     }
-                    Log.d(logTag, "rewards values: " + values);
                     isLoading = false;
                     if (page == 0) {
                         if (values.size() == 0) {
@@ -433,8 +433,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             public Map<String, String> getHeaders() {
                 Map<String, String> headers = new HashMap<>();
                 headers.put("Authorization", PreferenceMngr.getToken());
-
-                Log.d(logTag, "headers Authorization: " + PreferenceMngr.getToken());
 
                 return headers;
             }
@@ -777,7 +775,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             @Override
             public void onResponse(String response) {
                 favourites.add(id);
-                PreferenceMngr.getInstance().setFavourites(favourites);
+                PreferenceMngr.setFavourites(favourites);
                 Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {
@@ -820,7 +818,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             @Override
             public void onResponse(String response) {
                 favourites.remove(id);
-                PreferenceMngr.getInstance().setFavourites(favourites);
+                PreferenceMngr.setFavourites(favourites);
                 Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
             }
         }, new Response.ErrorListener() {

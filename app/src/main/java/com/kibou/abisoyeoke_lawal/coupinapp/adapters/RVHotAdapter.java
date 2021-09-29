@@ -13,6 +13,7 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.makeramen.roundedimageview.RoundedImageView;
 
 import org.json.JSONArray;
@@ -24,12 +25,12 @@ import java.util.ArrayList;
  */
 
 public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHolder> {
-    public ArrayList<Merchant> merchants;
+    public ArrayList<MerchantV2> merchants;
     public Context context;
 
     static  public MyOnClick myOnClick;
 
-    public RVHotAdapter(ArrayList<Merchant> merchants, Context context, MyOnClick myOnClick) {
+    public RVHotAdapter(ArrayList<MerchantV2> merchants, Context context, MyOnClick myOnClick) {
         this.context = context;
         this.merchants = merchants;
         this.myOnClick = myOnClick;
@@ -44,35 +45,30 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        Merchant hotItem = merchants.get(position);
+        MerchantV2 hotItem = merchants.get(position);
 
-        try {
-            JSONArray rewardArray = new JSONArray(hotItem.getRewards());
+        holder.hotTitle.setText(hotItem.title);
+        holder.hotAddress.setText(hotItem.address);
+        Glide.with(context).load(hotItem.logo.url).into(holder.hotLogo);
 
-            holder.hotTitle.setText(hotItem.getTitle());
-            holder.hotAddress.setText(hotItem.getAddress());
-            Glide.with(context).load(hotItem.getLogo()).into(holder.hotLogo);
-
-            holder.hotVisited.setVisibility(View.VISIBLE);
-            if (!hotItem.isVisited()) {
-                holder.hotVisited.setImageAlpha(0);
-            }
-
-            holder.hotFavourite.setVisibility(View.VISIBLE);
-            if (!hotItem.isFavourite()) {
-                holder.hotFavourite.setImageAlpha(0);
-            }
-
-            if (hotItem.getRewardsCount() == 1){
-                holder.hotRewards.setText(rewardArray.getJSONObject(0).getString("name"));
-            } else if (hotItem.getRewardsCount() > 1) {
-                holder.hotRewards.setText(hotItem.getRewardsCount() + " REWARDS");
-            } else {
-                holder.hotRewards.setVisibility(View.GONE);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+        holder.hotVisited.setVisibility(View.VISIBLE);
+        if (!hotItem.visited) {
+            holder.hotVisited.setImageAlpha(0);
         }
+
+        holder.hotFavourite.setVisibility(View.VISIBLE);
+        if (!hotItem.favourite) {
+            holder.hotFavourite.setImageAlpha(0);
+        }
+
+        if (hotItem.rewardsCount == 1){
+            holder.hotRewards.setText(hotItem.rewards.get(0).name);
+        } else if (hotItem.rewardsCount > 1) {
+            holder.hotRewards.setText(hotItem.rewardsCount + " REWARDS");
+        } else {
+            holder.hotRewards.setVisibility(View.GONE);
+        }
+
         holder.bind(position);
     }
 
@@ -102,12 +98,7 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
         }
 
         public void bind(final int position) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myOnClick.onItemClick(position);
-                }
-            });
+            itemView.setOnClickListener(v -> myOnClick.onItemClick(position));
         }
     }
 }

@@ -9,7 +9,7 @@
               android:paddingStart="@dimen/margin_sm"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:visibility="visible"
+              android:visibility="gone"
     android:background="@color/background">
 
     <androidx.cardview.widget.CardView
@@ -51,7 +51,7 @@
                         android:id="@+id/hot_logo_1"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
-                        android:src="@drawable/slide1"
+                        android:src="@drawable/ic_clogo"
                         app:riv_border_color="@color/white"
                         app:riv_border_width="2dp"
                         app:riv_corner_radius="3dp"/>
@@ -79,7 +79,7 @@
                         android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
                         android:textStyle="bold"
-                        android:text="Yakubu's Tea"/>
+                        android:text="@string/dash"/>
 
                     <TextView
                         android:id="@+id/hot_address_1"
@@ -90,7 +90,7 @@
                         android:layout_marginBottom="5dp"
                         android:textColor="@color/text_color_1"
                         android:textSize="@dimen/medium_text"
-                        android:text="@string/example_address_1"/>
+                        android:text="@string/dash"/>
 
                 </LinearLayout>
 
@@ -143,7 +143,7 @@
                     android:layout_toRightOf="@id/hot_visited_1"
                     android:layout_width="wrap_content"
                     android:singleLine="true"
-                    android:text="@string/example_reward"
+                    android:text="@string/dash"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"
@@ -196,7 +196,7 @@
                         android:id="@+id/hot_logo_2"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
-                        android:src="@drawable/slide1"
+                        android:src="@drawable/ic_clogo"
                         app:riv_border_color="@color/white"
                         app:riv_border_width="2dp"
                         app:riv_corner_radius="3dp"/>
@@ -224,7 +224,7 @@
                         android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
                         android:textStyle="bold"
-                        android:text="Yakubu's Tea"/>
+                        android:text="@string/dash"/>
 
                     <TextView
                         android:id="@+id/hot_address_2"
@@ -235,7 +235,7 @@
                         android:layout_marginBottom="5dp"
                         android:textColor="@color/text_color_1"
                         android:textSize="@dimen/medium_text"
-                        android:text="@string/example_address_1"/>
+                        android:text="@string/dash"/>
 
                 </LinearLayout>
 
@@ -288,7 +288,7 @@
                     android:layout_toRightOf="@id/hot_visited_2"
                     android:layout_width="wrap_content"
                     android:singleLine="true"
-                    android:text="@string/example_reward"
+                    android:text="@string/dash"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"
@@ -341,7 +341,7 @@
                         android:id="@+id/hot_logo_3"
                         android:layout_height="50dp"
                         android:layout_width="50dp"
-                        android:src="@drawable/slide1"
+                        android:src="@drawable/ic_clogo"
                         app:riv_border_color="@color/white"
                         app:riv_border_width="2dp"
                         app:riv_corner_radius="3dp"/>
@@ -369,7 +369,7 @@
                         android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
                         android:textStyle="bold"
-                        android:text="Yakubu's Tea"/>
+                        android:text="@string/dash"/>
 
                     <TextView
                         android:id="@+id/hot_address_3"
@@ -380,7 +380,7 @@
                         android:layout_marginBottom="5dp"
                         android:textColor="@color/text_color_1"
                         android:textSize="@dimen/medium_text"
-                        android:text="@string/example_address_1"/>
+                        android:text="@string/dash"/>
 
                 </LinearLayout>
 
@@ -433,7 +433,7 @@
                     android:layout_toRightOf="@id/hot_visited_3"
                     android:layout_width="wrap_content"
                     android:singleLine="true"
-                    android:text="@string/example_reward"
+                    android:text="@string/dash"
                     android:textAllCaps="true"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"

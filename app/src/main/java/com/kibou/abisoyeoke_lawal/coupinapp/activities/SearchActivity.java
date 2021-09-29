@@ -19,11 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVSearchAdapter;
@@ -32,20 +28,12 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.FilterNoDistDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.ApiError;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.MerchantRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;

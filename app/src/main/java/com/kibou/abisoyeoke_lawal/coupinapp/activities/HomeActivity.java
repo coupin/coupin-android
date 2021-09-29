@@ -52,7 +52,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        requestQueue = PreferenceMngr.getInstance().getRequestQueue();
+        requestQueue = PreferenceMngr.getRequestQueue();
 
         if (requestQueue == null) {
             requestQueue = Volley.newRequestQueue(this);
@@ -127,7 +127,7 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener(installationTokenResult -> {
             String newToken = installationTokenResult.getToken();
-            String oldToken = PreferenceMngr.getInstance().getNotificationToken();
+            String oldToken = PreferenceMngr.getNotificationToken();
             if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
                 setNotificationToken(newToken);
             }
@@ -136,11 +136,11 @@ public class HomeActivity extends AppCompatActivity {
 
     private void setNotificationToken(final String newToken) {
         String url = getApplicationContext().getResources().getString(R.string.base_url) +
-            getApplicationContext().getResources().getString(R.string.ep_api_user_notifications, PreferenceMngr.getInstance().getUserId());
+            getApplicationContext().getResources().getString(R.string.ep_api_user_notifications, PreferenceMngr.getUserId());
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {
-                PreferenceMngr.getInstance().setNotificationToken(newToken);
+                PreferenceMngr.setNotificationToken(newToken);
             }
         }, new Response.ErrorListener() {
             @Override

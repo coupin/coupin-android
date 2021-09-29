@@ -119,7 +119,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         Glide.with(this).load(coupin.getMerchantLogo()).into(merchantLogo);
 
         coupinRewards = new ArrayList<>();
-        tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
+        tempBlackList.addAll(PreferenceMngr.getBlacklist());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(coupinRewards, this, this);

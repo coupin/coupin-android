@@ -46,7 +46,6 @@ public class NotificationActivity extends AppCompatActivity {
     public ToggleButton toggleReceive;
 
     private boolean notify;
-    private PreferenceMngr preferenceMngr;
     private RequestQueue requestQueue;
     private String days;
 
@@ -56,10 +55,9 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
 
-        preferenceMngr = PreferenceMngr.getInstance();
         requestQueue = Volley.newRequestQueue(getApplicationContext());
 
-        boolean[] previousSelection = preferenceMngr.getNotificationSelection();
+        boolean[] previousSelection = PreferenceMngr.getNotificationSelection();
 
         notificationBack.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,7 +121,7 @@ public class NotificationActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                preferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked());
+                PreferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked());
                 notificationButton.setEnabled(false);
                 updateNotifications();
             }
@@ -131,7 +129,7 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void updateNotifications() {
-        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + preferenceMngr.getUserId();
+        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + PreferenceMngr.getUserId();
 
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
             @Override
