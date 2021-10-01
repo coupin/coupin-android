@@ -125,7 +125,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
                     }
                     nowRvAdapter.notifyDataSetChanged();
                     if (jsonArray.length() == 0) {
-                        if (laterList.size() < 1) {
+                        if (laterList.size() == 1) {
                             loading(2);
                         } else {
                             showErrorToast(true);
@@ -137,7 +137,7 @@ public class SaveFragment extends Fragment implements MyOnClick {
                 } catch (Exception e) {
                     e.printStackTrace();
                     if (laterList.size() < 1) {
-                        loading(3);
+                        loading(2);
                     } else {
                         showErrorToast(true);
                     }

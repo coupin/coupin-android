@@ -11,6 +11,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StyleRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.res.ResourcesCompat;
 
 import android.util.Log;
 import android.view.View;
@@ -167,11 +168,13 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             String priceString = "N" + StringUtils.currencyFormatter((int) reward.getOldPrice());
             fullOldPrice.setText(priceString);
             fullOldPrice.setVisibility(View.VISIBLE);
+            fullPercentage.setVisibility(View.INVISIBLE);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
         } else if (reward.getNewPrice() > 0) {
             String priceString = "N" + StringUtils.currencyFormatter((int) reward.getNewPrice());
             fullNewPrice.setText(priceString);
             fullNewPrice.setVisibility(View.VISIBLE);
+            fullPercentage.setVisibility(View.INVISIBLE);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
         }
 
@@ -250,17 +253,17 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                     ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
                         .setTextColor(getContext().getResources().getColor(R.color.black));
                     ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
-                        .setBackground(getContext().getResources().getDrawable(R.drawable.days_left_background));
+                        .setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.days_left_background, null));
                 } else if (reward.getDays().getInt(x) == 6) {
                     ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
                         .setTextColor(getContext().getResources().getColor(R.color.black));
                     ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
-                        .setBackground(getContext().getResources().getDrawable(R.drawable.days_right_background));
+                        .setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.days_right_background, null));
                 } else {
                     ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
                         .setTextColor(getContext().getResources().getColor(R.color.black));
                     ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
-                        .setBackground(getContext().getResources().getDrawable(R.drawable.days_background));
+                        .setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.days_background, null));
                 }
             } catch (Exception e) {
                 e.printStackTrace();

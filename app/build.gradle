@@ -20,8 +20,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 87
-        versionName "1.0.2"
+        versionCode 90
+        versionName "1.0.5"
 //        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
 //        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
         resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
@@ -140,7 +140,7 @@ dependencies {
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
     // Flutterwave
-    implementation 'com.github.flutterwave.rave-android:rave_android:2.1.36'
+    implementation 'com.github.flutterwave.rave-android:rave_android:2.1.37'
 
     // google play core sdk
     implementation("com.google.android.play:core:1.10.0")

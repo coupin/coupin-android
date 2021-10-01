@@ -97,6 +97,8 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
                 float newPrice = first.getJSONObject("price").getInt("new");
                 float discount = ((oldPrice - newPrice) / oldPrice) * 100;
                 holder.rewardOnePercent.setText(((int) discount) + "%");
+            } else {
+                holder.rewardOnePercent.setVisibility(View.INVISIBLE);
             }
 
             if (rewardArray.length() > 1) {
@@ -108,6 +110,8 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
                     float newPrice = second.getJSONObject("price").getInt("new");
                     float discount = ((oldPrice - newPrice) / oldPrice) * 100;
                     holder.rewardTwoPercent.setText(String.valueOf((int) discount) + "%");
+                } else {
+                    holder.rewardTwoPercent.setVisibility(View.INVISIBLE);
                 }
             } else {
                 holder.activeRewardHolder2.setVisibility(View.GONE);

@@ -80,12 +80,7 @@ public class FavFragment extends Fragment implements MyOnClick {
         favRecyclerView.setHasFixedSize(true);
         favRecyclerView.setAdapter(rvAdapter);
 
-        favSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SearchActivity.class));
-            }
-        });
+        favSearch.setOnClickListener(v -> startActivity(new Intent(getActivity(), SearchActivity.class)));
 
         getFavourites();
 

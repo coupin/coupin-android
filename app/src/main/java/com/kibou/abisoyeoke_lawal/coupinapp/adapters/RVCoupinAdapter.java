@@ -61,9 +61,11 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
             } else if (reward.getOldPrice() > 0) {
                 String oldPriceString = "N" + (int) reward.getOldPrice();
                 holder.priceOld.setText(oldPriceString);
+                holder.discount.setVisibility(View.INVISIBLE);
             } else if (reward.getNewPrice() > 0) {
                 String newPriceString = "N" + (int) reward.getNewPrice();
                 holder.priceOld.setText(newPriceString);
+                holder.discount.setVisibility(View.INVISIBLE);
             }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
@@ -112,12 +114,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
         }
 
         public void bind(final int position) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myOnClick.onItemClick(position);
-                }
-            });
+            itemView.setOnClickListener(v -> myOnClick.onItemClick(position));
         }
     }
 

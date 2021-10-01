@@ -82,10 +82,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             });
 
             if (reward.isFav()) {
-
-                Log.d("FavFragment", "rvadapter outside");
-
-
                 holder.favAddress.setText(reward.getMerchantAddress());
                 holder.activeRewardHolder.setVisibility(View.GONE);
                 holder.activeFavHolder.setVisibility(View.VISIBLE);
@@ -121,7 +117,6 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
                 for (int x = 0 ; x < reward.getRewardCount(); x++) {
                     JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
-                    Log.d("FavFragment", "rvadapter" + object);
                     if (x == 0) {
                         temp = DateTimeUtils.convertZString(object.getString("endDate"));
                     } else {
@@ -142,6 +137,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                     float newPrice = first.getJSONObject("price").getInt("new");
                     float discount = ((oldPrice - newPrice) / oldPrice) * 100;
                     holder.rewardOnePercent.setText(((int) discount) + "%");
+                } else {
+                    holder.rewardOnePercent.setVisibility(View.INVISIBLE);
                 }
 
                 if (rewardArray.length() > 1) {
@@ -153,6 +150,8 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
                         float newPrice = second.getJSONObject("price").getInt("new");
                         float discount = ((oldPrice - newPrice) / oldPrice) * 100;
                         holder.rewardTwoPercent.setText(((int) discount) + "%");
+                    } else {
+                        holder.rewardTwoPercent.setVisibility(View.INVISIBLE);
                     }
                 } else {
                     holder.activeRewardHolder2.setVisibility(View.GONE);

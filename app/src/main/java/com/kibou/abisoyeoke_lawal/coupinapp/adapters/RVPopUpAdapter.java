@@ -95,9 +95,6 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         final Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.getDetails());
-        Log.v("Is Discount", " - " + reward.getIsDiscount());
-        Log.v("Is NEw", " - " + reward.getNewPrice());
-        Log.v("Is Old", " - " + reward.getOldPrice());
         if (reward.getIsDiscount()) {
             float oldPrice = reward.getOldPrice();
             float newPrice = reward.getNewPrice();
@@ -109,10 +106,12 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         } else if (reward.getOldPrice() > 0) {
             String priceString = "N" + StringUtils.currencyFormatter((int) reward.getOldPrice());
             holder.headPriceOld.setText(priceString);
+            holder.headPercentage.setVisibility(View.GONE);
         } else if (reward.getNewPrice() > 0) {
             String priceString = "N" + StringUtils.currencyFormatter((int) reward.getNewPrice());
             holder.headPriceOld.setText(priceString);
             holder.headPriceOld.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.headPercentage.setVisibility(View.GONE);
         }
 
         holder.headTitle.setText(String.valueOf(reward.getTitle()));

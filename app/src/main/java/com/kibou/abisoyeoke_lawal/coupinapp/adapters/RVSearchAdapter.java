@@ -94,12 +94,7 @@ public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemVi
         }
 
         public void bind(final int position) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myOnClick.onItemClick(position);
-                }
-            });
+            itemView.setOnClickListener(v -> myOnClick.onItemClick(position));
         }
     }
 
