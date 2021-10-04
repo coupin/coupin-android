@@ -9,6 +9,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.*
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -35,7 +36,7 @@ class GetCoupinActivity : AppCompatActivity() {
     private fun getIntentRewards(){
         val rewardsString = intent.getStringExtra(rewardsIntent)
         rewardsString?.let{
-            val rewardsArray= Gson().fromJson(it, Array<Reward>::class.java)
+            val rewardsArray= Gson().fromJson(it, Array<RewardV2>::class.java)
             rewardsArray?.let {
                 getCoupinVM.setSelectedCoupins(it)
             }

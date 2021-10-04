@@ -13,7 +13,11 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import org.json.JSONArray;
@@ -31,7 +35,7 @@ import java.util.Locale;
 
 public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHolder> {
     private Context context;
-    private List<RewardListItem> rewardListItems;
+    private List<RewardsListItemV2> rewardListItems;
 
     static public MyOnClick myOnClick;
 
@@ -42,7 +46,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
         return itemViewHolder;
     }
 
-    public RVBroAdapter(List<RewardListItem> rewardListItems, MyOnClick myOnClick, Context context) {
+    public RVBroAdapter(List<RewardsListItemV2> rewardListItems, MyOnClick myOnClick, Context context) {
         this.context = context;
         this.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
@@ -51,65 +55,58 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
     @Override
     public void onBindViewHolder(RVBroAdapter.ItemViewHolder holder, int position) {
         // Add data here
-        RewardListItem reward = rewardListItems.get(position);
+        RewardsListItemV2 reward = rewardListItems.get(position);
+        InnerItem.MerchantInfo merchantInfo = reward.merchant.merchantInfo;
         Date temp = new Date();
 
         try {
-            holder.merchantName.setText(reward.getMerchantName());
+            holder.merchantName.setText(merchantInfo.companyName);
 
-            JSONArray rewardArray = new JSONArray(reward.getRewardDetails());
-            Glide.with(context).load(reward.getMerchantLogo()).into(holder.favLogo);
-            Glide.with(context).load(reward.getMerchantBanner()).into(holder.favBanner);
+            Glide.with(context).load(merchantInfo.logo.url).into(holder.favLogo);
+            Glide.with(context).load(merchantInfo.banner.url).into(holder.favBanner);
 
-            if (reward.hasVisited()) {
-                holder.visitedIcon.setVisibility(View.VISIBLE);
-            }
-
-            if (reward.isFavourited()) {
-                holder.favIcon.setVisibility(View.VISIBLE);
-            }
-
-            if (reward.hasVisited() && reward.isFavourited()) {
-                holder.divide.setVisibility(View.VISIBLE);
-            }
+            if (reward.visited)  holder.visitedIcon.setVisibility(View.VISIBLE);
+            if (reward.favourite) holder.favIcon.setVisibility(View.VISIBLE);
+            if (reward.visited && reward.favourite) holder.divide.setVisibility(View.VISIBLE);
 
             holder.code.setText("REDEEM REWARDS");
             holder.status.setVisibility(View.GONE);
 
-            for (int x = 0 ; x < reward.getRewardCount(); x++) {
-                JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
-                if (x == 0) {
-                    temp = DateTimeUtils.convertZString(object.getString("endDate"));
+            int counter = 0;
+            for (RewardsListItemV2.RewardWrapper rewardWrapper: reward.rewards) {
+                RewardV2 rewardV2 = rewardWrapper.reward;
+                if (counter == 0) {
+                    temp = DateTimeUtils.convertZString(rewardV2.endDate);
                 } else {
-                    if (temp.after(DateTimeUtils.convertZString(object.getString("endDate")))) {
-                        temp = DateTimeUtils.convertZString(object.getString("endDate"));
+                    if (temp.after(DateTimeUtils.convertZString(rewardV2.endDate))) {
+                        temp = DateTimeUtils.convertZString(rewardV2.endDate);
                     }
                 }
+                counter++;
             }
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
             holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
-            JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");
-            holder.rewardOne.setText(first.getString("description"));
-            if (first.has("price")) {
-                float oldPrice = first.getJSONObject("price").getInt("old");
-                float newPrice = first.getJSONObject("price").getInt("new");
+            RewardV2 first = reward.rewards.get(0).reward;
+            holder.rewardOne.setText(first.description);
+            if (first.price != null && first.price.oldPrice > 0 && first.price.newPrice > 0) {
+                float oldPrice = first.price.oldPrice;
+                float newPrice = first.price.newPrice;
                 float discount = ((oldPrice - newPrice) / oldPrice) * 100;
                 holder.rewardOnePercent.setText(((int) discount) + "%");
             } else {
                 holder.rewardOnePercent.setVisibility(View.INVISIBLE);
             }
 
-            if (rewardArray.length() > 1) {
-                JSONObject second = rewardArray.getJSONObject(1).getJSONObject("id");
-                holder.rewardTwo.setText(second.getString("description"));
-                if (second.has("price") && second.getJSONObject("price").has("old") &&
-                    second.getJSONObject("price").has("new")) {
-                    float oldPrice = second.getJSONObject("price").getInt("old");
-                    float newPrice = second.getJSONObject("price").getInt("new");
+            if (reward.rewards.size() > 1) {
+                RewardV2 second = reward.rewards.get(1).reward;
+                holder.rewardTwo.setText(second.description);
+                if (second.price != null && second.price.oldPrice > 0 && second.price.newPrice > 0) {
+                    float oldPrice = second.price.oldPrice;
+                    float newPrice = second.price.newPrice;
                     float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                    holder.rewardTwoPercent.setText(String.valueOf((int) discount) + "%");
+                    holder.rewardTwoPercent.setText(((int) discount) + "%");
                 } else {
                     holder.rewardTwoPercent.setVisibility(View.INVISIBLE);
                 }

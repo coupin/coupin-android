@@ -22,10 +22,10 @@ android {
         targetSdkVersion 30
         versionCode 90
         versionName "1.0.5"
-//        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
-//        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
-        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
-        resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
+        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
+        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
+//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
+//        resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }

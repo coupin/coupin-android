@@ -20,11 +20,6 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
 
-        aboutUsBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        aboutUsBack.setOnClickListener(view -> onBackPressed());
     }
 }

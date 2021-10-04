@@ -21,8 +21,8 @@ import kotlin.collections.HashMap
 @HiltViewModel
 class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRetrofit private val coupinRetrofit: Retrofit) : AndroidViewModel(application) {
 
-    private val selectedCoupinsMLD = MutableLiveData<ArrayList<Reward>>()
-    val selectedCoupinsLD : LiveData<ArrayList<Reward>> get() = selectedCoupinsMLD
+    private val selectedCoupinsMLD = MutableLiveData<ArrayList<RewardV2>>()
+    val selectedCoupinsLD : LiveData<ArrayList<RewardV2>> get() = selectedCoupinsMLD
 
     private val merchantMLD = MutableLiveData<MerchantV2>()
     val merchantLD : LiveData<MerchantV2> get() = merchantMLD
@@ -41,7 +41,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     val tempBlackListMLD = MutableLiveData<Set<String>>()
 
 
-    fun setSelectedCoupins(coupins : Array<Reward>){
+    fun setSelectedCoupins(coupins : Array<RewardV2>){
         selectedCoupinsMLD.value = coupins.toCollection(ArrayList())
     }
 
@@ -53,7 +53,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
         deliveryPriceMLD.value = price
     }
 
-    fun removeCoupin(reward : Reward): ArrayList<Reward>? {
+    fun removeCoupin(reward : RewardV2): ArrayList<RewardV2>? {
         selectedCoupinsMLD.value?.remove(reward)
         return selectedCoupinsLD.value
     }

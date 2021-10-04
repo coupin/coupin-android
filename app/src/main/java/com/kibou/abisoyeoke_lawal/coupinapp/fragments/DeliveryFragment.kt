@@ -90,7 +90,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
         getCoupinVM.selectedCoupinsLD.observe(viewLifecycleOwner, {
             it?.let {
                 val rewardCostSum = it.map {
-                    it.newPrice * it.selectedQuantity
+                    it.price.newPrice * it.selectedQuantity
                 }.sum()
                 items_cost.text = "₦ ${setAmountFormat(rewardCostSum)}"
                 total_cost.text = "₦ ${setAmountFormat(rewardCostSum)}"

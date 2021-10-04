@@ -72,10 +72,10 @@ class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
         val rewards = cartViewModel.selectedCoupinsLD.value
 
         val rewardsPrice = rewards?.map {
-            if (it.newPrice > 0) {
-                (it.newPrice * it.selectedQuantity).toDouble()
+            if (it.price.newPrice > 0) {
+                (it.price.newPrice * it.selectedQuantity).toDouble()
             } else {
-                (it.oldPrice * it.selectedQuantity).toDouble()
+                (it.price.oldPrice * it.selectedQuantity).toDouble()
             }
         }?.sum() ?: 0F
 

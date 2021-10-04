@@ -48,9 +48,11 @@ public class PreferenceMngr {
         preferences.edit().putBoolean("category" + uid, true).apply();
         preferences.edit().putStringSet("blacklist", new HashSet<>(user.blacklist)).apply();
         preferences.edit().putStringSet("favourites", new HashSet<>(user.favourites)).apply();
-        preferences.edit().putString("token", user.notification.token).apply();
         preferences.edit().putString("uid", uid).apply();
         preferences.edit().putString("userV2", TypeUtils.objectToString(user)).apply();
+        PreferenceMngr.setNotificationToken(user.notification.token);
+        boolean isWeekends = user.notification.days.equals("weekends");
+        PreferenceMngr.notificationSelection(user.notification.notify, isWeekends);
     }
 
     public static void setCurrentUser(User user) {
@@ -174,22 +176,8 @@ public class PreferenceMngr {
      * @return User Interests
      */
     public static ArrayList<String> getUserInterests() {
-        try {
-            ArrayList<String> temp = new ArrayList<>();
-
-            JSONObject user = new JSONObject(PreferenceMngr.getUser());
-            JSONArray userInterests = user.getJSONArray("interests");
-
-            for (int i = 0; i < userInterests.length(); i++) {
-                temp.add("\"" + userInterests.getString(i) + "\"");
-            }
-
-            return temp;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        User user = PreferenceMngr.getCurrentUser();
+        return user.interests;
     }
 
     /**

@@ -59,12 +59,7 @@ public class NotificationActivity extends AppCompatActivity {
 
         boolean[] previousSelection = PreferenceMngr.getNotificationSelection();
 
-        notificationBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        notificationBack.setOnClickListener(view -> onBackPressed());
 
         if (previousSelection[0]) {
             toggleReceive.setChecked(true);
@@ -78,43 +73,34 @@ public class NotificationActivity extends AppCompatActivity {
             toggleWeekdays.setChecked(true);
         }
 
-        toggleReceive.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    toggleReceived(true);
-                } else {
-                    toggleReceived(false);
-                }
-                notify = isChecked;
-                notificationButton.setVisibility(View.VISIBLE);
+        toggleReceive.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                toggleReceived(true);
+            } else {
+                toggleReceived(false);
             }
+            notify = isChecked;
+            notificationButton.setVisibility(View.VISIBLE);
         });
 
-        toggleWeekends.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (toggleWeekdays.isChecked()) {
-                    toggleWeekdays.setChecked(false);
-                }
-
-                toggleWeekends.setChecked(isChecked);
-                days = "weekends";
-                notificationButton.setVisibility(View.VISIBLE);
+        toggleWeekends.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (toggleWeekdays.isChecked()) {
+                toggleWeekdays.setChecked(false);
             }
+
+            toggleWeekends.setChecked(isChecked);
+            days = "weekends";
+            notificationButton.setVisibility(View.VISIBLE);
         });
 
-        toggleWeekdays.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (toggleWeekends.isChecked()) {
-                    toggleWeekends.setChecked(false);
-                }
-
-                toggleWeekdays.setChecked(isChecked);
-                days = "weekdays";
-                notificationButton.setVisibility(View.VISIBLE);
+        toggleWeekdays.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (toggleWeekends.isChecked()) {
+                toggleWeekends.setChecked(false);
             }
+
+            toggleWeekdays.setChecked(isChecked);
+            days = "weekdays";
+            notificationButton.setVisibility(View.VISIBLE);
         });
 
 

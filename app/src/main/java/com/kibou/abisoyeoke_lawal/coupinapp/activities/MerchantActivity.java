@@ -33,16 +33,24 @@ import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ExperienceDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.GalleryDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.RewardInfoDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.BookingResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
@@ -61,6 +69,9 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 import static android.view.View.GONE;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListIntent;
@@ -122,12 +133,13 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     public RequestQueue requestQueue;
     String url;
 
+    private ApiCalls apiCalls;
     private ArrayList<Date> expiryDates;
     private Set<String> tempBlackList = new HashSet<>();
-    private Set<Reward> selectedRewards = new HashSet<>();
+    private Set<RewardV2> selectedRewards = new HashSet<>();
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
-    private ArrayList<Reward> values;
+    private ArrayList<RewardV2> values;
     private boolean favourite = false;
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
@@ -149,7 +161,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_merchant);
         ButterKnife.bind(this);
-        requestQueue = Volley.newRequestQueue(this);
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
 
         userV2 = PreferenceMngr.getCurrentUser();
 
@@ -220,17 +232,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         loadRewards();
 
         infoDialog = new RewardInfoDialog(this, this);
-        merchantPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String phone = item.mobile;
-                if (!"0".equals(String.valueOf(phone.charAt(0)))) {
-                    phone = "+234" + phone;
-                }
-                Intent intent = new Intent(Intent.ACTION_DIAL);
-                intent.setData(Uri.parse("tel:" + phone));
-                startActivity(intent);
+        merchantPhone.setOnClickListener(v -> {
+            String phone = item.mobile;
+            if (!"0".equals(String.valueOf(phone.charAt(0)))) {
+                phone = "+234" + phone;
             }
+            Intent intent = new Intent(Intent.ACTION_DIAL);
+            intent.setData(Uri.parse("tel:" + phone));
+            startActivity(intent);
         });
 
         handler = new Handler();
@@ -259,53 +268,36 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
         selectedBtnSave.setOnClickListener(v -> {
             toggleClickableButtons(true);
-            url = getResources().getString(R.string.base_url)
-                + getResources().getString(R.string.ep_generate_code)
-                + "?saved=true";
 
-            if(!expiryDates.isEmpty()){
-                expiryDate = expiryDates.get(0);
-                StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        MerchantActivity.super.onBackPressed();
+            Call<BookingResponse> request = apiCalls.createCoupin(new CoupinRequest(false, expiryDate.toString(), item.id, selected.toString()));
+            request.enqueue(new Callback<BookingResponse>() {
+                @Override
+                public void onResponse(Call<BookingResponse> call, retrofit2.Response<BookingResponse> response) {
+                    if (response.isSuccessful()) {
+                        onBackPressed();
                         finish();
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+                    } else {
                         toggleClickableButtons(false);
-                        error.printStackTrace();
+                        ApiError error = ApiClient.parseError(response);
                         Toast.makeText(
                                 MerchantActivity.this,
-                                getResources().getString(R.string.error_saved_failed),
+                                error.message,
                                 Toast.LENGTH_SHORT
                         ).show();
                     }
-                }){
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
+                }
 
-                        params.put("merchantId", item.id);
-                        params.put("rewardId", selected.toString());
-                        params.put("useNow", String.valueOf(false));
-                        params.put("expiryDate", expiryDate.toString());
-
-                        return params;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", PreferenceMngr.getToken());
-
-                        return headers;
-                    }
-                };
-
-                requestQueue.add(stringRequest);
-            }
+                @Override
+                public void onFailure(Call<BookingResponse> call, Throwable t) {
+                    toggleClickableButtons(false);
+                    t.printStackTrace();
+                    Toast.makeText(
+                            MerchantActivity.this,
+                            getResources().getString(R.string.error_saved_failed),
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
+            });
         });
     }
 
@@ -323,122 +315,59 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * Load Merchant Rewards
      */
     public void loadRewards() {
-        String rewardUrl = getString(R.string.base_url) + getString(R.string.ep_api_reward) + "/" +
-            merchantId + "?page=" + page;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, rewardUrl, new Response.Listener<String>() {
+        Call<ArrayList<RewardV2>> request = apiCalls.getMerchantRewards(merchantId, page);
+        request.enqueue(new Callback<ArrayList<RewardV2>>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    resArray = new JSONArray(response);
-                    for (int x = 0; x < resArray.length(); x++) {
-                        Reward reward = new Reward();
-                        JSONObject object = resArray.getJSONObject(x);
-                        reward.setId(object.getString("_id"));
-                        reward.setTitle(object.getString("name"));
-                        reward.setDetails(object.getString("description"));
-
-                        if(object.has("quantity")){
-                            reward.setQuantity(object.getInt("quantity"));
-                        }else {
-                            reward.setQuantity(1);
-                        }
-
-                        // Date
-                        reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
-                        reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
-
-                        // Price Details
-                        reward.setIsDiscount(!object.getJSONObject("price").isNull("new")
-                                && !object.getJSONObject("price").isNull("old"));
-
-                        if (!object.getJSONObject("price").isNull("new"))
-                        reward.setNewPrice(object.getJSONObject("price").getInt("new"));
-
-                        if (!object.getJSONObject("price").isNull("old"))
-                        reward.setOldPrice(object.getJSONObject("price").getInt("old"));
-
-                        // Multiple Use details
-                        reward.setMultiple(object.getJSONObject("multiple").getBoolean("status"));
-
-                        reward.setIsDelivery(object.getBoolean("delivery"));
-
-                        // Applicable days
-                        reward.setDays(object.getJSONArray("applicableDays"));
-
-                        if (object.has("pictures") && !object.isNull("pictures")) {
-                            JSONArray jsonPictures = object.getJSONArray("pictures");
-                            reward.setPictures(jsonPictures);
-                            for(int j = 0; j < jsonPictures.length(); j++) {
-                                pictures.add(jsonPictures.getJSONObject(j).getString("url"));
+            public void onResponse(Call<ArrayList<RewardV2>> call, retrofit2.Response<ArrayList<RewardV2>> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    for (RewardV2 rewardV2: response.body()) {
+                        values.add(rewardV2);
+                        if (rewardV2.pictures != null && rewardV2.pictures.size() > 0) {
+                            for (Image image: rewardV2.pictures) {
+                                pictures.add(image.url);
                             }
                         }
-
-                        values.add(reward);
                     }
+
                     isLoading = false;
                     if (page == 0) {
                         if (values.size() == 0) {
                             toggleViews(1);
                         } else {
                             toggleViews(0);
+                            if (pictures.size() > 0) setupRandomImages();
                         }
-
-                        if (pictures.size() > 0) {
-                            setupRandomImages();
-                        }
-                    }
-
-                    if (page > 0) {
+                    } else {
                         bottomLoading(false);
                     }
                     rvPopUpAdapter.notifyDataSetChanged();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (page == 0) {
-                        toggleViews(2);
-                    } else {
-                        showErrorToast(false);
-                    }
+                } else {
+                    isLoading = false;
+
+                    if (page == 0) toggleViews(2);
+
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(MerchantActivity.this, error.message, Toast.LENGTH_SHORT).show();
                 }
             }
-        }, new Response.ErrorListener() {
+
+            @EverythingIsNonNull
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onFailure(Call<ArrayList<RewardV2>> call, Throwable t) {
+                t.printStackTrace();
                 isLoading = false;
-                if (page > 0) {
-                    bottomLoading(false);
-                }
 
                 if (page == 0) {
-                    if (values.size() == 0) {
-                        toggleViews(2);
-                    } else {
-                        showErrorToast(false);
-                    }
+                    toggleViews(2);
+                    showErrorToast(true);
+                } else {
+                    bottomLoading(false);
+                    showErrorToast(false);
                 }
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("page", String.valueOf(page));
-
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**
@@ -595,35 +524,31 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     @Override
     public void onSelect(boolean selected, int index, int quantity) {
-        Reward reward = values.get(index);
+        RewardV2 reward = values.get(index);
         if (selected) {
-            this.selected.add(reward.getId());
-            this.expiryDates.add(reward.getExpires());
+            this.selected.add(reward.id);
+            this.expiryDates.add(reward.expires);
             selectedText.setText(this.selected.size() + " Items Selected");
             if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
-            if (!reward.getMultiple()) {
-                tempBlackList.add(reward.getId());
+            if (!reward.isMultiple) {
+                tempBlackList.add(reward.id);
             }
             selectedRewards.add(reward);
-            reward.setSelectedQuantity(quantity);
-            reward.setIsSelected(true);
+            reward.quantity = quantity;
+            reward. isSelected = true;
         } else {
-            this.selected.remove(reward.getId());
-            this.expiryDates.remove(reward.getExpires());
+            this.selected.remove(reward.id);
+            this.expiryDates.remove(reward.expires);
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
                 selectedHolder.setVisibility(GONE);
             }
-            if (tempBlackList.contains(reward.getId())) {
-                tempBlackList.remove(reward.getId());
-            }
-            if(selectedRewards.contains(reward)){
-                selectedRewards.remove(reward);
-            }
-            reward.setIsSelected(false);
-            reward.setSelectedQuantity(1);
+            tempBlackList.remove(reward.id);
+            selectedRewards.remove(reward);
+            reward.isSelected = false;
+            reward.quantity = 1;
         }
     }
 
@@ -715,12 +640,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         if (like) {
             addToFav(item.id);
             favourite = true;
-            invalidateOptionsMenu();
         } else {
             removeFromFav(item.id);
             favourite = false;
-            invalidateOptionsMenu();
         }
+        invalidateOptionsMenu();
     }
 
     private void toggleClickableButtons(boolean isLoading) {
@@ -734,14 +658,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     }
 
     private void getCoupin(Date expiryDate){
-        if(!selectedRewards.isEmpty()){
+        if(!selectedRewards.isEmpty()) {
             ArrayList<Boolean> isDeliverableList = new ArrayList<>();
             ArrayList<String> rewardIds = new ArrayList<>();
 
             if(!values.isEmpty()){
-                for(Reward reward : selectedRewards){
-                    rewardIds.add(reward.getId());
-                    isDeliverableList.add(reward.getIsDelivery());
+                for(RewardV2 reward : selectedRewards){
+                    rewardIds.add(reward.id);
+                    isDeliverableList.add(reward.isDelivery);
                 }
             }
 
@@ -770,41 +694,35 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * @param id merchant id
      */
     private void addToFav(final String id) {
-        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                favourites.add(id);
-                PreferenceMngr.setFavourites(favourites);
-                Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                favourite = false;
-                invalidateOptionsMenu();
-                Toast.makeText(MerchantActivity.this, "Added Unsuccessfully.", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("merchantId", id);
 
-                params.put("merchantId", id);
-
-                return params;
+        Call<User> request = apiCalls.addToFavourites(params);
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                if (response.isSuccessful()) {
+                    favourites.add(id);
+                    PreferenceMngr.setFavourites(favourites);
+                    Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(MerchantActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                }
             }
 
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(
+                        MerchantActivity.this,
+                        "An error occured whilte removing this merchant from your favourite list.",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**
@@ -813,40 +731,35 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * @param id
      */
     private void removeFromFav(final String id) {
-        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                favourites.remove(id);
-                PreferenceMngr.setFavourites(favourites);
-                Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                Toast.makeText(MerchantActivity.this, "An error occured whilte removing this merchant from your favourite list.", Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+        HashMap<String, String> params = new HashMap<String, String>();
+        params.put("merchantId", id);
 
-                params.put("merchantId", id);
-
-                return params;
+        Call<User> request = apiCalls.removeFromFavourites(params);
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                if (response.isSuccessful()) {
+                    favourites.remove(id);
+                    PreferenceMngr.setFavourites(favourites);
+                    Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(MerchantActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                }
             }
 
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                Toast.makeText(
+                        MerchantActivity.this,
+                        "An error occured whilte removing this merchant from your favourite list.",
+                        Toast.LENGTH_SHORT
+                ).show();
             }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     @Override

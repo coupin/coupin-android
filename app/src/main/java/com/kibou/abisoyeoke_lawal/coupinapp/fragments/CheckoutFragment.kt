@@ -67,7 +67,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         val rewards = checkoutViewModel.selectedCoupinsLD.value
         val rewardsPrice = rewards?.map {
             val quantity = it.selectedQuantity
-            it.newPrice * quantity
+            it.price.newPrice * quantity
         }?.sum() ?: 0F
 
         val deliveryPrice = checkoutViewModel.deliveryPriceLD.value ?: 0

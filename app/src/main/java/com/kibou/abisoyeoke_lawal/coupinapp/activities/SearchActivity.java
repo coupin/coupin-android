@@ -70,7 +70,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
     private boolean isLoading = false;
     private int page = 0;
     private LinearLayoutManager linearLayoutManager;
-    private RequestQueue requestQueue;
     private RVSearchAdapter adapter;
     private String queryString;
 
@@ -103,7 +102,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
         companyInfosV2 = new ArrayList<>();
-        requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RVSearchAdapter(companyInfosV2, this, this);
@@ -290,12 +288,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                 loadingSearchView.setVisibility(View.VISIBLE);
                 break;
         }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        requestQueue.stop();
     }
 
     /**

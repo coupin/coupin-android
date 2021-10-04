@@ -57,7 +57,6 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
     lateinit var RVPlacesSearchAdapter : RVPlacesSearchAdapter
     private val addAddressViewModel : AddAddressViewModel by viewModels()
     private val recyclerViewResource = arrayListOf<PlacesSearchRecyclerResource>()
-    val logTag = "AddAddressActivity"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var markerOptions : MarkerOptions
     private lateinit var addressMarker : Marker

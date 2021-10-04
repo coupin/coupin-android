@@ -46,19 +46,8 @@ public class LandingActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         FacebookSdk.sdkInitialize(getApplicationContext());
 
-        signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LandingActivity.this, SignUpActivity.class));
-            }
-        });
-
-        signInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LandingActivity.this, LoginActivity.class));
-            }
-        });
+        signUpButton.setOnClickListener(v -> startActivity(new Intent(LandingActivity.this, SignUpActivity.class)));
+        signInButton.setOnClickListener(v -> startActivity(new Intent(LandingActivity.this, LoginActivity.class)));
 
         Glide.with(this)
                 .load(R.raw.coupin_back)
@@ -68,12 +57,7 @@ public class LandingActivity extends AppCompatActivity {
         carouselView.setPageCount(quotes.length);
         carouselView.setViewListener(viewListener);
 
-        ((TextView)findViewById(R.id.forgot_password)).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LandingActivity.this, SplashScreenActivity.class));
-            }
-        });
+        ((TextView)findViewById(R.id.forgot_password)).setOnClickListener(v -> startActivity(new Intent(LandingActivity.this, SplashScreenActivity.class)));
     }
 
 

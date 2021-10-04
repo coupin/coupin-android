@@ -2,13 +2,10 @@ package com.kibou.abisoyeoke_lawal.coupinapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONArray;
-
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 
-public class RewardV2 implements Serializable {
+public class RewardMini implements Serializable {
     @SerializedName("pictures")
     public ArrayList<Image> pictures;
     @SerializedName("applicableDays")
@@ -26,7 +23,7 @@ public class RewardV2 implements Serializable {
     @SerializedName("price")
     public PriceV2 price;
     @SerializedName("merchantID")
-    public InnerItem merchantID;
+    public String merchantID;
     @SerializedName("_id")
     public String id;
     @SerializedName("description")
@@ -43,16 +40,4 @@ public class RewardV2 implements Serializable {
     public String name;
     @SerializedName("status")
     public String status;
-
-    public boolean isDiscount;
-    public boolean isMultiple;
-    public boolean isSelected = false;
-    public Date expires;
-    public Date starting;
-    public int selectedQuantity = 1;
-    public String title;
-
-    public RewardV2() {
-        this.isMultiple = this.multiple != null && this.multiple.status;
-    }
 }

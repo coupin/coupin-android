@@ -312,7 +312,7 @@
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/error_now"
+                    android:text="@string/error_general"
                     android:textSize="@dimen/small_text"/>
 
             </LinearLayout>

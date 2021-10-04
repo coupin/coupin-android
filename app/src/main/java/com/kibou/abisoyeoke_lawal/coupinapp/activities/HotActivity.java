@@ -25,6 +25,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.LocationV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
@@ -280,9 +281,9 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
      * @param visited
      * @return
      */
-    private MerchantV2 convertInnerItemToMerchantV2(Prime.InnerItem item, boolean visited) {
+    private MerchantV2 convertInnerItemToMerchantV2(InnerItem item, boolean visited) {
         MerchantV2 merchant = new MerchantV2();
-        Prime.MerchantInfo merchantInfo = item.merchantInfo;
+        InnerItem.MerchantInfo merchantInfo = item.merchantInfo;
 
         merchant.banner = merchantInfo.banner;
         merchant.logo = merchantInfo.logo;
@@ -314,13 +315,13 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
      * Get most recent merchants
      */
     public void getMostRecentV2() {
-        Call<ArrayList<Prime.InnerItem>> request = apiCalls.getMostRecentMerchants(page);
-        request.enqueue(new Callback<ArrayList<Prime.InnerItem>>() {
+        Call<ArrayList<InnerItem>> request = apiCalls.getMostRecentMerchants(page);
+        request.enqueue(new Callback<ArrayList<InnerItem>>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<ArrayList<Prime.InnerItem>> call, retrofit2.Response<ArrayList<Prime.InnerItem>> response) {
+            public void onResponse(Call<ArrayList<InnerItem>> call, retrofit2.Response<ArrayList<InnerItem>> response) {
                 if (response.isSuccessful()) {
-                    for (Prime.InnerItem item : response.body()) {
+                    for (InnerItem item : response.body()) {
                         MerchantV2 merchantV2 = convertInnerItemToMerchantV2(item, item.visited);
                         merchantV2.favourite = item.favourite;
                         merchantsV2.add(merchantV2);
@@ -352,7 +353,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
 
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<ArrayList<Prime.InnerItem>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<InnerItem>> call, Throwable t) {
                 isLoading = false;
                 if (page > 0) {
                     loading(6);

@@ -25,7 +25,9 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import org.json.JSONArray;
@@ -68,16 +70,16 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     private GalleryDialog imageDialog;
 
     private Context context;
-    private Reward reward;
+    private RewardV2 reward;
 
     private boolean isCart = false;
 
     // Applicable days
+    private ArrayList<Image> pictures;
     public int applicableDays[] = new int[]{R.id.full_day0, R.id.full_day1,
         R.id.full_day2, R.id.full_day3, R.id.full_day4, R.id.full_day5,
         R.id.full_day6};
     public boolean hideButton = false;
-    private JSONArray pictures;
 
     public DetailsDialog(@NonNull Context context) {
         super(context);
@@ -91,7 +93,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         super(context, cancelable, cancelListener);
     }
 
-    public DetailsDialog(@NonNull Context context, Reward reward, boolean isCart) {
+    public DetailsDialog(@NonNull Context context, RewardV2 reward, boolean isCart) {
         super(context);
         this.context = context;
         this. reward = reward;
@@ -145,15 +147,15 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         addBtn.setOnClickListener(this);
         subtractBtn.setOnClickListener(this);
 
-        fullDescription.setText(reward.getDetails());
-        fullHeader.setText(reward.getTitle());
+        fullDescription.setText(reward.description);
+        fullHeader.setText(reward.name);
 
         fullOldPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         // Discount
-        if (reward.getIsDiscount()) {
-            float oldPrice = reward.getOldPrice();
-            float newPrice = reward.getNewPrice();
+        if (reward.isDiscount) {
+            float oldPrice = reward.price.oldPrice;
+            float newPrice = reward.price.newPrice;
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
             fullPercentage.setText(StringUtils.currencyFormatter((int) discount) + "%");
             fullNewPrice.setText("N" + StringUtils.currencyFormatter(((int) newPrice)));
@@ -161,29 +163,29 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             fullPercentage.setVisibility(View.VISIBLE);
             fullNewPrice.setVisibility(View.VISIBLE);
             fullOldPrice.setVisibility(View.VISIBLE);
-            String quantityString = String.valueOf(reward.getQuantity());
+            String quantityString = String.valueOf(reward.quantity);
             quantityTextView.setText(quantityString);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
-        } else if (reward.getOldPrice() > 0) {
-            String priceString = "N" + StringUtils.currencyFormatter((int) reward.getOldPrice());
+        } else if (reward.price.oldPrice > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.price.oldPrice);
             fullOldPrice.setText(priceString);
             fullOldPrice.setVisibility(View.VISIBLE);
             fullPercentage.setVisibility(View.INVISIBLE);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
-        } else if (reward.getNewPrice() > 0) {
-            String priceString = "N" + StringUtils.currencyFormatter((int) reward.getNewPrice());
+        } else if (reward.price.newPrice > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.price.newPrice);
             fullNewPrice.setText(priceString);
             fullNewPrice.setVisibility(View.VISIBLE);
             fullPercentage.setVisibility(View.INVISIBLE);
             bottomButtonsBarrier.setVisibility(View.VISIBLE);
         }
 
-        pictures = reward.getPictures();
+        pictures = reward.pictures;
         ImageView holders[] = new ImageView[]{photo1, photo2, photo3, photo4};
 
         if (pictures != null) {
             try {
-                if (pictures.length() >= 4) {
+                if (pictures.size() >= 4) {
                     int dim = (int)context.getResources().getDimension(R.dimen.image_size);
                     LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
                         dim,
@@ -196,9 +198,9 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                     photo4.setLayoutParams(params);
                 }
 
-                for (int x = 0; x < pictures.length(); x++) {
-                    thumbnails.add(pictures.getJSONObject(x).getString("url"));
-                    Glide.with(context).load(pictures.getJSONObject(x).getString("url")).into(holders[x]);
+                for (int x = 0; x < pictures.size(); x++) {
+                    thumbnails.add(pictures.get(x).url);
+                    Glide.with(context).load(pictures.get(x).url).into(holders[x]);
                     holders[x].setVisibility(View.VISIBLE);
                 }
             } catch (Exception e) {
@@ -209,7 +211,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         if(isCart){
             fullRemove.setVisibility(View.GONE);
             fullPin.setVisibility(View.VISIBLE);
-        }else if (reward.isSelected()) {
+        }else if (reward.isSelected) {
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);
         } else {
@@ -219,15 +221,15 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         // Date
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yy");
-        fullDateEnd.setText(simpleDateFormat.format(reward.getExpires()));
-        fullDateStart.setText(simpleDateFormat.format(reward.getStarting()));
+        fullDateEnd.setText(simpleDateFormat.format(reward.expires));
+        fullDateStart.setText(simpleDateFormat.format(reward.starting));
 
         // Reusable
-        if (reward.getMultiple()) {
-            quantityEditText.setText(String.valueOf(reward.getSelectedQuantity()));
+        if (reward.isMultiple) {
+            quantityEditText.setText(String.valueOf(reward.quantity));
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
-            String quantityString = reward.getQuantity() + " in stock";
+            String quantityString = reward.quantity + " in stock";
             quantityTextView.setText(quantityString);
         } else {
             quantityTextView.setText("Limited to 1 per Customer");
@@ -236,33 +238,30 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             quantityEditText.setText(String.valueOf(1));
         }
 
-        if (reward.getIsDelivery()) {
-            fullDelivery.setText("YES");
-        } else {
-            fullDelivery.setText("NO");
-        }
+        fullDelivery.setText(reward.isDelivery ? "YES" : "No");
 
         if (hideButton) {
             buttonHolder.setVisibility(View.GONE);
             quantityLayout.setVisibility(View.GONE);
         }
 
-        for (int x = 0; x < reward.getDays().length(); x++) {
+        for (int x = 0; x < reward.days.size(); x++) {
             try {
-                if (reward.getDays().getInt(x) == 0) {
-                    ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
+                int day = reward.days.get(x);
+                if (day == 0) {
+                    ((TextView) findViewById(applicableDays[day]))
                         .setTextColor(getContext().getResources().getColor(R.color.black));
-                    ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
+                    ((TextView) findViewById(applicableDays[day]))
                         .setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.days_left_background, null));
-                } else if (reward.getDays().getInt(x) == 6) {
-                    ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
+                } else if (day == 6) {
+                    ((TextView) findViewById(applicableDays[day]))
                         .setTextColor(getContext().getResources().getColor(R.color.black));
-                    ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
+                    ((TextView) findViewById(applicableDays[day]))
                         .setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.days_right_background, null));
                 } else {
-                    ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
+                    ((TextView) findViewById(applicableDays[day]))
                         .setTextColor(getContext().getResources().getColor(R.color.black));
-                    ((TextView) findViewById(applicableDays[reward.getDays().getInt(x)]))
+                    ((TextView) findViewById(applicableDays[day]))
                         .setBackground(ResourcesCompat.getDrawable(getContext().getResources(), R.drawable.days_background, null));
                 }
             } catch (Exception e) {
@@ -286,8 +285,8 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
     public void showImageDialog(int position) {
         try {
-            if (pictures.length() > 0) {
-                imageDialog = new GalleryDialog(context, pictures.getJSONObject(position).getString("url"), thumbnails);
+            if (pictures.size() > 0) {
+                imageDialog = new GalleryDialog(context, pictures.get(position).url, thumbnails);
                 imageDialog.show();
             }
         } catch (Exception e) {
@@ -340,7 +339,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     }
 
     private boolean isQuantityValid(String enteredQuantity){
-        int availableQuantity = reward.getQuantity();
+        int availableQuantity = reward.quantity;
         if(enteredQuantity.isEmpty()){
             quantityEditText.setError("Enter a Quantity");
             return false;

@@ -14,12 +14,15 @@ import android.widget.Toast;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.FeedbackRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -28,6 +31,9 @@ import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class HelpActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.help_loadingview)
@@ -45,7 +51,7 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.help_toolbar)
     public Toolbar helpToolbar;
 
-    RequestQueue requestQueue;
+    ApiCalls apiCalls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +59,7 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_help);
         ButterKnife.bind(this);
 
-        requestQueue = Volley.newRequestQueue(this);
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
         btnHelpSubmit.setOnClickListener(this);
         textHelpCall.setOnClickListener(this);
 
@@ -133,49 +139,35 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void sendMessage(final String coupinCode, final String merchantName, final String message) {
-        String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_feedback);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        FeedbackRequest body = new FeedbackRequest();
+
+        body.coupinCode = coupinCode;
+        body.merchantName = merchantName;
+        body.message = message;
+
+        Call<GenericResponse> request = apiCalls.sendFeedback(body);
+        request.enqueue(new Callback<GenericResponse>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                disableViews(false);
-                resetInputFields();
-                Toast.makeText(HelpActivity.this, getResources().getString(R.string.help_success), Toast.LENGTH_LONG).show();
+            public void onResponse(Call<GenericResponse> call, retrofit2.Response<GenericResponse> response) {
+                if (response.isSuccessful()) {
+                    disableViews(false);
+                    resetInputFields();
+                    Toast.makeText(HelpActivity.this, getResources().getString(R.string.help_success), Toast.LENGTH_LONG).show();
+                } else {
+                    disableViews(false);
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(HelpActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                }
             }
-        }, new Response.ErrorListener() {
+
+            @EverythingIsNonNull
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                t.printStackTrace();
                 disableViews(false);
                 Toast.makeText(HelpActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
             }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> params = new HashMap<>();
-
-                if (!coupinCode.isEmpty()) {
-                    params.put("coupinCode", coupinCode);
-                }
-
-                if (!merchantName.isEmpty()) {
-                    params.put("merchantName", merchantName);
-                }
-
-                params.put("message", message);
-
-
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() throws AuthFailureError {
-                HashMap<String, String> headers = new HashMap<>();
-
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 }

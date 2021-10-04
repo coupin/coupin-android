@@ -12,6 +12,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVReviewSelectionDelivery
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVReviewSelectionPickup
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ReviewSelectionCancelClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import kotlinx.android.synthetic.main.fragment_review_selection.*
 
@@ -62,13 +63,13 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
         })
     }
 
-    private fun setPickupAndDeliveryViews(pickupRewards : List<Reward>, deliveryRewards : List<Reward>){
+    private fun setPickupAndDeliveryViews(pickupRewards : List<RewardV2>, deliveryRewards : List<RewardV2>){
         setResourceForPickupAdapter(pickupRewards)
         setResourceForDeliverableAdapter(deliveryRewards)
         setProceedBtnText(deliveryRewards, pickupRewards)
     }
 
-    private fun setResourceForDeliverableAdapter(deliveryRewards : List<Reward>){
+    private fun setResourceForDeliverableAdapter(deliveryRewards : List<RewardV2>){
         if(::deliveryRecyclerAdapter.isInitialized){
             if(deliveryRewards.isEmpty()){
                 deliverable_items_title.visibility = View.GONE
@@ -83,7 +84,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
         }
     }
 
-    private fun setResourceForPickupAdapter(pickupRewards: List<Reward>) {
+    private fun setResourceForPickupAdapter(pickupRewards: List<RewardV2>) {
         if(::pickupRecyclerAdapter.isInitialized){
             if(pickupRewards.isEmpty()){
                 pickup_items_title.visibility = View.GONE
@@ -98,7 +99,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
         }
     }
 
-    override fun onCancelClick(reward: Reward) {
+    override fun onCancelClick(reward: RewardV2) {
         val newRewardsList = reviewSelectionViewModel.removeCoupin(reward)
         newRewardsList?.let{
             val deliveryRewards = it.filter {it.isDelivery}
@@ -109,7 +110,7 @@ class ReviewSelectionFragment : Fragment(), View.OnClickListener, ReviewSelectio
         }
     }
 
-    private fun setProceedBtnText(deliveryRewards : List<Reward>, pickupRewards: List<Reward>){
+    private fun setProceedBtnText(deliveryRewards : List<RewardV2>, pickupRewards: List<RewardV2>){
         if(deliveryRewards.isNotEmpty() && pickupRewards.isNotEmpty()){
             review_selection_proceed_btn.text = getString(R.string.change_all_to_pickup)
             empty_cart_layout.visibility = View.GONE
