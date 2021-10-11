@@ -17,9 +17,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -29,12 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -60,11 +52,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -88,7 +76,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private boolean cancel = false;
+    private final boolean cancel = false;
 
     // UI references.
     @BindView(R.id.email)
@@ -158,7 +146,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         gsc = GoogleSignIn.getClient(this, gso);
 
         googleLogin.setOnClickListener(view -> attemptGoogleLogin());
-        facebookLogin.setOnClickListener(view -> loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList(new String[]{"public_profile", "email"})));
+        facebookLogin.setOnClickListener(view -> loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "email")));
     }
 
     private void populateAutoComplete() {
@@ -178,13 +166,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+                    .setAction(android.R.string.ok,
+                            v -> requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS)).show();
         } else {
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }

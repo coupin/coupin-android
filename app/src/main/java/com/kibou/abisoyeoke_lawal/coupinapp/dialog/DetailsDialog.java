@@ -13,7 +13,6 @@ import androidx.annotation.StyleRes;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.res.ResourcesCompat;
 
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -26,14 +25,12 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
-import org.json.JSONArray;
-
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Locale;
 
 /**
  * Created by abisoyeoke-lawal on 9/1/17.
@@ -76,7 +73,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
     // Applicable days
     private ArrayList<Image> pictures;
-    public int applicableDays[] = new int[]{R.id.full_day0, R.id.full_day1,
+    public int[] applicableDays = new int[]{R.id.full_day0, R.id.full_day1,
         R.id.full_day2, R.id.full_day3, R.id.full_day4, R.id.full_day5,
         R.id.full_day6};
     public boolean hideButton = false;
@@ -181,7 +178,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         }
 
         pictures = reward.pictures;
-        ImageView holders[] = new ImageView[]{photo1, photo2, photo3, photo4};
+        ImageView[] holders = new ImageView[]{photo1, photo2, photo3, photo4};
 
         if (pictures != null) {
             try {
@@ -220,7 +217,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         }
 
         // Date
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yy");
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yy", Locale.getDefault());
         fullDateEnd.setText(simpleDateFormat.format(reward.expires));
         fullDateStart.setText(simpleDateFormat.format(reward.starting));
 

@@ -6,7 +6,6 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -15,12 +14,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
@@ -33,8 +26,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,8 +48,8 @@ public class InterestsActivity extends AppCompatActivity {
     public TextView interestName;
 
     private ApiCalls apiCalls;
-    private ArrayList<Interest> interests = new ArrayList<>();
-    private ArrayList<String> selected = new ArrayList<>();
+    private final ArrayList<Interest> interests = new ArrayList<>();
+    private final ArrayList<String> selected = new ArrayList<>();
     private MediaPlayer mediaPlayer;
     private User user;
 

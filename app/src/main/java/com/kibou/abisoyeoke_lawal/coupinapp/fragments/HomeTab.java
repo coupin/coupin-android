@@ -46,11 +46,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -105,7 +101,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Objects;
 
 import butterknife.BindView;
@@ -146,7 +141,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     final private int REQUEST_CHECK_SETTINGS_GPS = 0x1;
     final private int REQUEST_ID_MUTLIPLE_PERMISSIONS = 0x2;
 
-    private String[] permissions = {
+    private final String[] permissions = {
             Manifest.permission.ACCESS_COARSE_LOCATION,
             Manifest.permission.ACCESS_FINE_LOCATION
     };
@@ -169,7 +164,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     private List<Address> addresses;
     private RequestOptions requestOptions;
 
-    private HashMap<String, Bitmap> thumbnails = new HashMap<>();
+    private final HashMap<String, Bitmap> thumbnails = new HashMap<>();
     private boolean filter;
     private boolean isLoading = false;
     private boolean onMarker = false;
@@ -189,9 +184,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public String url;
     public RequestQueue requestQueue;
 
-    private ArrayList<MerchantV2> iconsListV2 = new ArrayList<>();
+    private final ArrayList<MerchantV2> iconsListV2 = new ArrayList<>();
 
-    public int icons[] = new int[]{R.drawable.slide1, R.drawable.slide2,
+    public int[] icons = new int[]{R.drawable.slide1, R.drawable.slide2,
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
             R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
@@ -603,7 +598,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 if (Geocoder.isPresent()) {
                     addresses = geocoder.getFromLocation(currentLocation.getLatitude(), currentLocation.getLongitude(), 1);
                     if (addresses.size() > 0) {
-                        street.setText(addresses.get(0).getThoroughfare().toString());
+                        street.setText(addresses.get(0).getThoroughfare());
                     }
                 }
             } catch (Exception e) {
@@ -875,7 +870,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                 addresses = geocoder.getFromLocation(myPosition.getPosition().latitude, myPosition.getPosition().longitude, 1);
 
                 if (addresses.size() > 0) {
-                    street.setText(addresses.get(0).getThoroughfare().toString());
+                    street.setText(addresses.get(0).getThoroughfare());
                 }
             }
         } catch (Exception e) {
@@ -940,7 +935,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         boolean valid = true;
         if (requestCode == PERMISSION_ALL) {
             for (int result: grantResults) {

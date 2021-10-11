@@ -14,17 +14,9 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardMini;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.InnerItemMini;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,8 +28,8 @@ import java.util.Locale;
  */
 
 public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHolder> {
-    private Context context;
-    private List<RewardsListItemV2> rewardListItems;
+    private final Context context;
+    private final List<RewardsListItemV2> rewardListItems;
 
     static public MyOnClick myOnClick;
 
@@ -50,7 +42,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
 
     public RVBroAdapter(List<RewardsListItemV2> rewardListItems, MyOnClick myOnClick, Context context) {
         this.context = context;
-        this.myOnClick = myOnClick;
+        RVBroAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
     }
 

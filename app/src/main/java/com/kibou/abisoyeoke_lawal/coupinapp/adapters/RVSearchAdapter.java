@@ -11,11 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,15 +22,15 @@ import java.util.List;
  */
 
 public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemViewHolder> {
-    private Context context;
-    private List<MerchantV2> searchList;
+    private final Context context;
+    private final List<MerchantV2> searchList;
     private static MyOnClick myOnClick;
 
     public RVSearchAdapter(List<MerchantV2> searchList, MyOnClick myOnClick, Context context) {
         this.context = context;
         this.searchList = searchList;
-        this.myOnClick = myOnClick;
-    };
+        RVSearchAdapter.myOnClick = myOnClick;
+    }
 
     @Override
     public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {

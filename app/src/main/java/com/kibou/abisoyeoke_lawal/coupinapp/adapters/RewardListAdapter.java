@@ -20,8 +20,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
  */
 
 public class RewardListAdapter extends BaseAdapter {
-    private Context context;
-    private List<RewardListItem> itemList;
+    private final Context context;
+    private final List<RewardListItem> itemList;
 
     public RewardListAdapter(Context context, List<RewardListItem> itemList) {
         this.context = context;

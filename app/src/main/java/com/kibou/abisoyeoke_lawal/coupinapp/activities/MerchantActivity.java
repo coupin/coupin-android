@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -23,12 +22,7 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -42,29 +36,22 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.BookingResponse;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
@@ -78,8 +65,6 @@ import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListInte
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardObjectsIntent;
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardQuantityIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 public class MerchantActivity extends AppCompatActivity implements MyOnSelect, MyOnClick, View.OnClickListener {
@@ -135,8 +120,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
     private ApiCalls apiCalls;
     private ArrayList<Date> expiryDates;
-    private Set<String> tempBlackList = new HashSet<>();
-    private Set<RewardV2> selectedRewards = new HashSet<>();
+    private final Set<String> tempBlackList = new HashSet<>();
+    private final Set<RewardV2> selectedRewards = new HashSet<>();
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
     private ArrayList<RewardV2> values;
@@ -200,7 +185,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             String merchantPhoneString = "Tel: " + item.mobile;
             merchantPhone.setText(merchantPhoneString);
             merchantRating.setRating(item.rating);
-            String ratingString = String.valueOf(item.rating) + "/5";
+            String ratingString = item.rating + "/5";
             ratingText.setText(ratingString);
 
             user = new JSONObject(PreferenceMngr.getUser());

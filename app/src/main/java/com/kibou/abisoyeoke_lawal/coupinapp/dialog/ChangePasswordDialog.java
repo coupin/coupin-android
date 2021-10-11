@@ -32,7 +32,7 @@ public class ChangePasswordDialog extends Dialog implements View.OnClickListener
     private EditText passwordView;
     private LinearLayout passwordHolderView;
 
-    private Context context;
+    private final Context context;
     private RequestQueue requestQueue;
     private String token;
 

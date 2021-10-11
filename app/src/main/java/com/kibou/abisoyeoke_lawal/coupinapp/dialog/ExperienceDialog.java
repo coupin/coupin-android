@@ -51,7 +51,7 @@ public class ExperienceDialog extends Dialog {
     private TextView genderError;
     private TextView experienceClose;
 
-    private Context context;
+    private final Context context;
     private JSONObject user;
     private MyOnClick onClick;
     private String age;

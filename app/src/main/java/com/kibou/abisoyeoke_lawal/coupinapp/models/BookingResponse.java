@@ -16,14 +16,14 @@ public class BookingResponse implements Serializable {
         public String reference;
     }
 
-    public class BookingDelivery implements Serializable {
+    public static class BookingDelivery implements Serializable {
         @SerializedName("id")
         public String id;
         @SerializedName("status")
         public String status;
     }
 
-    public class BookingReward implements Serializable {
+    public static class BookingReward implements Serializable {
         @SerializedName("singleUse")
         public boolean singleUse;
         @SerializedName("quantity")
@@ -36,7 +36,7 @@ public class BookingResponse implements Serializable {
         public String usedOn;
     }
 
-    public class BookingTransactions implements Serializable {
+    public static class BookingTransactions implements Serializable {
         @SerializedName("reference")
         public String reference;
         @SerializedName("paymentReference")

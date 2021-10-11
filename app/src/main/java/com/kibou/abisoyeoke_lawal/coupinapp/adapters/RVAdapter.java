@@ -2,10 +2,8 @@ package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,23 +11,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardMini;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.InnerItemMini;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -55,7 +44,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
 
     public RVAdapter(List<RewardsListItemV2> rewardListItems, MyOnClick myOnClick, Context context) {
         this.context = context;
-        this.myOnClick = myOnClick;
+        RVAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
     }
 

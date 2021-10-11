@@ -43,7 +43,7 @@ public class User implements Serializable {
     @SerializedName("modifiedDate")
     public String modifiedDate;
 
-    public class Notification implements Serializable {
+    public static class Notification implements Serializable {
         @SerializedName("notify")
         public boolean notify;
         @SerializedName("days")

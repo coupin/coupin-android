@@ -7,5 +7,5 @@ import java.util.ArrayList;
  */
 
 public interface MyFilter {
-    public void onFilterSelected(final ArrayList<String> selection, int distance);
+    void onFilterSelected(final ArrayList<String> selection, int distance);
 }

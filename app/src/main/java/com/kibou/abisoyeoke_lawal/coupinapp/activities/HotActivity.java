@@ -8,7 +8,6 @@ import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -113,11 +112,11 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     public TextView hotTitle3;
 
     private ApiCalls apiCalls;
-    private ArrayList<MerchantV2> featuredV2 = new ArrayList<>();
-    private ArrayList<MerchantV2> hotlistV2 = new ArrayList<>();
-    private ArrayList<MerchantV2> merchantsV2 = new ArrayList<>();
-    private ArrayList<String> slides = new ArrayList<>();
-    private Handler handler = new Handler();
+    private final ArrayList<MerchantV2> featuredV2 = new ArrayList<>();
+    private final ArrayList<MerchantV2> hotlistV2 = new ArrayList<>();
+    private final ArrayList<MerchantV2> merchantsV2 = new ArrayList<>();
+    private final ArrayList<String> slides = new ArrayList<>();
+    private final Handler handler = new Handler();
     private LinearLayoutManager linearLayoutManager;
     private RequestQueue requestQueue;
     private RVHotAdapter adapter;

@@ -9,7 +9,6 @@ import android.os.Handler;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -38,14 +37,14 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class SplashScreenActivity extends AppCompatActivity implements MyOnSelect {
     private ApiCalls apiCalls;
-    private boolean check = false;
+    private final boolean check = false;
     private boolean isLoggedIn = false;
     private boolean interestsSelected = false;
     private boolean isOnboardingDone = false;
     private Bundle extras;
     private final int PERMISSION_ALL = 1;
-    private int count = 0;
-    private String[] permissions = {
+    private final int count = 0;
+    private final String[] permissions = {
         Manifest.permission.ACCESS_COARSE_LOCATION,
         Manifest.permission.ACCESS_FINE_LOCATION
     };
@@ -102,7 +101,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String perms[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String[] perms, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, perms, grantResults);
         boolean valid = true;
         switch (requestCode) {

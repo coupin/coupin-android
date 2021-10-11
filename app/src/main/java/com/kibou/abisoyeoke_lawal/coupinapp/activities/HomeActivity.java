@@ -2,21 +2,14 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
+
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -30,9 +23,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.TokenRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -191,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         homeTab.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

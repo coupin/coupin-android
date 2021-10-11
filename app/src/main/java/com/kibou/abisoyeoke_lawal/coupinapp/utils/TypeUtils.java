@@ -4,8 +4,6 @@ import android.util.Base64;
 import android.util.Base64InputStream;
 import android.util.Base64OutputStream;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
-
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;

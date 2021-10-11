@@ -11,10 +11,6 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
@@ -22,9 +18,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.PasswordChangeRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -46,7 +39,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
 
     private ApiCalls apiCalls;
     private Boolean sending = false;
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     private String email;
 
     @Override

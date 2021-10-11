@@ -11,9 +11,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +20,7 @@ import java.util.Set;
  */
 
 public class PreferenceMngr {
-    private static PreferenceMngr ourInstance = new PreferenceMngr();
+    private static final PreferenceMngr ourInstance = new PreferenceMngr();
     private static SharedPreferences preferences = null;
     private static RequestQueue requestQueue;
 

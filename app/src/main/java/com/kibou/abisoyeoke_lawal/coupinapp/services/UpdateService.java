@@ -32,7 +32,7 @@ public class UpdateService extends Service {
     private static final int SERVICE_ID = 3001;
     private static final long NOTIFY_INTERVAL = AlarmManager.INTERVAL_DAY;
 
-    private Handler handler = new Handler();
+    private final Handler handler = new Handler();
     public RequestQueue requestQueue;
     private Timer timer;
 
@@ -68,11 +68,7 @@ public class UpdateService extends Service {
                         PreferenceMngr.setContext(getApplicationContext());
                         int code = getVersionCode(getApplicationContext());
                         int newCode = Integer.valueOf(response);
-                        if (code < newCode && PreferenceMngr.getLastAttempt() < newCode) {
-                            PreferenceMngr.setUpdate(true);
-                        } else {
-                            PreferenceMngr.setUpdate(false);
-                        }
+                        PreferenceMngr.setUpdate(code < newCode && PreferenceMngr.getLastAttempt() < newCode);
                     }
                 }
             }, new Response.ErrorListener() {

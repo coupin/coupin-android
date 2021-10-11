@@ -24,7 +24,7 @@ public class Reward implements Serializable {
     private String id;
     private String title;
     private int quantity;
-    private int selectedQuantity = 1;
+    private final int selectedQuantity = 1;
 
     public int getQuantity() {
         return quantity;

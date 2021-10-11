@@ -2,9 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.models.requests;
 
 import com.google.gson.annotations.SerializedName;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Rating;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 
 import java.io.Serializable;
 import java.util.ArrayList;

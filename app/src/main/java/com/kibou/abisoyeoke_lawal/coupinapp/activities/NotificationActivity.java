@@ -4,7 +4,6 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,11 +73,7 @@ public class NotificationActivity extends AppCompatActivity {
         }
 
         toggleReceive.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                toggleReceived(true);
-            } else {
-                toggleReceived(false);
-            }
+            toggleReceived(isChecked);
             notify = isChecked;
             notificationButton.setVisibility(View.VISIBLE);
         });

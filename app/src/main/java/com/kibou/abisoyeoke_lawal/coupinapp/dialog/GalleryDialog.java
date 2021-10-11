@@ -30,7 +30,7 @@ public class GalleryDialog extends Dialog implements View.OnClickListener {
     private ImageView thumb2;
     private ImageView thumb3;
     private ImageView thumb4;
-    private ImageView thumbViews[];
+    private ImageView[] thumbViews;
 
     public GalleryDialog(@NonNull Context context) {
         super(context);

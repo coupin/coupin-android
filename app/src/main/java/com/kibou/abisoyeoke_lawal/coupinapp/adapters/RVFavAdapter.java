@@ -15,15 +15,8 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Favourite;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class RVFavAdapter extends RecyclerView.Adapter<RVFavAdapter.ItemViewHolder> {
     public Context context;
@@ -40,7 +33,7 @@ public class RVFavAdapter extends RecyclerView.Adapter<RVFavAdapter.ItemViewHold
 
     public RVFavAdapter(List<Favourite> rewardListItems, MyOnClick myOnClick, Context context) {
         this.context = context;
-        this.myOnClick = myOnClick;
+        RVFavAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
     }
 

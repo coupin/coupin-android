@@ -12,11 +12,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.makeramen.roundedimageview.RoundedImageView;
-
-import org.json.JSONArray;
 
 import java.util.ArrayList;
 
@@ -33,7 +30,7 @@ public class RVHotAdapter extends RecyclerView.Adapter<RVHotAdapter.ItemViewHold
     public RVHotAdapter(ArrayList<MerchantV2> merchants, Context context, MyOnClick myOnClick) {
         this.context = context;
         this.merchants = merchants;
-        this.myOnClick = myOnClick;
+        RVHotAdapter.myOnClick = myOnClick;
     }
 
     @Override

@@ -6,7 +6,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
@@ -20,7 +19,6 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.TokenRequest;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

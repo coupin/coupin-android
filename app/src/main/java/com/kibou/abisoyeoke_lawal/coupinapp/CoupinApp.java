@@ -2,7 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 
 import androidx.appcompat.app.AppCompatDelegate;
 

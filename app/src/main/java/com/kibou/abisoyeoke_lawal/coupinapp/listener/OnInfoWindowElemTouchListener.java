@@ -83,7 +83,7 @@ public abstract class OnInfoWindowElemTouchListener implements View.OnTouchListe
         }
 
 
-    };
+    }
 
     protected abstract void onClickConfirmed(View v, Marker marker);
 }

@@ -2,8 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.models;
 
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONArray;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;

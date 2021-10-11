@@ -5,10 +5,8 @@ import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.isDarkModePre
 import android.content.Context;
 import android.graphics.Paint;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +14,15 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -43,7 +38,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
     public Set<String> blacklist;
     public ArrayList<RewardV2> rewards;
     public Context context;
-    private boolean isCart;
+    private final boolean isCart;
     static public MyOnSelect myOnSelect;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -81,7 +76,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
     public RVPopUpAdapter(ArrayList<RewardV2> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
         this.context = context;
-        this.myOnSelect = myOnSelect;
+        RVPopUpAdapter.myOnSelect = myOnSelect;
         this.rewards = rewards;
         this.isCart = isCart;
     }

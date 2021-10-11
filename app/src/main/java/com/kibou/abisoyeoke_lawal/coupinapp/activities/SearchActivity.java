@@ -19,8 +19,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVSearchAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
@@ -77,7 +75,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
     public Handler handler = new Handler();
     public Runnable queryRun;
 
-    public int icons[] = new int[]{R.drawable.slide1, R.drawable.slide2,
+    public int[] icons = new int[]{R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,

@@ -5,7 +5,6 @@ import android.content.Context;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Location;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.CustomClickListener;
@@ -31,7 +29,7 @@ import java.util.ArrayList;
 public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconListViewHolder> {
     public ArrayList<?> iconList = new ArrayList<>();
     private boolean isV2 = false;
-    private Context context;
+    private final Context context;
     private CustomClickListener.OnItemClickListener mClickListener;
     private int previousPosition;
     private View parent;
