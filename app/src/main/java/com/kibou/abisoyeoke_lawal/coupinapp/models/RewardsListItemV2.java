@@ -13,7 +13,7 @@ public class RewardsListItemV2 implements Serializable {
     public boolean favourite;
     @SerializedName("isActive")
     public boolean isActive;
-    @SerializedName("favourite")
+    @SerializedName("visited")
     public boolean visited;
     @SerializedName("useNow")
     public boolean useNow;
@@ -32,7 +32,7 @@ public class RewardsListItemV2 implements Serializable {
     @SerializedName("userid")
     public User userid;
 
-    public class RewardWrapper implements Serializable {
+    public static class RewardWrapper implements Serializable {
         @SerializedName("id")
         public RewardV2 reward;
     }

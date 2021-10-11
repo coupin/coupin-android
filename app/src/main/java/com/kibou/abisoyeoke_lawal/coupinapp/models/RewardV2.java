@@ -25,8 +25,6 @@ public class RewardV2 implements Serializable {
     public MultipleV2 multiple;
     @SerializedName("price")
     public PriceV2 price;
-    @SerializedName("merchantID")
-    public InnerItem merchantID;
     @SerializedName("_id")
     public String id;
     @SerializedName("description")

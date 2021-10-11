@@ -202,7 +202,7 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_margin="@dimen/margin_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_no_internet_connection"/>
+            android:src="@drawable/ic_error_text"/>
 
         <TextView
             android:gravity="center"

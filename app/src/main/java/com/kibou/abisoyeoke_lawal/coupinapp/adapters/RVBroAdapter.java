@@ -16,8 +16,10 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardMini;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.InnerItemMini;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import org.json.JSONArray;
@@ -74,12 +76,12 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
 
             int counter = 0;
             for (RewardsListItemV2.RewardWrapper rewardWrapper: reward.rewards) {
-                RewardV2 rewardV2 = rewardWrapper.reward;
+                RewardV2 rewardMini = rewardWrapper.reward;
                 if (counter == 0) {
-                    temp = DateTimeUtils.convertZString(rewardV2.endDate);
+                    temp = DateTimeUtils.convertZString(rewardMini.endDate);
                 } else {
-                    if (temp.after(DateTimeUtils.convertZString(rewardV2.endDate))) {
-                        temp = DateTimeUtils.convertZString(rewardV2.endDate);
+                    if (temp.after(DateTimeUtils.convertZString(rewardMini.endDate))) {
+                        temp = DateTimeUtils.convertZString(rewardMini.endDate);
                     }
                 }
                 counter++;
@@ -172,12 +174,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
         }
 
         public void bind(final int position) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myOnClick.onItemClick(position);
-                }
-            });
+            itemView.setOnClickListener(v -> myOnClick.onItemClick(position));
         }
     }
 }

@@ -6,6 +6,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;

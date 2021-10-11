@@ -22,8 +22,6 @@ public class RewardMini implements Serializable {
     public MultipleV2 multiple;
     @SerializedName("price")
     public PriceV2 price;
-    @SerializedName("merchantID")
-    public String merchantID;
     @SerializedName("_id")
     public String id;
     @SerializedName("description")

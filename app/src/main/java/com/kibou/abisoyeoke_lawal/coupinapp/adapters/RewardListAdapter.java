@@ -53,12 +53,12 @@ public class RewardListAdapter extends BaseAdapter {
         }
 
         CircleImageView imageView = (CircleImageView) convertView.findViewById(R.id.expandable_image);
-        if (reward.getMerchantLogo() != "null") {
-            Glide.with(context).load(reward.getMerchantLogo()).into(imageView);
+        if (reward.merchant.merchantInfo.logo.url != "null") {
+            Glide.with(context).load(reward.merchant.merchantInfo.logo.url).into(imageView);
         }
 
         TextView title = (TextView) convertView.findViewById(R.id.expandable_title);
-        title.setText(reward.getRewardName());
+        title.setText(reward.merchantName);
 
         return convertView;
     }

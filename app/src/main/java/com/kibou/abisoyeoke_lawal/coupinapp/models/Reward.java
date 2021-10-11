@@ -26,10 +26,6 @@ public class Reward implements Serializable {
     private int quantity;
     private int selectedQuantity = 1;
 
-    public int getSelectedQuantity() { return selectedQuantity;}
-    public void setSelectedQuantity(int quantity) {this.selectedQuantity = quantity;}
-
-
     public int getQuantity() {
         return quantity;
     }
