@@ -169,6 +169,7 @@
         android:id="@+id/hot_empty"
         android:gravity="center"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_xxxlg"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
@@ -192,6 +193,7 @@
         android:id="@+id/hot_error"
         android:gravity="center"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_xxxlg"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
@@ -200,14 +202,14 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_margin="@dimen/margin_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_no_internet_connection"/>
+            android:src="@drawable/ic_error_text"/>
 
         <TextView
             android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_sm"
             android:layout_width="match_parent"
-            android:text="@string/error_now"
+            android:text="@string/error_general"
             android:textSize="@dimen/small_text"/>
 
     </LinearLayout>

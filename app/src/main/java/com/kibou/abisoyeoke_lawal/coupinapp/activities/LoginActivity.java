@@ -17,10 +17,7 @@ import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import androidx.appcompat.app.AppCompatActivity;
 import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -30,12 +27,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
@@ -50,20 +41,25 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.SignInRequest;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.AuthResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.sentry.Sentry;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
@@ -104,14 +100,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     public View mProgressView;
     public View focusView;
 
-    private RequestQueue requestQueue;
-    private String socialUrl;
-    private String url;
-
+    private ApiCalls apiCalls;
     private CallbackManager callbackManager;
     private GoogleSignInClient gsc;
     private GoogleSignInOptions gso;
-    private PreferenceMngr preferenceMngr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,53 +111,31 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        PreferenceMngr.setContext(this);
-        preferenceMngr = PreferenceMngr.getInstance();
+        PreferenceManager.setContext(this);
 
         // Set up the login form.
         populateAutoComplete();
 
-        requestQueue = Volley.newRequestQueue(this);
-        url = getString(R.string.base_url) + getString(R.string.ep_login_user);
-        socialUrl = getResources().getString(R.string.base_url) +
-            getResources().getString(R.string.socialAut);
+        apiCalls = ApiClient.getInstance().getCalls(getApplicationContext(), false);
 
         callbackManager = CallbackManager.Factory.create();
         final LoginManager loginManager = LoginManager.getInstance();
         loginManager.registerCallback(callbackManager, LoginActivity.this);
 
-        mPasswordView.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int id, KeyEvent keyEvent) {
-                if (id == R.id.login || id == EditorInfo.IME_NULL) {
-                    attemptLogin();
-                    return true;
-                }
-                return false;
+        mPasswordView.setOnEditorActionListener((textView, id, keyEvent) -> {
+            if (id == R.id.login || id == EditorInfo.IME_NULL) {
+                attemptLogin();
+                return true;
             }
+            return false;
         });
 
         Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptLogin();
-            }
-        });
+        mEmailSignInButton.setOnClickListener(view -> attemptLogin());
 
-        backToSignUp.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, SignUpActivity.class));
-            }
-        });
+        backToSignUp.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, SignUpActivity.class)));
 
-        forgotText.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class));
-            }
-        });
+        forgotText.setOnClickListener(v -> startActivity(new Intent(LoginActivity.this, ForgotPasswordActivity.class)));
 
         // Configure request for email, id and basic profile
         gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -176,19 +146,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
 
         gsc = GoogleSignIn.getClient(this, gso);
 
-        googleLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                attemptGoogleLogin();
-            }
-        });
-
-        facebookLogin.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList(new String[]{"public_profile", "email"}));
-            }
-        });
+        googleLogin.setOnClickListener(view -> attemptGoogleLogin());
+        facebookLogin.setOnClickListener(view -> loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "email")));
     }
 
     private void populateAutoComplete() {
@@ -208,13 +167,8 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         }
         if (shouldShowRequestPermissionRationale(READ_CONTACTS)) {
             Snackbar.make(mEmailView, R.string.permission_rationale, Snackbar.LENGTH_INDEFINITE)
-                    .setAction(android.R.string.ok, new View.OnClickListener() {
-                        @Override
-                        @TargetApi(Build.VERSION_CODES.M)
-                        public void onClick(View v) {
-                            requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
-                        }
-                    });
+                    .setAction(android.R.string.ok,
+                            v -> requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS)).show();
         } else {
             requestPermissions(new String[]{READ_CONTACTS}, REQUEST_READ_CONTACTS);
         }
@@ -227,60 +181,34 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
      * @param id
      */
     private void socialLoginUser(final String email, final String id) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, socialUrl, new Response.Listener<String>() {
+        Call<AuthResponse> request = apiCalls.signInSocial(new SignInRequest(email, id));
+        request.enqueue(new Callback<AuthResponse>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject res = new JSONObject(response);
-                    JSONObject object = res.getJSONObject("user");
-                    String temp = object.getJSONArray("favourites").toString();
-                    String tempList = object.getJSONArray("blacklist").toString();
-                    Set<String> tempArr = new HashSet<>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
-                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
-                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
-                    boolean isWeekends = object.getJSONObject("notification").getString("days").equals("weekends");
-                    preferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
+            public void onResponse(Call<AuthResponse> call, retrofit2.Response<AuthResponse> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    PreferenceManager.setCurrentUserDetails(response.body().user);
+                    PreferenceManager.setAuthToken(response.body().token);
+                    showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
-                } catch (Exception e) {
-                    showProgress(false);
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                showProgress(false);
-                if (error.toString().equals("com.android.volley.TimeoutError")) {
-                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
                 } else {
-                    if (error.networkResponse != null && error.networkResponse.data != null) {
-                        if (error.networkResponse.statusCode == 401) {
-                            Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
-                        } else if (error.networkResponse.statusCode == 404) {
-                            Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    }
+                    showProgress(false);
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(getApplicationContext(), error.message, Toast.LENGTH_SHORT).show();
                 }
             }
-        }){
+
+            @EverythingIsNonNull
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("email", email);
-                params.put("password", id);
-
-                return params;
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                showProgress(false);
+                t.printStackTrace();
+                String message = t.getMessage() != null ? t.getMessage() : getResources().getString(R.string.error_us);
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**
@@ -289,61 +217,34 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
      * @param password
      */
     private void loginUser(final String email, final String password) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        Call<AuthResponse> request = apiCalls.signIn(new SignInRequest(email, password));
+        request.enqueue(new Callback<AuthResponse>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject res = new JSONObject(response);
-                    Log.d("simi-token", res.getString("token"));
-                    JSONObject object = res.getJSONObject("user");
-                    String temp = object.getJSONArray("favourites").toString();
-                    String tempList = object.getJSONArray("blacklist").toString();
-                    Set<String> tempArr = new HashSet<String>(Arrays.asList(temp.substring(1, temp.length() - 1).replaceAll("\"", "").split(",")));
-                    Set<String> blacklist = new HashSet<>(Arrays.asList(tempList.substring(1, tempList.length() - 1).replaceAll("\"", "").split(",")));
-                    PreferenceMngr.setToken(res.getString("token"), object.getString("_id"), object.toString(), tempArr, blacklist);
-                    preferenceMngr.setNotificationToken(object.getJSONObject("notification").getString("token"));
-                    boolean isWeekends = object.getJSONObject("notification").getString("days").equals("weekends");
-                    preferenceMngr.notificationSelection(object.getJSONObject("notification").getBoolean("notify"), isWeekends);
+            public void onResponse(Call<AuthResponse> call, retrofit2.Response<AuthResponse> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    PreferenceManager.setCurrentUserDetails(response.body().user);
+                    PreferenceManager.setAuthToken(response.body().token);
+                    showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
-                } catch (Exception e) {
-                    showProgress(false);
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                showProgress(false);
-                if (error.toString().equals("com.android.volley.TimeoutError")) {
-                    Toast.makeText(LoginActivity.this, getResources().getString(R.string.network_error), Toast.LENGTH_LONG).show();
                 } else {
-                    if (error.networkResponse != null && error.networkResponse.data != null) {
-                        if (error.networkResponse.statusCode == 401) {
-                            Toast.makeText(LoginActivity.this, getString(R.string.unauthorized), Toast.LENGTH_SHORT).show();
-                        } else if (error.networkResponse.statusCode == 404) {
-                            Toast.makeText(LoginActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
-                        } else {
-                            Toast.makeText(LoginActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
-                        }
-                    } else {
-                        Toast.makeText(LoginActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
-                    }
+                    showProgress(false);
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(getApplicationContext(), error.message, Toast.LENGTH_SHORT).show();
                 }
             }
-        }){
+
+            @EverythingIsNonNull
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("email", email);
-                params.put("password", password);
-
-                return params;
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                showProgress(false);
+                Sentry.captureException(t);
+                String message = t.getMessage() != null ? t.getMessage() : getResources().getString(R.string.error_us);
+                Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**
@@ -352,6 +253,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == REQUEST_READ_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 populateAutoComplete();
@@ -396,7 +298,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
+        cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
@@ -420,6 +322,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+            assert focusView != null;
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
@@ -459,13 +362,11 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     /**
@@ -559,6 +460,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     if (jsonObject.has("picture")) {
                         url = jsonObject.getJSONObject("picture").getJSONObject("data").getString("url");
                     }
+                    // TODO: Update user profile picture
                     socialLoginUser(jsonObject.getString("email"), jsonObject.get("id").toString());
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -573,9 +475,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     }
 
     @Override
-    public void onCancel() {
-
-    }
+    public void onCancel() {}
 
     @Override
     public void onError(FacebookException e) {
@@ -590,7 +490,6 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         };
 
         int ADDRESS = 0;
-        int IS_PRIMARY = 1;
     }
 
     @Override

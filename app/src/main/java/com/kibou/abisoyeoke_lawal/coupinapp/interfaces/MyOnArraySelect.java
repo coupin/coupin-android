@@ -5,5 +5,5 @@ package com.kibou.abisoyeoke_lawal.coupinapp.interfaces;
  */
 
 public interface MyOnArraySelect {
-    public void onArraySelected(final String[] array);
+    void onArraySelected(final String[] array);
 }

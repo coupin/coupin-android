@@ -5,7 +5,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -17,39 +16,35 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
-import com.google.android.play.core.tasks.OnCompleteListener;
 import com.google.android.play.core.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class CoupinActivity extends AppCompatActivity implements MyOnClick, View.OnClickListener {
     @BindView(R.id.navigate)
@@ -85,11 +80,11 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     @BindView(R.id.coupin_vertical_divided)
     public View divider;
 
-    ArrayList<Reward> coupinRewards;
-    RewardListItem coupin;
-    RVCoupinAdapter rvAdapter;
-    RequestQueue requestQueue;
-    Set<String> tempBlackList = new HashSet<>();
+    private ApiCalls apiCalls;
+    private ArrayList<RewardV2> coupinRewards;
+    private RewardsListItemV2 coupin;
+    private RVCoupinAdapter rvAdapter;
+    private final Set<String> tempBlackList = new HashSet<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,29 +92,23 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         setContentView(R.layout.activity_list);
         ButterKnife.bind(this);
 
-        requestQueue = Volley.newRequestQueue(this);
-
-        coupin = (RewardListItem) getIntent().getSerializableExtra("coupin");
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
+        coupin = (RewardsListItemV2) getIntent().getSerializableExtra("coupin");
 
         boolean activityFromPurchase = getIntent().getBooleanExtra("fromPurchase", false);
 
-        merchantName.setText(coupin.getMerchantName());
-        merchantAddress.setText(coupin.getMerchantAddress());
-        if (coupin.hasVisited()) {
-            coupinVisited.setVisibility(View.VISIBLE);
-        }
-        if (coupin.isFavourited()) {
-            coupinFav.setVisibility(View.VISIBLE);
-        }
+        InnerItem.MerchantInfo merchantInfo = coupin.merchant.merchantInfo;
+        merchantName.setText(merchantInfo.companyName);
+        merchantAddress.setText(merchantInfo.address);
+        if (coupin.visited) coupinVisited.setVisibility(View.VISIBLE);
+        if (coupin.favourite) coupinFav.setVisibility(View.VISIBLE);
+        if (coupin.favourite && coupin.visited) divider.setVisibility(View.VISIBLE);
 
-        if (coupin.isFavourited() && coupin.hasVisited()) {
-            divider.setVisibility(View.VISIBLE);
-        }
-        Glide.with(this).load(coupin.getMerchantBanner()).into(merchantBanner);
-        Glide.with(this).load(coupin.getMerchantLogo()).into(merchantLogo);
+        Glide.with(this).load(merchantInfo.banner.url).into(merchantBanner);
+        Glide.with(this).load(merchantInfo.logo.url).into(merchantLogo);
 
         coupinRewards = new ArrayList<>();
-        tempBlackList.addAll(PreferenceMngr.getInstance().getBlacklist());
+        tempBlackList.addAll(PreferenceManager.getBlacklist());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(coupinRewards, this, this);
@@ -127,7 +116,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         listView.setHasFixedSize(true);
         listView.setAdapter(rvAdapter);
 
-        if (coupin.getBookingShortCode() == null || coupin.getBookingShortCode().equals("")) {
+        if (coupin.shortCode == null || coupin.shortCode.equals("")) {
             codeHolder.setVisibility(View.GONE);
             activateHolder.setVisibility(View.VISIBLE);
         }
@@ -135,134 +124,60 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         naviagteBtn.setOnClickListener(this);
         shareBtn.setOnClickListener(this);
 
-        try {
-            JSONArray res = new JSONArray(coupin.getRewardDetails());
-            String status = coupin.status;
+        ArrayList<RewardsListItemV2.RewardWrapper> res = coupin.rewards;
+        String status = coupin.status;
 
-            if(status.equals("awaiting_payment")){
-                if(activityFromPurchase){
-                    listCode.setText("View Coupins");
-                    listCode.setOnClickListener(v -> {
-                        Intent intent = new Intent(CoupinActivity.this, HomeActivity.class);
-                        intent.putExtra("fromCoupin", true);
-                        startActivity(intent);
-                        finishAffinity();
-                    });
-                }else {
-                    listCode.setText("Awaiting Payment");
-                }
+        if(status.equals("awaiting_payment")){
+            if(activityFromPurchase){
+                listCode.setText("View Coupins");
+                listCode.setOnClickListener(v -> {
+                    Intent intent = new Intent(CoupinActivity.this, HomeActivity.class);
+                    intent.putExtra("fromCoupin", true);
+                    startActivity(intent);
+                    finishAffinity();
+                });
             }else {
-                listCode.setText(coupin.getBookingShortCode());
+                listCode.setText("Awaiting Payment");
             }
-
-            int total = res.length();
-            listCount.setText("ACTIVE REWARDS - " + total);
-
-
-
-            for(int x = 0; x < total; x++) {
-                JSONObject object = res.getJSONObject(x).getJSONObject("id");
-                int quantity = res.getJSONObject(x).getInt("quantity");
-
-                Reward reward = new Reward();
-                reward.setId(object.getString("_id"));
-                reward.setTitle(object.getString("name"));
-                reward.setDetails(object.getString("description"));
-                reward.setQuantity(quantity);
-
-                if (object.has("price")
-                    && !object.isNull("price")) {
-                    boolean newPrice = false;
-                    boolean oldPrice = false;
-                    if (object.getJSONObject("price").has("new") &&
-                        !object.getJSONObject("price").isNull("new")) {
-                        reward.setNewPrice(object.getJSONObject("price").getInt("new"));
-                        newPrice = true;
-                    }
-
-                    if (object.getJSONObject("price").has("old") &&
-                        !object.getJSONObject("price").isNull("old")) {
-                        reward.setOldPrice(object.getJSONObject("price").getInt("old"));
-                        oldPrice = true;
-                    }
-
-                    if (newPrice && oldPrice) {
-                        reward.setIsDiscount(true);
-                    }
-                } else {
-                    reward.setIsDiscount(false);
-                }
-
-                reward.setExpires(DateTimeUtils.convertZString(object.getString("endDate")));
-                reward.setStarting(DateTimeUtils.convertZString(object.getString("startDate")));
-
-                // Multiple Use details
-                if (object.getJSONObject("multiple").getBoolean("status")) {
-                    reward.setMultiple(true);
-                } else {
-                    reward.setMultiple(false);
-                }
-
-                // Applicable days
-                reward.setDays(object.getJSONArray("applicableDays"));
-
-                coupinRewards.add(reward);
-            }
-
-            rvAdapter.notifyDataSetChanged();
-        } catch (Exception e) {
-            e.printStackTrace();
+        }else {
+            listCode.setText(coupin.shortCode);
         }
 
-        listBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onBackPressed();
-            }
-        });
+        int total = res.size();
+        listCount.setText("ACTIVE REWARDS - " + total);
 
-        activateHolder.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_rewards_use_saved).replace("id", coupin.getBookingId());
+        for (RewardsListItemV2.RewardWrapper item : coupin.rewards) {
+            coupinRewards.add(item.reward);
+        }
 
-                StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject object = new JSONObject(response);
-                            listCode.setText(object.getString("shortCode"));
-                            activateHolder.setVisibility(View.GONE);
-                            codeHolder.setVisibility(View.VISIBLE);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
+        rvAdapter.notifyDataSetChanged();
+
+        listBack.setOnClickListener(v -> onBackPressed());
+
+        activateHolder.setOnClickListener(v -> {
+            Call<BookingResponse> request = apiCalls.activateCoupin(coupin.bookingId);
+            request.enqueue(new Callback<BookingResponse>() {
+                @EverythingIsNonNull
+                @Override
+                public void onResponse(Call<BookingResponse> call, retrofit2.Response<BookingResponse> response) {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        listCode.setText(response.body().data.booking.shortCode);
+                        activateHolder.setVisibility(View.GONE);
+                        codeHolder.setVisibility(View.VISIBLE);
+                    } else {
+                        ApiError error = ApiClient.parseError(response);
+                        Toast.makeText(CoupinActivity.this, error.message, Toast.LENGTH_SHORT).show();
                     }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        error.printStackTrace();
-                    }
-                }) {
-                    @Override
-                    protected Map<String, String> getParams() {
-                        Map<String, String> params = new HashMap<String, String>();
-                        params.put("id", coupin.getBookingId());
+                }
 
-                        return params;
-                    }
-
-                    @Override
-                    public Map<String, String> getHeaders() {
-                        Map<String, String> headers = new HashMap<>();
-                        headers.put("Authorization", PreferenceMngr.getToken());
-
-                        return headers;
-                    }
-                };
-
-                requestQueue.add(stringRequest);
-            }
+                @EverythingIsNonNull
+                @Override
+                public void onFailure(Call<BookingResponse> call, Throwable t) {
+                    t.printStackTrace();
+                    Toast.makeText(CoupinActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
+                }
+            });
         });
         reviewApplication();
     }
@@ -299,8 +214,10 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
      */
     private void navigate() {
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
-        navigateIntent.setData(Uri.parse("geo:" + coupin.getLatitude() + "," + coupin.getLongitude() +
-            "?q=" + coupin.getLatitude() + "," + coupin.getLongitude()));
+        double longitude = coupin.merchant.merchantInfo.location[0];
+        double latitude = coupin.merchant.merchantInfo.location[1];
+        navigateIntent.setData(Uri.parse("geo:" + longitude + "," + latitude +
+            "?q=" + latitude + "," + longitude));
         startActivity(navigateIntent);
     }
 
@@ -308,8 +225,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
      * Share details of coupin
      */
     private void share() {
-        String msg = "Coupin rewards for " + StringUtils.capitalize(coupin.getMerchantName()) + " to get " +
-            coupinRewards.get(0).getDetails() + "! https://coupinapp.com/";
+        String msg = "Coupin rewards for " + StringUtils.capitalize(coupin.merchant.merchantInfo.companyName) + " to get " +
+            coupinRewards.get(0).description + "! https://coupinapp.com/";
         Intent sendIntent = new Intent(Intent.ACTION_SEND);
         sendIntent.setType("text/plain");
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Coupin Share!");

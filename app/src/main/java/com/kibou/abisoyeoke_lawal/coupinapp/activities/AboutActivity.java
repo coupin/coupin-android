@@ -2,7 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.View;
+
 import android.widget.ImageView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -20,11 +20,6 @@ public class AboutActivity extends AppCompatActivity {
         setContentView(R.layout.activity_about);
         ButterKnife.bind(this);
 
-        aboutUsBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
+        aboutUsBack.setOnClickListener(view -> onBackPressed());
     }
 }

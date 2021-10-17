@@ -52,7 +52,7 @@ public class DistanceSeekBar extends AppCompatSeekBar {
         super.onDraw(canvas);
 
 
-        String progressText = String.valueOf(getProgress()/10) + "Km";
+        String progressText = getProgress() / 10 + "Km";
         Rect bounds = new Rect();
         mTextPaint.getTextBounds(progressText, 0, progressText.length(), bounds);
 

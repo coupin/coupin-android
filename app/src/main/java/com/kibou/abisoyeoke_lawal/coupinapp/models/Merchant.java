@@ -12,6 +12,7 @@ public class Merchant implements Serializable {
     public int picture;
     public int rating;
     public int rewardsCount;
+    public String _id;
     public String address;
     public String banner;
     public String details;
@@ -19,6 +20,7 @@ public class Merchant implements Serializable {
     public String id;
     public String logo;
     public String mobile;
+    public String name;
     public String response;
     public String reward;
     public String rewards;

@@ -2,7 +2,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.fragments
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
@@ -16,23 +15,20 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
 import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
-import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.HomeActivity
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinRequestModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.*
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.fragment_checkout.*
 import org.jetbrains.anko.longToast
 import org.jetbrains.anko.toast
-import org.json.JSONObject
 
 @AndroidEntryPoint
 class CheckoutFragment : Fragment(), View.OnClickListener {
 
     private val checkoutViewModel : GetCoupinViewModel by activityViewModels()
-    private val logTag = "CheckoutFragment"
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_checkout, container, false)
@@ -44,11 +40,11 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     }
     
     private fun fillInUserDetails(){
-        PreferenceMngr.setContext(requireContext())
-        val userString = PreferenceMngr.getUser()
+        PreferenceManager.setContext(requireContext())
+        val userString = PreferenceManager.getCurrentUser()
         userString?.let{
-            val userEmail = JSONObject(it).getString("email")
-            val temp: String = JSONObject(it).getString("name")
+            val userEmail = it.email
+            val temp: String = it.name
             val names = temp.split(" ".toRegex()).toTypedArray()
             email_input.setText(userEmail)
             first_name_input.setText(names[0])
@@ -67,7 +63,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         val rewards = checkoutViewModel.selectedCoupinsLD.value
         val rewardsPrice = rewards?.map {
             val quantity = it.selectedQuantity
-            it.newPrice * quantity
+            it.price.newPrice * quantity
         }?.sum() ?: 0F
 
         val deliveryPrice = checkoutViewModel.deliveryPriceLD.value ?: 0
@@ -93,7 +89,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             .acceptCardPayments(true)
             .allowSaveCardFeature(true)
             .shouldDisplayFee(true)
-            .onStagingEnv(true)
+            .onStagingEnv(BuildConfig.DEBUG)
             .setMeta(listOf(Meta(paymentTypeText, coupinText), Meta(coupinIdText, coupinId)))
             .withTheme(R.style.RaveCustomTheme)
             .initialize()
@@ -145,13 +141,11 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             if (resultCode == RavePayActivity.RESULT_SUCCESS) {
                 requireActivity().longToast("Payment Successful")
                 setPaymentBtn(false)
-                Log.d(logTag, "payment success : $message")
 
-                val user = JSONObject(PreferenceMngr.getUser())
-                PreferenceMngr.addToTotalCoupinsGenerated(user.getString("_id"))
+                val user = PreferenceManager.getCurrentUser()
+                PreferenceManager.addToTotalCoupinsGenerated(user.id)
                 checkoutViewModel.tempBlackListMLD.value?.let {
-                    Log.d(logTag, "tempblacklist : $it")
-                    PreferenceMngr.getInstance().blacklist = it
+                    PreferenceManager.setBlacklist(it)
                 }
 
                 checkoutViewModel.coupinResponseModelMLD.value?.let {
@@ -162,13 +156,11 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             else if (resultCode == RavePayActivity.RESULT_ERROR) {
                 requireActivity().toast("Payment error")
                 setPaymentBtn(false)
-                Log.d(logTag, "payment error : $message")
             }
 
             else if (resultCode == RavePayActivity.RESULT_CANCELLED) {
                 requireActivity().toast("Payment cancelled")
                 setPaymentBtn(false)
-                Log.d(logTag, "payment cancelled : $message")
             }
         }
     }
@@ -190,12 +182,10 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             }
         }
 
-        PreferenceMngr.setContext(requireContext())
-        val token = PreferenceMngr.getToken() ?: ""
+        PreferenceManager.setContext(requireContext())
+        val token = PreferenceManager.getToken() ?: ""
 
         val getCoupinRequestModel = GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId)
-
-        Log.d(logTag, "rewardIdQuantity : $rewardsIdList")
 
         checkoutViewModel.getCoupin(getCoupinRequestModel, token).observe(viewLifecycleOwner, {
             it?.let {
@@ -229,35 +219,39 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun proceedToCoupinView(getCoupinResponseModel: GetCoupinResponseModel){
-        Log.d(logTag, "coupinRespModel : $getCoupinResponseModel")
-
         val bookingId = getCoupinResponseModel.data?.booking?._id
         val shortCode = getCoupinResponseModel.data?.booking?.shortCode
         val merchant = checkoutViewModel.merchantLD.value
         val rewardCount = getCoupinResponseModel.data?.booking?.rewardId?.size ?: 0
         val rewards = Gson().toJson(getCoupinResponseModel.data?.booking?.rewardId)
 
-        merchant?.let {
-            val coupin = RewardListItem()
-            coupin.setBookingId(bookingId)
-            coupin.setBookingShortCode(shortCode)
-            coupin.setMerchantName(merchant.getTitle())
-            coupin.setMerchantAddress(merchant.getAddress())
-            coupin.setLatitude(merchant.getLatitude())
-            coupin.setLongitude(merchant.getLongitude())
-            coupin.setMerchantLogo(merchant.getLogo())
-            coupin.setMerchantBanner(merchant.getBanner())
-            coupin.isFavourited = merchant.isFavourite
-            coupin.setVisited(merchant.isVisited)
-            coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
-            coupin.setRewardDetails(rewards)
-            coupin.setRewardCount(rewardCount)
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        intent.putExtra("fromCoupin", true)
+        startActivity(intent)
+        requireActivity().finishAffinity()
 
-            val intent = Intent(requireContext(), CoupinActivity::class.java)
-            intent.putExtra("coupin", coupin)
-            intent.putExtra("fromPurchase", true)
-            startActivity(intent)
-            requireActivity().finishAffinity()
-        }
+        // TODO: Uncomment once you convert to retrofit
+//        merchant?.let {
+//            val coupin = RewardListItem()
+//            coupin.setBookingId(bookingId)
+//            coupin.setBookingShortCode(shortCode)
+//            coupin.setMerchantName(merchant.name)
+//            coupin.setMerchantAddress(merchant.address)
+//            coupin.setLatitude(merchant.location.latitude)
+//            coupin.setLongitude(merchant.location.longitude)
+//            coupin.setMerchantLogo(merchant.logo.url)
+//            coupin.setMerchantBanner(merchant.banner.url)
+//            coupin.isFavourited = merchant.favourite
+//            coupin.setVisited(merchant.visited)
+//            coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
+//            coupin.setRewardDetails(rewards)
+//            coupin.setRewardCount(rewardCount)
+//
+//            val intent = Intent(requireContext(), CoupinActivity::class.java)
+//            intent.putExtra("coupin", coupin)
+//            intent.putExtra("fromPurchase", true)
+//            startActivity(intent)
+//            requireActivity().finishAffinity()
+//        }
     }
 }

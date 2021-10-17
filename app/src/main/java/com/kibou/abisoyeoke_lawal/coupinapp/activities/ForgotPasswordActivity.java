@@ -11,20 +11,19 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.PasswordChangeRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class ForgotPasswordActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.email_forgot_form)
@@ -38,9 +37,9 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
     @BindView(R.id.forgot_form)
     public ScrollView forgotForm;
 
+    private ApiCalls apiCalls;
     private Boolean sending = false;
-    private Handler handler = new Handler();
-    private RequestQueue requestQueue;
+    private final Handler handler = new Handler();
     private String email;
 
     @Override
@@ -49,7 +48,7 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         setContentView(R.layout.activity_forgot_password);
         ButterKnife.bind(this);
 
-        requestQueue = Volley.newRequestQueue(this);
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
 
         submitBtn.setOnClickListener(this);
     }
@@ -73,56 +72,56 @@ public class ForgotPasswordActivity extends AppCompatActivity implements View.On
         }
     }
 
+    /**
+     * Request Password Change
+     */
     private void requestPasswordChange() {
         if (sending) {
             return;
         }
 
-        String url = getResources().getString(R.string.base_url)
-            + getResources().getString(R.string.forgot_password);
+        PasswordChangeRequest body = new PasswordChangeRequest();
+        body.email = email;
+
+        sending = true;
         loading(0);
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        Call<GenericResponse> request = apiCalls.requestPasswordChange(body);
+        request.enqueue(new Callback<GenericResponse>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
+            public void onResponse(Call<GenericResponse> call, retrofit2.Response<GenericResponse> response) {
                 sending = false;
-                loading(2);
-                 handler.postDelayed(new Runnable() {
-                     @Override
-                     public void run() {
-                         onBackPressed();
-                     }
-                 }, 2000);
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                loading(1);
-                if (error.networkResponse != null && error.networkResponse.data != null) {
-                    if (error.networkResponse.statusCode == 404) {
-                        Toast.makeText(ForgotPasswordActivity.this, getString(R.string.notFound), Toast.LENGTH_SHORT).show();
-                    } else {
-                        Toast.makeText(ForgotPasswordActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
-                    }
+                if (response.isSuccessful()) {
+                    loading(2);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            onBackPressed();
+                        }
+                    }, 2000);
                 } else {
-                    Toast.makeText(ForgotPasswordActivity.this, error.toString(), Toast.LENGTH_SHORT).show();
+                    loading(1);
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(ForgotPasswordActivity.this, error.message, Toast.LENGTH_SHORT).show();
                 }
             }
-        }) {
+
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("email", email);
-
-                return params;
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                sending = false;
+                t.printStackTrace();
+                loading(1);
+                Toast.makeText(ForgotPasswordActivity.this, getResources().getString(R.string.error_us), Toast.LENGTH_SHORT).show();
             }
-        };
-
-        requestQueue.add(stringRequest);
-        sending = true;
+        });
     }
 
+    /**
+     * Toggle Loading Screens
+     * @param i loading option
+     */
     private void loading(int i) {
         switch (i) {
             case 0:

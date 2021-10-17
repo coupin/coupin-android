@@ -2,31 +2,32 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestEditAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.InterestsRequest;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class InterestEditActivity extends AppCompatActivity {
     @BindView(R.id.interests_edit_grid)
@@ -36,6 +37,7 @@ public class InterestEditActivity extends AppCompatActivity {
     @BindView(R.id.interest_save)
     public TextView interestSave;
 
+    private ApiCalls apiCalls;
     public ArrayList<Interest> interests = new ArrayList<>();
     public ArrayList<String> selected = new ArrayList<>();
 
@@ -47,8 +49,7 @@ public class InterestEditActivity extends AppCompatActivity {
     public String[] categoryValues = new String[]{"\"foodndrink\"", "\"groceries\"",
             "\"technology\"", "\"entertainment\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"",
             "\"travel\""};
-
-    public RequestQueue requestQueue;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,8 +57,9 @@ public class InterestEditActivity extends AppCompatActivity {
         setContentView(R.layout.activity_interest_edit);
         ButterKnife.bind(this);
 
-        requestQueue = Volley.newRequestQueue(this);
-        selected = PreferenceMngr.getUserInterests();
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
+        selected = PreferenceManager.getUserInterests();
+        user = PreferenceManager.getCurrentUser();
 
         for (int i = 0; i < categories.length; i++) {
             Interest item = new Interest();
@@ -72,85 +74,60 @@ public class InterestEditActivity extends AppCompatActivity {
 
         interestEditGrid.setAdapter(interestAdapter);
 
-        interestEditGrid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                LinearLayout holder = (LinearLayout) view.findViewById(R.id.interest_holder);
-                ImageView icon = (ImageView) view.findViewById(R.id.interest_img);
-                TextView label = (TextView) view.findViewById(R.id.interest_text);
-                ImageView tick = (ImageView) view.findViewById(R.id.interest_tick);
+        interestEditGrid.setOnItemClickListener((parent, view, position, id) -> {
+            LinearLayout holder = (LinearLayout) view.findViewById(R.id.interest_holder);
+            ImageView icon = (ImageView) view.findViewById(R.id.interest_img);
+            TextView label = (TextView) view.findViewById(R.id.interest_text);
+            ImageView tick = (ImageView) view.findViewById(R.id.interest_tick);
 
-                Interest interest = interests.get(position);
+            Interest interest = interests.get(position);
 
-                if (interest.isSelected()) {
-                    holder.setBackground(getResources().getDrawable(R.drawable.interest_edit_default));
-                    tick.setVisibility(View.GONE);
-                    interest.setSelected(false);
-                    selected.remove(interest.getValue());
-                } else {
-                    holder.setBackground(getResources().getDrawable(R.drawable.interest_default));
-                    tick.setVisibility(View.VISIBLE);
-                    interest.setSelected(true);
-                    selected.add(interest.getValue());
-                }
+            if (interest.isSelected()) {
+                holder.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.interest_edit_default, null));
+                tick.setVisibility(View.GONE);
+                interest.setSelected(false);
+                selected.remove(interest.getValue());
+            } else {
+                holder.setBackground(ResourcesCompat.getDrawable(getResources(), R.drawable.interest_default, null));
+                tick.setVisibility(View.VISIBLE);
+                interest.setSelected(true);
+                selected.add(interest.getValue());
+            }
 
-                if (selected.size() > 0) {
-                    interestSave.setVisibility(View.VISIBLE);
-                } else {
-                    interestSave.setVisibility(View.GONE);
-                }
+            if (selected.size() > 0) {
+                interestSave.setVisibility(View.VISIBLE);
+            } else {
+                interestSave.setVisibility(View.GONE);
             }
         });
 
-        interestEditBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onBackPressed();
-            }
-        });
-
-        interestSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                sendInterestInfo();
-            }
-        });
+        interestEditBack.setOnClickListener(view -> onBackPressed());
+        interestSave.setOnClickListener(view -> sendInterestInfo());
     }
 
     public void sendInterestInfo() {
-        String url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_category);
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+        Call<User> request = apiCalls.updateInterestInfo(new InterestsRequest(selected.toString()));
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                Toast.makeText(InterestEditActivity.this, "Your interests have been updated.", Toast.LENGTH_SHORT).show();
-                PreferenceMngr.setUser(response);
-                onBackPressed();
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(InterestEditActivity.this, "Your interests have been updated.", Toast.LENGTH_SHORT).show();
+                    user.interests = selected;
+                    PreferenceManager.setCurrentUser(user);
+                    onBackPressed();
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(InterestEditActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                }
             }
-        }, new Response.ErrorListener() {
+
+            @EverythingIsNonNull
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
                 Toast.makeText(InterestEditActivity.this, "Your interest failed to update. Please try again later.", Toast.LENGTH_SHORT).show();
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("interests", selected.toString());
-
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 }

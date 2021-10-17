@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,10 +25,9 @@ import com.kibou.abisoyeoke_lawal.coupinapp.activities.InterestEditActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.NotificationActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.TermsActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
-
-import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -66,7 +66,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     @BindView(R.id.theme_switch)
     public SwitchCompat switchCompat;
 
-    public JSONObject userObject;
+    private User user;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -80,18 +80,15 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
 
-        try {
-            userObject = new JSONObject(PreferenceMngr.getUser());
+        user = PreferenceManager.getCurrentUser();
 
-            profileName.setText(StringUtils.capitalize(userObject.getString("name")));
-
-            if (userObject.has("sex") && userObject.getString("sex").equals("female")) {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
+        if (user != null) {
+            profileName.setText(StringUtils.capitalize(user.name));
+            if (user.sex != null && user.sex.equals("female")) {
+                profilePicture.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_coupin_female, null));
             } else {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
+                profilePicture.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_coupin_male, null));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         logout.setOnClickListener(this);
@@ -104,18 +101,18 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profileTerms.setOnClickListener(this);
         profileAddressBook.setOnClickListener(this);
 
-        PreferenceMngr.setContext(requireContext());
+        PreferenceManager.setContext(requireContext());
 
-        Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
+        Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
         switchCompat.setChecked(isDarkMode);
 
         switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if(isChecked) {
-                PreferenceMngr.putBoolean(isDarkModePref, true);
+                PreferenceManager.putBoolean(isDarkModePref, true);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
             }
             else {
-                PreferenceMngr.putBoolean(isDarkModePref, false);
+                PreferenceManager.putBoolean(isDarkModePref, false);
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         });
@@ -137,7 +134,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logout:
-                PreferenceMngr.signOut(getActivity());
+                PreferenceManager.signOut(getActivity());
                 break;
             case R.id.profile_about:
                 startActivity(new Intent(getActivity(), AboutActivity.class));

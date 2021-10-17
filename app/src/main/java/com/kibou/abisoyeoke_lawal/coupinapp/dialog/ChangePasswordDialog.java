@@ -5,6 +5,7 @@ import android.content.Context;
 import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.StyleRes;
+
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -12,17 +13,18 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.PasswordChangeRequest;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import java.util.HashMap;
-import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class ChangePasswordDialog extends Dialog implements View.OnClickListener {
     private AVLoadingIndicatorView loading;
@@ -32,8 +34,8 @@ public class ChangePasswordDialog extends Dialog implements View.OnClickListener
     private EditText passwordView;
     private LinearLayout passwordHolderView;
 
-    private Context context;
-    private RequestQueue requestQueue;
+    private final Context context;
+    private ApiCalls apiCalls;
     private String token;
 
     public ChangePasswordDialog(@NonNull Context context) {
@@ -57,7 +59,7 @@ public class ChangePasswordDialog extends Dialog implements View.OnClickListener
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.dialog_change_password);
 
-        requestQueue = Volley.newRequestQueue(context);
+        apiCalls = ApiClient.getInstance().getCalls(context, true);
 
         cancelBtn = findViewById(R.id.btn_change_cancel);
         savePasswordBtn = findViewById(R.id.btn_change_save);
@@ -85,42 +87,31 @@ public class ChangePasswordDialog extends Dialog implements View.OnClickListener
     }
 
     public void attemptSave() {
-        String url = context.getResources().getString(R.string.base_url) + "/auth/password/c";
-
-        setLoading(true);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        Call<GenericResponse> request = apiCalls
+                .resetPassword(new PasswordChangeRequest(passwordView.getEditableText().toString()));
+        request.enqueue(new Callback<GenericResponse>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                Toast.makeText(context, context.getResources().getString(R.string.success_password), Toast.LENGTH_SHORT).show();
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                if (response.isSuccessful()) {
+                    Toast.makeText(context, context.getResources().getString(R.string.success_password), Toast.LENGTH_SHORT).show();
+                    setLoading(false);
+                    dismiss();
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    setLoading(false);
+                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                t.printStackTrace();
                 setLoading(false);
-                dismiss();
+                Toast.makeText(context, context.getString(R.string.error_general), Toast.LENGTH_SHORT).show();
             }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                setLoading(false);
-                Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-
-                params.put("password", passwordView.getEditableText().toString());
-
-                return params;
-            }
-
-            @Override
-            public  Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-
-                headers.put("Authorization", token);
-
-                return headers;
-            }
-        };
-        requestQueue.add(stringRequest);
+        });
     }
 
     private boolean isPasswordValid() {

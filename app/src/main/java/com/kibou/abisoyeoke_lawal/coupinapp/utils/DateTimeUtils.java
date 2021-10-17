@@ -1,10 +1,9 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
-import android.util.Log;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -21,7 +20,7 @@ public class DateTimeUtils {
         try {
             TimeZone tz = TimeZone.getTimeZone("UTC");
             Calendar cal = Calendar.getInstance(tz);
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", Locale.getDefault());
             sdf.setCalendar(cal);
             cal.setTime(sdf.parse(s));
             Date date = cal.getTime();

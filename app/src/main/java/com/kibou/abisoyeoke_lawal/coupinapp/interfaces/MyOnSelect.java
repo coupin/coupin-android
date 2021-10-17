@@ -5,6 +5,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.interfaces;
  */
 
 public interface MyOnSelect {
-    public void onSelect(boolean selected, int index);
-    public void onSelect(boolean selected, int index, int quantity);
+    void onSelect(boolean selected, int index);
+    void onSelect(boolean selected, int index, int quantity);
 }

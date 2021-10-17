@@ -3,6 +3,8 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 import android.content.Context;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.res.ResourcesCompat;
+
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -13,27 +15,22 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ChangePasswordDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.LoadingDialog;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
-
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class EditActivity extends AppCompatActivity implements View.OnClickListener {
     @BindView(R.id.profile_password)
@@ -63,6 +60,8 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     @BindView(R.id.profile_mobile)
     public TextView profileMobile;
 
+    private ApiCalls apiCalls;
+
     private String ageRange;
     private String email;
     private String gender;
@@ -72,10 +71,8 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     private boolean editMode = false;
     private boolean saveToast = false;
 
-    private PreferenceMngr preferenceMngr;
-    private RequestQueue requestQueue;
     private LoadingDialog loadingDialog;
-    private JSONObject user;
+    private User userV2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,8 +80,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_edit);
         ButterKnife.bind(this);
 
-        requestQueue = Volley.newRequestQueue(this);
-        preferenceMngr = PreferenceMngr.getInstance();
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
         loadingDialog = new LoadingDialog(this, R.style.Loading_Dialog);
 
 
@@ -125,7 +121,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
             }
         });
 
-        setupDetails();
+        setupDetailsV2();
 
         changePasswordBtn.setOnClickListener(this);
         editFalse.setOnClickListener(this);
@@ -136,55 +132,48 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Set up user info
      */
-    private void setupDetails() {
-        try {
-            user = new JSONObject(PreferenceMngr.getUser());
+    private void setupDetailsV2() {
+        userV2 = PreferenceManager.getCurrentUser();
 
-            String temp = user.getString("name");
-            String names[] = temp.split(" ");
+        String fullName = userV2.name;
+        String[] names = fullName.split(" ");
 
-            profileFirstName.setText(names[0]);
-            profileLastName.setText(names[1]);
-            profileEmail.setText(user.getString("email"));
+        profileFirstName.setText(names[0]);
+        profileLastName.setText(names[1]);
+        profileEmail.setText(userV2.email);
 
-            if (user.has("mobileNumber")) {
-                profileMobile.setText(user.getString("mobileNumber"));
-            }
+        if (userV2.mobileNumber != null && !userV2.mobileNumber.isEmpty())
+                profileMobile.setText(userV2.mobileNumber);
 
-            if (user.has("sex") && user.getString("sex").equals("female")) {
-                profileGender.setSelection(2);
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
-            } else {
-                profileGender.setSelection(1);
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
-            }
+        boolean isFemale = userV2.sex != null && !userV2.sex.equals("male");
+        profileGender.setSelection(isFemale ? 2 : 1);
+        profilePicture.setImageDrawable(
+                ResourcesCompat.getDrawable(getResources(),
+                        isFemale ? R.drawable.ic_coupin_female : R.drawable.ic_coupin_male,
+                null)
+        );
 
-            if(user.has("ageRange")) {
-                switch (user.getString("ageRange")) {
-                    case "under 15":
-                        profileAgeRange.setSelection(1);
-                        break;
-                    case "15 - 25":
-                        profileAgeRange.setSelection(2);
-                        break;
-                    case "25 - 35":
-                        profileAgeRange.setSelection(3);
-                        break;
-                    case "35 - 45":
-                        profileAgeRange.setSelection(4);
-                        break;
-                    case "above 45":
-                        profileAgeRange.setSelection(5);
-                        break;
-                }
-            }
-
-            profileAgeRange.setEnabled(false);
-            profileGender.setEnabled(false);
-
-        } catch (Exception e) {
-            e.printStackTrace();
+        if (userV2.ageRange != null && !userV2.ageRange.isEmpty())
+        switch (userV2.ageRange) {
+            case "under 15":
+                profileAgeRange.setSelection(1);
+                break;
+            case "15 - 25":
+                profileAgeRange.setSelection(2);
+                break;
+            case "25 - 35":
+                profileAgeRange.setSelection(3);
+                break;
+            case "35 - 45":
+                profileAgeRange.setSelection(4);
+                break;
+            case "above 45":
+                profileAgeRange.setSelection(5);
+                break;
         }
+
+        profileAgeRange.setEnabled(false);
+        profileGender.setEnabled(false);
     }
 
     /**
@@ -236,7 +225,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
             email = profileEmail.getEditableText().toString();
             mobileNumber = profileMobile.getEditableText().toString();
 
-            saveUser();
+            saveUserV2();
         } else {
             loadingDialog.dismiss();
         }
@@ -293,60 +282,46 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     /**
      * Do call to save user details
      */
-    private void saveUser() {
-        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + preferenceMngr.getUserId();
+    private void saveUserV2() {
+        userV2.name = name;
+        if (mobileNumber != null)
+            userV2.mobileNumber = mobileNumber;
+        userV2.email = email;
+        userV2.sex = gender;
+        userV2.ageRange = ageRange;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+        Call<User> request = apiCalls.saveCurrentUserInfo(PreferenceManager.getUserId(), userV2);
+
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                loadingDialog.dismiss();
-                PreferenceMngr.setUser(response);
-                makeEditable(false);
-                editFalse.setVisibility(View.GONE);
-                editTrue.setVisibility(View.VISIBLE);
-                result("Profile updated successfully.");
-                saveToast = true;
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
                 loadingDialog.dismiss();
 
-                if (error.getMessage() != null) {
-                    result(error.getMessage());
+                if (response.isSuccessful()) {
+                    PreferenceManager.setCurrentUser(response.body());
+                    makeEditable(false);
+                    editFalse.setVisibility(View.GONE);
+                    editTrue.setVisibility(View.VISIBLE);
+                    result("Profile updated successfully.");
                 } else {
-                    result(getString(R.string.error_general));
+                    ApiError error = ApiClient.parseError(response);
+                    result(error.message);
                 }
+
                 saveToast = true;
             }
-        }){
+
+            @EverythingIsNonNull
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
 
-                params.put("name", name);
-                if (mobileNumber != null) {
-                    params.put("mobileNumber", mobileNumber);
-                }
-                params.put("email", email);
-                params.put("sex", gender);
-                params.put("ageRange", ageRange);
-
-                return params;
+                loadingDialog.dismiss();
+                result(getString(R.string.error_general));
+                saveToast = true;
             }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        DefaultRetryPolicy retryPolicy = new DefaultRetryPolicy(0, 0, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        preferenceMngr.getRequestQueue().add(stringRequest).setRetryPolicy(retryPolicy);
+        });
     }
 
     private void result(String message) {
@@ -357,7 +332,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
      * Open the custom password dialog
      */
     private void openPasswordDialog() {
-        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(this, PreferenceMngr.getToken());
+        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(this, PreferenceManager.getToken());
         passwordDialog.show();
     }
 

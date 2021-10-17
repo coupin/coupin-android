@@ -1,5 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
+import java.text.NumberFormat;
 import java.util.regex.Pattern;
 
 /**
@@ -27,6 +28,11 @@ public class StringUtils {
         }
 
         return sb.toString();
+    }
+
+    public static String currencyFormatter(int amount) {
+        NumberFormat numberFormat = NumberFormat.getInstance();
+        return numberFormat.format(amount);
     }
 
     public static String toTitleCase(String str) {

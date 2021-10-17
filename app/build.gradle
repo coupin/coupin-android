@@ -9,7 +9,7 @@ apply plugin: 'dagger.hilt.android.plugin'
 android {
     signingConfigs {
         release {
-            storeFile file('/Users/abisoyeoke-lawal/Documents/Personal/Coupin/KeyStore/AbisoyeEvans.jks')
+            storeFile file('/Users/abisoyeoke-lawal/Documents/Personal/Coupin/Keys/AbisoyeEvans.jks')
             storePassword 'Coop001'
             keyAlias = 'AbisoyeEvanskey'
             keyPassword 'Coop002'
@@ -20,8 +20,18 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 84
-        versionName "0.1.21"
+        versionCode 90
+        versionName "1.0.5"
+        manifestPlaceholders = [
+                paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
+                sentryEnvironment:"Development",
+                sentryDebug:true,
+                sentryDebugLevel:"error"
+        ]
+        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
+        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
+//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
+//        resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -31,6 +41,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             debuggable = false
+            manifestPlaceholders = [
+                    paytackPublicKey:"pk_live_eb8f2a5cd1b9a54f3144c59f8fff2afd0ecb1c97",
+                    sentryEnvironment:"Production",
+                    sentryDebug:false,
+                    sentryDebugLevel:"debug"
+            ]
+            resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1")
+            resValue("string", "base_url_v2", "https://coupin-pro.herokuapp.com/api/v1/")
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
@@ -75,20 +93,20 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'com.android.volley:volley:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'com.jakewharton:butterknife:10.0.0'
     implementation 'com.synnapps:carouselview:0.1.5'
     implementation 'com.yqritc:android-scalablevideoview:1.0.4'
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-plus:17.0.0'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
-    implementation 'com.google.firebase:firebase-core:19.0.0'
+    implementation 'com.google.firebase:firebase-analytics:19.0.2'
+    implementation 'com.google.firebase:firebase-core:19.0.2'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation 'io.sentry:sentry-android:5.2.2'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'cn.pedant.sweetalert:library:1.3'
@@ -98,8 +116,8 @@ dependencies {
     implementation 'com.wefika:flowlayout:0.4.1'
     implementation 'co.lujun:androidtagview:1.1.4'
     testImplementation 'junit:junit:4.13.2'
-    kapt 'com.jakewharton:butterknife-compiler:10.0.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.7.1'
+    kapt 'com.jakewharton:butterknife-compiler:10.2.3'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.12.0'
 
     //Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navigationVersion"
@@ -113,11 +131,12 @@ dependencies {
     implementation 'androidx.hilt:hilt-navigation-fragment:1.0.0'
 
     //Retrofit
-    def retrofitVersion = "2.8.1"
+    def retrofitVersion = "2.9.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-gson:$retrofitVersion"
     implementation "com.squareup.retrofit2:converter-scalars:$retrofitVersion"
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.2'
+    implementation 'com.squareup.okhttp3:okhttp:4.4.0'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.4.0'
 
     // Google Places api
     implementation 'com.google.android.libraries.places:places:2.4.0'
@@ -133,7 +152,7 @@ dependencies {
     androidTestImplementation "androidx.room:room-testing:$roomVersion"
 
     // Flutterwave
-    implementation 'com.github.flutterwave.rave-android:rave_android:2.1.36'
+    implementation 'com.github.flutterwave.rave-android:rave_android:2.1.37'
 
     // google play core sdk
     implementation("com.google.android.play:core:1.10.0")

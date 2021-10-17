@@ -2,10 +2,8 @@ package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
 
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,17 +11,14 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,7 +31,7 @@ import java.util.Locale;
 
 public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public Context context;
-    public List<RewardListItem> rewardListItems;
+    public List<RewardsListItemV2> rewardListItems;
 
     static public MyOnClick myOnClick;
 
@@ -47,119 +42,85 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
         return itemViewHolder;
     }
 
-    public RVAdapter(List<RewardListItem> rewardListItems, MyOnClick myOnClick, Context context) {
+    public RVAdapter(List<RewardsListItemV2> rewardListItems, MyOnClick myOnClick, Context context) {
         this.context = context;
-        this.myOnClick = myOnClick;
+        RVAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
     }
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         // Add data here
-        RewardListItem reward = rewardListItems.get(position);
+        RewardsListItemV2 reward = rewardListItems.get(position);
+        InnerItem.MerchantInfo merchantInfo = reward.merchant.merchantInfo;
         Date temp = new Date();
 
         try {
-            holder.merchantName.setText(reward.getMerchantName());
+            holder.merchantName.setText(merchantInfo.companyName);
 
-            JSONArray rewardArray = new JSONArray(reward.getRewardDetails());
-            Glide.with(context).load(reward.getMerchantLogo()).into(holder.favLogo);
-            Glide.with(context).load(reward.getMerchantBanner()).into(holder.favBanner);
-            if (reward.hasVisited()) {
-                holder.visitedIcon.setVisibility(View.VISIBLE);
-            }
+            Glide.with(context).load(merchantInfo.logo.url).into(holder.favLogo);
+            Glide.with(context).load(merchantInfo.banner.url).into(holder.favBanner);
 
-            if (reward.isFavourited()) {
-                holder.favIcon.setVisibility(View.VISIBLE);
-            }
-
-            if (reward.hasVisited() && reward.isFavourited()) {
-                holder.divide.setVisibility(View.VISIBLE);
-            }
+            if (reward.visited) holder.visitedIcon.setVisibility(View.VISIBLE);
+            if (reward.favourite) holder.favIcon.setVisibility(View.VISIBLE);
+            if (reward.visited && reward.favourite) holder.divide.setVisibility(View.VISIBLE);
 
             holder.itemView.setOnClickListener(v -> {
                 myOnClick.onItemClick(position);
             });
 
-            if (reward.isFav()) {
+            String status = reward.status;
 
-                Log.d("FavFragment", "rvadapter outside");
-
-
-                holder.favAddress.setText(reward.getMerchantAddress());
-                holder.activeRewardHolder.setVisibility(View.GONE);
-                holder.activeFavHolder.setVisibility(View.VISIBLE);
-                holder.activeRewardHolder2.setVisibility(View.GONE);
+            if(status.equals("awaiting_payment")){
                 holder.code.setVisibility(View.GONE);
-                holder.activeExpiration.setVisibility(View.GONE);
-                holder.expiryLabel.setVisibility(View.GONE);
-                holder.expiryHolder.setVisibility(View.GONE);
+                holder.status.setText("Awaiting Payment");
+            }
+            else {
+                holder.code.setVisibility(View.VISIBLE);
+                holder.status.setText("Payment Confirmed");
+            }
 
+            holder.code.setText("Code: " + reward.shortCode);
 
-                if (reward.getRewardCount() > 1) {
-                    holder.favCode.setText(reward.getRewardCount() + " REWARDS");
-                } else if (reward.getRewardCount() == 0) {
-                    holder.favCode.setText("No Rewards");
+            for (int x = 0 ; x < reward.rewardCount; x++) {
+                RewardV2 rewardV2 = reward.rewards.get(x).reward;
+                if (x == 0) {
+                    temp = DateTimeUtils.convertZString(rewardV2.endDate);
                 } else {
-                    holder.favCode.setText(rewardArray.getJSONObject(0).getString("name"));
-                    holder.activeRewardHolder2.setVisibility(View.GONE);
-                }
-            } else {
-
-                String status = reward.status;
-
-                if(status.equals("awaiting_payment")){
-                    holder.code.setVisibility(View.GONE);
-                    holder.status.setText("Awaiting Payment");
-                }
-                else {
-                    holder.code.setVisibility(View.VISIBLE);
-                    holder.status.setText("Payment Confirmed");
-                }
-
-                holder.code.setText("Code: " + reward.getBookingShortCode());
-
-                for (int x = 0 ; x < reward.getRewardCount(); x++) {
-                    JSONObject object = rewardArray.getJSONObject(x).getJSONObject("id");
-                    Log.d("FavFragment", "rvadapter" + object);
-                    if (x == 0) {
-                        temp = DateTimeUtils.convertZString(object.getString("endDate"));
-                    } else {
-                        if (temp.after(DateTimeUtils.convertZString(object.getString("endDate")))) {
-                            temp = DateTimeUtils.convertZString(object.getString("endDate"));
-                        }
+                    if (temp.after(DateTimeUtils.convertZString(rewardV2.endDate))) {
+                        temp = DateTimeUtils.convertZString(rewardV2.endDate);
                     }
-                }
-
-                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yy", Locale.ENGLISH);
-                holder.activeExpiration.setText(simpleDateFormat.format(temp));
-
-                JSONObject first = rewardArray.getJSONObject(0).getJSONObject("id");
-                holder.rewardOne.setText(first.getString("description"));
-                if (first.has("price") && first.getJSONObject("price").has("old") &&
-                    first.getJSONObject("price").has("new")) {
-                    float oldPrice = first.getJSONObject("price").getInt("old");
-                    float newPrice = first.getJSONObject("price").getInt("new");
-                    float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                    holder.rewardOnePercent.setText(String.valueOf((int) discount) + "%");
-                }
-
-                if (rewardArray.length() > 1) {
-                    JSONObject second = rewardArray.getJSONObject(1).getJSONObject("id");
-                    holder.rewardTwo.setText(second.getString("description"));
-                    if (second.has("price") && second.getJSONObject("price").has("old") &&
-                        second.getJSONObject("price").has("new")) {
-                        float oldPrice = second.getJSONObject("price").getInt("old");
-                        float newPrice = second.getJSONObject("price").getInt("new");
-                        float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                        holder.rewardTwoPercent.setText(String.valueOf((int) discount) + "%");
-                    }
-                } else {
-                    holder.activeRewardHolder2.setVisibility(View.GONE);
                 }
             }
 
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yy", Locale.ENGLISH);
+            holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
+            RewardV2 first = reward.rewards.get(0).reward;
+            holder.rewardOne.setText(first.description);
+            if (first.price != null && first.price.oldPrice > 0 && first.price.newPrice > 0) {
+                float oldPrice = first.price.oldPrice;
+                float newPrice = first.price.newPrice;
+                float discount = ((oldPrice - newPrice) / oldPrice) * 100;
+                holder.rewardOnePercent.setText(((int) discount) + "%");
+            } else {
+                holder.rewardOnePercent.setVisibility(View.INVISIBLE);
+            }
+
+            if (reward.rewardCount > 1) {
+                RewardV2 second = reward.rewards.get(1).reward;
+                holder.rewardTwo.setText(second.description);
+                if (second.price != null && second.price.oldPrice > 0 && second.price.newPrice > 0) {
+                    float oldPrice = second.price.oldPrice;
+                    float newPrice = second.price.newPrice;
+                    float discount = ((oldPrice - newPrice) / oldPrice) * 100;
+                    holder.rewardTwoPercent.setText(((int) discount) + "%");
+                } else {
+                    holder.rewardTwoPercent.setVisibility(View.INVISIBLE);
+                }
+            } else {
+                holder.activeRewardHolder2.setVisibility(View.GONE);
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

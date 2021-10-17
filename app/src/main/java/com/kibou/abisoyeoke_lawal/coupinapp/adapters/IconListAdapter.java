@@ -1,7 +1,10 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
+
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +16,7 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.CustomClickListener;
 import com.makeramen.roundedimageview.RoundedImageView;
 
@@ -23,23 +27,15 @@ import java.util.ArrayList;
  */
 
 public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconListViewHolder> {
-    public ArrayList<Merchant> iconList = new ArrayList<>();
-    private Context context;
+    public ArrayList<?> iconList = new ArrayList<>();
+    private boolean isV2 = false;
+    private final Context context;
     private CustomClickListener.OnItemClickListener mClickListener;
     private int previousPosition;
     private View parent;
     private View previousView;
 
-//    public IconListAdapter(ArrayList<Merchant> items) {
-//        iconList = items;
-//    }
-//
-//    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener) {
-//        iconList = items;
-//        this.mClickListener = mClickListener;
-//    }
-
-    public IconListAdapter(ArrayList<Merchant> items, CustomClickListener.OnItemClickListener mClickListener, Context context) {
+    public IconListAdapter(ArrayList<?> items, CustomClickListener.OnItemClickListener mClickListener, Context context) {
         iconList = items;
         this.context = context;
         this.mClickListener = mClickListener;
@@ -60,13 +56,29 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
         RequestOptions requestOptions = new RequestOptions();
         requestOptions.placeholder(R.drawable.ic_placeholder);
         requestOptions.diskCacheStrategy(DiskCacheStrategy.ALL);
-        if (iconList.get(position).getLogo() != null) {
+
+        int picture;
+        String logoUrl = null;
+
+        if (isV2) {
+            MerchantV2 merchantV2 = (MerchantV2) iconList.get(position);
+            if (merchantV2.logo != null)
+                logoUrl = merchantV2.logo.url;
+            picture = merchantV2.picture;
+        } else {
+            Merchant merchant = (Merchant) iconList.get(position);
+            if (merchant.logo != null)
+                logoUrl = merchant.logo;
+            picture = merchant.picture;
+        }
+
+        if (logoUrl != null && !logoUrl.isEmpty()) {
             Glide.with(context)
-                .load(iconList.get(position).getLogo())
+                .load(logoUrl)
                 .apply(requestOptions)
                 .into(holder.iconView);
         } else {
-            holder.iconView.setImageResource(iconList.get(position).getPicture());
+            holder.iconView.setImageResource(picture);
         }
     }
 
@@ -74,8 +86,9 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
         mClickListener = callback;
     }
 
-    public void setIconList(ArrayList<Merchant> item) {
+    public void setIconList(ArrayList<?> item) {
         iconList = item;
+        isV2 = item.get(0) instanceof MerchantV2;
     }
 
     @Override
@@ -106,9 +119,9 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
 
                 if (x.getVisibility() != View.VISIBLE) {
                     x.setVisibility(View.VISIBLE);
-                    y.setBackground(parent.getResources().getDrawable(R.drawable.round_edges_active));
+                    y.setBackground(ResourcesCompat.getDrawable(parent.getResources(), R.drawable.round_edges_active, null));
                     previousView = v;
-                    previousPosition = getAdapterPosition();
+                    previousPosition = getBindingAdapterPosition();
                 } else {
                     x.setVisibility(View.GONE);
                     y.setBackgroundColor(parent.getResources().getColor(android.R.color.transparent));
@@ -116,7 +129,7 @@ public class IconListAdapter extends RecyclerView.Adapter<IconListAdapter.IconLi
             }
 
             if (mClickListener != null) {
-                mClickListener.OnClick(v, getAdapterPosition());
+                mClickListener.OnClick(v, getBindingAdapterPosition());
             }
         }
     }

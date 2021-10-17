@@ -8,7 +8,6 @@ import android.location.Location
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
@@ -37,7 +36,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.PlacesSearchRecyclerClick
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressSetTextFrom
 import com.kibou.abisoyeoke_lawal.coupinapp.models.PlacesSearchRecyclerResource
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.AddAddressViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -57,7 +56,6 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
     lateinit var RVPlacesSearchAdapter : RVPlacesSearchAdapter
     private val addAddressViewModel : AddAddressViewModel by viewModels()
     private val recyclerViewResource = arrayListOf<PlacesSearchRecyclerResource>()
-    val logTag = "AddAddressActivity"
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var markerOptions : MarkerOptions
     private lateinit var addressMarker : Marker
@@ -284,7 +282,7 @@ class AddAddressActivity : AppCompatActivity(), OnMapReadyCallback, View.OnClick
             Toast.makeText(this, "Invalid location", Toast.LENGTH_SHORT).show()
             return
         }
-        val token = PreferenceMngr.getToken() ?: ""
+        val token = PreferenceManager.getToken() ?: ""
         val addressModel = AddressModel(address, userLong, userLat, phoneNumber, token)
         addAddressToNetwork(addressModel)
     }

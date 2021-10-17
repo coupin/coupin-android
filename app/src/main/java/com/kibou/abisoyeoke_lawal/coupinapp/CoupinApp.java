@@ -2,12 +2,11 @@ package com.kibou.abisoyeoke_lawal.coupinapp;
 
 import android.app.Application;
 import android.content.Context;
-import android.os.Build;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.libraries.places.api.Places;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.lang.ref.WeakReference;
 
@@ -39,8 +38,8 @@ public class CoupinApp extends Application {
             Places.initialize(getApplicationContext(), BuildConfig.GOOGLE_PLACES_API);
         }
 
-        PreferenceMngr.setContext(this);
-        Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
+        PreferenceManager.setContext(this);
+        Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
         if(isDarkMode){
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
         }else{

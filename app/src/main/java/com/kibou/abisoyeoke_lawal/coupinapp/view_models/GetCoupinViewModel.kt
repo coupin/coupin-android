@@ -6,29 +6,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.CoupinServices
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinRequestModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
+import com.kibou.abisoyeoke_lawal.coupinapp.models.*
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Retrofit
-import java.nio.channels.NetworkChannel
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 @HiltViewModel
 class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRetrofit private val coupinRetrofit: Retrofit) : AndroidViewModel(application) {
 
-    private val selectedCoupinsMLD = MutableLiveData<ArrayList<Reward>>()
-    val selectedCoupinsLD : LiveData<ArrayList<Reward>> get() = selectedCoupinsMLD
+    private val selectedCoupinsMLD = MutableLiveData<ArrayList<RewardV2>>()
+    val selectedCoupinsLD : LiveData<ArrayList<RewardV2>> get() = selectedCoupinsMLD
 
-    private val merchantMLD = MutableLiveData<Merchant>()
-    val merchantLD : LiveData<Merchant> get() = merchantMLD
+    private val merchantMLD = MutableLiveData<MerchantV2>()
+    val merchantLD : LiveData<MerchantV2> get() = merchantMLD
 
     private val deliveryPriceMLD = MutableLiveData<Int>()
     val deliveryPriceLD : LiveData<Int> get() = deliveryPriceMLD
@@ -44,11 +37,11 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     val tempBlackListMLD = MutableLiveData<Set<String>>()
 
 
-    fun setSelectedCoupins(coupins : Array<Reward>){
+    fun setSelectedCoupins(coupins : Array<RewardV2>){
         selectedCoupinsMLD.value = coupins.toCollection(ArrayList())
     }
 
-    fun setMerchant(merchant : Merchant){
+    fun setMerchant(merchant : MerchantV2){
         merchantMLD.value = merchant
     }
 
@@ -56,7 +49,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
         deliveryPriceMLD.value = price
     }
 
-    fun removeCoupin(reward : Reward): ArrayList<Reward>? {
+    fun removeCoupin(reward : RewardV2): ArrayList<RewardV2>? {
         selectedCoupinsMLD.value?.remove(reward)
         return selectedCoupinsLD.value
     }

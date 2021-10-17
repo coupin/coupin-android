@@ -5,8 +5,8 @@ import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.isDarkModePre
 import android.content.Context;
 import android.graphics.Paint;
 
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,17 +14,20 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 import java.util.Set;
 
 /**
@@ -33,10 +36,9 @@ import java.util.Set;
 
 public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHolder> {
     public Set<String> blacklist;
-    public ArrayList<Reward> rewards;
+    public ArrayList<RewardV2> rewards;
     public Context context;
-    public boolean drawerVisible = false;
-    private boolean isCart = false;
+    private final boolean isCart;
     static public MyOnSelect myOnSelect;
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
@@ -51,7 +53,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         public TextView headTitle;
         public View head;
         public View rewardDivider;
-        public LinearLayout bacgroud;
+        public LinearLayout backgroud;
         public TextView quantityLabel;
 
         public ViewHolder(View itemView) {
@@ -67,14 +69,14 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             headTitle = (TextView) head.findViewById(R.id.list_reward_title);
             rewardDivider = (View) head.findViewById(R.id.reward_divider);
             tickFrame = (FrameLayout) head.findViewById(R.id.tick_frame);
-            bacgroud = head.findViewById(R.id.background);
+            backgroud = head.findViewById(R.id.background);
             quantityLabel = head.findViewById(R.id.quantity_label);
         }
     }
 
-    public RVPopUpAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
+    public RVPopUpAdapter(ArrayList<RewardV2> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
         this.context = context;
-        this.myOnSelect = myOnSelect;
+        RVPopUpAdapter.myOnSelect = myOnSelect;
         this.rewards = rewards;
         this.isCart = isCart;
     }
@@ -89,87 +91,95 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final RVPopUpAdapter.ViewHolder holder, final int position) {
-        final Reward reward = rewards.get(position);
+        final RewardV2 reward = rewards.get(position);
 
-        holder.headDetails.setText(reward.getDetails());
-        if (reward.getIsDiscount()) {
-            float oldPrice = reward.getOldPrice();
-            float newPrice = reward.getNewPrice();
+        holder.headDetails.setText(reward.description);
+        if (reward.isDiscount) {
+            float oldPrice = reward.price.oldPrice;
+            float newPrice = reward.price.newPrice;
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-            holder.headPercentage.setText(String.valueOf((int) discount) + "%");
-            holder.headPriceNew.setText("N" + String.valueOf(((int) newPrice)));
-            holder.headPriceOld.setText("N" + String.valueOf((int) oldPrice));
+            holder.headPercentage.setText(StringUtils.currencyFormatter((int) discount) + "%");
+            holder.headPriceNew.setText("N" + StringUtils.currencyFormatter((int) newPrice));
+            holder.headPriceOld.setText("N" + StringUtils.currencyFormatter((int) oldPrice));
             holder.headPriceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+        } else if (reward.price.oldPrice > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.price.oldPrice);
+            holder.headPriceOld.setText(priceString);
+            holder.headPercentage.setVisibility(View.GONE);
+        } else if (reward.price.newPrice > 0) {
+            String priceString = "N" + StringUtils.currencyFormatter((int) reward.price.newPrice);
+            holder.headPriceOld.setText(priceString);
+            holder.headPriceOld.setTextColor(context.getResources().getColor(R.color.colorAccent));
+            holder.headPercentage.setVisibility(View.GONE);
         }
 
-        holder.headTitle.setText(String.valueOf(reward.getTitle()));
+        holder.headTitle.setText(String.valueOf(reward.name));
 
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
-        holder.headExpiry.setText(simpleDateFormat.format(reward.getExpires()));
+        Date date = DateTimeUtils.convertZString(reward.endDate);
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+        assert date != null;
+        holder.headExpiry.setText(simpleDateFormat.format(date));
 
-        holder.head.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (blacklist.contains(reward.getId())) {
-                    myOnSelect.onSelect(false, -1);
-                    return;
-                }
-
-                DetailsDialog detailsDialog = new DetailsDialog(context, reward, isCart);
-
-                detailsDialog.setClickListener(new MyOnClick() {
-                    @Override
-                    public void onItemClick(int position) { }
-
-                    @Override
-                    public void onItemClick(int place, int quantity) {
-                        if (place == 0) {
-                            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
-                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
-                            holder.tickFrame.setVisibility(View.VISIBLE);
-                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
-                            holder.quantityLabel.setText("x " + quantity);
-                            reward.setIsSelected(true);
-                            myOnSelect.onSelect(true, position, quantity);
-
-                        } else {
-                            Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
-                            if(isDarkMode){
-                                holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-                                holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
-
-                            }else{
-                                holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
-                                holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
-                            }
-                            holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
-                            holder.tickFrame.setVisibility(View.GONE);
-                            holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
-                            holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
-                            holder.quantityLabel.setText("");
-                            reward.setIsSelected(false);
-                            myOnSelect.onSelect(false, position, quantity);
-                        }
-                    }
-                });
-                detailsDialog.show();
+        holder.head.setOnClickListener(v -> {
+            if (blacklist != null && blacklist.contains(reward.id)) {
+                myOnSelect.onSelect(false, -1);
+                return;
             }
+
+            DetailsDialog detailsDialog = new DetailsDialog(context, reward, isCart);
+
+            detailsDialog.setClickListener(new MyOnClick() {
+                @Override
+                public void onItemClick(int position1) { }
+
+                @Override
+                public void onItemClick(int place, int quantity) {
+                    if (place == 0) {
+                        holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                        holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
+                        holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
+                        holder.tickFrame.setVisibility(View.VISIBLE);
+                        holder.headDetails.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.headExpiry.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.headPercentage.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
+                        holder.quantityLabel.setText("x " + quantity);
+                        reward.isSelected = true;
+                        myOnSelect.onSelect(true, position, quantity);
+
+                    } else {
+                        Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
+                        if(isDarkMode){
+                            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
+
+                        }else{
+                            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
+                        }
+                        holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                        holder.tickFrame.setVisibility(View.GONE);
+                        holder.headDetails.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                        holder.headExpiry.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                        holder.headExpiryLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                        holder.headPercentage.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                        holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.colorAccent));
+                        holder.headTitle.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                        holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
+                        holder.quantityLabel.setText("");
+                        reward.isSelected = false;
+                        myOnSelect.onSelect(false, position, quantity);
+                    }
+                }
+            });
+            detailsDialog.show();
         });
 
-        if(reward.isSelected()){
-            holder.bacgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+        if(reward.isSelected){
+            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
             holder.tickFrame.setVisibility(View.VISIBLE);
@@ -180,7 +190,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
             holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
             holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
-            holder.quantityLabel.setText("x " + reward.getSelectedQuantity());
+            holder.quantityLabel.setText("x " + reward.quantity);
         }
     }
 

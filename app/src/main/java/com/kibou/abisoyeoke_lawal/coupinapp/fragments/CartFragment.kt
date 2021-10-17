@@ -70,8 +70,13 @@ class CartFragment : Fragment(), View.OnClickListener, MyOnSelect {
 
     private fun getTotalAmount(): Double {
         val rewards = cartViewModel.selectedCoupinsLD.value
+
         val rewardsPrice = rewards?.map {
-            it.newPrice * it.selectedQuantity
+            if (it.price.newPrice > 0) {
+                (it.price.newPrice * it.selectedQuantity).toDouble()
+            } else {
+                (it.price.oldPrice * it.selectedQuantity).toDouble()
+            }
         }?.sum() ?: 0F
 
         return rewardsPrice.toDouble()

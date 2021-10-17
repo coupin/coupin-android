@@ -18,7 +18,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.DeliveryAddressItemClickL
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.DropOff
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateRequestBody
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.setAmountFormat
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.DeliveryViewModel
@@ -64,7 +64,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
         })
 
         try{
-            val token = PreferenceMngr.getToken() ?: ""
+            val token = PreferenceManager.getToken() ?: ""
             deliveryViewModel.getAddressesFromNetwork(token).observe(viewLifecycleOwner, {
                 it?.let {
                     when(it.status){
@@ -90,7 +90,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
         getCoupinVM.selectedCoupinsLD.observe(viewLifecycleOwner, {
             it?.let {
                 val rewardCostSum = it.map {
-                    it.newPrice * it.selectedQuantity
+                    it.price.newPrice * it.selectedQuantity
                 }.sum()
                 items_cost.text = "₦ ${setAmountFormat(rewardCostSum)}"
                 total_cost.text = "₦ ${setAmountFormat(rewardCostSum)}"
@@ -148,8 +148,8 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
 
     private fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String, deliveryAddress : String){
         val merchant = getCoupinVM.merchantLD.value
-        val merchantLatitude = merchant?.latitude.toString()
-        val merchantLongitude = merchant?.longitude.toString()
+        val merchantLatitude = merchant?.location?.latitude.toString()
+        val merchantLongitude = merchant?.location?.longitude.toString()
         val merchantAddress = merchant?.address ?: ""
 
         val dropOff = DropOff(deliveryAddress, deliveryLatitude, deliveryLongitude)

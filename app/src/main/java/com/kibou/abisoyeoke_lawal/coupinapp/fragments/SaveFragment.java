@@ -13,29 +13,23 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVBroAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,12 +46,12 @@ public class SaveFragment extends Fragment implements MyOnClick {
     @BindView(R.id.later_recyclerview)
     public RecyclerView laterRecyclerView;
 
-    public ArrayList<RewardListItem> laterList = new ArrayList<>();
+    private ApiCalls apiCalls;
+    public ArrayList<RewardsListItemV2> laterList = new ArrayList<>();
     private boolean isLoading = false;
     private int page = 0;
     private Handler handler;
     private LinearLayoutManager linearLayoutManager;
-    public RequestQueue requestQueue;
     public RVBroAdapter nowRvAdapter;
     public String url;
 
@@ -74,8 +68,8 @@ public class SaveFragment extends Fragment implements MyOnClick {
         View rootView = inflater.inflate(R.layout.fragment_save_for_later, container, false);
         ButterKnife.bind(this, rootView);
 
+        apiCalls = ApiClient.getInstance().getCalls(getContext(), true);
         handler = new Handler();
-        requestQueue = Volley.newRequestQueue(getContext());
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         nowRvAdapter = new RVBroAdapter(laterList, this, getContext());
@@ -90,97 +84,51 @@ public class SaveFragment extends Fragment implements MyOnClick {
     }
 
     private void getRewardsForLater() {
-        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?saved=true&page=" + page;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+        Call<ArrayList<RewardsListItemV2>> request = apiCalls.getCoupins(true, page);
+        request.enqueue(new Callback<ArrayList<RewardsListItemV2>>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int x = 0; x < jsonArray.length(); x++) {
-                        JSONObject mainObject = jsonArray.getJSONObject(x);
-                        JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");
-                        JSONArray rewardObjects = mainObject.getJSONArray("rewardId");
-
-                        RewardListItem item = new RewardListItem();
-
-                        item.setBookingId(mainObject.getString("_id"));
-                        item.setLater(true);
-                        item.setMerchantName(merchantObject.getString("companyName"));
-                        item.setMerchantAddress(merchantObject.getString("address"));
-                        item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
-                        item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
-                        item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
-                        item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
-                        item.setRewardDetails(rewardObjects.toString());
-                        item.setVisited(mainObject.getBoolean("visited"));
-                        item.setFavourited(mainObject.getBoolean("favourite"));
-                        item.setRewardCount(rewardObjects.length());
-                        item.setStatus(mainObject.getString("status"));
+            public void onResponse(Call<ArrayList<RewardsListItemV2>> call, retrofit2.Response<ArrayList<RewardsListItemV2>> response) {
+                if (response.isSuccessful()) {
+                    for (RewardsListItemV2 item : response.body()) {
+                        item.later = true;
                         laterList.add(item);
                     }
+
                     isLoading = false;
-                    if (page > 0) {
-                        loading(5);
-                    }
+                    if (page > 0) loading(5);
                     nowRvAdapter.notifyDataSetChanged();
-                    if (jsonArray.length() == 0) {
-                        if (laterList.size() < 1) {
-                            loading(2);
-                        } else {
-                            showErrorToast(true);
-                        }
-                    } else {
-                        loading(1);
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (laterList.size() < 1) {
-                        loading(3);
-                    } else {
-                        showErrorToast(true);
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                isLoading = false;
-                if (laterList.size() < 1) {
-                    if (error != null) {
-                        if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                            loading(2);
-                        } else {
-                            loading(3);
-                        }
-                    } else {
-                        loading(3);
-                    }
+                    if (page == 0) loading(1);
                 } else {
-                    if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                        showErrorToast(true);
+                    ApiError error = ApiClient.parseError(response);
+
+                    if (error.statusCode == 404 && page == 0) {
+                        loading(2);
+                    } else if (page == 0) {
+                        loading(3);
                     } else {
-                        showErrorToast(false);
+                        Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
                     }
-                }
 
-                if (page > 0) {
-                    loading(5);
+                    if (page > 0) loading(5);
                 }
             }
-        }) {
+
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
+            public void onFailure(Call<ArrayList<RewardsListItemV2>> call, Throwable t) {
+                t.printStackTrace();
 
-                return headers;
+                isLoading = false;
+                if (laterList.size() == 0) {
+                    loading(3);
+                } else {
+                    showErrorToast(false);
+                }
+
+                if (page > 0) loading(5);
             }
-        };
-
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**
@@ -255,7 +203,6 @@ public class SaveFragment extends Fragment implements MyOnClick {
     @Override
     public void onPause() {
         super.onPause();
-        requestQueue.stop();
     }
 
     @Override

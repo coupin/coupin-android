@@ -14,7 +14,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVAddressBookAdapter
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.AddressBookItemClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.AddressBookViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -69,7 +69,7 @@ class AddressBookActivity : AppCompatActivity(), View.OnClickListener, AddressBo
 
     private fun getAddressFromNetwork(){
         try{
-            val token = PreferenceMngr.getToken() ?: ""
+            val token = PreferenceManager.getToken() ?: ""
             addressBookViewModel.getAddressesFromNetwork(token).observe(this, {
                 it?.let {
                     when(it.status){
@@ -109,7 +109,7 @@ class AddressBookActivity : AppCompatActivity(), View.OnClickListener, AddressBo
 
     private fun performDelete(addressModel : AddressResponseModel){
         try{
-            val token = PreferenceMngr.getToken() ?: ""
+            val token = PreferenceManager.getToken() ?: ""
             addressBookViewModel.deleteAddressFromNetwork(token, addressModel.id).observe(this, {
                 it?.let {
                     when(it.status){

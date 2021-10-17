@@ -13,29 +13,27 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.MerchantActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.SearchActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVFavAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Favourite;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardMini;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class FavFragment extends Fragment implements MyOnClick {
     @BindView(R.id.search_fav)
@@ -51,9 +49,9 @@ public class FavFragment extends Fragment implements MyOnClick {
     @BindView(R.id.fav_total)
     public TextView favTotal;
 
-    public ArrayList<RewardListItem> favList;
-    public RequestQueue requestQueue;
-    public RVAdapter rvAdapter;
+    private ApiCalls apiCalls;
+    public ArrayList<Favourite> favList;
+    public RVFavAdapter rvAdapter;
     public String url;
     public ArrayList<String> responses = new ArrayList<>();
 
@@ -69,23 +67,16 @@ public class FavFragment extends Fragment implements MyOnClick {
         View root = inflater.inflate(R.layout.fragment_fav, container, false);
         ButterKnife.bind(this, root);
 
+        apiCalls = ApiClient.getInstance().getCalls(getContext(), true);
         favList = new ArrayList<>();
 
-        requestQueue = Volley.newRequestQueue(getContext());
-        url = getResources().getString(R.string.base_url) + getResources().getString(R.string.ep_api_user_favourite);
-
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(getContext());
-        rvAdapter = new RVAdapter(favList, this, getContext());
+        rvAdapter = new RVFavAdapter(favList, this, getContext());
         favRecyclerView.setLayoutManager(linearLayoutManager);
         favRecyclerView.setHasFixedSize(true);
         favRecyclerView.setAdapter(rvAdapter);
 
-        favSearch.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), SearchActivity.class));
-            }
-        });
+        favSearch.setOnClickListener(v -> startActivity(new Intent(getActivity(), SearchActivity.class)));
 
         getFavourites();
 
@@ -94,51 +85,30 @@ public class FavFragment extends Fragment implements MyOnClick {
 
     public void getFavourites() {
         favList.clear();
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+
+        Call<ArrayList<Favourite>> request = apiCalls.getFavourites();
+        request.enqueue(new Callback<ArrayList<Favourite>>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    int total = jsonArray.length();
-                    favTotal.setText("MERCHANTS - " + total);
-
-                    for (int x = 0; x < total; x++) {
-                        JSONObject mainObject = jsonArray.getJSONObject(x);
-                        responses.add(mainObject.toString());
-                        JSONArray rewardObjects = mainObject.getJSONArray("rewards");
-
-                        RewardListItem item = new RewardListItem();
-
-                        item.setFav(true);
-                        item.setMerchantName(mainObject.getString("name"));
-                        item.setMerchantAddress(mainObject.getString("address"));
-                        item.setMerchantBanner(mainObject.getJSONObject("banner").getString("url"));
-                        item.setMerchantLogo(mainObject.getJSONObject("logo").getString("url"));
-                        item.setMerchantPhone(mainObject.getString("mobile"));
-                        item.setRewardDetails(rewardObjects.toString());
-                        item.setRewardCount(rewardObjects.length());
-                        item.setVisited(mainObject.getBoolean("visited"));
-
-                        favList.add(item);
-                    }
+            public void onResponse(Call<ArrayList<Favourite>> call, retrofit2.Response<ArrayList<Favourite>> response) {
+                if (response.isSuccessful()) {
+                    assert response.body() != null;
+                    favList.addAll(response.body());
+                    int total = favList.size();
+                    String totalString = "MERCHANTS - " + total;
+                    favTotal.setText(totalString);
 
                     rvAdapter.notifyDataSetChanged();
-                    if (jsonArray.length() == 0) {
+                    if (favList.size() == 0) {
                         favLoadingView.setVisibility(View.GONE);
                         favEmpty.setVisibility(View.VISIBLE);
                     } else {
                         favLoadingView.setVisibility(View.GONE);
                         favRecyclerView.setVisibility(View.VISIBLE);
                     }
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                if (FavFragment.this.isVisible()) {
-                    if (error != null && error.networkResponse.statusCode == 404) {
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    if (error.statusCode == 404) {
                         favLoadingView.setVisibility(View.GONE);
                         favEmpty.setVisibility(View.VISIBLE);
                     } else {
@@ -147,30 +117,74 @@ public class FavFragment extends Fragment implements MyOnClick {
                     }
                 }
             }
-        }) {
+
+            @EverythingIsNonNull
             @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
+            public void onFailure(Call<ArrayList<Favourite>> call, Throwable t) {
+                t.printStackTrace();
+                if (isVisible()) {
+                    favLoadingView.setVisibility(View.GONE);
+                    favError.setVisibility(View.VISIBLE);
+                }
             }
-        };
+        });
+    }
 
-        requestQueue.add(stringRequest);
+    public MerchantV2 convertToMerchantV2(Favourite favourite)  {
+        MerchantV2 merchant = new MerchantV2();
+
+        merchant.title = favourite.name;
+        merchant.id = favourite.id;
+        merchant.address = favourite.address;
+        merchant.favourite = true;
+        merchant.visited = favourite.visited;
+        merchant.location = favourite.location;
+        merchant.rating = favourite.rating;
+        merchant.mobile = favourite.mobile;
+        merchant.email = favourite.email;
+        merchant.details = favourite.details;
+        merchant.logo = favourite.logo;
+        merchant.banner = favourite.banner;
+        merchant.picture = favourite.picture;
+        merchant.category = favourite.category;
+
+        ArrayList<RewardV2> rewardV2s = new ArrayList<>();
+        for (RewardMini rewardMini: favourite.rewards) {
+            RewardV2 item = new RewardV2();
+            item.name = rewardMini.name;
+            item.pictures = rewardMini.pictures;
+            item.days = rewardMini.days;
+            item.categories = rewardMini.categories;
+            item.isActive = rewardMini.isActive;
+            item.isDelivery = rewardMini.isDelivery;
+            item.quantity = rewardMini.quantity;
+            item.multiple = rewardMini.multiple;
+            item.price = rewardMini.price;
+            item.id = rewardMini.id;
+            item.description = rewardMini.description;
+            item.endDate = rewardMini.endDate;
+            item.startDate = rewardMini.startDate;
+            item.createdDate = rewardMini.createdDate;
+            item.modifiedDate = rewardMini.modifiedDate;
+            item.status = rewardMini.status;
+            rewardV2s.add(item);
+        }
+
+        merchant.rewardsCount = rewardV2s.size();
+        merchant.rewards = rewardV2s;
+        return merchant;
     }
 
     @Override
     public void onItemClick(int position) {
         Intent intent = new Intent(getActivity(), MerchantActivity.class);
         Bundle extra = new Bundle();
-        extra.putString("merchant", responses.get(position));
+        MerchantV2 merchantV2 = convertToMerchantV2(favList.get(position));
+        extra.putString("merchant", TypeUtils.objectToString(merchantV2));
         intent.putExtras(extra);
         startActivity(intent);
     }
 
     @Override
-    public void onItemClick(int position, int quantity) {
-
-    }
+    public void onItemClick(int position, int quantity) {}
 }

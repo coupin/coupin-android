@@ -1,5 +1,6 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,31 +19,26 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVSearchAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.FilterNoDistDialog;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyFilter;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import co.lujun.androidtagview.TagContainerLayout;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFilter {
     @BindView(R.id.search_bottom_loading)
@@ -66,27 +62,27 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
     @BindView(R.id.search_street)
     public TextView searchStreet;
 
+    private ApiCalls apiCalls;
     private ArrayList<String> categories = new ArrayList<>();
-    private ArrayList<Merchant> companyInfos;
+    private ArrayList<MerchantV2> companyInfosV2;
     private boolean isLoading = false;
     private int page = 0;
     private LinearLayoutManager linearLayoutManager;
-    private RequestQueue requestQueue;
     private RVSearchAdapter adapter;
     private String queryString;
-    private String url;
 
 
     public Handler handler = new Handler();
     public Runnable queryRun;
 
-    public int icons[] = new int[]{R.drawable.slide1, R.drawable.slide2,
+    public int[] icons = new int[]{R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5, R.drawable.slide1, R.drawable.slide2,
         R.drawable.slide3, R.drawable.slide4, R.drawable.slide5};
 
+    @SuppressLint("RtlHardcoded")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,23 +92,23 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         final FilterNoDistDialog filterDialog = new FilterNoDistDialog(this, R.style.Filter_Dialog);
         filterDialog.setInterface(this);
         Window window = filterDialog.getWindow();
+        assert window != null;
         WindowManager.LayoutParams wlp = window.getAttributes();
         wlp.width = this.getWindow().getAttributes().width;
         wlp.gravity = Gravity.TOP | Gravity.LEFT | Gravity.START;
         wlp.windowAnimations = R.style.PauseDialogAnimation;
 
-        companyInfos = new ArrayList<>();
-        requestQueue = Volley.newRequestQueue(this);
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
+        companyInfosV2 = new ArrayList<>();
 
         linearLayoutManager = new LinearLayoutManager(this);
-        adapter = new RVSearchAdapter(companyInfos, this, this);
+        adapter = new RVSearchAdapter(companyInfosV2, this, this);
 
         searchRecyclerView.setLayoutManager(linearLayoutManager);
         searchRecyclerView.setHasFixedSize(true);
         searchRecyclerView.setAdapter(adapter);
 
         queryString = "";
-//        query();
         implementOnScrollListener();
 
         queryRun = new Runnable() {
@@ -120,20 +116,16 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
             public void run() {
                 loading(0);
                 page = 0;
-                query();
+                searchForMerchant();
             }
         };
 
         searchTextView.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //TODO: Nothing
-            }
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                //TODO: Nothing
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -146,141 +138,61 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
             }
         });
 
-        searchFilter.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterDialog.show();
-            }
-        });
+        searchFilter.setOnClickListener(v -> filterDialog.show());
+        back.setOnClickListener(v -> onBackPressed());
+    }
 
-        back.setOnClickListener(new View.OnClickListener() {
+    private void searchForMerchant() {
+        Call<ArrayList<MerchantV2>> request = apiCalls.searchMerchants(queryString, page, categories.toString());
+        request.enqueue(new Callback<ArrayList<MerchantV2>>() {
+            @EverythingIsNonNull
             @Override
-            public void onClick(View v) {
-                onBackPressed();
+            public void onResponse(Call<ArrayList<MerchantV2>> call, retrofit2.Response<ArrayList<MerchantV2>> response) {
+                if (response.isSuccessful()) {
+                    if (page == 0) {
+                        companyInfosV2.clear();
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    assert response.body() != null;
+                    if (response.body().size() > 0) {
+                        companyInfosV2.addAll(response.body());
+                    }
+
+                    isLoading = false;
+                    if (page > 0) {
+                        loading(5);
+                    }
+                    adapter.notifyDataSetChanged();
+                    loading(1);
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    if (page == 0) {
+                        toggleLoading(2, error.message);
+                    } else {
+                        toggleLoading(5, error.message);
+                    }
+                }
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<ArrayList<MerchantV2>> call, Throwable t) {
+                t.printStackTrace();
+                if (page == 0) {
+                    loading(3);
+                } else {
+                    showErrorToast(false);
+                    loading(5);
+                }
             }
         });
     }
 
-    /**
-     * Query for search
-     */
-    private void query() {
-        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant) + "/search/" + queryString + "?page=" + page;
-
-        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                if (page == 0) {
-                    companyInfos.clear();
-                    adapter.notifyDataSetChanged();
-                }
-                try {
-                    JSONArray resArr = new JSONArray(response);
-                    if (resArr.length() > 0) {
-                        for (int x = 0; x < resArr.length(); x++) {
-                            JSONObject res = resArr.getJSONObject(x);
-
-                            Merchant item = new Merchant();
-                            item.setId(res.getString("_id"));
-                            item.setEmail(res.getString("email"));
-                            item.setBanner(res.getJSONObject("banner").getString("url"));
-                            item.setLogo(res.getJSONObject("logo").getString("url"));
-                            item.setAddress(res.getString("address"));
-                            item.setDetails(res.getString("details"));
-                            item.setMobile(res.getString("mobile"));
-                            item.setTitle(res.getString("name"));
-                            item.setReward(res.getJSONObject("reward").toString());
-                            item.setRewards(res.getJSONArray("rewards").toString());
-                            item.setRewardsCount(res.getInt("count"));
-                            item.setResponse(res.toString());
-                            item.setRating(res.getInt("rating"));
-                            item.setFavourite(res.getBoolean("favourite"));
-                            item.setVisited(res.getBoolean("visited"));
-
-                            if (res.has("location")) {
-                                item.setLatitude(res.getJSONObject("location").getDouble("lat"));
-                                item.setLongitude(res.getJSONObject("location").getDouble("long"));
-                            }
-                            companyInfos.add(item);
-                        }
-
-                        isLoading = false;
-                        if (page > 0) {
-                            loading(5);
-                        }
-                        adapter.notifyDataSetChanged();
-                        loading(1);
-                    } else {
-                        if (page == 0) {
-                            loading(2);
-                        } else {
-                            showErrorToast(true);
-                        }
-                    }
-
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (page == 0) {
-                                loading(3);
-                            } else {
-                                showErrorToast(false);
-                            }
-                            isLoading = false;
-                            if (page > 0) {
-                                loading(5);
-                            }
-                        }
-                    }, 2000);
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                isLoading = false;
-                if (page == 0) {
-                    if (error.toString().equals("com.android.volley.TimeoutError")) {
-                        loading(3);
-                    } else {
-                        if (error.networkResponse != null && error.networkResponse.data != null) {
-                            if (error.networkResponse.statusCode == 404) {
-                                loading(2);
-                            }
-                        } else {
-                            loading(3);
-                        }
-                    }
-                } else {
-                    showErrorToast(false);
-                }
-
-                if (page > 0) {
-                    loading(5);
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("query", queryString);
-                params.put("categories", categories.toString());
-
-                return params;
-            }
-        };
-
-        requestQueue.add(request);
+    private void toggleLoading(int option, String message) {
+        loading(option);
+        if (message != null)
+            Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
     /**
@@ -292,7 +204,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                if (isLoading || (companyInfos.size() % 7) != 0 || companyInfos.size() < 7)
+                if (isLoading || (companyInfosV2.size() % 7) != 0 || companyInfosV2.size() < 7)
                     return;
 
                 int visibleItemCount = linearLayoutManager.getChildCount();
@@ -301,11 +213,11 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
                 if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                     isLoading = true;
                     loading(4);
-                    page = companyInfos.size() / 7;
+                    page = companyInfosV2.size() / 7;
                     handler.postDelayed(new Runnable() {
                         @Override
                         public void run() {
-                            query();
+                            searchForMerchant();
                         }
                     }, 2000);
                 }
@@ -329,7 +241,7 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
     public void onItemClick(int position) {
         Intent merchantIntent = new Intent(this, MerchantActivity.class);
         Bundle extra = new Bundle();
-        extra.putSerializable("object", companyInfos.get(position));
+        extra.putString("merchant", TypeUtils.objectToString(companyInfosV2.get(position)));
         merchantIntent.putExtras(extra);
         startActivity(merchantIntent);
     }
@@ -343,12 +255,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
      */
     public void loading(int opt) {
         switch (opt) {
-            case 0:
-                searchRecyclerView.setVisibility(View.GONE);
-                emptySearchView.setVisibility(View.GONE);
-                errorSearchView.setVisibility(View.GONE);
-                loadingSearchView.setVisibility(View.VISIBLE);
-                break;
             case 1:
                 loadingSearchView.setVisibility(View.GONE);
                 emptySearchView.setVisibility(View.GONE);
@@ -382,12 +288,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
         }
     }
 
-    @Override
-    public void onPause() {
-        super.onPause();
-        requestQueue.stop();
-    }
-
     /**
      * After filer selection has been made
      * @param selection
@@ -397,6 +297,6 @@ public class SearchActivity extends AppCompatActivity implements MyOnClick, MyFi
     public void onFilterSelected(ArrayList<String> selection, int distance) {
         categories = selection;
         filterTags.setTags(categories);
-        query();
+        searchForMerchant();
     }
 }

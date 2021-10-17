@@ -6,40 +6,36 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.os.Handler;
 import android.os.IBinder;
 import androidx.annotation.Nullable;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 /**
  * Created by abisoyeoke-lawal on 4/3/18.
  */
 
 public class UpdateService extends Service {
-    private static final int SERVICE_ID = 3001;
     private static final long NOTIFY_INTERVAL = AlarmManager.INTERVAL_DAY;
 
-    private Handler handler = new Handler();
-    public RequestQueue requestQueue;
+    private ApiCalls apiCalls;
     private Timer timer;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        apiCalls = ApiClient.getInstance().getCalls(getApplicationContext(), false);
 
         if (timer != null) {
             timer.cancel();
@@ -59,38 +55,31 @@ public class UpdateService extends Service {
     private class CheckVersion extends TimerTask {
         @Override
         public void run() {
-            String url = getApplicationContext().getString(R.string.base_url) + "/mobile/version";
-
-            StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
+            // Until We Switch Notification Tokens for this
+            Call<HashMap<String, String>> request = apiCalls.getLatestVersionNumber();
+            request.enqueue(new Callback<HashMap<String, String>>() {
+                @EverythingIsNonNull
                 @Override
-                public void onResponse(String response) {
-                    if (!response.isEmpty()) {
-                        PreferenceMngr.setContext(getApplicationContext());
-                        int code = getVersionCode(getApplicationContext());
-                        int newCode = Integer.valueOf(response);
-                        if (code < newCode && PreferenceMngr.getLastAttempt() < newCode) {
-                            PreferenceMngr.getInstance().setUpdate(true);
-                        } else {
-                            PreferenceMngr.getInstance().setUpdate(false);
+                public void onResponse(Call<HashMap<String, String>> call, Response<HashMap<String, String>> response) {
+                    if (response.isSuccessful()) {
+                        PreferenceManager.setContext(getApplicationContext());
+                        if (response.body() != null) {
+                            int code = getVersionCode(getApplicationContext());
+                            String newCodeString = response.body().get("version");
+                            assert newCodeString != null;
+                            int newCode = Integer.parseInt(newCodeString);
+                            PreferenceManager.setUpdate(code < newCode && PreferenceManager.getLastAttempt() < newCode);
                         }
+
                     }
                 }
-            }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    error.printStackTrace();
-                }
-            }) {
-                @Override
-                public Map<String, String> getHeaders() {
-                    Map<String, String> headers = new HashMap<>();
-                    headers.put("Cache-Control", "no-cache");
 
-                    return headers;
+                @EverythingIsNonNull
+                @Override
+                public void onFailure(Call<HashMap<String, String>> call, Throwable t) {
+                    t.printStackTrace();
                 }
-            };
-
-            requestQueue.add(stringRequest);
+            });
         }
 
         private int getVersionCode(Context context) {

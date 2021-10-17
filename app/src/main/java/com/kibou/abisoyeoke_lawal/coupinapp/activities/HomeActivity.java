@@ -2,43 +2,40 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
-import androidx.annotation.NonNull;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
+
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.appcompat.app.AppCompatActivity;
-import android.view.MenuItem;
+
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.firebase.installations.FirebaseInstallations;
 import com.ittianyu.bottomnavigationviewex.BottomNavigationViewEx;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.HomeTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.RewardsTab;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.TokenRequest;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class HomeActivity extends AppCompatActivity {
     @BindView(R.id.navigation)
     public BottomNavigationViewEx bottomNavigationView;
 
+    private ApiCalls apiCalls;
     private boolean exiting = false;
-    private RequestQueue requestQueue;
     private FragmentManager fm;
     private FragmentTransaction ft;
     private MyOnClick myOnClick;
@@ -52,11 +49,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         ButterKnife.bind(this);
 
-        requestQueue = PreferenceMngr.getInstance().getRequestQueue();
-
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(this);
-        }
+        apiCalls = ApiClient.getInstance().getCalls(this, true);
 
         bottomNavigationView.enableItemShiftingMode(false);
         bottomNavigationView.enableShiftingMode(false);
@@ -75,40 +68,37 @@ public class HomeActivity extends AppCompatActivity {
         final ProfileFragment profileFragment = new ProfileFragment();
         final RewardsTab rewardsTab = RewardsTab.newInstance();
 
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                exiting = false;
-                switch (item.getItemId()) {
-                    case R.id.nav_home:
-                        if (tag != "home") {
-                            selectedFrag = homeTab;
-                            tag = "home";
-                        } else {
-                            selectedFrag = HomeTab.newInstance();
-                        }
-                        break;
-                    case R.id.nav_reward:
-                        selectedFrag = rewardsTab;
-                        tag = "rewards";
-                        break;
-                    case R.id.nav_fav:
-                        selectedFrag = favFragment;
-                        tag = "fav";
-                        break;
-                    case R.id.nav_profile:
-                        selectedFrag = profileFragment;
-                        tag = "profile";
-                        break;
-                }
-
-                FragmentManager fm = getSupportFragmentManager();
-                FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(R.id.tab_fragment_container, selectedFrag);
-                ft.commit();
-
-                return true;
+        bottomNavigationView.setOnNavigationItemSelectedListener(item -> {
+            exiting = false;
+            switch (item.getItemId()) {
+                case R.id.nav_home:
+                    if (tag != "home") {
+                        selectedFrag = homeTab;
+                        tag = "home";
+                    } else {
+                        selectedFrag = HomeTab.newInstance();
+                    }
+                    break;
+                case R.id.nav_reward:
+                    selectedFrag = rewardsTab;
+                    tag = "rewards";
+                    break;
+                case R.id.nav_fav:
+                    selectedFrag = favFragment;
+                    tag = "fav";
+                    break;
+                case R.id.nav_profile:
+                    selectedFrag = profileFragment;
+                    tag = "profile";
+                    break;
             }
+
+            FragmentManager fm = getSupportFragmentManager();
+            FragmentTransaction ft = fm.beginTransaction();
+            ft.replace(R.id.tab_fragment_container, selectedFrag);
+            ft.commit();
+
+            return true;
         });
 
         boolean fromCoupinActivity = getIntent().getBooleanExtra("fromCoupin", false);
@@ -127,7 +117,7 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener(installationTokenResult -> {
             String newToken = installationTokenResult.getToken();
-            String oldToken = PreferenceMngr.getInstance().getNotificationToken();
+            String oldToken = PreferenceManager.getNotificationToken();
             if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
                 setNotificationToken(newToken);
             }
@@ -135,48 +125,33 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setNotificationToken(final String newToken) {
-        String url = getApplicationContext().getResources().getString(R.string.base_url) +
-            getApplicationContext().getResources().getString(R.string.ep_api_user_notifications, PreferenceMngr.getInstance().getUserId());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        Call<GenericResponse> request = apiCalls.setNotificationToken(PreferenceManager.getUserId(), new TokenRequest(newToken));
+        request.enqueue(new Callback<GenericResponse>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                PreferenceMngr.getInstance().setNotificationToken(newToken);
+            public void onResponse(Call<GenericResponse> call, retrofit2.Response<GenericResponse> response) {
+                if (response.isSuccessful()) {
+                    PreferenceManager.setNotificationToken(newToken);
+                } else {
+                    Toast.makeText(
+                            HomeActivity.this,
+                            "Failed to update notification id.",
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
             }
-        }, new Response.ErrorListener() {
+
+            @EverythingIsNonNull
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                t.printStackTrace();
                 Toast.makeText(
-                    HomeActivity.this,
-                    "Failed to update notification id.",
-                    Toast.LENGTH_SHORT
+                        HomeActivity.this,
+                        "Failed to update notification id.",
+                        Toast.LENGTH_SHORT
                 ).show();
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("token", newToken);
-
-                return params;
-            }
-        };
-        requestQueue.add(stringRequest);
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(this);
-        }
+        });
     }
 
     @Override
@@ -206,7 +181,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int grantResults[]) {
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         homeTab.onRequestPermissionsResult(requestCode, permissions, grantResults);
 
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

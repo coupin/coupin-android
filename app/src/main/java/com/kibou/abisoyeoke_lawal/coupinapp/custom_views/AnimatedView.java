@@ -14,12 +14,12 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 
 public class AnimatedView extends androidx.appcompat.widget.AppCompatImageView {
 
-    private Context mContext;
+    private final Context mContext;
     int x = -1;
     int y = -1;
-    private  int xVelocity = 10;
+    private final int xVelocity = 10;
     private  int yVelocity = 5;
-    private Handler h;
+    private final Handler h;
     private final int FRAME_RATE = 30;
 
     public AnimatedView(Context context, AttributeSet attributeSet) {
@@ -29,7 +29,7 @@ public class AnimatedView extends androidx.appcompat.widget.AppCompatImageView {
         h = new Handler();
     }
 
-    private Runnable r = new Runnable() {
+    private final Runnable r = new Runnable() {
         @Override
         public void run() {
             invalidate();

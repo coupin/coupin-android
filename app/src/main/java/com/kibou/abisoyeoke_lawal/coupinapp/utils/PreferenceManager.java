@@ -5,13 +5,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 
-import com.android.volley.RequestQueue;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.LandingActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.AlarmReceiver;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -21,34 +18,40 @@ import java.util.Set;
  * Created by abisoyeoke-lawal on 4/22/17.
  */
 
-public class PreferenceMngr {
-    private static PreferenceMngr ourInstance = new PreferenceMngr();
+public class PreferenceManager {
     private static SharedPreferences preferences = null;
-    private RequestQueue requestQueue;
-
-    public static PreferenceMngr getInstance() {
-        if(ourInstance == null) {
-            ourInstance = new PreferenceMngr();
-        }
-
-        return  ourInstance;
-    }
 
     public static void setContext(Context context) {
         preferences = context.getSharedPreferences(context.getString(R.string.main_package), Context.MODE_PRIVATE);
     }
 
-    /**
-     * Method to set the token
-     * @param token
-     */
-    public static void setToken(String token, String uid, String user, Set<String> favourites, Set<String> blacklist) {
-        preferences.edit().putBoolean("category" + uid, true).apply();
-        preferences.edit().putStringSet("blacklist", blacklist).apply();
-        preferences.edit().putStringSet("favourites", favourites).apply();
+    public static void setAuthToken(String token) {
         preferences.edit().putString("token", token).apply();
+    }
+
+    /**
+     * Method to set the current user details
+     * @param user User object containing all details
+     */
+    public static void setCurrentUserDetails(User user) {
+        String uid = user.id;
+        preferences.edit().putBoolean("category" + uid, true).apply();
+        preferences.edit().putStringSet("blacklist", new HashSet<>(user.blacklist)).apply();
+        preferences.edit().putStringSet("favourites", new HashSet<>(user.favourites)).apply();
         preferences.edit().putString("uid", uid).apply();
-        preferences.edit().putString("user", user).apply();
+        preferences.edit().putString("userV2", TypeUtils.objectToString(user)).apply();
+        PreferenceManager.setNotificationToken(user.notification.token);
+        boolean isWeekends = user.notification.days.equals("weekends");
+        PreferenceManager.notificationSelection(user.notification.notify, isWeekends);
+    }
+
+    public static void setCurrentUser(User user) {
+        preferences.edit().putString("userV2", TypeUtils.objectToString(user)).apply();
+    }
+
+    public static User getCurrentUser() {
+        String userString = preferences.getString("userV2", null);
+        return userString == null ? null : (User) TypeUtils.stringToObject(userString);
     }
 
     public static void putBoolean(String key, Boolean value){
@@ -59,19 +62,19 @@ public class PreferenceMngr {
         return preferences.getBoolean(key, false);
     }
 
-    public Set<String> getBlacklist() {
+    public static Set<String> getBlacklist() {
         return preferences.getStringSet("blacklist", new HashSet<String>());
     }
 
-    public void setBlacklist(Set<String> blacklist) {
+    public static void setBlacklist(Set<String> blacklist) {
         preferences.edit().putStringSet("blacklist", blacklist).apply();
     }
 
-    public Set<String> getFavourites() {
+    public static Set<String> getFavourites() {
         return preferences.getStringSet("favourites", new HashSet<String>());
     }
 
-    public void setFavourites(Set<String> favourites) {
+    public static void setFavourites(Set<String> favourites) {
         preferences.edit().putStringSet("favourites", favourites).apply();
     }
 
@@ -150,29 +153,15 @@ public class PreferenceMngr {
      * @return User Interests
      */
     public static ArrayList<String> getUserInterests() {
-        try {
-            ArrayList<String> temp = new ArrayList<>();
-
-            JSONObject user = new JSONObject(PreferenceMngr.getUser());
-            JSONArray userInterests = user.getJSONArray("interests");
-
-            for (int i = 0; i < userInterests.length(); i++) {
-                temp.add("\"" + userInterests.getString(i) + "\"");
-            }
-
-            return temp;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        User user = PreferenceManager.getCurrentUser();
+        return user.interests;
     }
 
     /**
      * Get user info
      * @return user data in a string format
      */
-    public String getUserId() {
+    public static String getUserId() {
         return preferences.getString("uid", null);
     }
 
@@ -196,7 +185,7 @@ public class PreferenceMngr {
      * Set the updateAvailable based on if update is available or not
      * @param isAvaialble
      */
-    public void setUpdate(boolean isAvaialble) {
+    public static void setUpdate(boolean isAvaialble) {
         preferences.edit().putBoolean("updateAvailable", isAvaialble).apply();
     }
 
@@ -221,18 +210,14 @@ public class PreferenceMngr {
      * @return true if logged and false otherwise
      */
     public static boolean isLoggedIn() {
-        if (getToken() != null) {
-            return true;
-        } else {
-            return false;
-        }
+        return PreferenceManager.getToken() != null;
     }
 
-    public String getNotificationToken() {
+    public static String getNotificationToken() {
         return preferences.getString("notificationId", null);
     }
 
-    public void setNotificationToken(String token) {
+    public static void setNotificationToken(String token) {
         preferences.edit().putString("notificationId", token).apply();
     }
 
@@ -249,7 +234,7 @@ public class PreferenceMngr {
      * @param notify notify or not
      * @param isWeekend true if weekends
      */
-    public void notificationSelection(boolean notify, boolean isWeekend) {
+    public static void notificationSelection(boolean notify, boolean isWeekend) {
         String days = isWeekend ? "weekends" : "weekdays";
         preferences.edit().putString("notifyDays", days).apply();
         preferences.edit().putBoolean("notify", notify).apply();
@@ -259,17 +244,9 @@ public class PreferenceMngr {
      * Get previous notification selection
      * @return array of boolean values
      */
-    public boolean[] getNotificationSelection() {
+    public static boolean[] getNotificationSelection() {
         Boolean weekends =  "weekends".equals(preferences.getString("notifyDays", null));
         return new boolean[]{preferences.getBoolean("notify", false), weekends};
-    }
-
-    public void setRequestQueue(RequestQueue requestQueue) {
-        this.requestQueue = requestQueue;
-    }
-
-    public RequestQueue getRequestQueue() {
-        return this.requestQueue;
     }
 
     /**

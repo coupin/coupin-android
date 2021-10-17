@@ -7,7 +7,7 @@ import android.view.View
 import androidx.viewpager.widget.ViewPager
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.OnBoardingViewPagerAdapter
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager
 import kotlinx.android.synthetic.main.activity_onboarding.*
 
 
@@ -25,14 +25,14 @@ class OnboardingActivity : AppCompatActivity(), View.OnClickListener {
                         view_pager.setCurrentItem(view_pager.currentItem + 1, true)
                     }
                     6 -> {
-                        PreferenceMngr.setOnboardingDone(true)
+                        PreferenceManager.setOnboardingDone(true)
                         startActivity(Intent(this, HomeActivity::class.java))
                         finish()
                     }
                 }
             }
             skip_btn.id -> {
-                PreferenceMngr.setOnboardingDone(true)
+                PreferenceManager.setOnboardingDone(true)
                 startActivity(Intent(this, HomeActivity::class.java))
                 finish()
             }
@@ -65,7 +65,7 @@ class OnboardingActivity : AppCompatActivity(), View.OnClickListener {
             override fun onPageSelected(position: Int) {
                 when(position){
                     6 -> {
-                        PreferenceMngr.setOnboardingDone(true)
+                        PreferenceManager.setOnboardingDone(true)
                         next_btn.text = getString(R.string.let_s_start)
                     }
                 }

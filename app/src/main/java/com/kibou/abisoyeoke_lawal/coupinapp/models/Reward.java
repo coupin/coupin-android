@@ -24,11 +24,7 @@ public class Reward implements Serializable {
     private String id;
     private String title;
     private int quantity;
-    private int selectedQuantity = 1;
-
-    public int getSelectedQuantity() { return selectedQuantity;}
-    public void setSelectedQuantity(int quantity) {this.selectedQuantity = quantity;}
-
+    private final int selectedQuantity = 1;
 
     public int getQuantity() {
         return quantity;
@@ -110,7 +106,7 @@ public class Reward implements Serializable {
     }
 
   public boolean getIsDiscount() {
-        return isDiscount;
+        return oldPrice > 0 && newPrice > 0;
     }
 
     public boolean isSelected() {

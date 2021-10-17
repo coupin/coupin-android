@@ -17,7 +17,7 @@ interface DeliveryAddressItemClickListener{
 }
 
 interface ReviewSelectionCancelClickListener{
-    fun onCancelClick(reward: Reward)
+    fun onCancelClick(reward: RewardV2)
 }
 
 interface PlaceSearchServices {

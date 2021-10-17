@@ -49,7 +49,7 @@ public class AnimateUtils {
                 public void onAnimationStart(View view) {
                     if (!listener.onAnimationStart(view)) {
                         view.setDrawingCacheEnabled(true);
-                    };
+                    }
                 }
 
                 @Override
