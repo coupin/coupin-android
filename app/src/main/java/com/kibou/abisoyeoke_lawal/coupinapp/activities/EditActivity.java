@@ -22,7 +22,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.ChangePasswordDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import butterknife.BindView;
@@ -133,7 +133,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
      * Set up user info
      */
     private void setupDetailsV2() {
-        userV2 = PreferenceMngr.getCurrentUser();
+        userV2 = PreferenceManager.getCurrentUser();
 
         String fullName = userV2.name;
         String[] names = fullName.split(" ");
@@ -290,7 +290,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         userV2.sex = gender;
         userV2.ageRange = ageRange;
 
-        Call<User> request = apiCalls.saveCurrentUserInfo(userV2);
+        Call<User> request = apiCalls.saveCurrentUserInfo(PreferenceManager.getUserId(), userV2);
 
         request.enqueue(new Callback<User>() {
             @EverythingIsNonNull
@@ -299,7 +299,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
                 loadingDialog.dismiss();
 
                 if (response.isSuccessful()) {
-                    PreferenceMngr.setCurrentUser(response.body());
+                    PreferenceManager.setCurrentUser(response.body());
                     makeEditable(false);
                     editFalse.setVisibility(View.GONE);
                     editTrue.setVisibility(View.VISIBLE);
@@ -332,7 +332,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
      * Open the custom password dialog
      */
     private void openPasswordDialog() {
-        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(this, PreferenceMngr.getToken());
+        ChangePasswordDialog passwordDialog = new ChangePasswordDialog(this, PreferenceManager.getToken());
         passwordDialog.show();
     }
 

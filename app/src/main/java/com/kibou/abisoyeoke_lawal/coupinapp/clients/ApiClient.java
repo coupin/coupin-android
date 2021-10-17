@@ -7,7 +7,7 @@ import com.google.gson.GsonBuilder;
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.lang.annotation.Annotation;
 import java.util.concurrent.TimeUnit;
@@ -52,7 +52,7 @@ public class ApiClient {
 
     private void setRetrofit(Context context, boolean update) {
         if (retrofit == null || update) {
-            final String token = PreferenceMngr.getToken();
+            String token = PreferenceManager.getToken();
             HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
             if (BuildConfig.BUILD_TYPE.equals("debug")) {
                 httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
@@ -61,9 +61,9 @@ public class ApiClient {
             }
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(chain -> {
-                        Request request = chain.request().newBuilder()
-                                .addHeader("Authorization", token)
-                                .build();
+                        Request.Builder builder = chain.request().newBuilder();
+                        if (token != null) builder.addHeader("Authorization", token);
+                        Request request = builder.build();
                         return chain.proceed(request);
                     })
                     .connectTimeout(60, TimeUnit.SECONDS)

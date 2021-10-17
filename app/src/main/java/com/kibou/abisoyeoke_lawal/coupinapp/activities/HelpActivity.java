@@ -16,7 +16,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.FeedbackRequest;
 import com.wang.avi.AVLoadingIndicatorView;
 

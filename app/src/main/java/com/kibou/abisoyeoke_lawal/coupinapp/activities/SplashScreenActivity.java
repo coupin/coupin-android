@@ -12,8 +12,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
@@ -26,7 +24,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.services.UpdateService;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PermissionsMngr;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -49,8 +47,6 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         Manifest.permission.ACCESS_FINE_LOCATION
     };
 
-    private RequestQueue requestQueue1;
-
     Handler handler = new Handler();
     UpdateDialog updateDialog;
 
@@ -63,7 +59,6 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
         AppEventsLogger.activateApp(getApplication());
-        requestQueue1 = Volley.newRequestQueue(this);
 
         Glide.with(this)
             .load(R.raw.loading_gif)
@@ -72,26 +67,24 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
 
-        PreferenceMngr.setContext(getApplicationContext());
-        if (PreferenceMngr.getRequestQueue() == null) {
-            PreferenceMngr.setRequestQueue(requestQueue1);
-        }
+        PreferenceManager.setContext(getApplicationContext());
 
-        isLoggedIn = PreferenceMngr.isLoggedIn();
-        interestsSelected = PreferenceMngr.interestsSelected();
-        isOnboardingDone = PreferenceMngr.isOnboardingDone();
+        isLoggedIn = PreferenceManager.isLoggedIn();
+        interestsSelected = PreferenceManager.interestsSelected();
+        isOnboardingDone = PreferenceManager.isOnboardingDone();
 
+        // TODO: Use GCM notification instead
         startService(new Intent(getApplicationContext(), UpdateService.class));
 
         if (!PermissionsMngr.permissionsCheck(permissions, this)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
         } else {
-            if (PreferenceMngr.updateAvailable()) {
+            if (PreferenceManager.updateAvailable()) {
                 updateDialog = new UpdateDialog(this, this);
                 updateDialog.show();
             } else {
                 extras = getIntent().getExtras();
-                if (PreferenceMngr.isLoggedIn()) {
+                if (PreferenceManager.isLoggedIn()) {
                     updateUserInfo();
                 } else {
                     proceed();
@@ -113,11 +106,11 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
                 }
 
                 if (grantResults.length > 0 && valid) {
-                    if (PreferenceMngr.updateAvailable()) {
+                    if (PreferenceManager.updateAvailable()) {
                         updateDialog = new UpdateDialog(this, this);
                         updateDialog.show();
                     } else {
-                        if (PreferenceMngr.isLoggedIn()) {
+                        if (PreferenceManager.isLoggedIn()) {
                             updateUserInfo();
                         } else {
                             proceed();
@@ -163,8 +156,8 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         if (selected) {
             startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(getString(R.string.app_link))));
         } else {
-            PreferenceMngr.setUpdate(false);
-            PreferenceMngr.setLastUpdate(version);
+            PreferenceManager.setUpdate(false);
+            PreferenceManager.setLastUpdate(version);
             proceed();
         }
     }
@@ -179,7 +172,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
                 if (response.isSuccessful()) {
-                    PreferenceMngr.setCurrentUser(response.body());
+                    PreferenceManager.setCurrentUser(response.body());
                 }
 
                 proceed();

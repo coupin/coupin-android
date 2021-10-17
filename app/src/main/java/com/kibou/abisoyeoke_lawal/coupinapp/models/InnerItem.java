@@ -22,14 +22,14 @@ public class InnerItem implements Serializable {
         public ArrayList<RewardV2> rewards;
         @SerializedName("categories")
         public ArrayList<String> categories;
+        @SerializedName("location")
+        public double[] location;
         @SerializedName("banner")
         public Image banner;
         @SerializedName("logo")
         public Image logo;
-        @SerializedName("location")
-        public double[] location;
         @SerializedName("rating")
-        public Rating rating;
+        public int rating;
         @SerializedName("address")
         public String address;
         @SerializedName("city")

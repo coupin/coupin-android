@@ -1,24 +1,23 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.services;
 
-import android.util.Log;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.TokenRequest;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
-import java.util.HashMap;
-import java.util.Map;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
-    private RequestQueue requestQueue;
+    private ApiCalls apiCalls;
 
     @Override
     public void onMessageReceived(RemoteMessage message) { super.onMessageReceived(message); }
@@ -26,46 +25,36 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     @Override
     public void onNewToken(String token) {
         super.onNewToken(token);
-        PreferenceMngr.setContext(getApplicationContext());
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        PreferenceManager.setContext(getApplicationContext());
+        apiCalls = ApiClient.getInstance().getCalls(getApplicationContext(), true);
 
         sendToServer(token);
     }
 
     private void sendToServer(final String token) {
-        String url = getApplicationContext().getResources().getString(R.string.base_url) +
-            getApplicationContext().getResources().getString(R.string.ep_api_user_notifications, PreferenceMngr.getUserId());
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
+        Call<GenericResponse> request = apiCalls.setNotificationToken(PreferenceManager.getUserId(), new TokenRequest(token));
+        request.enqueue(new Callback<GenericResponse>() {
             @Override
-            public void onResponse(String response) {
-                Log.v("Coupin Update", "Notification token updated");
+            public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
+                if (!response.isSuccessful()) {
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(
+                            MyFirebaseMessagingService.this,
+                            error.message,
+                            Toast.LENGTH_SHORT
+                    ).show();
+                }
             }
-        }, new Response.ErrorListener() {
+
             @Override
-            public void onErrorResponse(VolleyError error) {
+            public void onFailure(Call<GenericResponse> call, Throwable t) {
+                t.printStackTrace();
                 Toast.makeText(
-                    MyFirebaseMessagingService.this,
-                    "Failed to update notification id.",
-                    Toast.LENGTH_SHORT
+                        MyFirebaseMessagingService.this,
+                        "Failed to update notification id.",
+                        Toast.LENGTH_SHORT
                 ).show();
             }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<>();
-                params.put("token", token);
-
-                return params;
-            }
-        };
-        requestQueue.add(stringRequest);
+        });
     }
 }

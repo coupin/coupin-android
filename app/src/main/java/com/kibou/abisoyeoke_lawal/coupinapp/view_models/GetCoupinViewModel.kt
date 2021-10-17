@@ -8,15 +8,11 @@ import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.CoupinServices
 import com.kibou.abisoyeoke_lawal.coupinapp.models.*
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import retrofit2.Retrofit
-import java.nio.channels.NetworkChannel
-import java.util.*
 import javax.inject.Inject
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 @HiltViewModel
 class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRetrofit private val coupinRetrofit: Retrofit) : AndroidViewModel(application) {

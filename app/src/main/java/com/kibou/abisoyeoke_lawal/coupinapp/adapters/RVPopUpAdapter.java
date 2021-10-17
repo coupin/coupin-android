@@ -21,7 +21,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import java.text.SimpleDateFormat;
@@ -121,7 +121,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         holder.headExpiry.setText(simpleDateFormat.format(date));
 
         holder.head.setOnClickListener(v -> {
-            if (blacklist.contains(reward.id)) {
+            if (blacklist != null && blacklist.contains(reward.id)) {
                 myOnSelect.onSelect(false, -1);
                 return;
             }
@@ -151,7 +151,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                         myOnSelect.onSelect(true, position, quantity);
 
                     } else {
-                        Boolean isDarkMode = PreferenceMngr.getBoolean(isDarkModePref);
+                        Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
                         if(isDarkMode){
                             holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));

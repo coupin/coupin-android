@@ -22,7 +22,6 @@ import android.widget.RatingBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
 import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -35,13 +34,13 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.BookingResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -115,8 +114,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
     public ExperienceDialog experienceDialog;
     public RewardInfoDialog infoDialog;
-    public RequestQueue requestQueue;
-    String url;
 
     private ApiCalls apiCalls;
     private ArrayList<Date> expiryDates;
@@ -135,11 +132,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private MerchantV2 item;
     private JSONArray resArray;
     private JSONObject res;
-    private JSONObject user;
     private RVPopUpAdapter rvPopUpAdapter;
     private Set<String> favourites;
     private String merchantId;
-    private User userV2;
+    private User user;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,7 +144,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         ButterKnife.bind(this);
         apiCalls = ApiClient.getInstance().getCalls(this, true);
 
-        userV2 = PreferenceMngr.getCurrentUser();
+        user = PreferenceManager.getCurrentUser();
 
         setSupportActionBar(merchantToolbar);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -188,8 +184,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             String ratingString = item.rating + "/5";
             ratingText.setText(ratingString);
 
-            user = new JSONObject(PreferenceMngr.getUser());
-            tempBlackList.addAll(PreferenceMngr.getBlacklist());
+            tempBlackList.addAll(PreferenceManager.getBlacklist());
             rvPopUpAdapter.setBlacklist(tempBlackList);
 
             // Show Mobile and Gender Dialog
@@ -199,14 +194,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 //                requestGenderNumber = true;
 //                experienceDialog.show();
 //            }
-            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
-                && (userV2.mobileNumber == null || userV2.ageRange == null)) {
+            if (PreferenceManager.getToTotalCoupinsGenerated(user.id) > 0
+                && (user.mobileNumber == null || user.ageRange == null)) {
                 experienceDialog = new ExperienceDialog(this, this, user);
                 requestGenderNumber = true;
                 experienceDialog.show();
             }
 
-            favourites = PreferenceMngr.getFavourites();
+            favourites = PreferenceManager.getFavourites();
             if (favourites.contains(item.id)) {
                 favourite = true;
             }
@@ -468,10 +463,12 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 rvRewards.setVisibility(View.VISIBLE);
                 break;
             case 1:
+                rvRewards.setVisibility(GONE);
                 loadingRewards.setVisibility(GONE);
                 EmptyHolder.setVisibility(View.VISIBLE);
                 break;
             case 2:
+                rvRewards.setVisibility(GONE);
                 loadingRewards.setVisibility(GONE);
                 ErrorHolder.setVisibility(View.VISIBLE);
                 break;
@@ -512,7 +509,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         RewardV2 reward = values.get(index);
         if (selected) {
             this.selected.add(reward.id);
-            this.expiryDates.add(reward.expires);
+            this.expiryDates.add(TypeUtils.stringToDate(reward.endDate));
             selectedText.setText(this.selected.size() + " Items Selected");
             if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
@@ -525,7 +522,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             reward. isSelected = true;
         } else {
             this.selected.remove(reward.id);
-            this.expiryDates.remove(reward.expires);
+            this.expiryDates.remove(TypeUtils.stringToDate(reward.endDate));
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
                 selectedHolder.setVisibility(GONE);
@@ -689,7 +686,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             public void onResponse(Call<User> call, retrofit2.Response<User> response) {
                 if (response.isSuccessful()) {
                     favourites.add(id);
-                    PreferenceMngr.setFavourites(favourites);
+                    PreferenceManager.setFavourites(favourites);
                     Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
                 } else {
                     ApiError error = ApiClient.parseError(response);
@@ -726,7 +723,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             public void onResponse(Call<User> call, retrofit2.Response<User> response) {
                 if (response.isSuccessful()) {
                     favourites.remove(id);
-                    PreferenceMngr.setFavourites(favourites);
+                    PreferenceManager.setFavourites(favourites);
                     Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
                 } else {
                     ApiError error = ApiClient.parseError(response);

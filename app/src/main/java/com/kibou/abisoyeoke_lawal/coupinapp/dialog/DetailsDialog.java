@@ -27,10 +27,12 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * Created by abisoyeoke-lawal on 9/1/17.
@@ -218,8 +220,8 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         // Date
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yy", Locale.getDefault());
-        fullDateEnd.setText(simpleDateFormat.format(reward.expires));
-        fullDateStart.setText(simpleDateFormat.format(reward.starting));
+        fullDateEnd.setText(simpleDateFormat.format(Objects.requireNonNull(TypeUtils.stringToDate(reward.endDate))));
+        fullDateStart.setText(simpleDateFormat.format(Objects.requireNonNull(TypeUtils.stringToDate(reward.startDate))));
 
         // Reusable
         if (reward.isMultiple) {

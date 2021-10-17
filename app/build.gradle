@@ -22,6 +22,12 @@ android {
         targetSdkVersion 30
         versionCode 90
         versionName "1.0.5"
+        manifestPlaceholders = [
+                paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
+                sentryEnvironment:"Development",
+                sentryDebug:true,
+                sentryDebugLevel:"error"
+        ]
         resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
         resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
 //        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
@@ -35,8 +41,16 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
             debuggable = false
-            resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1")
-            resValue("string", "base_url_v2", "https://coupin-pro.herokuapp.com/api/v1/")
+            manifestPlaceholders = [
+                    paytackPublicKey:"pk_live_eb8f2a5cd1b9a54f3144c59f8fff2afd0ecb1c97",
+                    sentryEnvironment:"Production",
+                    sentryDebug:false,
+                    sentryDebugLevel:"debug"
+            ]
+            resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
+            resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
+//            resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1")
+//            resValue("string", "base_url_v2", "https://coupin-pro.herokuapp.com/api/v1/")
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
@@ -81,20 +95,20 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.2.0'
     implementation 'androidx.vectordrawable:vectordrawable:1.1.0'
-    implementation 'com.android.volley:volley:1.2.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
     implementation 'com.jakewharton:butterknife:10.0.0'
     implementation 'com.synnapps:carouselview:0.1.5'
     implementation 'com.yqritc:android-scalablevideoview:1.0.4'
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
     implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
-    implementation 'com.google.android.gms:play-services-auth:19.0.0'
+    implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'
     implementation 'com.google.android.gms:play-services-plus:17.0.0'
-    implementation 'com.google.firebase:firebase-analytics:19.0.0'
-    implementation 'com.google.firebase:firebase-core:19.0.0'
+    implementation 'com.google.firebase:firebase-analytics:19.0.2'
+    implementation 'com.google.firebase:firebase-core:19.0.2'
     implementation 'com.google.firebase:firebase-messaging:22.0.0'
+    implementation 'io.sentry:sentry-android:5.2.2'
     implementation 'com.makeramen:roundedimageview:2.3.0'
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'cn.pedant.sweetalert:library:1.3'

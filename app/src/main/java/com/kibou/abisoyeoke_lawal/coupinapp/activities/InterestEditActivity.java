@@ -19,7 +19,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.InterestsRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -58,8 +58,8 @@ public class InterestEditActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
-        selected = PreferenceMngr.getUserInterests();
-        user = PreferenceMngr.getCurrentUser();
+        selected = PreferenceManager.getUserInterests();
+        user = PreferenceManager.getCurrentUser();
 
         for (int i = 0; i < categories.length; i++) {
             Interest item = new Interest();
@@ -114,7 +114,7 @@ public class InterestEditActivity extends AppCompatActivity {
                 if (response.isSuccessful()) {
                     Toast.makeText(InterestEditActivity.this, "Your interests have been updated.", Toast.LENGTH_SHORT).show();
                     user.interests = selected;
-                    PreferenceMngr.setCurrentUser(user);
+                    PreferenceManager.setCurrentUser(user);
                     onBackPressed();
                 } else {
                     ApiError error = ApiClient.parseError(response);

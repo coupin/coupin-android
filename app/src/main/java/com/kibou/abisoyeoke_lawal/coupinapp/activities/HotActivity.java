@@ -14,8 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -28,7 +26,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.LocationV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.synnapps.carouselview.CarouselView;
 import com.synnapps.carouselview.ImageListener;
@@ -39,6 +37,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.internal.EverythingIsNonNull;
@@ -118,7 +117,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
     private final ArrayList<String> slides = new ArrayList<>();
     private final Handler handler = new Handler();
     private LinearLayoutManager linearLayoutManager;
-    private RequestQueue requestQueue;
     private RVHotAdapter adapter;
     private Set<String> favourites;
 
@@ -131,14 +129,13 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         setContentView(R.layout.activity_hot);
         ButterKnife.bind(this);
 
-        PreferenceMngr.setContext(getApplicationContext());
+        PreferenceManager.setContext(getApplicationContext());
         apiCalls = ApiClient.getInstance().getCalls(this, true);
-        requestQueue = Volley.newRequestQueue(this);
 
         linearLayoutManager = new LinearLayoutManager(this);
         adapter = new RVHotAdapter(merchantsV2, this, this);
         try {
-            favourites = PreferenceMngr.getFavourites();
+            favourites = PreferenceManager.getFavourites();
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -220,7 +217,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
      * Request Prime V2
      */
     public void getPrime() {
-        Call<Prime> request = apiCalls.getFavouriteMerchants(page);
+        Call<Prime> request = apiCalls.getPrimeMerchants(page);
         request.enqueue(new Callback<Prime>() {
             @EverythingIsNonNull
             @Override
@@ -298,7 +295,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
         } else {
             merchant.rewardsCount = 0;
         }
-        merchant.rating = merchantInfo.rating.value;
+        merchant.rating = merchantInfo.rating;
         merchant.location = new LocationV2();
         merchant.location.longitude = merchantInfo.location[0];
         merchant.location.latitude = merchantInfo.location[1];
@@ -320,6 +317,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onResponse(Call<ArrayList<InnerItem>> call, retrofit2.Response<ArrayList<InnerItem>> response) {
                 if (response.isSuccessful()) {
+                    assert response.body() != null;
                     for (InnerItem item : response.body()) {
                         MerchantV2 merchantV2 = convertInnerItemToMerchantV2(item, item.visited);
                         merchantV2.favourite = item.favourite;
@@ -354,6 +352,8 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             @Override
             public void onFailure(Call<ArrayList<InnerItem>> call, Throwable t) {
                 isLoading = false;
+                Sentry.captureException(t);
+                t.printStackTrace();
                 if (page > 0) {
                     loading(6);
                     Toast.makeText(HotActivity.this,
@@ -416,6 +416,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if(merchant.favourite) {
                     hotFav1.setVisibility(View.VISIBLE);
                 }
+                if (merchant.logo != null)
                 Glide.with(this).load(merchant.logo.url).into(hotLogo1);
                 break;
             case 1:
@@ -436,6 +437,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if(merchant.favourite) {
                     hotFav2.setVisibility(View.VISIBLE);
                 }
+                if (merchant.logo != null)
                 Glide.with(this).load(merchant.logo.url).into(hotLogo2);
                 break;
             case 2:
@@ -456,6 +458,7 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
                 if(merchant.favourite) {
                     hotFav3.setVisibility(View.VISIBLE);
                 }
+                if (merchant.logo != null)
                 Glide.with(this).load(merchant.logo.url).into(hotLogo3);
                 break;
         }
@@ -488,20 +491,6 @@ public class HotActivity extends AppCompatActivity implements View.OnClickListen
             case R.id.card3:
                 goToMerchantV2Page(featuredV2.get(2));
                 break;
-        }
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-        requestQueue.stop();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (requestQueue == null) {
-            requestQueue = Volley.newRequestQueue(this);
         }
     }
 

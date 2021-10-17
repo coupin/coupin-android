@@ -20,9 +20,9 @@ import com.kibou.abisoyeoke_lawal.coupinapp.fragments.ProfileFragment;
 import com.kibou.abisoyeoke_lawal.coupinapp.fragments.RewardsTab;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GenericResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.TokenRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -117,7 +117,7 @@ public class HomeActivity extends AppCompatActivity {
 
         FirebaseInstallations.getInstance().getToken(true).addOnSuccessListener(installationTokenResult -> {
             String newToken = installationTokenResult.getToken();
-            String oldToken = PreferenceMngr.getNotificationToken();
+            String oldToken = PreferenceManager.getNotificationToken();
             if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
                 setNotificationToken(newToken);
             }
@@ -125,13 +125,13 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setNotificationToken(final String newToken) {
-        Call<GenericResponse> request = apiCalls.setNotification(new TokenRequest(newToken));
+        Call<GenericResponse> request = apiCalls.setNotificationToken(PreferenceManager.getUserId(), new TokenRequest(newToken));
         request.enqueue(new Callback<GenericResponse>() {
             @EverythingIsNonNull
             @Override
             public void onResponse(Call<GenericResponse> call, retrofit2.Response<GenericResponse> response) {
                 if (response.isSuccessful()) {
-                    PreferenceMngr.setNotificationToken(newToken);
+                    PreferenceManager.setNotificationToken(newToken);
                 } else {
                     Toast.makeText(
                             HomeActivity.this,

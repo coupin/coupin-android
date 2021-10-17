@@ -12,7 +12,7 @@ import android.widget.TextView;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -32,7 +32,7 @@ public class InterestEditAdapter extends BaseAdapter {
     public InterestEditAdapter(Context context, ArrayList<Interest> interests) {
         this.context = context;
         this.interests = interests;
-        previouslySelected = PreferenceMngr.getUserInterests();
+        previouslySelected = PreferenceManager.getUserInterests();
     }
 
     @Override

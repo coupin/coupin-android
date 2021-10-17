@@ -22,7 +22,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.InterestsRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.yqritc.scalablevideoview.ScalableVideoView;
 
 import java.util.ArrayList;
@@ -70,14 +70,15 @@ public class InterestsActivity extends AppCompatActivity {
         apiCalls = ApiClient.getInstance().getCalls(this, true);
 
 //        play();
-        user = PreferenceMngr.getCurrentUser();
+        user = PreferenceManager.getCurrentUser();
 
         Intent receivedIntent = getIntent();
 
-        //TODO: Change to actual name
         String name = receivedIntent.getStringExtra("name");
         if (name != null && !name.isEmpty()) {
             interestName.setText(name);
+        } else if (user != null) {
+            interestName.setText(user.name);
         }
 
         Bundle extra = receivedIntent.getBundleExtra("interestBundle");
@@ -169,9 +170,9 @@ public class InterestsActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<User> call, retrofit2.Response<User> response) {
                 if (response.isSuccessful()) {
-                    PreferenceMngr.setInterests(true);
+                    PreferenceManager.setInterests(true);
                     user.interests = selected;
-                    PreferenceMngr.setCurrentUser(user);
+                    PreferenceManager.setCurrentUser(user);
                     startActivity(new Intent(InterestsActivity.this, OnboardingActivity.class));
                 } else {
                     ApiError error = ApiClient.parseError(response);

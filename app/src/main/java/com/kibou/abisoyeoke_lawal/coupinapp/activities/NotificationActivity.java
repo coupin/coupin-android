@@ -9,20 +9,19 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class NotificationActivity extends AppCompatActivity {
     @BindView(R.id.btn_save_notification)
@@ -44,8 +43,8 @@ public class NotificationActivity extends AppCompatActivity {
     @BindView(R.id.toggle_receive)
     public ToggleButton toggleReceive;
 
+    private ApiCalls apiCalls;
     private boolean notify;
-    private RequestQueue requestQueue;
     private String days;
 
     @Override
@@ -54,9 +53,9 @@ public class NotificationActivity extends AppCompatActivity {
         setContentView(R.layout.activity_notification);
         ButterKnife.bind(this);
 
-        requestQueue = Volley.newRequestQueue(getApplicationContext());
+        apiCalls = ApiClient.getInstance().getCalls(getApplicationContext(), true);
 
-        boolean[] previousSelection = PreferenceMngr.getNotificationSelection();
+        boolean[] previousSelection = PreferenceManager.getNotificationSelection();
 
         notificationBack.setOnClickListener(view -> onBackPressed());
 
@@ -102,7 +101,7 @@ public class NotificationActivity extends AppCompatActivity {
         notificationButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                PreferenceMngr.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked());
+                PreferenceManager.notificationSelection(toggleReceive.isChecked(), toggleWeekends.isChecked());
                 notificationButton.setEnabled(false);
                 updateNotifications();
             }
@@ -110,42 +109,34 @@ public class NotificationActivity extends AppCompatActivity {
     }
 
     private void updateNotifications() {
-        String url = getString(R.string.base_url) + getString(R.string.ep_api_user) + '/' + PreferenceMngr.getUserId();
+        User userInfo = new User();
+        userInfo.notify = String.valueOf(notify);
+        userInfo.days = days;
 
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+        Call<User> request = apiCalls.updateCurrentUserInfo(PreferenceManager.getUserId(), userInfo);
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
-                PreferenceMngr.setUser(response);
-                Toast.makeText(NotificationActivity.this, "Notification Updated.", Toast.LENGTH_SHORT).show();
-                onBackPressed();
+            public void onResponse(Call<User> call, Response<User> response) {
+                if (response.isSuccessful()) {
+                    PreferenceManager.setCurrentUser(response.body());
+                    Toast.makeText(NotificationActivity.this, "Notification Updated.", Toast.LENGTH_SHORT).show();
+                    onBackPressed();
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    notificationButton.setEnabled(true);
+                    Toast.makeText(NotificationActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                }
             }
-        }, new Response.ErrorListener() {
+
+            @EverythingIsNonNull
             @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
                 notificationButton.setEnabled(true);
                 Toast.makeText(NotificationActivity.this, "Failed to update notifications.", Toast.LENGTH_SHORT).show();
             }
-        }){
-            @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("notify", String.valueOf(notify));
-                params.put("days", days);
-
-                return params;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-        requestQueue.add(stringRequest);
+        });
     }
 
     /**

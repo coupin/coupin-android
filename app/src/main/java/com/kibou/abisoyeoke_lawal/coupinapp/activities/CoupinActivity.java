@@ -29,11 +29,11 @@ import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.BookingResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -108,7 +108,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         Glide.with(this).load(merchantInfo.logo.url).into(merchantLogo);
 
         coupinRewards = new ArrayList<>();
-        tempBlackList.addAll(PreferenceMngr.getBlacklist());
+        tempBlackList.addAll(PreferenceManager.getBlacklist());
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         rvAdapter = new RVCoupinAdapter(coupinRewards, this, this);

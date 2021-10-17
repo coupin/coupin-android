@@ -44,9 +44,9 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.SignInRequest;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.AuthResponse;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import org.json.JSONObject;
 
@@ -56,6 +56,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.internal.EverythingIsNonNull;
@@ -76,7 +77,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     /**
      * Keep track of the login task to ensure we can cancel it if requested.
      */
-    private final boolean cancel = false;
+    private boolean cancel = false;
 
     // UI references.
     @BindView(R.id.email)
@@ -110,7 +111,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
 
-        PreferenceMngr.setContext(this);
+        PreferenceManager.setContext(this);
 
         // Set up the login form.
         populateAutoComplete();
@@ -180,15 +181,15 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
      * @param id
      */
     private void socialLoginUser(final String email, final String id) {
-        Call<User> request = apiCalls.signInSocial(new SignInRequest(email, id));
-        request.enqueue(new Callback<User>() {
+        Call<AuthResponse> request = apiCalls.signInSocial(new SignInRequest(email, id));
+        request.enqueue(new Callback<AuthResponse>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+            public void onResponse(Call<AuthResponse> call, retrofit2.Response<AuthResponse> response) {
                 if (response.isSuccessful()) {
-                    User user = response.body();
-                    assert user != null;
-                    PreferenceMngr.setCurrentUserDetails(user);
+                    assert response.body() != null;
+                    PreferenceManager.setCurrentUserDetails(response.body().user);
+                    PreferenceManager.setAuthToken(response.body().token);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
@@ -201,7 +202,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
 
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
                 showProgress(false);
                 t.printStackTrace();
                 String message = t.getMessage() != null ? t.getMessage() : getResources().getString(R.string.error_us);
@@ -215,16 +216,16 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
      * @param email
      * @param password
      */
-    private void loginUserV2(final String email, final String password) {
-        Call<User> request = apiCalls.signIn(new SignInRequest(email, password));
-        request.enqueue(new Callback<User>() {
+    private void loginUser(final String email, final String password) {
+        Call<AuthResponse> request = apiCalls.signIn(new SignInRequest(email, password));
+        request.enqueue(new Callback<AuthResponse>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
+            public void onResponse(Call<AuthResponse> call, retrofit2.Response<AuthResponse> response) {
                 if (response.isSuccessful()) {
-                    User user = response.body();
-                    assert user != null;
-                    PreferenceMngr.setCurrentUserDetails(user);
+                    assert response.body() != null;
+                    PreferenceManager.setCurrentUserDetails(response.body().user);
+                    PreferenceManager.setAuthToken(response.body().token);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
                     finish();
@@ -237,9 +238,9 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
 
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<User> call, Throwable t) {
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
                 showProgress(false);
-                t.printStackTrace();
+                Sentry.captureException(t);
                 String message = t.getMessage() != null ? t.getMessage() : getResources().getString(R.string.error_us);
                 Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
             }
@@ -297,7 +298,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
-        boolean cancel = false;
+        cancel = false;
         View focusView = null;
 
         // Check for a valid password, if the user entered one.
@@ -321,13 +322,14 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         if (cancel) {
             // There was an error; don't attempt login and focus the first
             // form field with an error.
+            assert focusView != null;
             focusView.requestFocus();
         } else {
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
             try {
-                loginUserV2(mEmailView.getEditableText().toString() ,mPasswordView.getEditableText().toString());
+                loginUser(mEmailView.getEditableText().toString() ,mPasswordView.getEditableText().toString());
             } catch (Exception e) {
                 showProgress(false);
                 e.printStackTrace();
@@ -360,13 +362,11 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     }
 
     private boolean isEmailValid(String email) {
-        //TODO: Replace this with your own logic
         return email.contains("@");
     }
 
     private boolean isPasswordValid(String password) {
-        //TODO: Replace this with your own logic
-        return password.length() > 4;
+        return password.length() > 5;
     }
 
     /**
@@ -475,9 +475,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
     }
 
     @Override
-    public void onCancel() {
-
-    }
+    public void onCancel() {}
 
     @Override
     public void onError(FacebookException e) {

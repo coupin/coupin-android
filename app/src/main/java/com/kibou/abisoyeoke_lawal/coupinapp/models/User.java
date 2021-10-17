@@ -42,6 +42,10 @@ public class User implements Serializable {
     public String createdDate;
     @SerializedName("modifiedDate")
     public String modifiedDate;
+    @SerializedName("notify")
+    public String notify;
+    @SerializedName("days")
+    public String days;
 
     public static class Notification implements Serializable {
         @SerializedName("notify")

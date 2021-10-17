@@ -46,8 +46,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 import com.bumptech.glide.request.RequestOptions;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationRequest;
@@ -85,7 +83,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.AnimateUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.CustomClickListener;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkGPSUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PermissionsMngr;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
@@ -181,9 +179,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     public Marker myPosition;
     public Marker closestMarker;
 
-    public String url;
-    public RequestQueue requestQueue;
-
     private final ArrayList<MerchantV2> iconsListV2 = new ArrayList<>();
 
     public int[] icons = new int[]{R.drawable.slide1, R.drawable.slide2,
@@ -278,10 +273,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
         geocoder = new Geocoder(getContext(), Locale.getDefault());
         addresses = new ArrayList<>();
-
-        // Volley Queue Request and Url
-        requestQueue = Volley.newRequestQueue(requireActivity());
-        url = getString(R.string.base_url) + getString(R.string.ep_api_merchant);
 
         // Clear list if it exists
         iconsListV2.clear();
@@ -463,7 +454,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
     private void setCategories() {
         try {
-            JSONObject userObject = new JSONObject(PreferenceMngr.getUser());
+            JSONObject userObject = new JSONObject(PreferenceManager.getUser());
             JSONArray interests = userObject.getJSONArray("interests");
             for(int x = 0; x < interests.length(); x++) {
                 categories.add("\"" + interests.getString(x) + "\"");
@@ -1001,6 +992,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     /**
      * An async class to convert url to bitmaps in the background
      */
+    @SuppressLint("StaticFieldLeak")
     private class LogoConverter extends AsyncTask<Boolean, Integer, Void> {
         @Override
         protected Void doInBackground(Boolean... refresh) {
