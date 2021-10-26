@@ -1,11 +1,12 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/white</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:forceDarkAllowed">true</item>
     </style>
 
     <style name="TransActionBar" parent="@style/Widget.AppCompat.ActionBar">
@@ -59,4 +60,78 @@
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light"/>
+
+    <style name="RaveCustomTheme" parent="AppTheme">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="android:windowActionBarOverlay">true</item>
+
+        <!--Support Compatability-->
+        <item name="background">@android:color/transparent</item>
+        <item name="windowActionBarOverlay">true</item>
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="OTPButtonStyle">@style/myOtpBtnStyle</item>
+        <item name="PayButtonStyle">@style/myBtnStyle</item>
+        <item name="PinButtonStyle">@style/myPinButtonStyle</item>
+        <item name="OTPHeaderStyle">@style/myOtpHeaderStyle</item>
+        <item name="TabLayoutStyle">@style/myTabLayoutStyle</item>
+        <item name="PinHeaderStyle">@style/myPinHeaderStyle</item>
+        <item name="PaymentTileStyle">@style/myPaymentTileStyle</item>
+        <item name="PaymentTileTextStyle">@style/myPaymentTileTextStyle</item>
+        <item name="PaymentTileDividerStyle">@style/myPaymentTileDividerStyle</item>
+        <item name="SavedCardButtonStyle">@style/mySvdCardsBtnStyle</item>
+
+    </style>
+
+    <style name="myOtpBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/round_edges_accept</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="myPinButtonStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/round_edges_accept</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="myOtpHeaderStyle">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="myTabLayoutStyle" parent="Widget.Design.TabLayout">
+        <item name="tabIndicatorColor">@color/raveTabIndicatorColor</item>
+    </style>
+    <style name="myPinHeaderStyle">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="myPaymentTileStyle">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="myPaymentTileTextStyle">
+        <item name="android:textColor">@color/white</item>
+    </style>
+    <style name="myPaymentTileDividerStyle">
+        <item name="android:background">@color/colorPrimary</item>
+    </style>
+    <style name="myBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/round_edges_accept</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+    <style name="mySvdCardsBtnStyle" parent="@android:style/Widget.Button">
+        <item name="android:background">@drawable/round_edges_accept</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="profile_item_style">
+        <item name="android:gravity">center_vertical</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:paddingBottom">@dimen/padding_sm</item>
+        <item name="android:paddingTop">@dimen/padding_sm</item>
+        <item name="android:textColor">@color/text_color_1</item>
+        <item name="android:textSize">@dimen/large_text</item>
+        <item name="drawableEndCompat">@drawable/ic_right_angle</item>
+        <item name="drawableTint">@color/background_1</item>
+    </style>
 </resources>

@@ -45,14 +45,14 @@ public class SimpleListAdapter extends BaseAdapter {
         return position;
     }
 
-    public class Holder {
+    public static class Holder {
         TextView name;
     }
 
     public void setMerchantList(ArrayList<CompanyInfo> merchantList) {
         this.merchantList.clear();
         this.merchantList = merchantList;
-    };
+    }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {

@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="horizontal">
     
     <LinearLayout
+        android:id="@+id/background"
         android:animateLayoutChanges="true"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         android:orientation="vertical"
-        android:layout_weight="4">
+        android:layout_weight="4"
+        android:background="@color/background_8">
 
         <RelativeLayout
             android:animateLayoutChanges="true"
@@ -25,7 +27,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text=""
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/xxlarge_text"
                 android:textStyle="bold"/>
 
@@ -40,7 +42,7 @@
                 android:paddingRight="50dp"
                 android:singleLine="true"
                 android:text=""
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"/>
 
@@ -57,14 +59,14 @@
                 android:paddingRight="90dp"
                 android:singleLine="true"
                 android:text=""
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="normal"/>
 
         </RelativeLayout>
 
         <View
-            android:background="@color/lightGrey"
+            android:background="@color/background_9"
             android:id="@+id/reward_divider"
             android:layout_height="1dp"
             android:layout_marginBottom="@dimen/margin_xs"
@@ -88,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:text="@string/expiry"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/medium_text"
                 android:textStyle="bold"/>
 
@@ -101,29 +103,36 @@
                 android:layout_width="wrap_content"
                 android:text="@string/na"
                 android:textAllCaps="true"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/medium_text"/>
 
             <TextView
                 android:id="@+id/list_new_price"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
                 android:textColor="@color/colorAccent"
                 android:textSize="@dimen/medium_text"
-                android:textStyle="bold"/>
+                android:textStyle="bold"
+                android:layout_toStartOf="@id/list_old_price"
+                android:layout_marginRight="10dp"/>
 
             <TextView
                 android:id="@+id/list_old_price"
-                android:layout_toLeftOf="@id/list_new_price"
-                android:layout_toStartOf="@id/list_new_price"
+                android:layout_toStartOf="@id/quantity_label"
                 android:layout_height="wrap_content"
                 android:layout_marginRight="@dimen/margin_sm"
                 android:layout_width="wrap_content"
-                android:textColor="@color/text_lighter_grey"
+                android:textColor="@color/text_color_6"
                 android:textSize="@dimen/medium_text" />
-
+            <TextView
+                android:id="@+id/quantity_label"
+                android:layout_alignParentEnd="true"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:text=""
+                android:textColor="@color/text_color_1"
+                android:textSize="@dimen/medium_text"
+                android:textStyle="bold"/>
         </RelativeLayout>
         
     </LinearLayout>
@@ -140,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_done_tick"
-            android:tint="@color/colorAccent"/>
+            app:tint="@color/colorAccent"/>
 
     </FrameLayout>
 

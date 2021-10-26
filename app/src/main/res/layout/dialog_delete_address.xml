@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent"
+    android:minWidth="400dp"
+    android:orientation="vertical"
+    app:cardElevation="5dp"
+    app:cardPreventCornerOverlap="true">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <TextView
+            android:background="@color/background_default"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="@dimen/padding_md"
+            android:text="@string/delete_address_dialog_header"
+            android:textColor="@color/text_color_1"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:background="@color/background"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:padding="@dimen/padding_md"
+            android:text="@string/delete_address_dialog_body"
+            android:textColor="@color/text_color_1"
+            android:textStyle="bold"/>
+
+        <LinearLayout
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:background="@color/background">
+
+            <Button
+                android:background="@drawable/round_edges_grey"
+                android:id="@+id/delete"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_xs"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="@string/delete"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+            <Button
+                android:background="@drawable/round_edges_btn"
+                android:id="@+id/cancel"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_marginLeft="@dimen/margin_xs"
+                android:layout_marginRight="@dimen/margin_xs"
+                android:layout_marginTop="@dimen/margin_xs"
+                android:layout_weight="1"
+                android:layout_width="match_parent"
+                android:text="@string/cancel"
+                android:textColor="@color/white"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

@@ -6,11 +6,11 @@
                 android:radius="@dimen/radius_sm"/>
 
             <stroke
-                android:color="@color/text_lighter_grey"
+                android:color="@color/background_6"
                 android:width="2dp"/>
 
             <solid
-                android:color="@color/text_lighter_grey"/>
+                android:color="@color/background_6"/>
         </shape>
     </item>
 </selector>

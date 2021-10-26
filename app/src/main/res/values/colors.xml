@@ -2,7 +2,6 @@
 <resources>
     <color name="colorPrimary">#00CA9D</color>
     <color name="colorPrimaryDark">#000000</color>
-    <!--<color name="colorAccent">#FF4081</color>-->
     <color name="colorAccent">#00CA9D</color>
 
     <!-- General -->
@@ -37,14 +36,18 @@
     <color name="off_white">#E5E5E5</color>
     <color name="lightGrey">#F2F2F2</color>
     <color name="lighterGrey">#F8F8F8</color>
+    <color name="lightGrey2">#4F4F4F</color>
 
     <!-- Text Colors -->
-    <color name="text_dark_grey">#35343D</color>
-    <color name="text_med_grey">#5F5D70</color>
-    <color name="text_light_grey">#9B99A9</color>
-    <color name="text_light_grey_plus">#BBBBBB</color>
-    <color name="text_lighter_grey">#BDBDBD</color>
-    <color name="text_lightest_grey">#E0E0E0</color>
+    <color name="text_color_1">#35343D</color>
+    <color name="text_color_2">#8035343D</color>
+    <color name="text_color_3">#5F5D70</color>
+    <color name="text_color_4">#9B99A9</color>
+    <color name="text_color_5">#BBBBBB</color>
+    <color name="text_color_6">#BDBDBD</color>
+    <color name="text_color_7">#E0E0E0</color>
+    <color name="text_color_8">#5F5D70</color>
+    <color name="text_color_9">#FFFFFF</color>
 
     <!-- Card Colors -->
     <color name="ticked">#474556</color>
@@ -59,4 +62,25 @@
     <color name="signup">#00AD86</color>
     <color name="text_signup">#48FFD6</color>
     <color name="signin">#00CA9D</color>
+    <color name="light_grey">#e8e8e8</color>
+    <color name="red2">#ef1c23</color>
+    <color name="darkGrey2">#545263</color>
+    <color name="text_light_grey2" >#9d9bae</color>
+    <color name="grey">#dadada</color>
+    <color name="grey2">#9B99A9</color>
+
+    <!-- Theme -->
+    <color name="background_default">#F7F7F7</color>
+    <color name="background">#FFFFFF</color>
+    <color name="background_1">#333333</color>
+    <color name="background_2">#00CA9D</color>
+    <color name="background_3">#606060</color>
+    <color name="background_4">#121212</color>
+    <color name="background_5">#F2F2F2</color>
+    <color name="background_6">#BDBDBD</color>
+    <color name="background_7">#F2F2F2</color>
+    <color name="background_8">#FFFFFF</color>
+    <color name="background_9">#E0E0E0</color>
+    <color name="background_home_gradient">#F2F7F7F7</color>
+
 </resources>

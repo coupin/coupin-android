@@ -3,12 +3,20 @@
     <string name="app_link">https://play.google.com/store/apps/details?id=com.kibou.abisoyeoke_lawal.coupinapp</string>
 
     <!-- Keys -->
-    <string name="facebook_app_id">134058260630791</string>
+    <string name="facebook_app_id">533567463993659</string>
+    <!--    <string name="facebook_app_id">134058260630791</string>-->
     <string name="fb_login_protocol_scheme">fb134058260630791</string>
     <!--Client Id Dev-->
     <string name="google_client_id">317929403701-vbciqi4cackgjvk0cr6dr0vi61332cbb.apps.googleusercontent.com</string>
     <!--Client Id Prod-->
     <!--<string name="google_id">317929403701-uvfrs1tgvkiqdr03domk69f4s9ldk3ng.apps.googleusercontent.com</string>-->
+
+    <!-- URls -->
+<!--    <string name="base_url">http://10.0.2.2:5030/api/v1</string>-->
+    <!--<string name="base_url">https://b2c7b3fe.ngrok.io/api/v1</string>-->
+    <!--    <string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
+<!--    <string name="base_url">https://coupin-staging.herokuapp.com/api/v1</string>-->
+<!--        <string name="base_url">https://coupin-pro.herokuapp.com/api/v1</string>-->
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email</string>
@@ -47,13 +55,28 @@
         <item>N-Tel</item>
     </string-array>
 
+    <string-array name="faqs_title">
+        <item>I could not log in with Facebook or Google, why the error messages?</item>
+        <item>How can I find promotions/rewards from a specific preferred retailer?</item>
+        <item>Why did the app just suddenly close?</item>
+        <item>How do I set push notification preferences?</item>
+        <item>The app keeps closing when trying to fill the enhanced experience form, why is that?</item>
+        <item>How do I browse all the promotion/rewards available in my city?</item>
+        <item>How do I update my reward/promotion category preferences</item>
+    </string-array>
+
+    <string-array name="faqs_details">
+        <item>This may be from the privacy settings you have on your Facebook/google profile, which grants access to specific app types.</item>
+        <item>This can be done by searching for the specific retailer\'s name using the search icon on the app\'s home page.</item>
+        <item>The app was unable to determine your location or there is a break in data communication. Please check your device location is switched on and your data network is available.</item>
+        <item>This can be found in the profile section of the app under the Notifications tab.</item>
+        <item>Please check you have a stable internet connection. This generally occurs when there is break in communication from your network data provider.</item>
+        <item>Using the filter icon on the home section of the app, increase the radius to the maximum radius (10km). This should cover your entire city.</item>
+        <item>This can be done in the profile section of the app, under the Change Category tab.</item>
+    </string-array>
+
     <!-- Package -->
     <string name="main_package">com.kibou.abisoyeoke_lawal.coupinapp</string>
-
-    <!-- URls -->
-    <!--<string name="base_url">https://b2c7b3fe.ngrok.io/api/v1</string>-->
-    <!--<string name="base_url">https://coupin.herokuapp.com/api/v1</string>-->
-    <string name="base_url">https://coupin-pro.herokuapp.com/api/v1</string>
 
     <!--Auth Endpoints-->
     <string name="ep_login_user">/auth/signin/c</string>
@@ -89,7 +112,7 @@
     <string name="code">Code:</string>
     <string name="coupin">Coupin</string>
     <string name="coupins">Coupins</string>
-    <string name="pin_reward">Pin Reward</string>
+    <string name="pin_reward">Pin Reward(s)</string>
     <string name="save_select">Save Selection</string>
 
 
@@ -197,12 +220,12 @@
     <string name="interested">What are you interested in?</string>
     <string name="cat_ent">Entertainment</string>
     <string name="cat_food">Food &amp; Drinks</string>
-    <string name="cat_gadg">Gadgets</string>
+    <string name="cat_gadg">Electronics &amp; Tech</string>
     <string name="cat_groc">Groceries</string>
     <string name="cat_health">Health &amp; Beauty</string>
     <string name="cat_shopping">Shopping</string>
     <string name="cat_ticket">Tickets</string>
-    <string name="cat_travel">Travel</string>
+    <string name="cat_travel">Travel &amp; Hotels</string>
     <string name="select_category">Select your category of interest</string>
     <string name="hi">Hi,</string>
     <string name="network_error">Network connection error. Please check connection and try again.</string>
@@ -251,11 +274,9 @@
         \n
         AppLeap Technologies,
         \n
-        3A Prince Tayo, Adesanya Street,
+        5 Jasper Ike Street,
         \n
-        Park View Estate,
-        \n
-        Victoria Island. Lagos.
+        Victoria Island Extension, Lagos.
         \n
         Email: care@coupinapp.com
     </string>
@@ -514,7 +535,7 @@
     <string name="prompt_phone">Phone Number</string>
     <string name="dialog_continue">Continue</string>
     <string name="other">Better Experience</string>
-    <string name="hot_list">Hot List</string>
+    <string name="hot_deals">Hot Deals</string>
     <string name="select_age_prompt">Please select age range</string>
     <string name="select_gender_prompt">Please select gender</string>
     <string name="gender_thanks">Your info has been saved. Thank you and enjoy your coupin :)</string>
@@ -524,6 +545,7 @@
     <string name="error_phone_number">Invalid Phone Number e.g. 08012345678</string>
 
 
+    <!--    <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyDV4IoRqDH6N6pEoES3djLzQNOO9ZUs-uU</string>-->
     <!--DEV-->
     <string name="google_maps_key" templateMergeStrategy="preserve" translatable="false">AIzaSyCIILzeDdDoT-fhBoKgakXdj8j2QGIuG3c</string>
     <!--PRO-->
@@ -535,12 +557,13 @@
     <string name="update_body">A new update is available. would you like to update now?</string>
     <string name="change_save">Save Password</string>
     <string name="empty_title">No Merchants Found</string>
-    <string name="empty_details">Sorry there are no merchants around you, increasing the radius and then try again.</string>
+    <string name="empty_details">Sorry there are no rewards/deals around you. Try expanding your search radius in filters at the
+        top right.</string>
     <string name="no_coupins">There are no more coupins.</string>
-    <string name="error_coupins">An error occured while getting your coupins, please try again or check your network.</string>
+    <string name="error_coupins">An error occurred while getting your coupins, please try again or check your network.</string>
     <string name="empty_reward">There are no current active rewards.</string>
-    <string name="error_reward">An error occured while getting the rewards.</string>
-    <string name="error_recent">An error occured while getting merchants with the most recent rewards</string>
+    <string name="error_reward">An error occurred while getting the rewards.</string>
+    <string name="error_recent">An error occurred while getting merchants with the most recent rewards</string>
     <string name="exiting_msg">Press back one more time to exit.</string>
     <string name="error_us">A error occurred on our end, please try again or contact the help desk.</string>
     <string name="permissions">All permissions must be granted to continue.</string>
@@ -557,4 +580,45 @@
     <string name="error_permissions">All location permissions neither to get your location. Please try again</string>
     <string name="empty_recommendations">No recommendations at this time please check back later</string>
     <string name="label_age">Age Range</string>
+    <string name="empty_featured">No featured merchants at this time, please check back later</string>
+    <string name="empty_slides">No slides at the moment.</string>
+    <string name="pick_up">Pick up</string>
+    <string name="delivery">Delivery</string>
+    <string name="pickup_delivery_dialog_text">What method would you prefer to receive your order</string>
+    <string name="delivery_bonus">Delivery bonus</string>
+    <string name="delivery_bonus_text">Congratulations, you get N200 discount for your next delivery</string>
+    <string name="review_selection">Review Selection</string>
+    <string name="review_selection_message">Your cart contains both items to be picked up at the merchant location only and deliverable items. Kindly review to proceed.</string>
+    <string name="proceed">Proceed</string>
+    <string name="items_to_be_delivered">Items to be delivered</string>
+    <string name="items_to_be_picked_up">Items to be picked up</string>
+    <string name="address_book">Address Book</string>
+    <string name="_add_address"> + Add address</string>
+    <string name="address">Address</string>
+    <string name="add_address">Add Address</string>
+    <string name="delete_address_dialog_header">Delete Address</string>
+    <string name="delete_address_dialog_body">Are you sure you want to delete this address?</string>
+    <string name="delete">delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="make_payment">Make payment</string>
+    <string name="_add_new_address">+ Add New Address</string>
+    <string name="delivery_address">Delivery Address</string>
+    <string name="estimated_time_of_delivery">Estimated time of delivery :</string>
+    <string name="delivery_cost_">Delivery cost:</string>
+    <string name="select_an_address">Select an address</string>
+    <string name="checkout">Checkout</string>
+    <string name="delivery_method">Delivery Method</string>
+    <string name="how_do_you_want_your_order_delivered">How do you want your <br />order delivered?</string>
+    <string name="change_all_to_pickup">Change all to pickup</string>
+    <string name="quantity">Quantity</string>
+    <string name="next">Next</string>
+    <string name="onboarding_1">Onboarding text 1</string>
+    <string name="onboarding_2">Onboarding text 2</string>
+    <string name="onboarding_3">Onboarding text 3</string>
+    <string name="onboarding_4">Onboarding text 4</string>
+    <string name="skip">Skip</string>
+    <string name="let_s_start">Let\'s Start</string>
+    <string name="review_cart">Review Cart</string>
+    <string name="empty_cart">Cart is empty</string>
+    <string name="dash">--</string>
 </resources>

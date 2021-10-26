@@ -10,18 +10,29 @@ import java.util.Date;
  */
 
 public class Reward implements Serializable {
-  private boolean isDiscount;
-  private boolean isMultiple;
-  private boolean isSelected = false;
-  private Date expires;
-  private Date starting;
-  private float newPrice;
-  private float oldPrice;
-  private JSONArray days;
-  private JSONArray pictures;
-  private String details;
-  private String id;
-  private String title;
+    private boolean isDelivery;
+    private boolean isDiscount;
+    private boolean isMultiple;
+    private boolean isSelected = false;
+    private Date expires;
+    private Date starting;
+    private float newPrice;
+    private float oldPrice;
+    private JSONArray days;
+    private JSONArray pictures;
+    private String details;
+    private String id;
+    private String title;
+    private int quantity;
+    private final int selectedQuantity = 1;
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
 
     public void setDays(JSONArray days) {
         this.days = days;
@@ -39,6 +50,9 @@ public class Reward implements Serializable {
     this.id = id;
   }
 
+    public void setIsDelivery(boolean delivery) {
+        isDelivery = delivery;
+    }
     public void setIsDiscount(boolean discount) {
         isDiscount = discount;
     }
@@ -87,8 +101,12 @@ public class Reward implements Serializable {
     return id;
   }
 
+  public boolean getIsDelivery() {
+        return isDelivery;
+    }
+
   public boolean getIsDiscount() {
-        return isDiscount;
+        return oldPrice > 0 && newPrice > 0;
     }
 
     public boolean isSelected() {

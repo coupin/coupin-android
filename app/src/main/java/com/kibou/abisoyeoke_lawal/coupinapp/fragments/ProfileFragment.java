@@ -5,29 +5,35 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+
+import androidx.appcompat.app.AppCompatDelegate;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.kibou.abisoyeoke_lawal.coupinapp.AboutActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.EditActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.FAQActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.HelpActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.InterestEditActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.NotificationActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.AboutActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.AddressBookActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.EditActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.FAQActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.HelpActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.InterestEditActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.NotificationActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
-import com.kibou.abisoyeoke_lawal.coupinapp.TermsActivity;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.TermsActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
-
-import org.json.JSONObject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import de.hdodenhof.circleimageview.CircleImageView;
+
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.isDarkModePref;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -55,8 +61,12 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public TextView profileTerms;
     @BindView(R.id.profile_version)
     public TextView profileVersion;
+    @BindView(R.id.profile_address_book)
+    public TextView profileAddressBook;
+    @BindView(R.id.theme_switch)
+    public SwitchCompat switchCompat;
 
-    public JSONObject userObject;
+    private User user;
 
     public ProfileFragment() {
         // Required empty public constructor
@@ -64,24 +74,21 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View root =  inflater.inflate(R.layout.fragment_profile, container, false);
         ButterKnife.bind(this, root);
 
-        try {
-            userObject = new JSONObject(PreferenceMngr.getUser());
+        user = PreferenceManager.getCurrentUser();
 
-            profileName.setText(StringUtils.capitalize(userObject.getString("name")));
-
-            if (userObject.has("sex") && userObject.getString("sex").equals("female")) {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_female));
+        if (user != null) {
+            profileName.setText(StringUtils.capitalize(user.name));
+            if (user.sex != null && user.sex.equals("female")) {
+                profilePicture.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_coupin_female, null));
             } else {
-                profilePicture.setImageDrawable(getResources().getDrawable(R.drawable.ic_coupin_male));
+                profilePicture.setImageDrawable(ResourcesCompat.getDrawable(getResources(), R.drawable.ic_coupin_male, null));
             }
-        } catch (Exception e) {
-            e.printStackTrace();
         }
 
         logout.setOnClickListener(this);
@@ -92,6 +99,23 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
         profileFeedback.setOnClickListener(this);
         profileNotification.setOnClickListener(this);
         profileTerms.setOnClickListener(this);
+        profileAddressBook.setOnClickListener(this);
+
+        PreferenceManager.setContext(requireContext());
+
+        Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
+        switchCompat.setChecked(isDarkMode);
+
+        switchCompat.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if(isChecked) {
+                PreferenceManager.putBoolean(isDarkModePref, true);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+            }
+            else {
+                PreferenceManager.putBoolean(isDarkModePref, false);
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
+        });
 
         try {
             PackageManager manager = getContext().getPackageManager();
@@ -110,7 +134,7 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.logout:
-                PreferenceMngr.signOut(getActivity());
+                PreferenceManager.signOut(getActivity());
                 break;
             case R.id.profile_about:
                 startActivity(new Intent(getActivity(), AboutActivity.class));
@@ -133,6 +157,8 @@ public class ProfileFragment extends Fragment implements View.OnClickListener {
             case R.id.profile_terms:
                 startActivity(new Intent(getActivity(), TermsActivity.class));
                 break;
+            case R.id.profile_address_book:
+                startActivity(new Intent(getActivity(), AddressBookActivity.class));
         }
     }
 }

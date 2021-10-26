@@ -5,7 +5,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
@@ -30,7 +30,7 @@ public class GalleryDialog extends Dialog implements View.OnClickListener {
     private ImageView thumb2;
     private ImageView thumb3;
     private ImageView thumb4;
-    private ImageView thumbViews[];
+    private ImageView[] thumbViews;
 
     public GalleryDialog(@NonNull Context context) {
         super(context);

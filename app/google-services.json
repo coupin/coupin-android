@@ -1,39 +1,37 @@
 {
   "project_info": {
-    "project_number": "481311856662",
-    "firebase_url": "https://coupin-dev.firebaseio.com",
-    "project_id": "coupin-dev",
-    "storage_bucket": "coupin-dev.appspot.com"
+    "project_number": "201174992201",
+    "firebase_url": "https://coupin-1d315.firebaseio.com",
+    "project_id": "coupin-1d315",
+    "storage_bucket": "coupin-1d315.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:481311856662:android:7a7454b598397815",
+        "mobilesdk_app_id": "1:201174992201:android:69df883a1fe9796e18c698",
         "android_client_info": {
           "package_name": "com.kibou.abisoyeoke_lawal.coupinapp"
         }
       },
       "oauth_client": [
         {
-          "client_id": "481311856662-232atoceq5efcil7mfshth3rqmeg0pcm.apps.googleusercontent.com",
+          "client_id": "201174992201-dlsqe088cnml15vu26dl7p4900e8ebvl.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyD8cTM98THOFbY4psFM5K0PPAh4PVWLlhs"
+          "current_key": "AIzaSyBFPPygsg_1l3ahud9INgdEAElrfjY22Lc"
         }
       ],
       "services": {
-        "analytics_service": {
-          "status": 1
-        },
         "appinvite_service": {
-          "status": 1,
-          "other_platform_oauth_client": []
-        },
-        "ads_service": {
-          "status": 2
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201174992201-dlsqe088cnml15vu26dl7p4900e8ebvl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
         }
       }
     }

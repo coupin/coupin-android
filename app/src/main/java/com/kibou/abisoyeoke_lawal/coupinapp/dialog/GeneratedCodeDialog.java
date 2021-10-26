@@ -6,7 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -19,7 +19,7 @@ import com.google.android.gms.maps.model.LatLng;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.AnimateUtils;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import butterknife.ButterKnife;
@@ -78,7 +78,7 @@ public class GeneratedCodeDialog extends Dialog implements View.OnClickListener 
         setContentView(R.layout.dialog_full_reward_details);
         ButterKnife.bind(this);
 
-        String mobile = PreferenceMngr.getMobileNumber();
+        String mobile = PreferenceManager.getMobileNumber();
         if (mobile != null) {
             mobileNumberView.setText(mobile);
         }
@@ -129,8 +129,8 @@ public class GeneratedCodeDialog extends Dialog implements View.OnClickListener 
             mobileNumberView.requestFocus();
         } else {
             String number = mobileNumberView.getEditableText().toString();
-            if (!(number == PreferenceMngr.getMobileNumber())) {
-                PreferenceMngr.setMobileNumber(mobileNumberView.getEditableText().toString());
+            if (!(number == PreferenceManager.getMobileNumber())) {
+                PreferenceManager.setMobileNumber(mobileNumberView.getEditableText().toString());
             }
 
             AnimateUtils.crossFadeViews(loadingView, mobileView);

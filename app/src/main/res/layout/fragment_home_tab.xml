@@ -19,7 +19,6 @@
 
     </FrameLayout>
 
-        <!--android:background="#A6FFFFFF"-->
     <LinearLayout
         android:background="@drawable/background_white_gradient_fade"
         android:id="@+id/top_holder"
@@ -45,7 +44,8 @@
                 android:layout_alignParentStart="true"
                 android:layout_height="32dp"
                 android:layout_width="32dp"
-                android:src="@drawable/ic_search_lg"/>
+                android:src="@drawable/ic_search_lg"
+                app:tint="@color/background_4"/>
 
             <LinearLayout
                 android:gravity="center_horizontal"
@@ -70,7 +70,7 @@
                         android:layout_marginBottom="@dimen/margin_xs"
                         android:layout_width="wrap_content"
                         android:text="You are at "
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/large_text"
                         android:textStyle="normal"/>
 
@@ -81,7 +81,7 @@
                         android:layout_width="wrap_content"
                         android:lines="1"
                         android:text="@string/na"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/large_text"
                         android:textStyle="bold"/>
 
@@ -98,7 +98,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="@string/na"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/medium_text"
                         android:textStyle="bold"/>
 
@@ -106,7 +106,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
                         android:text="@string/around"
-                        android:textColor="@color/black"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/medium_text"
                         android:textStyle="normal"/>
 
@@ -120,7 +120,8 @@
                 android:layout_alignParentRight="true"
                 android:layout_height="32dp"
                 android:layout_width="32dp"
-                android:src="@drawable/ic_filter_lg"/>
+                android:src="@drawable/ic_filter_lg"
+                app:tint="@color/background_4"/>
 
         </RelativeLayout>
 
@@ -133,7 +134,7 @@
             android:layout_marginTop="1dp"
             android:layout_width="match_parent">
 
-            <android.support.v7.widget.RecyclerView
+            <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/icon_list_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
@@ -154,7 +155,7 @@
         android:layout_width="match_parent"
         android:visibility="gone"/>
 
-    <android.support.design.widget.FloatingActionButton
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/btn_mylocation"
         android:layout_alignParentBottom="true"
         android:layout_alignParentEnd="true"
@@ -166,7 +167,8 @@
         android:src="@drawable/ic_location"
         app:borderWidth="0dp"
         app:elevation="10dp"
-        app:backgroundTint="@color/text_med_grey"
-        app:rippleColor="@color/black"/>
+        app:backgroundTint="@color/text_color_3"
+        app:rippleColor="@color/black"
+        android:tint="@color/background" />
 
 </RelativeLayout>

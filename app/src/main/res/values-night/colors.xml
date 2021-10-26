@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#51C9AF</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#51C9AF</color>
+
+    <color name="cont">#F5BC62</color>
+    <color name="red">#EB5E5E</color>
+    <color name="signup">#45AD95</color>
+
+    <!-- background -->
+    <color name="book_loading_background">#121212</color>
+    <color name="background_default">#262626</color>
+    <color name="background">#333333</color>
+    <color name="background_1">#FFFFFF</color>
+    <color name="background_2">#262626</color>
+    <color name="background_3">#FFFFFF</color>
+    <color name="background_4">#00CA9D</color>
+    <color name="background_5">#333333</color>
+    <color name="background_6">#333333</color>
+    <color name="background_7">#262626</color>
+    <color name="background_8">#606060</color>
+    <color name="background_9">#545263</color>
+    <color name="background_home_gradient">#F2121212</color>
+
+
+
+    <!-- Text Colors -->
+    <color name="text_color_1">#F8F7F7</color>
+    <color name="text_color_2">#F8F7F7</color>
+    <color name="text_color_3">#F8F7F7</color>
+    <color name="text_color_4">#F8F7F7</color>
+    <color name="text_color_5">#F8F7F7</color>
+    <color name="text_color_6">#F8F7F7</color>
+    <color name="text_color_7">#F8F7F7</color>
+    <color name="text_color_8">#51C9AF</color>
+    <color name="text_color_9">#51C9AF</color>
+
+</resources>

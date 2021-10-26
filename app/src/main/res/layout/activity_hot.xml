@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView
+<androidx.core.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HotActivity">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.HotActivity">
 
 
     <LinearLayout
@@ -34,7 +34,7 @@
             android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/hot_list"
+            android:text="@string/hot_deals"
             android:textColor="@color/white"
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="bold"/>
@@ -64,6 +64,29 @@
         app:indicatorColor="@color/colorAccent"
         app:indicatorName="BallScaleMultipleIndicator"/>
 
+    <LinearLayout
+        android:id="@+id/slides_empty"
+        android:gravity="center"
+        android:layout_height="230dp"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_height="@dimen/icon_lg"
+            android:layout_margin="@dimen/margin_md"
+            android:layout_width="@dimen/icon_lg"
+            android:src="@drawable/empty_box"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_slides"
+            android:textSize="@dimen/small_text"/>
+
+    </LinearLayout>
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -72,7 +95,7 @@
         android:padding="@dimen/padding_xs"
         android:text="@string/featured"
         android:textAllCaps="true"
-        android:textColor="@color/text_dark_grey"
+        android:textColor="@color/text_color_1"
         android:textSize="@dimen/large_text"
         android:textStyle="bold"/>
 
@@ -86,6 +109,29 @@
         app:indicatorColor="@color/colorAccent"
         app:indicatorName="BallPulseIndicator"/>
 
+    <LinearLayout
+        android:id="@+id/featured_empty"
+        android:gravity="center"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:visibility="gone">
+
+        <ImageView
+            android:layout_height="@dimen/icon_sm"
+            android:layout_margin="@dimen/margin_sm"
+            android:layout_width="@dimen/icon_sm"
+            android:src="@drawable/empty_box"/>
+
+        <TextView
+            android:gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/empty_featured"
+            android:textSize="@dimen/small_text"/>
+
+    </LinearLayout>
+
     <include layout="@layout/cardview_group_hotlist"/>
 
     <TextView
@@ -96,7 +142,7 @@
         android:padding="@dimen/padding_xs"
         android:text="@string/recommend"
         android:textAllCaps="true"
-        android:textColor="@color/text_dark_grey"
+        android:textColor="@color/text_color_1"
         android:textSize="@dimen/large_text"
         android:textStyle="bold"/>
 
@@ -111,9 +157,9 @@
         app:indicatorColor="@color/colorAccent"
         app:indicatorName="BallPulseIndicator"/>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/hot_recyclerview"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginLeft="@dimen/margin_sm"
         android:layout_marginRight="@dimen/margin_sm"
         android:layout_width="match_parent"
@@ -123,6 +169,7 @@
         android:id="@+id/hot_empty"
         android:gravity="center"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_xxxlg"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
@@ -146,6 +193,7 @@
         android:id="@+id/hot_error"
         android:gravity="center"
         android:layout_height="match_parent"
+        android:layout_marginBottom="@dimen/margin_xxxlg"
         android:layout_width="match_parent"
         android:orientation="vertical"
         android:visibility="gone">
@@ -154,14 +202,14 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_margin="@dimen/margin_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_no_internet_connection"/>
+            android:src="@drawable/ic_error_text"/>
 
         <TextView
             android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/margin_sm"
             android:layout_width="match_parent"
-            android:text="@string/error_now"
+            android:text="@string/error_general"
             android:textSize="@dimen/small_text"/>
 
     </LinearLayout>
@@ -181,4 +229,4 @@
 
     </LinearLayout>
 
-</ScrollView>
+</androidx.core.widget.NestedScrollView>

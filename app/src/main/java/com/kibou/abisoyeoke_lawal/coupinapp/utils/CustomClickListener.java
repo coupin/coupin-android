@@ -9,6 +9,6 @@ import android.view.View;
 public class CustomClickListener {
     /** Interface for Item Click over Recycler View Items **/
     public interface OnItemClickListener {
-        public void OnClick(View view, int position);
+        void OnClick(View view, int position);
     }
 }

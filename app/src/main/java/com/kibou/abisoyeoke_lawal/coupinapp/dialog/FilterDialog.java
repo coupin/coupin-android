@@ -4,9 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StyleRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StyleRes;
+import androidx.appcompat.content.res.AppCompatResources;
+
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -81,7 +83,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
         setContentView(R.layout.dialog_filter);
         ButterKnife.bind(this);
 
-        distanceSeekBar.setProgress(30);
+        distanceSeekBar.setProgress(50);
         fillEnt.setOnClickListener(this);
         fillFood.setOnClickListener(this);
         fillGadget.setOnClickListener(this);
@@ -104,7 +106,7 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
                 toggleTag(fillFood, "foodndrink");
                 break;
             case R.id.fil_gadget:
-                toggleTag(fillGadget, "gadgets");
+                toggleTag(fillGadget, "technology");
                 break;
             case R.id.fil_groceries:
                 toggleTag(fillGroceries, "groceries");
@@ -139,12 +141,12 @@ public class FilterDialog extends Dialog implements View.OnClickListener {
 
         if (selected.contains(getArrayString(query))) {
             selected.remove(getArrayString(query));
-            fillEnt.setBackground(context.getResources().getDrawable(R.drawable.round_edges_light_grey));
-            textView.setTextColor(context.getResources().getColor(R.color.text_dark_grey));
+            fillEnt.setBackground(AppCompatResources.getDrawable(context, R.drawable.round_edges_light_grey));
+            textView.setTextColor(context.getResources().getColor(R.color.text_color_1));
             imageView.setColorFilter(Color.argb(255, 53, 52, 61));
         } else {
             selected.add(getArrayString(query));
-            fillEnt.setBackground(context.getResources().getDrawable(R.drawable.round_edges_grey));
+            fillEnt.setBackground(AppCompatResources.getDrawable(context, R.drawable.round_edges_grey));
             textView.setTextColor(context.getResources().getColor(R.color.white));
             imageView.setColorFilter(Color.argb(255, 255, 255, 255));
         }

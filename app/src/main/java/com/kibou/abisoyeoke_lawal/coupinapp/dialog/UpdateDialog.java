@@ -3,14 +3,14 @@ package com.kibou.abisoyeoke_lawal.coupinapp.dialog;
 import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 /**
  * Created by abisoyeoke-lawal on 4/7/18.
@@ -47,11 +47,11 @@ public class UpdateDialog extends Dialog implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.cancel:
-                myOnSelect.onSelect(false, PreferenceMngr.getLastAttempt());
+                myOnSelect.onSelect(false, PreferenceManager.getLastAttempt());
                 dismiss();
                 break;
             case R.id.update:
-                myOnSelect.onSelect(true, PreferenceMngr.getLastAttempt());
+                myOnSelect.onSelect(true, PreferenceManager.getLastAttempt());
                 break;
         }
     }

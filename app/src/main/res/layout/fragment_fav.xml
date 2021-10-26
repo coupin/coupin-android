@@ -2,14 +2,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:animateLayoutChanges="true"
-    android:background="@color/back_grey"
+    android:background="@color/background_default"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
     tools:context="com.kibou.abisoyeoke_lawal.coupinapp.fragments.FavFragment">
 
     <RelativeLayout
-        android:background="@color/white"
+        android:background="@color/background"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:padding="@dimen/padding_sm">
@@ -20,7 +20,8 @@
             android:layout_alignParentStart="true"
             android:layout_height="@dimen/icon_sm"
             android:layout_width="@dimen/icon_sm"
-            android:src="@drawable/ic_search_lg"/>
+            android:src="@drawable/ic_search_lg"
+            app:tint="@color/text_color_1"/>
 
         <TextView
             android:layout_centerHorizontal="true"
@@ -28,7 +29,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/favourite"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="bold"/>
 
@@ -50,7 +51,7 @@
             android:layout_centerVertical="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:textColor="@color/text_lighter_grey"
+            android:textColor="@color/text_color_6"
             android:textSize="@dimen/large_text"
             android:textStyle="bold"/>
 
@@ -61,7 +62,7 @@
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
             android:text="@string/recent"
-            android:textColor="@color/text_lighter_grey"
+            android:textColor="@color/text_color_6"
             android:textSize="@dimen/large_text"
             android:textStyle="bold"/>
 
@@ -74,15 +75,15 @@
 
         <com.wang.avi.AVLoadingIndicatorView
             style="?android:attr/progressBarStyleLarge"
-            android:layout_centerInParent="true"
             android:layout_width="250dp"
             android:layout_height="250dp"
-            app:indicatorName="BallScaleMultipleIndicator"
-            app:indicatorColor="@color/colorAccent" />
+            android:layout_centerInParent="true"
+            app:indicatorColor="@color/colorAccent"
+            app:indicatorName="BallScaleMultipleIndicator" />
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/fav_recyclerview"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
@@ -111,7 +112,8 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/empty_fav"/>
+            android:text="@string/empty_fav"
+            android:textColor="@color/text_color_1"/>
 
     </LinearLayout>
 
@@ -133,7 +135,7 @@
             android:gravity="center"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/error_now"
+            android:text="@string/error_general"
             android:textSize="@dimen/large_text"/>
 
     </LinearLayout>

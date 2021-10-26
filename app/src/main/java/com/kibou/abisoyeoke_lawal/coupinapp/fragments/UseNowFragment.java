@@ -4,38 +4,33 @@ package com.kibou.abisoyeoke_lawal.coupinapp.fragments;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.Fragment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.kibou.abisoyeoke_lawal.coupinapp.CoupinActivity;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVAdapter;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardListItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -52,12 +47,12 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     @BindView(R.id.now_recyclerview)
     public RecyclerView recyclerView;
 
-    private ArrayList<RewardListItem> nowList = new ArrayList<>();
+    private ApiCalls apiCalls;
+    private final ArrayList<RewardsListItemV2> nowList = new ArrayList<>();
     private boolean isLoading = false;
     private int page = 0;
     private Handler handler;
     private LinearLayoutManager linearLayoutManager;
-    private RequestQueue requestQueue;
     private RVAdapter rvAdapter;
     private String url;
 
@@ -73,8 +68,8 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         View rootView = inflater.inflate(R.layout.fragment_use_now, container, false);
         ButterKnife.bind(this, rootView);
 
+        apiCalls = ApiClient.getInstance().getCalls(getContext(), true);
         handler = new Handler();
-        requestQueue = Volley.newRequestQueue(getContext());
 
         linearLayoutManager = new LinearLayoutManager(getContext());
         rvAdapter = new RVAdapter(nowList, this, getContext());
@@ -95,100 +90,58 @@ public class UseNowFragment extends Fragment implements MyOnClick {
         startActivity(intent);
     }
 
+    @Override
+    public void onItemClick(int position, int quantity) { }
+
     private void getRewardsForNow() {
-        url = getString(R.string.base_url) + getString(R.string.ep_get_rewards) + "?page=" + page;
-
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, url, new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONArray jsonArray = new JSONArray(response);
-                    for (int x = 0; x < jsonArray.length(); x++) {
-                        JSONObject mainObject = jsonArray.getJSONObject(x);
-                        JSONObject merchantObject = mainObject.getJSONObject("merchantId").getJSONObject("merchantInfo");
-                        JSONArray rewardObjects = mainObject.getJSONArray("rewardId");
-
-                        RewardListItem item = new RewardListItem();
-
-                        item.setBookingId(mainObject.getString("_id"));
-                        item.setBookingShortCode(mainObject.getString("shortCode"));
-                        item.setMerchantName(merchantObject.getString("companyName"));
-                        item.setMerchantAddress(merchantObject.getString("address"));
-                        item.setMerchantLogo(merchantObject.getJSONObject("logo").getString("url"));
-                        item.setMerchantBanner(merchantObject.getJSONObject("banner").getString("url"));
-                        item.setLatitude(merchantObject.getJSONArray("location").getDouble(1));
-                        item.setLongitude(merchantObject.getJSONArray("location").getDouble(0));
-                        item.setVisited(mainObject.getBoolean("visited"));
-                        item.setFavourited(mainObject.getBoolean("favourite"));
-
-
-                        item.setRewardDetails(rewardObjects.toString());
-                        item.setRewardCount(rewardObjects.length());
-
-                        nowList.add(item);
-                    }
-                    isLoading = false;
-                    if (page > 0) {
-                        loading(5);
-                    }
-                    rvAdapter.notifyDataSetChanged();
-                    if (jsonArray.length() == 0) {
-                        if (nowList.size() < 1) {
-                            loading(2);
-                        } else {
-                            showErrorToast(true);
+        if(this.isAdded()) {
+            Call<ArrayList<RewardsListItemV2>> request = apiCalls.getCoupins(false, page);
+            request.enqueue(new Callback<ArrayList<RewardsListItemV2>>() {
+                @EverythingIsNonNull
+                @Override
+                public void onResponse(Call<ArrayList<RewardsListItemV2>> call, retrofit2.Response<ArrayList<RewardsListItemV2>> response) {
+                    if (response.isSuccessful()) {
+                        assert response.body() != null;
+                        for (RewardsListItemV2 itemV2: response.body()) {
+                            itemV2.rewardCount = itemV2.rewards.size();
+                            nowList.add(itemV2);
                         }
-                    } else {
-                        loading(1);
-                    }
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    if (nowList.size() < 1) {
-                        loading(3);
+                        isLoading = false;
+                        if (page > 0) loading(5);
+                        rvAdapter.notifyDataSetChanged();
+                        if (page == 0) loading(1);
                     } else {
-                        showErrorToast(false);
-                    }
-                }
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                isLoading = false;
-                if (nowList.size() < 1) {
-                    if (error.networkResponse != null) {
-                        if (error.networkResponse.statusCode == 404) {
+                        ApiError error = ApiClient.parseError(response);
+
+                        if (error.statusCode == 404 && page == 0) {
                             loading(2);
-                        } else {
+                        } else if (page == 0) {
                             loading(3);
+                        } else {
+                            Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
                         }
-                    } else {
-                        loading(3);
+
+                        if (page > 0) loading(5);
                     }
-                } else {
-                    if (error.networkResponse != null && error.networkResponse.statusCode == 404) {
-                        showErrorToast(true);
+                }
+
+                @EverythingIsNonNull
+                @Override
+                public void onFailure(Call<ArrayList<RewardsListItemV2>> call, Throwable t) {
+                    t.printStackTrace();
+
+                    isLoading = false;
+                    if (nowList.size() == 0) {
+                        loading(3);
                     } else {
                         showErrorToast(false);
                     }
+
+                    if (page > 0) loading(5);
                 }
-
-                if (page > 0) {
-                    loading(5);
-                }
-            }
-        }) {
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        requestQueue.add(stringRequest);
+            });
+        }
     }
 
     /**
@@ -236,7 +189,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
     @Override
     public void onPause() {
         super.onPause();
-        requestQueue.stop();
     }
 
     /**
@@ -245,12 +197,6 @@ public class UseNowFragment extends Fragment implements MyOnClick {
      */
     public void loading(int opt) {
         switch (opt) {
-            case 0:
-                recyclerView.setVisibility(View.GONE);
-                nowEmpty.setVisibility(View.GONE);
-                nowError.setVisibility(View.GONE);
-                loadingView.setVisibility(View.VISIBLE);
-                break;
             case 1:
                 loadingView.setVisibility(View.GONE);
                 recyclerView.setVisibility(View.VISIBLE);

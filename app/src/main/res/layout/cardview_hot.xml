@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:orientation="vertical"
-              android:layout_height="wrap_content"
-              android:layout_margin="@dimen/small_vertical_space"
-              android:layout_width="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_height="wrap_content"
+    android:layout_width="match_parent">
 
-    <android.support.v7.widget.CardView
+    <androidx.cardview.widget.CardView
         android:background="@android:color/transparent"
         android:id="@+id/card"
         android:layout_height="wrap_content"
@@ -20,20 +20,25 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
-            <LinearLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:padding="@dimen/padding_sm">
+                android:paddingStart="5dp"
+                android:paddingEnd="5dp"
+                android:paddingTop="5dp">
 
-                <android.support.v7.widget.CardView
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/merchant_logo"
                     android:background="@color/black"
                     android:layout_gravity="top|start"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
                     app:cardCornerRadius="@dimen/cardview_custom_radius"
                     app:cardElevation="5dp"
-                    app:cardUseCompatPadding="true">
+                    app:cardUseCompatPadding="true"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <com.makeramen.roundedimageview.RoundedImageView
                         android:background="@drawable/round_edges_corner_grey"
@@ -45,71 +50,76 @@
                         app:riv_border_width="2dp"
                         app:riv_corner_radius="3dp"/>
 
-                </android.support.v7.widget.CardView>
+                </androidx.cardview.widget.CardView>
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="vertical"
+                    app:layout_constraintBottom_toBottomOf="@id/merchant_logo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/merchant_logo"
+                    app:layout_constraintTop_toTopOf="@id/merchant_logo">
 
                     <TextView
                         android:id="@+id/hot_title"
-                        android:layout_height="wrap_content"
-                        android:layout_margin="@dimen/margin_sm"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="10dp"
+                        android:layout_marginTop="5dp"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
                         android:textAllCaps="true"
-                        android:textColor="@color/text_dark_grey"
+                        android:textColor="@color/text_color_1"
                         android:textSize="@dimen/xlarge_text"
                         android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/hot_address"
-                        android:layout_height="wrap_content"
-                        android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_marginLeft="@dimen/margin_sm"
-                        android:layout_marginStart="@dimen/margin_sm"
                         android:layout_width="wrap_content"
-                        android:textColor="@color/text_dark_grey"
-                        android:textSize="@dimen/medium_text"/>
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/margin_sm"
+                        android:layout_marginEnd="10dp"
+                        android:layout_marginBottom="5dp"
+                        android:textColor="@color/text_color_1"
+                        android:textSize="@dimen/medium_text" />
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
             
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/margin_sm"
-                android:paddingLeft="@dimen/margin_sm"
-                android:paddingRight="@dimen/margin_sm">
+                android:paddingBottom="@dimen/margin_sm">
 
                 <ImageView
                     android:id="@+id/hot_fav"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_centerVertical="true"
-                    android:layout_height="24dp"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginEnd="@dimen/margin_xxxs"
-                    android:layout_marginLeft="@dimen/margin_sm"
-                    android:layout_marginRight="@dimen/margin_xxxs"
-                    android:layout_marginStart="@dimen/margin_sm"
                     android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/margin_sm"
+                    android:layout_marginLeft="@dimen/margin_sm"
+                    android:layout_marginEnd="@dimen/margin_xxxs"
+                    android:layout_marginRight="@dimen/margin_xxxs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:src="@drawable/ic_star"
-                    android:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:tint="@color/colorAccent" />
 
                 <ImageView
                     android:id="@+id/hot_visited"
-                    android:layout_centerVertical="true"
+                    android:layout_width="24dp"
                     android:layout_height="24dp"
+                    android:layout_centerVertical="true"
                     android:layout_marginBottom="@dimen/margin_xs"
                     android:layout_toEndOf="@id/hot_fav"
                     android:layout_toRightOf="@id/hot_fav"
-                    android:layout_width="24dp"
                     android:src="@drawable/ic_steps"
-                    android:tint="@color/black"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:tint="@color/colorAccent" />
 
                 <TextView
                     android:ellipsize="marquee"
@@ -119,8 +129,8 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:layout_height="24dp"
-                    android:layout_marginLeft="@dimen/margin_sm"
                     android:layout_marginStart="@dimen/margin_sm"
+                    android:layout_marginEnd="5dp"
                     android:layout_toEndOf="@id/hot_visited"
                     android:layout_toRightOf="@id/hot_visited"
                     android:layout_width="wrap_content"
@@ -137,6 +147,6 @@
 
 
 
-    </android.support.v7.widget.CardView>
+    </androidx.cardview.widget.CardView>
 
 </LinearLayout>

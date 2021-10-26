@@ -5,5 +5,6 @@ package com.kibou.abisoyeoke_lawal.coupinapp.interfaces;
  */
 
 public interface MyOnClick {
-    public void onItemClick(final int position);
+    void onItemClick(final int position);
+    void onItemClick(final int position, int quantity);
 }

@@ -2,11 +2,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.comA/tools"
     android:animateLayoutChanges="true"
-    android:background="@color/colorAccent"
+    android:background="@color/background_2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.LoginActivity">
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.LoginActivity">
 
     <!-- Login progress -->
     <RelativeLayout
@@ -81,7 +81,7 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/margin_sm"
                 android:paddingRight="@dimen/margin_sm"
-                android:textColor="@color/text_med_grey"
+                android:textColor="@color/text_color_3"
                 android:textSize="@dimen/medium_text"/>
 
             <EditText
@@ -100,10 +100,10 @@
                 android:maxLines="1"
                 android:paddingLeft="@dimen/margin_sm"
                 android:paddingRight="@dimen/margin_sm"
-                android:textColor="@color/text_med_grey"
+                android:textColor="@color/text_color_3"
                 android:textSize="@dimen/medium_text"/>
 
-            <android.support.v7.widget.CardView
+            <androidx.cardview.widget.CardView
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_xxs"
                 android:layout_marginLeft="20dp"
@@ -124,7 +124,7 @@
                     android:textStyle="bold"
                     android:textColor="@android:color/white"/>
 
-            </android.support.v7.widget.CardView>
+            </androidx.cardview.widget.CardView>
 
                 <TextView
                     android:gravity="end"
@@ -150,7 +150,7 @@
         android:orientation="vertical">
 
         <Button
-            android:background="@color/almost_trans"
+            android:background="@color/background_2"
             android:id="@+id/back_to_signup"
             android:gravity="center"
             android:layout_height="wrap_content"
@@ -163,7 +163,7 @@
             android:textStyle="normal"/>
 
         <LinearLayout
-            android:background="@color/white"
+            android:background="@color/background_default"
             android:id="@+id/social_holder"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
@@ -176,7 +176,7 @@
                 android:layout_width="match_parent"
                 android:padding="@dimen/padding_sm"
                 android:text="@string/social_connect"
-                android:textColor="@color/text_light_grey"/>
+                android:textColor="@color/text_color_4"/>
 
             <LinearLayout
                 android:gravity="center"

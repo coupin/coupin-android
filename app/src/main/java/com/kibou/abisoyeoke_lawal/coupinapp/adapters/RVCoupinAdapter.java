@@ -2,8 +2,10 @@ package com.kibou.abisoyeoke_lawal.coupinapp.adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+
+import androidx.annotation.NonNull;
+import androidx.cardview.widget.CardView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,20 +14,21 @@ import android.widget.TextView;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Created by abisoyeoke-lawal on 8/26/17.
  */
 
 public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter.ItemViewHolder> {
-    public List<Reward> rewardListItems;
-
+    public List<RewardV2> rewardListItems;
     static public MyOnClick myOnClick;
-
     public Context context;
 
     @Override
@@ -35,8 +38,8 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
         return itemViewHolder;
     }
 
-    public RVCoupinAdapter(List<Reward> rewardListItems, MyOnClick myOnClick, Context context) {
-        this.myOnClick = myOnClick;
+    public RVCoupinAdapter(List<RewardV2> rewardListItems, MyOnClick myOnClick, Context context) {
+        RVCoupinAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
         this.context = context;
     }
@@ -44,31 +47,38 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         // Add data here
-        final Reward reward = rewardListItems.get(position);
+        final RewardV2 reward = rewardListItems.get(position);
 
         try {
-            holder.title.setText(reward.getTitle());
-            holder.details.setText(reward.getDetails());
-            if(reward.getIsDiscount()) {
-                float oldPrice = reward.getOldPrice();
-                float newPrice = reward.getNewPrice();
+            holder.title.setText(reward.name);
+            holder.details.setText(reward.description);
+            if(reward.isDiscount) {
+                float oldPrice = reward.price.oldPrice;
+                float newPrice = reward.price.newPrice;
                 float discount = ((oldPrice - newPrice) / oldPrice) * 100;
-                holder.discount.setText(String.valueOf((int) discount) + "%");
-                holder.priceNew.setText("N" + String.valueOf(((int) newPrice)));
-                holder.priceOld.setText("N" + String.valueOf((int) oldPrice));
+                holder.discount.setText(((int) discount) + "%");
+                holder.priceNew.setText("N" + (((int) newPrice)));
+                holder.priceOld.setText("N" + ((int) oldPrice));
                 holder.priceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
+                holder.quantity.setText("x " + reward.quantity);
+            } else if (reward.price.oldPrice > 0) {
+                String oldPriceString = "N" + (int) reward.price.oldPrice;
+                holder.priceOld.setText(oldPriceString);
+                holder.discount.setVisibility(View.INVISIBLE);
+            } else if (reward.price.newPrice > 0) {
+                String newPriceString = "N" + (int) reward.price.newPrice;
+                holder.priceOld.setText(newPriceString);
+                holder.discount.setVisibility(View.INVISIBLE);
             }
 
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy");
-            holder.expiry.setText(simpleDateFormat.format(reward.getExpires()));
+            Date expiryDate = DateTimeUtils.convertZString(reward.endDate);
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());
+            holder.expiry.setText(simpleDateFormat.format(expiryDate));
 
-            holder.head.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    DetailsDialog detailsDialog = new DetailsDialog(context, reward);
-                    detailsDialog.hideButtonGroup();
-                    detailsDialog.show();
-                }
+            holder.head.setOnClickListener(view -> {
+                DetailsDialog detailsDialog = new DetailsDialog(context, reward, false);
+                detailsDialog.hideButtonGroup();
+                detailsDialog.show();
             });
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,6 +101,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
         public TextView priceOld;
         public TextView title;
         public View head;
+        public TextView quantity;
 
 
         public ItemViewHolder(View itemView) {
@@ -102,20 +113,17 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
             priceNew = (TextView) itemView.findViewById(R.id.list_new_price);
             priceOld = (TextView) itemView.findViewById(R.id.list_old_price);
             title = (TextView) itemView.findViewById(R.id.list_reward_title);
+            quantity = (TextView) itemView.findViewById(R.id.quantity_label);
+
         }
 
         public void bind(final int position) {
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    myOnClick.onItemClick(position);
-                }
-            });
+            itemView.setOnClickListener(v -> myOnClick.onItemClick(position));
         }
     }
 
     @Override
-    public void onAttachedToRecyclerView(RecyclerView recyclerView) {
+    public void onAttachedToRecyclerView(@NonNull RecyclerView recyclerView) {
         super.onAttachedToRecyclerView(recyclerView);
     }
 }

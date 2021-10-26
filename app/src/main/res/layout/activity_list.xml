@@ -6,7 +6,8 @@
     android:animateLayoutChanges="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.CoupinActivity">
+    android:background="@color/background_default"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity">
 
     <LinearLayout
         android:animateLayoutChanges="true"
@@ -15,7 +16,7 @@
         android:orientation="vertical">
 
         <RelativeLayout
-            android:background="@color/text_dark_grey"
+            android:background="@color/text_color_1"
             android:layout_height="180dp"
             android:layout_width="match_parent">
 
@@ -26,54 +27,54 @@
                 android:scaleType="centerCrop"/>
 
             <RelativeLayout
-                android:background="@drawable/background_coupin_gradient"
-                android:layout_height="match_parent"
                 android:layout_width="match_parent"
-                android:paddingBottom="@dimen/padding_md"
-                android:paddingEnd="@dimen/padding_sm"
+                android:layout_height="match_parent"
+                android:background="@drawable/background_coupin_gradient"
+                android:paddingStart="@dimen/padding_sm"
                 android:paddingLeft="@dimen/padding_sm"
+                android:paddingEnd="@dimen/padding_sm"
                 android:paddingRight="@dimen/padding_sm"
-                android:paddingStart="@dimen/padding_sm">
+                android:paddingBottom="@dimen/padding_md">
 
                 <com.makeramen.roundedimageview.RoundedImageView
                     android:id="@+id/list_logo"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
+                    android:layout_width="60dp"
                     android:layout_height="60dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentLeft="true"
+                    android:layout_alignParentBottom="true"
                     android:layout_marginLeft="@dimen/margin_md"
                     android:layout_marginRight="@dimen/margin_sm"
-                    android:layout_width="60dp"
                     app:riv_border_color="@color/white"
-                    app:riv_corner_radius="5dp"
-                    app:riv_border_width="2dp"/>
+                    app:riv_border_width="2dp"
+                    app:riv_corner_radius="5dp" />
 
                 <LinearLayout
-                    android:layout_alignTop="@id/list_logo"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_alignTop="@id/list_logo"
                     android:layout_toEndOf="@id/list_logo"
                     android:layout_toRightOf="@id/list_logo"
-                    android:layout_width="match_parent"
                     android:orientation="vertical">
 
                     <TextView
                         android:id="@+id/list_merchant_name"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginBottom="@dimen/margin_xs"
-                        android:layout_width="wrap_content"
                         android:text="@string/example_text_1"
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/large_text"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
 
                     <TextView
                         android:id="@+id/list_merchant_address"
-                        android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
                         android:text="@string/example_address_1"
                         android:textColor="@color/white"
-                        android:textSize="@dimen/medium_text"/>
+                        android:textSize="@dimen/medium_text" />
 
                 </LinearLayout>
 
@@ -91,11 +92,11 @@
             android:paddingRight="@dimen/padding_sm"
             android:paddingStart="@dimen/padding_sm"
             android:text=""
-            android:textColor="@color/text_med_grey"
+            android:textColor="@color/text_color_3"
             android:textSize="@dimen/medium_text"
             android:textStyle="normal"/>
 
-        <android.support.v7.widget.RecyclerView
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/list_view"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
@@ -200,7 +201,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:background="@color/text_med_grey"
+        android:background="@color/colorAccent"
         android:id="@+id/coupin_activate_holder"
         android:gravity="center"
         android:layout_alignParentBottom="true"
@@ -223,8 +224,8 @@
 
     </LinearLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:background="@color/text_med_grey"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:background="@color/text_color_3"
         android:id="@+id/navigate"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -233,13 +234,14 @@
         android:layout_height="48dp"
         android:layout_width="48dp"
         android:src="@drawable/ic_nav_arrow"
-        app:backgroundTint="@color/text_med_grey"
+        android:tint="@color/background"
+        app:backgroundTint="@color/text_color_3"
         app:elevation="10dp"
         app:fabCustomSize="48dp"
         app:rippleColor="@color/black"/>
 
-    <android.support.design.widget.FloatingActionButton
-        android:background="@color/text_med_grey"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:background="@color/text_color_3"
         android:id="@+id/share"
         android:layout_alignParentEnd="true"
         android:layout_alignParentRight="true"
@@ -248,9 +250,10 @@
         android:layout_height="48dp"
         android:layout_width="48dp"
         android:src="@drawable/ic_share"
-        app:backgroundTint="@color/text_med_grey"
+        app:backgroundTint="@color/text_color_3"
         app:elevation="10dp"
         app:fabCustomSize="48dp"
-        app:rippleColor="@color/black"/>
+        app:rippleColor="@color/black"
+        android:tint="@color/background"/>
 
 </RelativeLayout>

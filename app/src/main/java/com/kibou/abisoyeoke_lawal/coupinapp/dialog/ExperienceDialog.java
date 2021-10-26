@@ -4,8 +4,9 @@ import android.app.Dialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -20,20 +21,19 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.StringRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceMngr;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Map;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.internal.EverythingIsNonNull;
 
 /**
  * Created by abisoyeoke-lawal on 1/13/18.
@@ -51,34 +51,38 @@ public class ExperienceDialog extends Dialog {
     private TextView genderError;
     private TextView experienceClose;
 
-    private Context context;
-    private JSONObject user;
+    private final Context context;
+    private ApiCalls apiCalls;
     private MyOnClick onClick;
     private String age;
     private String gender;
     private String number;
     private String userId;
+    private User user;
 
     public ExperienceDialog(@NonNull Context context) {
         super(context);
         this.context = context;
     }
 
-    public ExperienceDialog(@NonNull Context context, MyOnClick onClick, JSONObject user) {
+    public ExperienceDialog(@NonNull Context context, MyOnClick onClick, User user) {
         super(context);
         this.context = context;
         this.onClick = onClick;
         this.user = user;
+        this.apiCalls = ApiClient.getInstance().getCalls(context, true);
     }
 
     public ExperienceDialog(@NonNull Context context, int themeResId) {
         super(context, themeResId);
         this.context = context;
+        this.apiCalls = ApiClient.getInstance().getCalls(context, true);
     }
 
     protected ExperienceDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
         super(context, cancelable, cancelListener);
         this.context = context;
+        this.apiCalls = ApiClient.getInstance().getCalls(context, true);
     }
 
     @Override
@@ -107,7 +111,7 @@ public class ExperienceDialog extends Dialog {
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         try {
-            userId = PreferenceMngr.getInstance().getUserId();
+            userId = PreferenceManager.getUserId();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,61 +206,43 @@ public class ExperienceDialog extends Dialog {
      * Send mobile number and age range
      */
     private void sendInfo() {
-        String url = context.getString(R.string.base_url) + context.getString(R.string.ep_api_user) + '/' + userId;
+        User userInfo = new User();
+        userInfo.mobileNumber = phoneNumber.getEditableText().toString();
+        userInfo.ageRange = age.toLowerCase();
+        userInfo.sex = gender.toLowerCase();
 
-        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url, new Response.Listener<String>() {
+        Call<User> request = apiCalls.updateCurrentUserInfo(PreferenceManager.getUserId(), userInfo);
+        request.enqueue(new Callback<User>() {
+            @EverythingIsNonNull
             @Override
-            public void onResponse(String response) {
+            public void onResponse(Call<User> call, retrofit2.Response<User> response) {
                 loading(false);
-                PreferenceMngr.setUser(response);
-                showSuccess();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                error.printStackTrace();
-                loading(false);
-                //TODO: Show Error
-                if (error.getMessage() != null) {
-                    Toast.makeText(context, error.getMessage(), Toast.LENGTH_SHORT).show();
+                if (response.isSuccessful()) {
+                    PreferenceManager.setCurrentUser(response.body());
+                    showSuccess();
                 } else {
-                    Toast.makeText(context, context.getString(R.string.error_general), Toast.LENGTH_SHORT).show();
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(context, error.message, Toast.LENGTH_SHORT).show();
                 }
             }
-        }){
+
+            @EverythingIsNonNull
             @Override
-            protected Map<String, String> getParams() {
-                Map<String, String> params = new HashMap<String, String>();
-
-                params.put("mobileNumber", phoneNumber.getEditableText().toString());
-                params.put("ageRange", age.toLowerCase());
-                params.put("sex", gender.toLowerCase());
-
-                return params;
+            public void onFailure(Call<User> call, Throwable t) {
+                t.printStackTrace();
+                loading(false);
+                Toast.makeText(context, context.getString(R.string.error_general), Toast.LENGTH_SHORT).show();
             }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                Map<String, String> headers = new HashMap<>();
-                headers.put("Authorization", PreferenceMngr.getToken());
-
-                return headers;
-            }
-        };
-
-        PreferenceMngr.getInstance().getRequestQueue().add(stringRequest);
+        });
     }
 
     private void showSuccess() {
         experienceMain.setVisibility(View.GONE);
         experienceSuccess.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                onClick.onItemClick(-2);
-                dismiss();
-            }
+        handler.postDelayed(() -> {
+            onClick.onItemClick(-2);
+            dismiss();
         }, 3000);
     }
 

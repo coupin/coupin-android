@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:animateLayoutChanges="true"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:paddingBottom="@dimen/padding_sm"
     android:paddingLeft="@dimen/padding_sm"
     android:paddingRight="@dimen/padding_sm"
-    android:paddingTop="@dimen/padding_sm"
-    >
+    android:paddingTop="@dimen/padding_sm">
 
     <LinearLayout
         android:background="@drawable/interest_default"
@@ -28,7 +27,7 @@
             android:layout_height="@dimen/interest_icon"
             android:layout_width="@dimen/interest_icon"
             android:src="@drawable/ic_mobile_wh"
-            android:tint="@color/white"/>
+            app:tint="@color/white"/>
 
         <TextView
             android:ellipsize="marquee"

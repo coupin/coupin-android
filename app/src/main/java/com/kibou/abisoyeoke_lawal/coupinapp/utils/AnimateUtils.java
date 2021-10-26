@@ -1,7 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.utils;
 
-import android.support.v4.view.ViewCompat;
-import android.support.v4.view.ViewPropertyAnimatorListener;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.ViewPropertyAnimatorListener;
 import android.view.View;
 
 /**
@@ -49,7 +49,7 @@ public class AnimateUtils {
                 public void onAnimationStart(View view) {
                     if (!listener.onAnimationStart(view)) {
                         view.setDrawingCacheEnabled(true);
-                    };
+                    }
                 }
 
                 @Override

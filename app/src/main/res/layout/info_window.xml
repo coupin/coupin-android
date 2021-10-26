@@ -1,170 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:animateLayoutChanges="true"
-    android:background="@android:color/transparent"
-    android:layout_height="230dp"
-    android:layout_width="340dp"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/padding_sm"
-    android:paddingRight="@dimen/padding_sm"
-    >
+    xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <RelativeLayout
-        android:layout_width="330dp"
-        android:layout_height="250dp"
-        android:background="@android:color/transparent"
-        >
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="250dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:background="@android:color/transparent">
+
+
+        <LinearLayout
+            android:id="@+id/first_card"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center|bottom"
+            android:orientation="vertical"
+            android:background="@drawable/round_edges_info_window"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/center_marker"
+            android:elevation="5dp">
+
+            <RelativeLayout
+                android:id="@+id/info_main"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="3dp"
+                android:orientation="horizontal">
+
+                <FrameLayout
+                    android:id="@+id/cat_img"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="@dimen/margin_sm_plus"
+                    android:layout_marginLeft="@dimen/margin_sm_plus"
+                    android:layout_marginEnd="@dimen/margin_sm_plus"
+                    android:layout_marginRight="@dimen/margin_sm_plus"
+                    android:background="@drawable/round_edges_grey">
+
+                    <ImageView
+                        android:id="@+id/marker_category"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_gravity="center"
+                        android:src="@drawable/ic_mobile_wh" />
+
+                </FrameLayout>
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_toEndOf="@id/cat_img"
+                    android:layout_toRightOf="@id/cat_img"
+                    android:gravity="clip_horizontal"
+                    android:orientation="vertical"
+                    android:paddingTop="30dp"
+                    android:paddingEnd="@dimen/padding_sm_plus"
+                    android:paddingRight="@dimen/padding_sm_plus"
+                    android:paddingBottom="5dp">
+
+                    <TextView
+                        android:id="@+id/discount_1"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="3dp"
+                        android:ellipsize="end"
+                        android:maxLines="1"
+                        android:text="@string/example_text_1"
+                        android:textAllCaps="true"
+                        android:textColor="@color/text_color_1"
+                        android:textSize="@dimen/xlarge_text"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/discount_2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/example_address_1"
+                        android:textColor="@color/text_color_1"
+                        android:textSize="@dimen/large_text"
+                        android:textStyle="normal" />
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/info_button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:background="@drawable/round_edges_bottom_marker_bg"
+                android:drawableTint="@color/colorAccent"
+                android:paddingStart="15dp"
+                android:paddingEnd="15dp"
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:text="Reward Title"
+                android:textAllCaps="true"
+                android:textAlignment="viewStart"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/large_text"
+                android:textStyle="bold"
+                android:drawableEnd="@drawable/ic_right_angle"
+                android:drawableRight="@drawable/ic_right_angle"/>
+
+        </LinearLayout>
 
         <View
-            android:background="@drawable/background_info_window"
-            android:layout_marginLeft="3dp"
-            android:layout_marginTop="48dp"
-            android:layout_width="330dp"
-            android:layout_height="160dp"/>
+            android:id="@+id/center_marker"
+            android:layout_width="1dp"
+            android:layout_height="1dp"
+            android:visibility="invisible"
+            app:layout_constraintTop_toTopOf="@id/top_merchant_logo"
+            app:layout_constraintBottom_toBottomOf="@id/top_merchant_logo"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
-        <android.support.v7.widget.CardView
-            android:id="@+id/first_card"
-            android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:layout_centerVertical="true"
-            app:cardCornerRadius="5dp"
-            app:cardElevation="5dp"
-            app:cardUseCompatPadding="true">
-
-            <LinearLayout
-                android:layout_height="match_parent"
-                android:layout_marginBottom="@dimen/margin_xs"
-                android:layout_width="match_parent"
-                android:gravity="center|bottom"
-                android:orientation="vertical">
-
-                <RelativeLayout
-                    android:id="@+id/info_main"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="3dp"
-                    android:orientation="horizontal">
-
-                    <FrameLayout
-                        android:background="@drawable/round_edges_grey"
-                        android:id="@+id/cat_img"
-                        android:layout_centerVertical="true"
-                        android:layout_height="50dp"
-                        android:layout_marginEnd="@dimen/margin_sm_plus"
-                        android:layout_marginLeft="@dimen/margin_sm_plus"
-                        android:layout_marginRight="@dimen/margin_sm_plus"
-                        android:layout_marginStart="@dimen/margin_sm_plus"
-                        android:layout_width="50dp">
-
-                        <ImageView
-                            android:id="@+id/marker_category"
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:layout_gravity="center"
-                            android:src="@drawable/ic_mobile_wh" />
-
-                    </FrameLayout>
-
-                    <LinearLayout
-                        android:gravity="clip_horizontal"
-                        android:layout_centerVertical="true"
-                        android:layout_height="wrap_content"
-                        android:layout_width="wrap_content"
-                        android:layout_toEndOf="@id/cat_img"
-                        android:layout_toRightOf="@id/cat_img"
-                        android:orientation="vertical"
-                        android:paddingEnd="@dimen/padding_sm_plus"
-                        android:paddingRight="@dimen/padding_sm_plus">
-
-                        <TextView
-                            android:ellipsize="end"
-                            android:id="@+id/discount_1"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="3dp"
-                            android:maxLines="1"
-                            android:text="@string/example_text_1"
-                            android:textAllCaps="true"
-                            android:textColor="@color/text_dark_grey"
-                            android:textSize="@dimen/xlarge_text"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:id="@+id/discount_2"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginBottom="@dimen/margin_xs"
-                            android:text="@string/example_address_1"
-                            android:textColor="@color/text_dark_grey"
-                            android:textSize="@dimen/large_text"
-                            android:textStyle="normal" />
-
-                    </LinearLayout>
-
-                </RelativeLayout>
-
-                <View
-                    android:layout_width="320dp"
-                    android:layout_height="1dp"
-                    android:layout_marginLeft="3dp"
-                    android:layout_marginRight="3dp"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginBottom="@dimen/margin_xxs"
-                    android:background="@color/lightGrey" />
-
-                <Button
-                    android:background="@color/white"
-                    android:id="@+id/info_button"
-                    android:drawableEnd="@drawable/ic_right_angle"
-                    android:drawableRight="@drawable/ic_right_angle"
-                    android:drawableTint="@color/colorAccent"
-                    android:layout_gravity="start"
-                    android:layout_height="wrap_content"
-                    android:layout_width="match_parent"
-                    android:paddingLeft="15dp"
-                    android:paddingRight="10dp"
-                    android:text="Reward Title"
-                    android:textAlignment="viewStart"
-                    android:textColor="@color/colorAccent"
-                    android:textSize="@dimen/large_text"
-                    android:textStyle="bold" />
-
-            </LinearLayout>
-
-
-        </android.support.v7.widget.CardView>
-
-        <android.support.v7.widget.CardView
-            android:layout_alignBottom="@id/first_card"
-            android:layout_centerHorizontal="true"
+        <androidx.cardview.widget.CardView
             android:layout_height="wrap_content"
-            android:layout_marginBottom="-18dp"
             android:layout_width="wrap_content"
             app:cardBackgroundColor="@android:color/transparent"
-            app:cardElevation="4dp"
-            app:cardUseCompatPadding="true">
+            app:layout_constraintBottom_toBottomOf="@id/first_card"
+            app:layout_constraintTop_toBottomOf="@id/first_card"
+            app:layout_constraintStart_toStartOf="@id/first_card"
+            app:layout_constraintEnd_toEndOf="@id/first_card">
 
             <ImageView
                 android:id="@+id/info_cat"
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"
-                android:src="@drawable/ic_down_angle" />
+                android:src="@drawable/ic_down_angle"
+                app:tint="@color/background_default"/>
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-        <android.support.v7.widget.CardView
+        <androidx.cardview.widget.CardView
+            android:id="@+id/top_merchant_logo"
             android:background="@drawable/round_edges_shadow"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
-            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             app:cardCornerRadius="10dp"
             app:cardElevation="7dp"
             app:contentPadding="1dp"
             app:cardPreventCornerOverlap="true"
-            app:cardUseCompatPadding="true">
+            app:cardUseCompatPadding="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 android:background="@drawable/round_edges"
@@ -174,8 +163,7 @@
                 app:riv_border_color="#80000000"
                 app:riv_corner_radius="10dp" />
 
-        </android.support.v7.widget.CardView>
+        </androidx.cardview.widget.CardView>
 
-    </RelativeLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

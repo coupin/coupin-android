@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="@color/back_grey"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/background_default"
     android:layout_height="match_parent"
     android:layout_width="match_parent"
     android:orientation="vertical"
-    tools:context=".FAQActivity">
+    tools:context=".activities.FAQActivity">
 
     <RelativeLayout
-        android:background="@color/white"
+        android:background="@color/background"
         android:layout_height="wrap_content"
         android:layout_marginBottom="@dimen/margin_sm"
         android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             android:layout_height="@dimen/icon_sm"
             android:layout_width="@dimen/icon_sm"
             android:src="@drawable/ic_back"
-            android:tint="@color/text_dark_grey"/>
+            app:tint="@color/text_color_1"/>
 
         <TextView
             android:layout_centerHorizontal="true"
@@ -30,20 +30,16 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/faq"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textSize="@dimen/xxlarge_text"
             android:textStyle="bold"/>
 
     </RelativeLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:animateLayoutChanges="true"
+    <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/faq_list"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
-        android:paddingEnd="@dimen/padding_sm"
-        android:paddingLeft="@dimen/padding_sm"
-        android:paddingRight="@dimen/padding_sm"
-        android:paddingStart="@dimen/padding_sm"/>
+        android:padding="@dimen/padding_sm"/>
 
 </LinearLayout>

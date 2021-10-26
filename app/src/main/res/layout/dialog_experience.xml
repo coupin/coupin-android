@@ -2,7 +2,7 @@
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@color/white"
+    android:background="@color/background_default"
     android:layout_height="wrap_content"
     android:layout_width="match_parent"
     android:orientation="vertical">
@@ -14,16 +14,17 @@
         android:orientation="vertical">
 
         <TextView
-            android:background="@color/lightGrey"
+            android:background="@color/background_default"
             android:gravity="center"
             android:layout_height="wrap_content"
             android:layout_width="match_parent"
             android:padding="@dimen/padding_md"
             android:text="@string/other"
-            android:textColor="@color/text_dark_grey"
+            android:textColor="@color/text_color_1"
             android:textStyle="bold"/>
 
         <LinearLayout
+            android:background="@color/background"
             android:animateLayoutChanges="true"
             android:id="@+id/experience_main"
             android:layout_height="wrap_content"
@@ -76,13 +77,13 @@
                 android:textSize="@dimen/small_text"
                 android:visibility="gone"/>
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="@dimen/margin_xs"
                 android:layout_marginTop="@dimen/margin_xs"
                 android:layout_width="match_parent"
                 android:padding="@dimen/padding_sm"
-                android:textColorHint="@color/text_med_grey">
+                android:textColorHint="@color/text_color_3">
 
                 <AutoCompleteTextView
                     android:id="@+id/phone_number"
@@ -92,13 +93,13 @@
                     android:inputType="textPhonetic"
                     android:maxLines="1"
                     android:maxLength="11"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_3"
                     android:textSize="@dimen/medium_text"/>
 
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
 
             <Button
-                android:background="@drawable/round_edges_grey"
+                android:background="@color/colorAccent"
                 android:id="@+id/experience_continue"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -163,6 +164,7 @@
         android:layout_marginTop="@dimen/margin_xs"
         android:layout_width="wrap_content"
         android:padding="@dimen/padding_xs"
+        android:textColor="@color/text_color_1"
         android:text="X"/>
 
 </RelativeLayout>

@@ -2,13 +2,13 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:icon="@drawable/ic_star_no"
+        android:icon="@drawable/ic_star_no_svg"
         android:id="@+id/merchant_fav_no"
         android:title="Not Favourite"
         app:showAsAction="always"/>
 
     <item
-        android:icon="@drawable/ic_star_yes"
+        android:icon="@drawable/ic_star_yes_svg"
         android:id="@+id/merchant_fav_yes"
         android:title="Favourite"
         android:visible="false"

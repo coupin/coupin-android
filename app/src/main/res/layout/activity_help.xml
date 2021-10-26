@@ -5,7 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.HelpActivity">
+    android:background="@color/background_default"
+    tools:context="com.kibou.abisoyeoke_lawal.coupinapp.activities.HelpActivity">
 
     <ScrollView
         android:layout_height="match_parent"
@@ -18,11 +19,11 @@
             android:layout_width="match_parent"
             android:orientation="vertical">
 
-            <android.support.v7.widget.Toolbar
+            <androidx.appcompat.widget.Toolbar
                 android:id="@+id/help_toolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="@color/white"
+                android:background="@color/background"
                 android:elevation="4dp"
                 android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
@@ -33,7 +34,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="@string/support"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/large_text"
                 android:textStyle="bold"/>
 
@@ -43,7 +44,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="@string/problem_question"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
             <TextView
@@ -52,7 +53,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="@string/call_support"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/small_text"/>
 
             <TextView
@@ -69,7 +70,7 @@
                 android:textStyle="bold"/>
 
             <View
-                android:background="@color/text_light_grey"
+                android:background="@color/text_color_4"
                 android:layout_gravity="center"
                 android:layout_height="1px"
                 android:layout_marginBottom="@dimen/margin_sm"
@@ -82,7 +83,7 @@
                 android:layout_height="wrap_content"
                 android:padding="@dimen/padding_xs"
                 android:text="@string/feedback_s"
-                android:textColor="@color/text_dark_grey"
+                android:textColor="@color/text_color_1"
                 android:textSize="@dimen/large_text"
                 android:textStyle="bold"/>
 
@@ -98,7 +99,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_help_merchant"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -109,8 +110,8 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
-                    android:textSize="@dimen/large_text"/>
+                    android:textColor="@color/text_color_1"
+                    android:textSize="@dimen/large_text" />
 
             </LinearLayout>
 
@@ -126,7 +127,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_help_coupin"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -137,7 +138,7 @@
                     android:inputType="text"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
@@ -154,7 +155,7 @@
                     android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
                     android:text="@string/label_help_message"
-                    android:textColor="@color/text_med_grey"
+                    android:textColor="@color/text_color_8"
                     android:textSize="@dimen/large_text"/>
 
                 <EditText
@@ -162,10 +163,12 @@
                     android:id="@+id/profile_help_message"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:minLines="3"
+                    android:inputType="textMultiLine"
+                    android:lines="8"
+                    android:minLines="6"
                     android:padding="@dimen/padding_sm"
-                    android:textColor="@color/black"
+                    android:textColor="@color/text_color_1"
+                    android:gravity="top|start"
                     android:textSize="@dimen/large_text"/>
 
             </LinearLayout>
