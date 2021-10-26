@@ -29,9 +29,7 @@ android {
                 sentryDebugLevel:"error"
         ]
         resValue("string", "base_url", "http://10.0.2.2:5030/api/v1")
-        resValue("string", "base_url_v2", "http://10.0.2.2:5030/api/v1/")
 //        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
-//        resValue("string", "base_url_v2", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -47,8 +45,8 @@ android {
                     sentryDebug:false,
                     sentryDebugLevel:"debug"
             ]
-            resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1")
-            resValue("string", "base_url_v2", "https://coupin-pro.herokuapp.com/api/v1/")
+//            resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1")
+            resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1")
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
@@ -98,7 +96,8 @@ dependencies {
     implementation 'com.synnapps:carouselview:0.1.5'
     implementation 'com.yqritc:android-scalablevideoview:1.0.4'
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
-    implementation 'com.facebook.android:facebook-android-sdk:5.0.0'
+    implementation 'com.facebook.android:facebook-android-sdk:12.0.0'
+    implementation 'com.facebook.android:facebook-login:12.0.0'
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'

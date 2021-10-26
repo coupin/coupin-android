@@ -28,9 +28,9 @@ public class SignUpRequest implements Serializable {
         this.name = name;
         this.email = email;
         if (isGoogle) {
-            googleId = id;
+            this.googleId = id;
         } else {
-            facebookId = id;
+            this.facebookId = id;
         }
         this.pictureUrl = pictureUrl;
     };
