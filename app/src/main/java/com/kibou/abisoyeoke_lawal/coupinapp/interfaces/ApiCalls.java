@@ -104,7 +104,7 @@ public interface ApiCalls {
             @Query("categories") String categories
     );
 
-    @GET("merchant/version")
+    @GET("mobile/version")
     Call<HashMap<String, String>> getLatestVersionNumber();
 
     @GET("rewards/merchant/{merchantId}")

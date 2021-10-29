@@ -76,7 +76,7 @@ public class ApiClient {
                     .create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(context.getResources().getString(R.string.base_url_v2))
+                    .baseUrl(context.getResources().getString(R.string.base_url))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client)
                     .build();

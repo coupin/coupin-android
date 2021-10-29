@@ -40,7 +40,6 @@ public class RewardV2 implements Serializable {
     @SerializedName("status")
     public String status;
 
-    public boolean isDiscount;
     public boolean isMultiple;
     public boolean isSelected = false;
     public Date expires;
@@ -50,5 +49,9 @@ public class RewardV2 implements Serializable {
 
     public RewardV2() {
         this.isMultiple = this.multiple != null && this.multiple.status;
+    }
+
+    public boolean isDiscount() {
+        return this.price.newPrice > 0 && this.price.oldPrice > 0;
     }
 }

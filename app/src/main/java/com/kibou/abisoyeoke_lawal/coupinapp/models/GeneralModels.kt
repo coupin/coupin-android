@@ -96,7 +96,7 @@ data class Booking (
 
     val merchantId: String?,
 
-    val rewardId: List<RewardID>?,
+    val rewardId: List<RewardIDMini>?,
 
     val expiryDate: String?,
     val deliveryAddress: Any? = null,
@@ -119,6 +119,9 @@ data class RewardID (
     val _id: String?,
 
     val id: String?
+)
+data class RewardIDMini (
+    val id: ID?
 )
 
 data class ID (

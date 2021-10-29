@@ -30,7 +30,7 @@
             android:layout_height="@dimen/interest_icon"
             android:layout_marginBottom="@dimen/margin_sm"
             android:layout_width="@dimen/interest_icon"
-            android:src="@drawable/avatar"/>
+            android:src="@drawable/ic_coupin_male"/>
         
         <TextView
             android:id="@+id/profile_name"
@@ -38,7 +38,7 @@
             android:layout_centerHorizontal="true"
             android:layout_height="wrap_content"
             android:layout_width="wrap_content"
-            android:text="@string/example_text_1"
+            android:text="@string/dash"
             android:textColor="@color/text_color_1"
             android:textSize="@dimen/large_text"
             android:textStyle="bold"/>

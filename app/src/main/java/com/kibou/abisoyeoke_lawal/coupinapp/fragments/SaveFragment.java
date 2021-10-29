@@ -13,23 +13,33 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.GetCoupinActivity;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVBroAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.wang.avi.AVLoadingIndicatorView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.internal.EverythingIsNonNull;
+
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 /**
  * A simple {@link Fragment} subclass.

@@ -23,18 +23,22 @@ import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.play.core.tasks.Task;
+import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.SelectedReward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +49,12 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.internal.EverythingIsNonNull;
+
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 public class CoupinActivity extends AppCompatActivity implements MyOnClick, View.OnClickListener {
     @BindView(R.id.navigate)
@@ -82,6 +92,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
     private ApiCalls apiCalls;
     private ArrayList<RewardV2> coupinRewards;
+    private ArrayList<SelectedReward> selected = new ArrayList<>();
     private RewardsListItemV2 coupin;
     private RVCoupinAdapter rvAdapter;
     private final Set<String> tempBlackList = new HashSet<>();
@@ -119,6 +130,9 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         if (coupin.shortCode == null || coupin.shortCode.equals("")) {
             codeHolder.setVisibility(View.GONE);
             activateHolder.setVisibility(View.VISIBLE);
+            if (coupin.useNow) {
+                activateHolder.setEnabled(false);
+            }
         }
 
         naviagteBtn.setOnClickListener(this);
@@ -127,8 +141,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         ArrayList<RewardsListItemV2.RewardWrapper> res = coupin.rewards;
         String status = coupin.status;
 
-        if(status.equals("awaiting_payment")){
-            if(activityFromPurchase){
+        if (status.equals("awaiting_payment")){
+            if (activityFromPurchase){
                 listCode.setText("View Coupins");
                 listCode.setOnClickListener(v -> {
                     Intent intent = new Intent(CoupinActivity.this, HomeActivity.class);
@@ -136,10 +150,10 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
                     startActivity(intent);
                     finishAffinity();
                 });
-            }else {
+            } else {
                 listCode.setText("Awaiting Payment");
             }
-        }else {
+        } else {
             listCode.setText(coupin.shortCode);
         }
 
@@ -147,7 +161,10 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         listCount.setText("ACTIVE REWARDS - " + total);
 
         for (RewardsListItemV2.RewardWrapper item : coupin.rewards) {
-            coupinRewards.add(item.reward);
+            RewardV2 reward = item.reward;
+            reward.selectedQuantity = item.quantity;
+            coupinRewards.add(reward);
+            selected.add(new SelectedReward(item.reward.id, item.quantity));
         }
 
         rvAdapter.notifyDataSetChanged();
@@ -155,29 +172,13 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         listBack.setOnClickListener(v -> onBackPressed());
 
         activateHolder.setOnClickListener(v -> {
-            Call<BookingResponse> request = apiCalls.activateCoupin(coupin.bookingId);
-            request.enqueue(new Callback<BookingResponse>() {
-                @EverythingIsNonNull
-                @Override
-                public void onResponse(Call<BookingResponse> call, retrofit2.Response<BookingResponse> response) {
-                    if (response.isSuccessful()) {
-                        assert response.body() != null;
-                        listCode.setText(response.body().data.booking.shortCode);
-                        activateHolder.setVisibility(View.GONE);
-                        codeHolder.setVisibility(View.VISIBLE);
-                    } else {
-                        ApiError error = ApiClient.parseError(response);
-                        Toast.makeText(CoupinActivity.this, error.message, Toast.LENGTH_SHORT).show();
-                    }
-                }
+            MerchantV2 merchantV2 = TypeUtils.convertInnerItemToMerchantV2(coupin.merchant, coupin.visited, coupin.favourite);
 
-                @EverythingIsNonNull
-                @Override
-                public void onFailure(Call<BookingResponse> call, Throwable t) {
-                    t.printStackTrace();
-                    Toast.makeText(CoupinActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
-                }
-            });
+            Intent intent = new Intent(this, MerchantActivity.class);
+            intent.putExtra("merchant", TypeUtils.objectToString(merchantV2));
+            intent.putExtra("selected", TypeUtils.objectToString(selected));
+            startActivity(intent);
+
         });
         reviewApplication();
     }
