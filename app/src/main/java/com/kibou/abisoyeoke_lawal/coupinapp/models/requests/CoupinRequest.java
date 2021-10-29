@@ -7,6 +7,8 @@ import java.io.Serializable;
 public class CoupinRequest implements Serializable {
     @SerializedName("useNow")
     public boolean useNow;
+    @SerializedName("saved")
+    public boolean saved;
     @SerializedName("expiryDate")
     public String expiryDate;
     @SerializedName("merchantId")
@@ -18,6 +20,7 @@ public class CoupinRequest implements Serializable {
         this.expiryDate = expiryDate;
         this.merchantId = merchantId;
         this.rewardId = rewardId;
+        this.saved = !useNow;
         this.useNow = useNow;
     }
 }

@@ -152,7 +152,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullOldPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         // Discount
-        if (reward.isDiscount) {
+        if (reward.isDiscount()) {
             float oldPrice = reward.price.oldPrice;
             float newPrice = reward.price.newPrice;
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
@@ -224,12 +224,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullDateStart.setText(simpleDateFormat.format(Objects.requireNonNull(TypeUtils.stringToDate(reward.startDate))));
 
         // Reusable
-        if (reward.isMultiple) {
-            quantityEditText.setText(String.valueOf(reward.quantity));
+        if (reward.multiple.status) {
+//            quantityEditText.setText(String.valueOf(reward.quantity));
+            quantityEditText.setText("1");
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
             String quantityString = reward.quantity + " in stock";
             quantityTextView.setText(quantityString);
+            quantityEditText.setEnabled(true);
         } else {
             quantityTextView.setText("Limited to 1 per Customer");
             addBtn.setEnabled(false);

@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,6 +35,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.SelectedReward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
@@ -48,6 +50,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -184,16 +187,23 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             String ratingString = item.rating + "/5";
             ratingText.setText(ratingString);
 
+            if (extra.containsKey("selected")) {
+                String selectedString = extra.getString("selected");
+                ArrayList<SelectedReward> selectedList = (ArrayList<SelectedReward>) TypeUtils.stringToObject(selectedString);
+                assert selectedList != null;
+                for (SelectedReward selectedReward: selectedList) {
+                    int counter = 0;
+                    while(counter < selectedReward.quantity) {
+                        selected.add(selectedReward.rewardId);
+                        counter++;
+                    }
+                }
+            }
+
             tempBlackList.addAll(PreferenceManager.getBlacklist());
             rvPopUpAdapter.setBlacklist(tempBlackList);
 
             // Show Mobile and Gender Dialog
-//            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
-//                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
-//                experienceDialog = new ExperienceDialog(this, this, user);
-//                requestGenderNumber = true;
-//                experienceDialog.show();
-//            }
             if (PreferenceManager.getToTotalCoupinsGenerated(user.id) > 0
                 && (user.mobileNumber == null || user.ageRange == null)) {
                 experienceDialog = new ExperienceDialog(this, this, user);
@@ -249,11 +259,36 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnSave.setOnClickListener(v -> {
             toggleClickableButtons(true);
 
-            Call<BookingResponse> request = apiCalls.createCoupin(new CoupinRequest(false, expiryDate.toString(), item.id, selected.toString()));
+            ArrayList rewardsToSave = new ArrayList();
+
+            if (selectedRewards.size() == 0) {
+                Toast.makeText(
+                        MerchantActivity.this,
+                        "Please select rewards you would like to save.",
+                        Toast.LENGTH_SHORT
+                ).show();
+                toggleClickableButtons(false);
+            }
+
+            if (expiryDate == null) {
+                expiryDate = Collections.max(expiryDates);
+            }
+
+            for (RewardV2 reward: selectedRewards) {
+                int counter = 0;
+                while (counter < reward.selectedQuantity) {
+                    rewardsToSave.add(reward.id);
+                    counter++;
+                }
+            }
+
+            Call<BookingResponse> request = apiCalls.createCoupin(new CoupinRequest(false, expiryDate.toString(), item.id,
+                    rewardsToSave.toString()));
             request.enqueue(new Callback<BookingResponse>() {
                 @Override
                 public void onResponse(Call<BookingResponse> call, retrofit2.Response<BookingResponse> response) {
                     if (response.isSuccessful()) {
+                        selected.clear();
                         onBackPressed();
                         finish();
                     } else {
@@ -301,13 +336,45 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             @Override
             public void onResponse(Call<ArrayList<RewardV2>> call, retrofit2.Response<ArrayList<RewardV2>> response) {
                 if (response.isSuccessful()) {
+                    String expiryDate = "";
+                    boolean allAvailable = true;
+
                     assert response.body() != null;
                     for (RewardV2 rewardV2: response.body()) {
+                        if (selected.size() > 0) {
+                            rewardV2.selectedQuantity = Collections.frequency(selected, rewardV2.id);
+                            if (rewardV2.selectedQuantity > 0) {
+                                rewardV2.isSelected = true;
+                            }
+                            if (rewardV2.selectedQuantity > rewardV2.quantity) {
+                                allAvailable = false;
+                                rewardV2.selectedQuantity = rewardV2.quantity;
+                            }
+                            selectedRewards.add(rewardV2);
+                        }
+
                         values.add(rewardV2);
+                        expiryDates.add(TypeUtils.stringToDate(rewardV2.endDate));
                         if (rewardV2.pictures != null && rewardV2.pictures.size() > 0) {
                             for (Image image: rewardV2.pictures) {
                                 pictures.add(image.url);
                             }
+                        }
+                    }
+
+                    if (selected.size() > 0) {
+                        String itemsSelectedString = selected.size() + " Items Selected";
+                        selectedText.setText(itemsSelectedString);
+                        if (selectedHolder.getVisibility() == GONE) {
+                            selectedHolder.setVisibility(View.VISIBLE);
+                        }
+
+                        if (!allAvailable) {
+                            Toast.makeText(
+                                    MerchantActivity.this,
+                                    "Some of your selections have less than saved in stock. Please review before moving forward.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
                         }
                     }
 
@@ -514,10 +581,11 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
-            if (!reward.isMultiple) {
+            if (!reward.multiple.status) {
                 tempBlackList.add(reward.id);
             }
             selectedRewards.add(reward);
+            reward.selectedQuantity = quantity;
             reward.quantity = quantity;
             reward. isSelected = true;
         } else {
@@ -530,6 +598,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             tempBlackList.remove(reward.id);
             selectedRewards.remove(reward);
             reward.isSelected = false;
+            reward.selectedQuantity = 1;
             reward.quantity = 1;
         }
     }
