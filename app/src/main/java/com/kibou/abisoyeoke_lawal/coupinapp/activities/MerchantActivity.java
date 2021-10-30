@@ -259,7 +259,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnSave.setOnClickListener(v -> {
             toggleClickableButtons(true);
 
-            ArrayList rewardsToSave = new ArrayList();
+            ArrayList<String> rewardsToSave = new ArrayList<>();
 
             if (selectedRewards.size() == 0) {
                 Toast.makeText(
@@ -285,6 +285,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             Call<BookingResponse> request = apiCalls.createCoupin(new CoupinRequest(false, expiryDate.toString(), item.id,
                     rewardsToSave.toString()));
             request.enqueue(new Callback<BookingResponse>() {
+                @EverythingIsNonNull
                 @Override
                 public void onResponse(Call<BookingResponse> call, retrofit2.Response<BookingResponse> response) {
                     if (response.isSuccessful()) {
@@ -586,10 +587,9 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             }
             selectedRewards.add(reward);
             reward.selectedQuantity = quantity;
-//            reward.quantity = quantity;
             reward. isSelected = true;
         } else {
-            this.selected.remove(reward.id);
+            this.selected.removeAll(Collections.singleton(reward.id));
             this.expiryDates.remove(TypeUtils.stringToDate(reward.endDate));
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
@@ -599,7 +599,6 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             selectedRewards.remove(reward);
             reward.isSelected = false;
             reward.selectedQuantity = 1;
-//            reward.quantity = 1;
         }
     }
 

@@ -225,8 +225,6 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
 
         // Reusable
         if (reward.multiple.status) {
-//            quantityEditText.setText(String.valueOf(reward.quantity));
-            quantityEditText.setText("1");
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
             String quantityString = reward.quantity + " in stock";
@@ -236,9 +234,12 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
             quantityTextView.setText("Limited to 1 per Customer");
             addBtn.setEnabled(false);
             subtractBtn.setEnabled(false);
-            quantityEditText.setText(String.valueOf(1));
         }
 
+        // Set Quantity if the reward already has selected quantity
+        quantityEditText.setText(reward.selectedQuantity > 0 ? String.valueOf(reward.selectedQuantity) : "1");
+
+        // Self explanatory
         fullDelivery.setText(reward.isDelivery ? "YES" : "No");
 
         if (hideButton) {
