@@ -9,6 +9,8 @@ import java.util.Date;
 public class RewardsListItemV2 implements Serializable {
     @SerializedName("rewardId")
     public ArrayList<RewardWrapper> rewards;
+    @SerializedName("rewardsArray")
+    public ArrayList<RewardV2> rewardsArray;
     @SerializedName("favourite")
     public boolean favourite;
     @SerializedName("isActive")

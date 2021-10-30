@@ -15,9 +15,9 @@ import com.flutterwave.raveandroid.rave_java_commons.RaveConstants
 import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig
 import com.kibou.abisoyeoke_lawal.coupinapp.R
+import com.kibou.abisoyeoke_lawal.coupinapp.activities.CoupinActivity
 import com.kibou.abisoyeoke_lawal.coupinapp.activities.HomeActivity
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinRequestModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetCoupinResponseModel
+import com.kibou.abisoyeoke_lawal.coupinapp.models.*
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.*
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -231,27 +231,30 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
         requireActivity().finishAffinity()
 
         // TODO: Uncomment once you convert to retrofit
-//        merchant?.let {
-//            val coupin = RewardListItem()
-//            coupin.setBookingId(bookingId)
-//            coupin.setBookingShortCode(shortCode)
-//            coupin.setMerchantName(merchant.name)
-//            coupin.setMerchantAddress(merchant.address)
-//            coupin.setLatitude(merchant.location.latitude)
-//            coupin.setLongitude(merchant.location.longitude)
-//            coupin.setMerchantLogo(merchant.logo.url)
-//            coupin.setMerchantBanner(merchant.banner.url)
-//            coupin.isFavourited = merchant.favourite
-//            coupin.setVisited(merchant.visited)
-//            coupin.setStatus(getCoupinResponseModel.data?.booking?.status)
-//            coupin.setRewardDetails(rewards)
-//            coupin.setRewardCount(rewardCount)
-//
-//            val intent = Intent(requireContext(), CoupinActivity::class.java)
-//            intent.putExtra("coupin", coupin)
-//            intent.putExtra("fromPurchase", true)
-//            startActivity(intent)
-//            requireActivity().finishAffinity()
-//        }
+        merchant?.let {
+            val coupin = RewardsListItemV2()
+            coupin.id = bookingId
+            coupin.shortCode = shortCode
+            coupin.merchant = InnerItem()
+            coupin.merchant.merchantInfo = InnerItem.MerchantInfo()
+            coupin.merchant.merchantInfo.companyName = merchant.name
+            coupin.merchant.merchantInfo.address = merchant.address
+            coupin.merchant.merchantInfo.location = doubleArrayOf(merchant.location.longitude, merchant.location.latitude)
+            coupin.merchant.merchantInfo.logo = Image()
+            coupin.merchant.merchantInfo.logo.url = merchant.logo.url
+            coupin.merchant.merchantInfo.banner = Image()
+            coupin.merchant.merchantInfo.banner.url = merchant.banner.url
+            coupin.favourite = merchant.favourite
+            coupin.visited = merchant.visited
+            coupin.status = getCoupinResponseModel.data?.booking?.status
+            coupin.rewardsArray = checkoutViewModel.selectedCoupinsLD.value
+            coupin.rewardCount = rewardCount
+
+            val intent = Intent(requireContext(), CoupinActivity::class.java)
+            intent.putExtra("coupin", coupin)
+            intent.putExtra("fromPurchase", true)
+            startActivity(intent)
+            requireActivity().finishAffinity()
+        }
     }
 }

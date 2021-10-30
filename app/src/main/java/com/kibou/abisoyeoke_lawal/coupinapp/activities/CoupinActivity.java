@@ -93,6 +93,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     private ApiCalls apiCalls;
     private ArrayList<RewardV2> coupinRewards;
     private ArrayList<SelectedReward> selected = new ArrayList<>();
+    private boolean activityFromPurchase;
     private RewardsListItemV2 coupin;
     private RVCoupinAdapter rvAdapter;
     private final Set<String> tempBlackList = new HashSet<>();
@@ -106,7 +107,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         apiCalls = ApiClient.getInstance().getCalls(this, true);
         coupin = (RewardsListItemV2) getIntent().getSerializableExtra("coupin");
 
-        boolean activityFromPurchase = getIntent().getBooleanExtra("fromPurchase", false);
+        activityFromPurchase = getIntent().getBooleanExtra("fromPurchase", false);
 
         InnerItem.MerchantInfo merchantInfo = coupin.merchant.merchantInfo;
         merchantName.setText(merchantInfo.companyName);
@@ -157,14 +158,22 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             listCode.setText(coupin.shortCode);
         }
 
-        int total = res.size();
-        listCount.setText("ACTIVE REWARDS - " + total);
+        int total = coupin.rewards != null ? res.size() : coupin.rewardsArray.size();
+        String totalString = "ACTIVE REWARDS - " + total;
+        listCount.setText(totalString);
 
-        for (RewardsListItemV2.RewardWrapper item : coupin.rewards) {
-            RewardV2 reward = item.reward;
-            reward.selectedQuantity = item.quantity;
-            coupinRewards.add(reward);
-            selected.add(new SelectedReward(item.reward.id, item.quantity));
+        if (coupin.rewards != null) {
+            for (RewardsListItemV2.RewardWrapper item : coupin.rewards) {
+                RewardV2 reward = item.reward;
+                reward.selectedQuantity = item.quantity;
+                coupinRewards.add(reward);
+                selected.add(new SelectedReward(item.reward.id, item.quantity));
+            }
+        } else if (coupin.rewardsArray != null) {
+            for (RewardV2 reward : coupin.rewardsArray) {
+                coupinRewards.add(reward);
+                selected.add(new SelectedReward(reward.id, reward.selectedQuantity));
+            }
         }
 
         rvAdapter.notifyDataSetChanged();
@@ -200,8 +209,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
     @Override
     public void onBackPressed() {
-        startActivity(new Intent(CoupinActivity.this, HomeActivity.class));
-        finish();
+        if (activityFromPurchase) {
+            startActivity(new Intent(CoupinActivity.this, HomeActivity.class));
+            finish();
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override

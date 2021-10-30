@@ -586,7 +586,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             }
             selectedRewards.add(reward);
             reward.selectedQuantity = quantity;
-            reward.quantity = quantity;
+//            reward.quantity = quantity;
             reward. isSelected = true;
         } else {
             this.selected.remove(reward.id);
@@ -599,7 +599,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             selectedRewards.remove(reward);
             reward.isSelected = false;
             reward.selectedQuantity = 1;
-            reward.quantity = 1;
+//            reward.quantity = 1;
         }
     }
 
