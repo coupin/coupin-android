@@ -12,7 +12,7 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class RVSearchAdapter extends RecyclerView.Adapter<RVSearchAdapter.ItemVi
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         MerchantV2 item = searchList.get(position);
-        ArrayList<RewardV2> rewardArray = item.rewards;
+        ArrayList<Reward> rewardArray = item.rewards;
 
         Glide.with(context).load(item.logo.url).into(holder.searchLogo);
         holder.searchTitle.setText(item.name);

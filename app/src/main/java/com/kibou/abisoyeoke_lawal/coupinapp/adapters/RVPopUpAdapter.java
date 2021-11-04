@@ -19,7 +19,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
@@ -36,7 +36,7 @@ import java.util.Set;
 
 public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHolder> {
     public Set<String> blacklist;
-    public ArrayList<RewardV2> rewards;
+    public ArrayList<Reward> rewards;
     public Context context;
     private final boolean isCart;
     static public MyOnSelect myOnSelect;
@@ -74,7 +74,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         }
     }
 
-    public RVPopUpAdapter(ArrayList<RewardV2> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
+    public RVPopUpAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
         this.context = context;
         RVPopUpAdapter.myOnSelect = myOnSelect;
         this.rewards = rewards;
@@ -91,7 +91,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final RVPopUpAdapter.ViewHolder holder, final int position) {
-        final RewardV2 reward = rewards.get(position);
+        final Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.description);
         if (reward.isDiscount()) {

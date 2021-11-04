@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -39,7 +38,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.SelectedReward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
@@ -121,10 +120,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private ApiCalls apiCalls;
     private ArrayList<Date> expiryDates;
     private final Set<String> tempBlackList = new HashSet<>();
-    private final Set<RewardV2> selectedRewards = new HashSet<>();
+    private final Set<Reward> selectedRewards = new HashSet<>();
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
-    private ArrayList<RewardV2> values;
+    private ArrayList<Reward> values;
     private boolean favourite = false;
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
@@ -274,7 +273,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 expiryDate = Collections.max(expiryDates);
             }
 
-            for (RewardV2 reward: selectedRewards) {
+            for (Reward reward: selectedRewards) {
                 int counter = 0;
                 while (counter < reward.selectedQuantity) {
                     rewardsToSave.add(reward.id);
@@ -331,33 +330,33 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * Load Merchant Rewards
      */
     public void loadRewards() {
-        Call<ArrayList<RewardV2>> request = apiCalls.getMerchantRewards(merchantId, page);
-        request.enqueue(new Callback<ArrayList<RewardV2>>() {
+        Call<ArrayList<Reward>> request = apiCalls.getMerchantRewards(merchantId, page);
+        request.enqueue(new Callback<ArrayList<Reward>>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<ArrayList<RewardV2>> call, retrofit2.Response<ArrayList<RewardV2>> response) {
+            public void onResponse(Call<ArrayList<Reward>> call, retrofit2.Response<ArrayList<Reward>> response) {
                 if (response.isSuccessful()) {
                     String expiryDate = "";
                     boolean allAvailable = true;
 
                     assert response.body() != null;
-                    for (RewardV2 rewardV2: response.body()) {
+                    for (Reward reward : response.body()) {
                         if (selected.size() > 0) {
-                            rewardV2.selectedQuantity = Collections.frequency(selected, rewardV2.id);
-                            if (rewardV2.selectedQuantity > 0) {
-                                rewardV2.isSelected = true;
+                            reward.selectedQuantity = Collections.frequency(selected, reward.id);
+                            if (reward.selectedQuantity > 0) {
+                                reward.isSelected = true;
                             }
-                            if (rewardV2.selectedQuantity > rewardV2.quantity) {
+                            if (reward.selectedQuantity > reward.quantity) {
                                 allAvailable = false;
-                                rewardV2.selectedQuantity = rewardV2.quantity;
+                                reward.selectedQuantity = reward.quantity;
                             }
-                            selectedRewards.add(rewardV2);
+                            selectedRewards.add(reward);
                         }
 
-                        values.add(rewardV2);
-                        expiryDates.add(TypeUtils.stringToDate(rewardV2.endDate));
-                        if (rewardV2.pictures != null && rewardV2.pictures.size() > 0) {
-                            for (Image image: rewardV2.pictures) {
+                        values.add(reward);
+                        expiryDates.add(TypeUtils.stringToDate(reward.endDate));
+                        if (reward.pictures != null && reward.pictures.size() > 0) {
+                            for (Image image: reward.pictures) {
                                 pictures.add(image.url);
                             }
                         }
@@ -403,7 +402,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<ArrayList<RewardV2>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Reward>> call, Throwable t) {
                 t.printStackTrace();
                 isLoading = false;
 
@@ -574,7 +573,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     @Override
     public void onSelect(boolean selected, int index, int quantity) {
-        RewardV2 reward = values.get(index);
+        Reward reward = values.get(index);
         if (selected) {
             this.selected.add(reward.id);
             this.expiryDates.add(TypeUtils.stringToDate(reward.endDate));
@@ -713,7 +712,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             ArrayList<String> rewardIds = new ArrayList<>();
 
             if(!values.isEmpty()){
-                for(RewardV2 reward : selectedRewards){
+                for(Reward reward : selectedRewards){
                     rewardIds.add(reward.id);
                     isDeliverableList.add(reward.isDelivery);
                 }

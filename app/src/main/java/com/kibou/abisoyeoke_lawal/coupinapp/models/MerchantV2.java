@@ -7,7 +7,7 @@ import java.util.ArrayList;
 
 public class MerchantV2 implements Serializable {
     @SerializedName("rewards")
-    public ArrayList<RewardV2> rewards;
+    public ArrayList<Reward> rewards;
     @SerializedName("categories")
     public ArrayList<String> categories;
     @SerializedName("favourite")
@@ -25,7 +25,7 @@ public class MerchantV2 implements Serializable {
     @SerializedName("location")
     public LocationV2 location;
     @SerializedName("reward")
-    public RewardV2 reward;
+    public Reward reward;
     @SerializedName("address")
     public String address;
     @SerializedName("category")

@@ -24,7 +24,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Favourite;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardMini;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
 import java.util.ArrayList;
@@ -148,9 +148,9 @@ public class FavFragment extends Fragment implements MyOnClick {
         merchant.picture = favourite.picture;
         merchant.category = favourite.category;
 
-        ArrayList<RewardV2> rewardV2s = new ArrayList<>();
+        ArrayList<Reward> rewards = new ArrayList<>();
         for (RewardMini rewardMini: favourite.rewards) {
-            RewardV2 item = new RewardV2();
+            Reward item = new Reward();
             item.name = rewardMini.name;
             item.pictures = rewardMini.pictures;
             item.days = rewardMini.days;
@@ -167,11 +167,11 @@ public class FavFragment extends Fragment implements MyOnClick {
             item.createdDate = rewardMini.createdDate;
             item.modifiedDate = rewardMini.modifiedDate;
             item.status = rewardMini.status;
-            rewardV2s.add(item);
+            rewards.add(item);
         }
 
-        merchant.rewardsCount = rewardV2s.size();
-        merchant.rewards = rewardV2s;
+        merchant.rewardsCount = rewards.size();
+        merchant.rewards = rewards;
         return merchant;
     }
 

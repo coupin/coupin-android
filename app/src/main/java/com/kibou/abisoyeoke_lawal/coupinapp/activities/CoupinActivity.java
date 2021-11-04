@@ -16,25 +16,21 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.play.core.review.ReviewInfo;
 import com.google.android.play.core.review.ReviewManager;
 import com.google.android.play.core.review.ReviewManagerFactory;
 import com.google.android.play.core.tasks.Task;
-import com.google.gson.Gson;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
-import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.SelectedReward;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
@@ -46,15 +42,6 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.internal.EverythingIsNonNull;
-
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListIntent;
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
-import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.rewardsIntent;
 
 public class CoupinActivity extends AppCompatActivity implements MyOnClick, View.OnClickListener {
     @BindView(R.id.navigate)
@@ -91,7 +78,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public View divider;
 
     private ApiCalls apiCalls;
-    private ArrayList<RewardV2> coupinRewards;
+    private ArrayList<Reward> coupinRewards;
     private ArrayList<SelectedReward> selected = new ArrayList<>();
     private boolean activityFromPurchase;
     private RewardsListItemV2 coupin;
@@ -164,13 +151,13 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         if (coupin.rewards != null) {
             for (RewardsListItemV2.RewardWrapper item : coupin.rewards) {
-                RewardV2 reward = item.reward;
+                Reward reward = item.reward;
                 reward.selectedQuantity = item.quantity;
                 coupinRewards.add(reward);
                 selected.add(new SelectedReward(item.reward.id, item.quantity));
             }
         } else if (coupin.rewardsArray != null) {
-            for (RewardV2 reward : coupin.rewardsArray) {
+            for (Reward reward : coupin.rewardsArray) {
                 coupinRewards.add(reward);
                 selected.add(new SelectedReward(reward.id, reward.selectedQuantity));
             }

@@ -25,7 +25,7 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
@@ -69,7 +69,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     private GalleryDialog imageDialog;
 
     private Context context;
-    private RewardV2 reward;
+    private Reward reward;
 
     private boolean isCart = false;
 
@@ -92,7 +92,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         super(context, cancelable, cancelListener);
     }
 
-    public DetailsDialog(@NonNull Context context, RewardV2 reward, boolean isCart) {
+    public DetailsDialog(@NonNull Context context, Reward reward, boolean isCart) {
         super(context);
         this.context = context;
         this. reward = reward;

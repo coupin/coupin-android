@@ -20,16 +20,16 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 92
-        versionName "1.1.1"
+        versionCode 94
+        versionName "1.1.3"
         manifestPlaceholders = [
                 paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
                 sentryEnvironment:"Development",
                 sentryDebug:true,
                 sentryDebugLevel:"error"
         ]
-        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
-//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
+//        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
+        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -46,7 +46,6 @@ android {
                     sentryDebugLevel:"debug"
             ]
             resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1/")
-//            resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
@@ -56,12 +55,33 @@ android {
             it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY", "")
             it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY", "")
         }
+        staging {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.release
+            debuggable = false
+            manifestPlaceholders = [
+                    paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
+                    sentryEnvironment:"Development",
+                    sentryDebug:true,
+                    sentryDebugLevel:"error"
+            ]
+            resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
+            Properties properties = new Properties()
+            if (rootProject.file("local.properties").exists()) {
+                properties.load(rootProject.file("local.properties").newDataInputStream())
+            }
+            it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
+            it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY_DEV", "")
+            it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY_DEV", "")
+            it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY_DEV", "")
+        }
         debug {
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {
                 properties.load(rootProject.file("local.properties").newDataInputStream())
             }
-            it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API_DEV", "")
+            it.buildConfigField 'String', 'GOOGLE_PLACES_API', properties.getProperty("GOOGLE_PLACES_API", "")
             it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY_DEV", "")
             it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY_DEV", "")
             it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY_DEV", "")

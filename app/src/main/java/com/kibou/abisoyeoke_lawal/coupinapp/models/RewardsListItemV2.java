@@ -10,7 +10,7 @@ public class RewardsListItemV2 implements Serializable {
     @SerializedName("rewardId")
     public ArrayList<RewardWrapper> rewards;
     @SerializedName("rewardsArray")
-    public ArrayList<RewardV2> rewardsArray;
+    public ArrayList<Reward> rewardsArray;
     @SerializedName("favourite")
     public boolean favourite;
     @SerializedName("isActive")
@@ -40,7 +40,7 @@ public class RewardsListItemV2 implements Serializable {
         @SerializedName("quantity")
         public int quantity;
         @SerializedName("id")
-        public RewardV2 reward;
+        public Reward reward;
         @SerializedName("status")
         public String status;
         @SerializedName("usedOn")

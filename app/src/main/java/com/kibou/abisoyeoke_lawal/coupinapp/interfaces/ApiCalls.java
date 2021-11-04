@@ -7,7 +7,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Prime;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
@@ -108,5 +108,5 @@ public interface ApiCalls {
     Call<HashMap<String, String>> getLatestVersionNumber();
 
     @GET("rewards/merchant/{merchantId}")
-    Call<ArrayList<RewardV2>> getMerchantRewards(@Path("merchantId") String id, @Query("page") int page);
+    Call<ArrayList<Reward>> getMerchantRewards(@Path("merchantId") String id, @Query("page") int page);
 }

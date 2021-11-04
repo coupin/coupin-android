@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVPopUpAdapter
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.setAmountFormat
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import kotlinx.android.synthetic.main.fragment_cart.*

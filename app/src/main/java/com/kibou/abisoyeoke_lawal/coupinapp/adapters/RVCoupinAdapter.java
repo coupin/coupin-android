@@ -7,7 +7,6 @@ import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
@@ -29,7 +28,7 @@ import java.util.Locale;
  */
 
 public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter.ItemViewHolder> {
-    public List<RewardV2> rewardListItems;
+    public List<Reward> rewardListItems;
     static public MyOnClick myOnClick;
     public Context context;
 
@@ -40,7 +39,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
         return itemViewHolder;
     }
 
-    public RVCoupinAdapter(List<RewardV2> rewardListItems, MyOnClick myOnClick, Context context) {
+    public RVCoupinAdapter(List<Reward> rewardListItems, MyOnClick myOnClick, Context context) {
         RVCoupinAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
         this.context = context;
@@ -49,7 +48,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         // Add data here
-        final RewardV2 reward = rewardListItems.get(position);
+        final Reward reward = rewardListItems.get(position);
 
         try {
             holder.title.setText(reward.name);

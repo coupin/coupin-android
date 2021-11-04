@@ -1,139 +1,57 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.models;
 
-import org.json.JSONArray;
+import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 
-/**
- * Created by abisoyeoke-lawal on 8/13/17.
- */
-
 public class Reward implements Serializable {
-    private boolean isDelivery;
-    private boolean isDiscount;
-    private boolean isMultiple;
-    private boolean isSelected = false;
-    private Date expires;
-    private Date starting;
-    private float newPrice;
-    private float oldPrice;
-    private JSONArray days;
-    private JSONArray pictures;
-    private String details;
-    private String id;
-    private String title;
-    private int quantity;
-    private final int selectedQuantity = 1;
+    @SerializedName("pictures")
+    public ArrayList<Image> pictures;
+    @SerializedName("applicableDays")
+    public ArrayList<Integer> days;
+    @SerializedName("categories")
+    public ArrayList<String> categories;
+    @SerializedName("isActive")
+    public boolean isActive;
+    @SerializedName("delivery")
+    public boolean isDelivery;
+    @SerializedName("quantity")
+    public int quantity;
+    @SerializedName("multiple")
+    public MultipleV2 multiple;
+    @SerializedName("price")
+    public PriceV2 price;
+    @SerializedName("_id")
+    public String id;
+    @SerializedName("description")
+    public String description;
+    @SerializedName("endDate")
+    public String endDate;
+    @SerializedName("startDate")
+    public String startDate;
+    @SerializedName("createdDate")
+    public String createdDate;
+    @SerializedName("modifiedDate")
+    public String modifiedDate;
+    @SerializedName("name")
+    public String name;
+    @SerializedName("status")
+    public String status;
 
-    public int getQuantity() {
-        return quantity;
+    public boolean isMultiple;
+    public boolean isSelected = false;
+    public Date expires;
+    public Date starting;
+    public int selectedQuantity = 1;
+    public String title;
+
+    public Reward() {
+        this.isMultiple = this.multiple != null && this.multiple.status;
     }
 
-    public void setQuantity(int quantity) {
-        this.quantity = quantity;
-    }
-
-    public void setDays(JSONArray days) {
-        this.days = days;
-    }
-
-    public void setDetails(String details) {
-      this.details = details;
-  }
-
-    public void setExpires(Date expires) {
-        this.expires = expires;
-    }
-
-    public void setId(String id) {
-    this.id = id;
-  }
-
-    public void setIsDelivery(boolean delivery) {
-        isDelivery = delivery;
-    }
-    public void setIsDiscount(boolean discount) {
-        isDiscount = discount;
-    }
-
-    public void setMultiple(boolean multiple) {
-        isMultiple = multiple;
-    }
-
-    public void setIsSelected(boolean isSelected) {
-        this.isSelected = isSelected;
-    }
-
-    public void setNewPrice(int newPrice) {
-      this.newPrice = newPrice;
-  }
-
-    public void setOldPrice(int oldPrice) {
-      this.oldPrice = oldPrice;
-  }
-
-    public void setPictures(JSONArray pictures) {
-        this.pictures = pictures;
-    }
-
-    public void setStarting(Date starting) {
-        this.starting = starting;
-    }
-
-    public void setTitle(String title) {
-      this.title = title;
-  }
-
-    public JSONArray getDays() {
-        return days;
-    }
-
-    public String getDetails() {
-      return details;
-  }
-
-  public Date getExpires() {
-        return expires;
-    }
-
-  public String getId() {
-    return id;
-  }
-
-  public boolean getIsDelivery() {
-        return isDelivery;
-    }
-
-  public boolean getIsDiscount() {
-        return oldPrice > 0 && newPrice > 0;
-    }
-
-    public boolean isSelected() {
-        return isSelected;
-    }
-
-  public boolean getMultiple() {
-      return isMultiple;
-  }
-
-  public float getNewPrice() {
-      return newPrice;
-  }
-
-  public float getOldPrice() {
-      return oldPrice;
-  }
-
-  public JSONArray getPictures() {
-      return pictures;
-  }
-
-    public Date getStarting() {
-        return starting;
-    }
-
-    public String getTitle() {
-        return title;
+    public boolean isDiscount() {
+        return this.price.newPrice > 0 && this.price.oldPrice > 0;
     }
 }
