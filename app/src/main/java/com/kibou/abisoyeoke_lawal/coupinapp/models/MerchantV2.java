@@ -20,7 +20,7 @@ public class MerchantV2 implements Serializable {
     public Image logo;
     @SerializedName("rating")
     public int rating;
-    @SerializedName("rewardsSize")
+    @SerializedName("count")
     public int rewardsCount;
     @SerializedName("location")
     public LocationV2 location;

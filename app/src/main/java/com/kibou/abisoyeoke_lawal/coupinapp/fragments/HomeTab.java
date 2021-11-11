@@ -241,7 +241,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 if (currentLocation == null) {
                     currentLocation = locationResult.getLastLocation();
-                    setupListV2();
+                    setupList();
                 } else {
                     currentLocation = locationResult.getLastLocation();
                 }
@@ -534,7 +534,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
             // Get Current Location
             if (currentLocation != null) {
-                setupListV2();
+                setupList();
             } else {
                 getMyLocation();
             }
@@ -598,17 +598,21 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
     }
 
-    // TODO: New - Make V1
-    private void setupListV2() {
-        showDialog(true);
+    private void setupList() {
+        if (retrievingData) return;
 
-        prepareMapAndGeoLocation();
+        if (page == 0) {
+            showDialog(true);
+            retrievingData = true;
+            prepareMapAndGeoLocation();
+        }
 
         MerchantRequest body = new MerchantRequest();
         body.latitude = latitude.doubleValue();
         body.longitude = longitude.doubleValue();
         body.distance = distance;
         body.categories = categories.toString();
+        body.page = page;
         body.limit = 5;
 
         Call<ArrayList<MerchantV2>> request = apiCalls.getMerchants(body);
@@ -616,30 +620,35 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @EverythingIsNonNull
             @Override
             public void onResponse(Call<ArrayList<MerchantV2>> call, retrofit2.Response<ArrayList<MerchantV2>> response) {
-                MerchantV2 first = new MerchantV2();
-                first.picture = R.drawable.hot;
-                iconsListV2.add(first);
+                if (page == 0) {
+                    MerchantV2 first = new MerchantV2();
+                    first.picture = R.drawable.hot;
+                    iconsListV2.add(first);
 
-                if (currentLocation != null) {
-                    markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
-                            .title("Hello!")
-                            .snippet("You are here")
-                            .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                    if (currentLocation != null) {
+                        markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
+                                .title("Hello!")
+                                .snippet("You are here")
+                                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                    }
                 }
 
                 if (response.isSuccessful()) {
-                    try {
-                        int counter = 1;
-
                         assert response.body() != null;
                         for (MerchantV2 item : response.body()) {
-                            iconsListV2.add(counter++, item);
+                            iconsListV2.add(item);
                             markers.add(mGoogleMap.addMarker(new MarkerOptions()
                                     .title(item.name)
                                     .snippet(TypeUtils.objectToString(item))
                                     .position(new LatLng(item.location.latitude, item.location.longitude))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
+                        }
+                        disableLoadMore = response.body().size() < 5;
+
+                        if (disableLoadMore) {
+                            Toast.makeText(getContext(), getString(R.string.empty_more_details),
+                                    Toast.LENGTH_SHORT).show();
                         }
 
                         String spotsText = iconsListV2.size() - 1 + " Rewards ";
@@ -648,44 +657,56 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         // TODO: Set the bounds properly
                         setBounds();
 
+                        if (page == 0) {
+                            showDialog(false);
+                            adapter.setIconList(iconsListV2);
+                        } else {
+                            isLoading = false;
+                            loading();
+                        }
+
                         page++;
-                        showDialog(false);
-                        adapter.setIconList(iconsListV2);
-                        adapter.notifyDataSetChanged();
                         retrievingData = false;
+                        adapter.notifyDataSetChanged();
                         (new LogoConverter()).execute(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        adapter.setIconList(iconsListV2);
-                        adapter.notifyDataSetChanged();
-                        retrievingData = false;
-                        showDialog(false);
-                    }
                 } else {
                     ApiError error = ApiClient.parseError(response);
 
-                    adapter.setIconList(iconsListV2);
-                    adapter.notifyDataSetChanged();
+                    if (page == 0) {
+                        adapter.setIconList(iconsListV2);
+                        adapter.notifyDataSetChanged();
+                        showDialog(false);
+                    } else {
+                        isLoading = false;
+                        loading();
+                    }
+
 
                     retrievingData = false;
                     spots.setText("0 Rewards ");
-                    showDialog(false);
 
-                    if (HomeTab.this.isVisible()) {
-                        if (error.statusCode == 404) {
-                            networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_title),
-                                    getResources().getString(R.string.empty_details), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            networkErrorDialog.dismiss();
-                                        }
-                                    });
-                            networkErrorDialog.show();
-                            center();
+
+                    if (error.statusCode == 404) {
+                        disableLoadMore = true;
+                        if (page == 0) {
+                            if (HomeTab.this.isVisible()) {
+                                networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_title),
+                                        getResources().getString(R.string.empty_details), new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                networkErrorDialog.dismiss();
+                                            }
+                                        });
+                                networkErrorDialog.show();
+                            }
                         } else {
-                            Toast.makeText(getContext(), error.message,
+                            Toast.makeText(getContext(), getString(R.string.empty_details_more),
                                     Toast.LENGTH_SHORT).show();
                         }
+                        center();
+                    } else {
+                        Toast.makeText(getContext(), error.message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -695,6 +716,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public void onFailure(Call<ArrayList<MerchantV2>> call, Throwable t) {
                 showDialog(false);
                 t.printStackTrace();
+                retrievingData = false;
+
+                if (page == 0) {
+                    showDialog(false);
+                } else {
+                    isLoading = false;
+                    loading();
+                }
             }
         });
     }
@@ -787,7 +816,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                 isLoading = true;
                 loading();
-                handler.postDelayed(() -> setupListV2(), 2000);
+                handler.postDelayed(() -> setupList(), 2000);
             }
             }
         });
@@ -896,7 +925,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         filter = true;
         adapter.clearPreviousView();
         onMarker = false;
-        setupListV2();
+        page = 0;
+        setupList();
     }
 
     @Override

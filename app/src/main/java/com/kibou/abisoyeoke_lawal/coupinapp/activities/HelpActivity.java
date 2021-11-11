@@ -39,10 +39,13 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
     public EditText editHelpMessage;
     @BindView(R.id.profile_help_call)
     public TextView textHelpCall;
+    @BindView(R.id.profile_help_call_alt)
+    public TextView textHelpCallAlt;
     @BindView(R.id.help_toolbar)
     public Toolbar helpToolbar;
 
     ApiCalls apiCalls;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +56,7 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
         apiCalls = ApiClient.getInstance().getCalls(this, true);
         btnHelpSubmit.setOnClickListener(this);
         textHelpCall.setOnClickListener(this);
+        textHelpCallAlt.setOnClickListener(this);
 
         helpToolbar.setTitle("Help");
         setSupportActionBar(helpToolbar);
@@ -75,7 +79,10 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.profile_help_call:
-                dialNumber();
+                dialNumber(getResources().getString(R.string.call_no_tel));
+                break;
+            case R.id.profile_help_call_alt:
+                dialNumber(getResources().getString(R.string.call_no_tel_alt));
                 break;
             case R.id.profile_help_submit:
                 attemptSubmit();
@@ -83,9 +90,9 @@ public class HelpActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    private void dialNumber() {
+    private void dialNumber(String phoneNumber) {
         Intent intent = new Intent(Intent.ACTION_DIAL);
-        intent.setData(Uri.parse("tel:" + getResources().getString(R.string.call_no_tel)));
+        intent.setData(Uri.parse(phoneNumber));
         startActivity(intent);
     }
 

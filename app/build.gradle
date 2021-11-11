@@ -20,16 +20,16 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 94
-        versionName "1.1.3"
+        versionCode 97
+        versionName "1.1.6"
         manifestPlaceholders = [
                 paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
                 sentryEnvironment:"Development",
                 sentryDebug:true,
                 sentryDebugLevel:"error"
         ]
-//        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
-        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
+        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
+//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -118,6 +118,7 @@ dependencies {
     implementation 'com.github.ittianyu:BottomNavigationViewEx:2.0.4'
     implementation 'com.facebook.android:facebook-android-sdk:12.0.0'
     implementation 'com.facebook.android:facebook-login:12.0.0'
+    implementation 'com.google.android.play:core:1.10.2'
     implementation 'com.google.android.gms:play-services-auth:19.2.0'
     implementation 'com.google.android.gms:play-services-maps:17.0.1'
     implementation 'com.google.android.gms:play-services-location:18.0.0'

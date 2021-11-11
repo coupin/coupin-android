@@ -156,8 +156,8 @@ data class Multiple (
 )
 
 data class Price (
-    val old: Long?,
-    val new: Long?
+    val old: Double?,
+    val new: Double?
 )
 
 data class Review (

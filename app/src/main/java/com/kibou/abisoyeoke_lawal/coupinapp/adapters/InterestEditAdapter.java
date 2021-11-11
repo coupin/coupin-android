@@ -10,6 +10,8 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import androidx.core.content.res.ResourcesCompat;
+
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
@@ -72,8 +74,8 @@ public class InterestEditAdapter extends BaseAdapter {
             interestHolder.setLayoutParams(params);
         }
 
-        if (previouslySelected.contains(interest.getValue())) {
-            holder.setBackground(context.getResources().getDrawable(R.drawable.interest_default));
+        if (previouslySelected.contains(interest.getValue()) || interest.selected) {
+            holder.setBackground(ResourcesCompat.getDrawable(context.getResources(), R.drawable.interest_default, null));
             tick.setVisibility(View.VISIBLE);
             interest.setSelected(true);
         }

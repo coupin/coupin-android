@@ -197,8 +197,10 @@
     <string name="reward">Redeem Rewards</string>
     <string name="problem_question">Having problems redeeming rewards at merchant ?</string>
     <string name="call_support">Call Customer Support:</string>
-    <string name="call_no">+2348028894016</string>
-    <string name="call_no_tel">tel:+2348028894016</string>
+    <string name="call_no">+2349125225923</string>
+    <string name="call_no_alt">+2348179435613</string>
+    <string name="call_no_tel">tel:+2349125225923</string>
+    <string name="call_no_tel_alt">tel:+2348179435613</string>
     <string name="feedback_s">Feedback/Suggestions</string>
     <string name="empty_fav">You have no favourites.</string>
     <string name="empty_later">No coupins currently saved.</string>
@@ -558,6 +560,9 @@
     <string name="change_save">Save Password</string>
     <string name="empty_title">No Merchants Found</string>
     <string name="empty_details">Sorry there are no rewards/deals around you. Try expanding your search radius in filters at the
+        top right.</string>
+    <string name="empty_details_more">Sorry there are no more rewards/deals around you. Try expanding your search radius in
+        filters at the
         top right.</string>
     <string name="no_coupins">There are no more coupins.</string>
     <string name="error_coupins">An error occurred while getting your coupins, please try again or check your network.</string>

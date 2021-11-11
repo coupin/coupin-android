@@ -29,6 +29,8 @@ import org.jetbrains.anko.toast
 class CheckoutFragment : Fragment(), View.OnClickListener {
 
     private val checkoutViewModel : GetCoupinViewModel by activityViewModels()
+    private var createdCoupin = false
+    private lateinit var savedResponse : GetCoupinResponseModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_checkout, container, false)
@@ -166,46 +168,53 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     }
 
     private fun getCoupin(paymentData: PaymentData){
-        val addressId = checkoutViewModel.addressIdMLD.value ?: ""
-        val isDeliverable = checkoutViewModel.isDeliverableMLD.value ?: false
-        val merchantId = checkoutViewModel.merchantLD.value?.id ?: ""
-        val expiryDate = checkoutViewModel.expiryDateMLD.value ?: ""
+        if (!createdCoupin) {
+            val addressId = checkoutViewModel.addressIdMLD.value ?: ""
+            val isDeliverable = checkoutViewModel.isDeliverableMLD.value ?: false
+            val merchantId = checkoutViewModel.merchantLD.value?.id ?: ""
+            val expiryDate = checkoutViewModel.expiryDateMLD.value ?: ""
 
-        val rewards = checkoutViewModel.selectedCoupinsLD.value
-        val rewardsIdList = mutableListOf<String>()
+            val rewards = checkoutViewModel.selectedCoupinsLD.value
+            val rewardsIdList = mutableListOf<String>()
 
-        rewards?.let {
-            for(item in it){
-                for(i in 1..item.selectedQuantity){
-                    rewardsIdList.add(item.id)
+            rewards?.let {
+                for (item in it) {
+                    for (i in 1..item.selectedQuantity) {
+                        rewardsIdList.add(item.id)
+                    }
                 }
             }
-        }
 
-        PreferenceManager.setContext(requireContext())
-        val token = PreferenceManager.getToken() ?: ""
+            PreferenceManager.setContext(requireContext())
+            val token = PreferenceManager.getToken() ?: ""
 
-        val getCoupinRequestModel = GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId)
+            val getCoupinRequestModel =
+                GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId)
 
-        checkoutViewModel.getCoupin(getCoupinRequestModel, token).observe(viewLifecycleOwner, {
-            it?.let {
-                when(it.status){
-                    Resource.Status.SUCCESS -> {
-                        it.data?.let {
-                            checkoutViewModel.coupinResponseModelMLD.value = it
-                            payWithFlutterwave(paymentData, it)
+            checkoutViewModel.getCoupin(getCoupinRequestModel, token).observe(viewLifecycleOwner, {
+                it?.let {
+                    when (it.status) {
+                        Resource.Status.SUCCESS -> {
+                            it.data?.let {
+                                checkoutViewModel.coupinResponseModelMLD.value = it
+                                savedResponse = it
+                                payWithFlutterwave(paymentData, it)
+                                createdCoupin = true
+                            }
+                        }
+                        Resource.Status.ERROR -> {
+                            requireActivity().toast("Error initialising payment. Please try again later.")
+                            setPaymentBtn(false)
+                        }
+                        Resource.Status.LOADING -> {
+                            setPaymentBtn(true)
                         }
                     }
-                    Resource.Status.ERROR -> {
-                        requireActivity().toast("Error initialising payment. Please try again later.")
-                        setPaymentBtn(false)
-                    }
-                    Resource.Status.LOADING -> {
-                        setPaymentBtn(true)
-                    }
                 }
-            }
-        })
+            })
+        } else {
+            payWithFlutterwave(paymentData, savedResponse);
+        }
     }
 
     private fun setPaymentBtn(isLoading : Boolean){

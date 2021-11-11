@@ -164,7 +164,7 @@ public class InterestsActivity extends AppCompatActivity {
      * Persist user interest info
      */
     public void sendInterestInfo() {
-        Call<User> request = apiCalls.saveInterestInfo(new InterestsRequest(selected.toString()));
+        Call<User> request = apiCalls.saveInterestInfo(new InterestsRequest(selected));
         request.enqueue(new Callback<User>() {
             @EverythingIsNonNull
             @Override
