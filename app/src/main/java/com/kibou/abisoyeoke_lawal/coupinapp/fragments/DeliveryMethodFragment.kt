@@ -45,12 +45,12 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
                     R.id.pickup_delivery_method_layout -> {
                         pickup_delivery_method_layout.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_selected_delivery_method)
                         gokada_delivery_method_layout.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_unselected_delivery_method)
-                        gokada_logo_text.setImageResource(R.drawable.gokada_grey)
+                        gokada_logo_text.setImageResource(R.drawable.kwik_banner_gray)
                     }
                     R.id.gokada_delivery_method_layout -> {
                         pickup_delivery_method_layout.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_unselected_delivery_method)
                         gokada_delivery_method_layout.background = ContextCompat.getDrawable(requireContext(), R.drawable.background_selected_delivery_method)
-                        gokada_logo_text.setImageResource(R.drawable.gokada_green)
+                        gokada_logo_text.setImageResource(R.drawable.kwik_banner)
                     }
                 }
             }

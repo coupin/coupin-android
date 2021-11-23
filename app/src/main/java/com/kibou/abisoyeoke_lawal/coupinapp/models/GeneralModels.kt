@@ -69,6 +69,8 @@ data class GokadaOrderEstimateRequestBody(val api_key : String, val pickup_addre
 data class DropOff(val address: String, val latitude: String, val longitude: String)
 data class GokadaOrderEstimateResponse(val error : String?, val message : String?, val status : Int?, val distance : Double?,
                                  val time : Int?, val fare : Int?)
+data class KwikOrderEstimateResponse(val data : KwikData?)
+data class KwikData(val estimatedCost : Float?, val deliveryTime : String?)
 
 
 

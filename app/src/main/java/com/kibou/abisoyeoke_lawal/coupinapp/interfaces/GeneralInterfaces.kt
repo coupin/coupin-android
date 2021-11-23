@@ -43,6 +43,13 @@ interface CoupinServices{
     @POST("coupin")
     fun getCoupin(@Body requestBody : GetCoupinRequestModel, @Header("Authorization") auth : String)
     : Call<GetCoupinResponseModel>
+
+    @GET("kwik/cost-estimate")
+    fun getKwikPriceEstimate(
+        @Query("merchantId") merchantId : String,
+        @Query("addressId") addressId : String,
+        @Query("totalCost") totalCost : Float) :
+            Call<KwikOrderEstimateResponse>
 }
 
 interface GokadaPriceEstimateService{

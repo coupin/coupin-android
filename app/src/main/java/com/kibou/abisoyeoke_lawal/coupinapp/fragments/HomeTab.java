@@ -288,6 +288,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public void onMapReady(@NonNull GoogleMap googleMap) {
                 mGoogleMap = googleMap;
 
+
                 if (!NetworkGPSUtils.isConnected(requireActivity())) {
                     networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                             getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
@@ -303,6 +304,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireActivity(), R.raw.style_json));
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mGoogleMap.getUiSettings().setCompassEnabled(false);
+                mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
                 if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions

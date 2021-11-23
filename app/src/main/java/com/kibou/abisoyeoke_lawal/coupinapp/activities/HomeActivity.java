@@ -72,12 +72,14 @@ public class HomeActivity extends AppCompatActivity {
             exiting = false;
             switch (item.getItemId()) {
                 case R.id.nav_home:
-                    if (tag != "home") {
-                        selectedFrag = homeTab;
-                        tag = "home";
-                    } else {
-                        selectedFrag = HomeTab.newInstance();
-                    }
+//                    if (tag != "home") {
+//                        selectedFrag = homeTab;
+//                        tag = "home";
+//                    } else {
+//                        selectedFrag = HomeTab.newInstance();
+//                    }
+                    selectedFrag = HomeTab.newInstance();
+                    tag = "home";
                     break;
                 case R.id.nav_reward:
                     selectedFrag = rewardsTab;
@@ -159,7 +161,7 @@ public class HomeActivity extends AppCompatActivity {
         if (!tag.equals("home")) {
             bottomNavigationView.setCurrentItem(0);
             fm = getSupportFragmentManager();
-            ft = fm.beginTransaction().replace(R.id.tab_fragment_container, homeTab);
+            ft = fm.beginTransaction().replace(R.id.tab_fragment_container, HomeTab.newInstance());
             ft.commit();
         } else if (exiting == false) {
             exiting = true;

@@ -9,10 +9,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.di.CoupinRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.di.GokadaRetrofit
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.CoupinServices
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.GokadaPriceEstimateService
-import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GetAddressesResponseModel
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateRequestBody
-import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateResponse
+import com.kibou.abisoyeoke_lawal.coupinapp.models.*
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.NetworkCall
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -43,5 +40,11 @@ class DeliveryViewModel @Inject constructor(application: Application,@CoupinRetr
     fun getDeliveryEstimate(gokadaOrderEstimateRequestBody : GokadaOrderEstimateRequestBody): LiveData<Resource<GokadaOrderEstimateResponse>> {
         val gokadaDeliveryService = gokadaRetrofit.create(GokadaPriceEstimateService::class.java)
         return NetworkCall<GokadaOrderEstimateResponse>().makeCall(gokadaDeliveryService.getPriceEstimate(gokadaOrderEstimateRequestBody))
+    }
+
+    fun getKwikDeliveryEstimate(merchantId : String, addressId: String, totalCost: Float):
+            LiveData<Resource<KwikOrderEstimateResponse>> {
+        val kwikServices = coupinRetrofit.create(CoupinServices::class.java)
+        return NetworkCall<KwikOrderEstimateResponse>().makeCall(kwikServices.getKwikPriceEstimate(merchantId, addressId, totalCost))
     }
 }
