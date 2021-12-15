@@ -127,6 +127,7 @@ public class HomeActivity extends AppCompatActivity {
 
             String newToken = task.getResult();
             String oldToken = PreferenceManager.getNotificationToken();
+
             if (!newToken.equals(oldToken) && !newToken.isEmpty()) {
                 setNotificationToken(newToken);
             }

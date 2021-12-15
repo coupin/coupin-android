@@ -29,6 +29,9 @@ import com.google.android.play.core.install.model.AppUpdateType;
 import com.google.android.play.core.install.model.InstallStatus;
 import com.google.android.play.core.install.model.UpdateAvailability;
 import com.google.android.play.core.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
@@ -77,6 +80,13 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         setContentView(R.layout.activity_splash_screen);
         ButterKnife.bind(this);
         AppEventsLogger.activateApp(getApplication());
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId(BuildConfig.FIREBASE_APP_ID)
+                .setProjectId(BuildConfig.FIREBASE_P_ID)
+                .setApiKey(BuildConfig.FIREBASE_API_KEY)
+                .build();
+        FirebaseApp.initializeApp(this, options, BuildConfig.FIREBASE_NAME);
 
         Glide.with(this)
             .load(R.raw.loading_gif)

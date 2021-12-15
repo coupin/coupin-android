@@ -54,11 +54,11 @@ public class ApiClient {
         if (retrofit == null || update) {
             String token = PreferenceManager.getToken();
             HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-            if (BuildConfig.BUILD_TYPE.equals("debug")) {
+//            if (BuildConfig.BUILD_TYPE.equals("debug")) {
                 httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-            } else {
-                httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-            }
+//            } else {
+//                httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+//            }
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(chain -> {
                         Request.Builder builder = chain.request().newBuilder();

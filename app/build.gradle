@@ -38,7 +38,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable = false
+            debuggable = true
             manifestPlaceholders = [
                     paytackPublicKey:"pk_live_eb8f2a5cd1b9a54f3144c59f8fff2afd0ecb1c97",
                     sentryEnvironment:"Production",
@@ -54,6 +54,10 @@ android {
             it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY", "")
             it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY", "")
             it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY", "")
+            it.buildConfigField 'String', 'FIREBASE_API_KEY', properties.getProperty("FIREBASE_API_KEY", "")
+            it.buildConfigField 'String', 'FIREBASE_APP_ID', properties.getProperty("FIREBASE_APP_ID", "")
+            it.buildConfigField 'String', 'FIREBASE_P_ID', properties.getProperty("FIREBASE_P_ID", "")
+            it.buildConfigField 'String', 'FIREBASE_NAME', properties.getProperty("FIREBASE_NAME", "")
         }
         staging {
             minifyEnabled false
@@ -75,6 +79,10 @@ android {
             it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY_DEV", "")
             it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY_DEV", "")
             it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY_DEV", "")
+            it.buildConfigField 'String', 'FIREBASE_API_KEY', properties.getProperty("FIREBASE_API_KEY", "")
+            it.buildConfigField 'String', 'FIREBASE_APP_ID', properties.getProperty("FIREBASE_APP_ID", "")
+            it.buildConfigField 'String', 'FIREBASE_P_ID', properties.getProperty("FIREBASE_P_ID", "")
+            it.buildConfigField 'String', 'FIREBASE_NAME', properties.getProperty("FIREBASE_NAME", "")
         }
         debug {
             Properties properties = new Properties()
@@ -85,6 +93,10 @@ android {
             it.buildConfigField 'String', 'GOKADA_DELIVERY_API_KEY', properties.getProperty("GOKADA_DELIVERY_API_KEY_DEV", "")
             it.buildConfigField 'String', 'COUPIN_FLUTTERWAVE_PUBLIC_KEY', properties.getProperty("COUPIN_FLUTTERWAVE_PUBLIC_KEY_DEV", "")
             it.buildConfigField 'String', 'COUPIN_ENCRYPTION_KEY', properties.getProperty("COUPIN_ENCRYPTION_KEY_DEV", "")
+            it.buildConfigField 'String', 'FIREBASE_API_KEY', properties.getProperty("FIREBASE_API_KEY", "")
+            it.buildConfigField 'String', 'FIREBASE_APP_ID', properties.getProperty("FIREBASE_APP_ID", "")
+            it.buildConfigField 'String', 'FIREBASE_P_ID', properties.getProperty("FIREBASE_P_ID", "")
+            it.buildConfigField 'String', 'FIREBASE_NAME', properties.getProperty("FIREBASE_NAME", "")
         }
     }
     kotlinOptions {
