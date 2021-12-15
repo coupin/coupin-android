@@ -210,6 +210,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         if(isCart){
             fullRemove.setVisibility(View.GONE);
             fullPin.setVisibility(View.VISIBLE);
+            fullPin.setText("Update Reward");
         }else if (reward.isSelected) {
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);

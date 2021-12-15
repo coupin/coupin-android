@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.google.android.play.core.review.ReviewInfo;
@@ -25,6 +26,7 @@ import com.google.android.play.core.tasks.Task;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
+import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
@@ -32,6 +34,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.SelectedReward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
@@ -42,6 +45,10 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class CoupinActivity extends AppCompatActivity implements MyOnClick, View.OnClickListener {
     @BindView(R.id.navigate)
@@ -66,6 +73,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public RecyclerView listView;
     @BindView(R.id.list_toolbar)
     public RelativeLayout listToolbar;
+    @BindView(R.id.label_code)
+    public TextView labelCode;
     @BindView(R.id.list_code)
     public TextView listCode;
     @BindView(R.id.list_count)
@@ -128,24 +137,25 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         ArrayList<RewardsListItemV2.RewardWrapper> res = coupin.rewards;
         String status = coupin.status;
+        listCode.setText("Please wait...");
 
         if (status.equals("awaiting_payment")){
             if (activityFromPurchase){
-                listCode.setText("View Coupins");
+                listCode.setText("View Code");
                 listCode.setOnClickListener(v -> {
-                    Intent intent = new Intent(CoupinActivity.this, HomeActivity.class);
-                    intent.putExtra("fromCoupin", true);
-                    startActivity(intent);
-                    finishAffinity();
+                    labelCode.setVisibility(View.GONE);
+                    listCode.setText("Please wait...");
+                    checkForCoupinUpdate();
                 });
             } else {
                 listCode.setText("Awaiting Payment");
             }
         } else {
+            labelCode.setVisibility(View.VISIBLE);
             listCode.setText(coupin.shortCode);
         }
 
-        int total = coupin.rewards != null ? res.size() : coupin.rewardsArray.size();
+        int total = coupin.rewardsArray == null ? res.size() : coupin.rewardsArray.size();
         String totalString = "ACTIVE REWARDS - " + total;
         listCount.setText(totalString);
 
@@ -173,10 +183,50 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             Intent intent = new Intent(this, MerchantActivity.class);
             intent.putExtra("merchant", TypeUtils.objectToString(merchantV2));
             intent.putExtra("selected", TypeUtils.objectToString(selected));
+            intent.putExtra("coupinId", coupin.id);
             startActivity(intent);
 
         });
         reviewApplication();
+    }
+
+    /**
+     * Check for Code
+     */
+    private void checkForCoupinUpdate() {
+        activateHolder.setEnabled(false);
+        Call<RewardsListItemV2> call = apiCalls.getCoupin(coupin.id);
+        call.enqueue(new Callback<RewardsListItemV2>() {
+            @EverythingIsNonNull
+            @Override
+            public void onResponse(Call<RewardsListItemV2> call, Response<RewardsListItemV2> response) {
+                if (response.isSuccessful()) {
+                    RewardsListItemV2 item = response.body();
+                    assert item != null;
+                    if (item.shortCode != null && !item.status.equals("awaiting_payment")) {
+                        labelCode.setVisibility(View.VISIBLE);
+                        listCode.setText(item.shortCode);
+                    } else {
+                        listCode.setText("Awaiting Payment");
+                    }
+                } else {
+                    ApiError error = ApiClient.parseError(response);
+                    Toast.makeText(CoupinActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                    listCode.setText("View Code");
+                }
+
+                activateHolder.setEnabled(true);
+            }
+
+            @EverythingIsNonNull
+            @Override
+            public void onFailure(Call<RewardsListItemV2> call, Throwable t) {
+                t.printStackTrace();
+                listCode.setText("View Code");
+                activateHolder.setEnabled(true);
+                Toast.makeText(CoupinActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     private void reviewApplication(){

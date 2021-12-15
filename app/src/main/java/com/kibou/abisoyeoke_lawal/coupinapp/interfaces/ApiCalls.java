@@ -52,6 +52,9 @@ public interface ApiCalls {
     @POST("coupin")
     Call<BookingResponse> createCoupin(@Body CoupinRequest body);
 
+    @GET("coupin/{id}")
+    Call<RewardsListItemV2> getCoupin(@Path("id") String coupinId);
+
     @PUT("coupin/{id}/activate")
     Call<BookingResponse> activateCoupin(@Path("id") String merchantId);
 

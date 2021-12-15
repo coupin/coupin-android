@@ -2,6 +2,7 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
 import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.R
@@ -22,11 +23,19 @@ class GetCoupinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_coupin)
 
+        getCoupinId()
         getIntentRewards()
         setMerchant()
         setExpiryDate()
         setUpFragmentNavigation()
         setBlackList()
+    }
+
+    private fun getCoupinId(){
+        val coupinIdString = intent.getStringExtra(coupinIdText)
+        coupinIdString?.let{
+            getCoupinVM.coupinIdMLD.value = it
+        }
     }
 
     private fun getIntentRewards(){

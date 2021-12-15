@@ -72,15 +72,17 @@ class DeliveryMethodFragment : Fragment(), View.OnClickListener {
                 deliveryMethodVM.selectedDeliveryMethod.value = R.id.pickup_delivery_method_layout
             }
             gokada_delivery_method_layout.id, delivery_btn.id -> {
-                val deliveryStatuses = deliveryMethodVM.selectedCoupinsLD.value?.map { it.isDelivery }
-                deliveryStatuses?.let {
-                    if(!deliveryStatuses.contains(true)){
-                        deliveryMethodVM.selectedDeliveryMethod.value = R.id.pickup_delivery_method_layout
-                        requireContext().toast("No item in your reward(s) is deliverable")
-                    }else {
-                        deliveryMethodVM.selectedDeliveryMethod.value = R.id.gokada_delivery_method_layout
-                    }
-                }
+                //TODO: Put back
+//                val deliveryStatuses = deliveryMethodVM.selectedCoupinsLD.value?.map { it.isDelivery }
+//                deliveryStatuses?.let {
+//                    if(!deliveryStatuses.contains(true)){
+//                        deliveryMethodVM.selectedDeliveryMethod.value = R.id.pickup_delivery_method_layout
+//                        requireContext().toast("No item in your reward(s) is deliverable")
+//                    }else {
+//                        deliveryMethodVM.selectedDeliveryMethod.value = R.id.gokada_delivery_method_layout
+//                    }
+//                }
+                requireActivity().toast("We'll be launching Kwik Delivery soon. Just preparing everything specially for you!")
             }
             proceed_btn.id -> proceedToNextPage()
             delivery_method_back.id -> requireActivity().onBackPressed()

@@ -39,6 +39,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         setUpOnClickListeners()
         fillInUserDetails()
+
     }
     
     private fun fillInUserDetails(){
@@ -173,6 +174,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             val isDeliverable = checkoutViewModel.isDeliverableMLD.value ?: false
             val merchantId = checkoutViewModel.merchantLD.value?.id ?: ""
             val expiryDate = checkoutViewModel.expiryDateMLD.value ?: ""
+            val coupinId = checkoutViewModel.coupinIdMLD.value ?: ""
 
             val rewards = checkoutViewModel.selectedCoupinsLD.value
             val rewardsIdList = mutableListOf<String>()
@@ -189,7 +191,7 @@ class CheckoutFragment : Fragment(), View.OnClickListener {
             val token = PreferenceManager.getToken() ?: ""
 
             val getCoupinRequestModel =
-                GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId)
+                GetCoupinRequestModel(false, rewardsIdList, addressId, isDeliverable, expiryDate, merchantId, coupinId)
 
             checkoutViewModel.getCoupin(getCoupinRequestModel, token).observe(viewLifecycleOwner, {
                 it?.let {

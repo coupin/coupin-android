@@ -79,7 +79,8 @@ data class KwikData(val estimatedCost : Float?, val deliveryTime : String?)
 /** GENERATE COUPIN **/
 data class GetCoupinResponseModel (val data : Data?)
 data class GetCoupinRequestModel(val saved : Boolean, val rewardId: List<String>, val deliveryAddress : String,
-                                 val isDeliverable : Boolean, val expiryDate : String, val merchantId : String)
+                                 val isDeliverable : Boolean, val expiryDate : String, val merchantId : String, val coupinId:
+                                 String)
 
 data class Data(val booking: Booking?, val reference: String?)
 

@@ -31,6 +31,7 @@ class GetCoupinViewModel @Inject constructor(application: Application, @CoupinRe
     val isDeliverableMLD = MutableLiveData(false)
     val addressIdMLD = MutableLiveData("")
     val expiryDateMLD = MutableLiveData<String>()
+    val coupinIdMLD = MutableLiveData<String>()
 
     val coupinResponseModelMLD = MutableLiveData<GetCoupinResponseModel>()
 

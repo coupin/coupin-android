@@ -121,7 +121,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
                             val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
                             findNavController().navigate(action)
                         }else {
-                            requireActivity().toast("Gokada delivery is unavailable at this time")
+                            requireActivity().toast("Kwik delivery is unavailable at this time")
                         }
                     }else{
                         requireActivity().toast("Select an address")

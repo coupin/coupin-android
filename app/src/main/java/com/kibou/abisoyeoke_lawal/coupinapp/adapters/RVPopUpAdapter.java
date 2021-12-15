@@ -7,6 +7,7 @@ import android.graphics.Paint;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -130,7 +131,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
             detailsDialog.setClickListener(new MyOnClick() {
                 @Override
-                public void onItemClick(int position1) { }
+                public void onItemClick(int position1) {}
 
                 @Override
                 public void onItemClick(int place, int quantity) {
@@ -150,7 +151,6 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                         reward.isSelected = true;
                         reward.selectedQuantity = quantity;
                         myOnSelect.onSelect(true, position, quantity);
-
                     } else {
                         Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
                         if(isDarkMode){
@@ -198,6 +198,10 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
     public void setBlacklist(Set<String> blacklist) {
         this.blacklist = blacklist;
+    }
+
+    public void setOnSelect(MyOnSelect myOnSelect) {
+        this.myOnSelect = myOnSelect;
     }
 
     @Override
