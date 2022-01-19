@@ -20,8 +20,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 101
-        versionName "1.1.10"
+        versionCode 104
+        versionName "1.2.0"
         manifestPlaceholders = [
                 paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
                 sentryEnvironment:"Development",
@@ -38,7 +38,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable = true
+            debuggable = false
             manifestPlaceholders = [
                     paytackPublicKey:"pk_live_eb8f2a5cd1b9a54f3144c59f8fff2afd0ecb1c97",
                     sentryEnvironment:"Production",

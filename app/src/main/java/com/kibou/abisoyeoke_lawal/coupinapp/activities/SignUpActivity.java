@@ -157,7 +157,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     nextIntent.putExtra("name", body.name);
                     showProgress(false);
                     startActivity(nextIntent);
-                    finish();
+                    finishAffinity();
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(SignUpActivity.this, error.message, Toast.LENGTH_LONG).show();
@@ -320,7 +320,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
         super.onBackPressed();
 
         startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
-        finish();
+        finishAffinity();
     }
 
     @Override

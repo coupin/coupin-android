@@ -33,9 +33,9 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
     public Button fillNDSave;
     @BindView(R.id.fil_nd_ent)
     public LinearLayout fillNDEnt;
-    @BindView(R.id.fil_nd_food)
-    public LinearLayout fillNDGroceries;
     @BindView(R.id.fil_groceries)
+    public LinearLayout fillNDGroceries;
+    @BindView(R.id.fil_nd_food)
     public LinearLayout fillNDFood;
     @BindView(R.id.fil_nd_gadget)
     public LinearLayout fillNDGadget;

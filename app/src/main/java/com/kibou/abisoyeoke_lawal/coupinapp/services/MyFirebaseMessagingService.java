@@ -12,9 +12,11 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.GenericResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.internal.EverythingIsNonNull;
 
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private ApiCalls apiCalls;
@@ -34,6 +36,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     private void sendToServer(final String token) {
         Call<GenericResponse> request = apiCalls.setNotificationToken(PreferenceManager.getUserId(), new TokenRequest(token));
         request.enqueue(new Callback<GenericResponse>() {
+            @EverythingIsNonNull
             @Override
             public void onResponse(Call<GenericResponse> call, Response<GenericResponse> response) {
                 if (!response.isSuccessful()) {
@@ -46,14 +49,16 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 }
             }
 
+            @EverythingIsNonNull
             @Override
             public void onFailure(Call<GenericResponse> call, Throwable t) {
                 t.printStackTrace();
-                Toast.makeText(
-                        MyFirebaseMessagingService.this,
-                        "Failed to update notification id.",
-                        Toast.LENGTH_SHORT
-                ).show();
+                Sentry.captureException(t);
+//                Toast.makeText(
+//                        MyFirebaseMessagingService.this,
+//                        "Failed to update notification id.",
+//                        Toast.LENGTH_SHORT
+//                ).show();
             }
         });
     }

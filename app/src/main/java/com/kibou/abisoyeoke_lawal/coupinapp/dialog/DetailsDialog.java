@@ -20,6 +20,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
@@ -225,7 +226,11 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullDateStart.setText(simpleDateFormat.format(Objects.requireNonNull(TypeUtils.stringToDate(reward.startDate))));
 
         // Reusable
-        if (reward.multiple.status) {
+        if (reward.quantity == 0) {
+            quantityTextView.setText("Unavailable at the moment");
+            addBtn.setEnabled(false);
+            subtractBtn.setEnabled(false);
+        } else if (reward.multiple.status) {
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
             String quantityString = reward.quantity + " in stock";
@@ -238,7 +243,13 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         }
 
         // Set Quantity if the reward already has selected quantity
-        quantityEditText.setText(reward.selectedQuantity > 0 ? String.valueOf(reward.selectedQuantity) : "1");
+        if (reward.quantity == 0) {
+            quantityEditText.setText("0");
+        } else if (reward.selectedQuantity > 0) {
+            quantityEditText.setText(String.valueOf(reward.selectedQuantity));
+        } else {
+            quantityEditText.setText("1");
+        }
 
         // Self explanatory
         fullDelivery.setText(reward.isDelivery ? "YES" : "No");
@@ -313,10 +324,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                 showImageDialog(3);
                 break;
             case R.id.btn_pin:
-                String enteredQuantity = quantityEditText.getText().toString().trim();
-                if(isQuantityValid(enteredQuantity)){
-                    myOnClick.onItemClick(0, Integer.parseInt(enteredQuantity));
-                    dismiss();
+                if (reward.quantity == 0) {
+                    Toast.makeText(context, "This reward is currently unavailable.", Toast.LENGTH_SHORT).show();
+                } else {
+                    String enteredQuantity = quantityEditText.getText().toString().trim();
+                    if (isQuantityValid(enteredQuantity)) {
+                        myOnClick.onItemClick(0, Integer.parseInt(enteredQuantity));
+                        dismiss();
+                    }
                 }
                 break;
             case R.id.btn_remove:

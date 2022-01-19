@@ -192,7 +192,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     PreferenceManager.setAuthToken(response.body().token);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                    finish();
+                    finishAffinity();
                 } else {
                     showProgress(false);
                     ApiError error = ApiClient.parseError(response);
@@ -228,7 +228,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     PreferenceManager.setAuthToken(response.body().token);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                    finish();
+                    finishAffinity();
                 } else {
                     showProgress(false);
                     ApiError error = ApiClient.parseError(response);
@@ -497,7 +497,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         super.onBackPressed();
 
         startActivity(new Intent(LoginActivity.this, LandingActivity.class));
-        finish();
+        finishAffinity();
     }
 }
 

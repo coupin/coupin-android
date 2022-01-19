@@ -17,10 +17,18 @@ public class RewardsListItemV2 implements Serializable {
     public boolean isActive;
     @SerializedName("visited")
     public boolean visited;
+    @SerializedName("isDeliverable")
+    public boolean isDeliverable;
     @SerializedName("useNow")
     public boolean useNow;
     @SerializedName("createdAt")
     public String createdAt;
+    @SerializedName("deliveryAddressId")
+    public String deliveryAddressId;
+    @SerializedName("deliveryId")
+    public String deliveryId;
+    @SerializedName("deliveryStatus")
+    public String deliveryStatus;
     @SerializedName("expiryDate")
     public String expiryDate;
     @SerializedName("_id")

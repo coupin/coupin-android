@@ -611,7 +611,9 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
 
         MerchantRequest body = new MerchantRequest();
+        if (latitude != null)
         body.latitude = latitude.doubleValue();
+        if (longitude != null)
         body.longitude = longitude.doubleValue();
         body.distance = distance;
         body.categories = categories.toString();

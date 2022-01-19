@@ -81,13 +81,6 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         ButterKnife.bind(this);
         AppEventsLogger.activateApp(getApplication());
 
-        FirebaseOptions options = new FirebaseOptions.Builder()
-                .setApplicationId(BuildConfig.FIREBASE_APP_ID)
-                .setProjectId(BuildConfig.FIREBASE_P_ID)
-                .setApiKey(BuildConfig.FIREBASE_API_KEY)
-                .build();
-        FirebaseApp.initializeApp(this, options, BuildConfig.FIREBASE_NAME);
-
         Glide.with(this)
             .load(R.raw.loading_gif)
             .apply(RequestOptions.diskCacheStrategyOf(DiskCacheStrategy.AUTOMATIC))
@@ -108,13 +101,17 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
             } else if (state.installStatus() == InstallStatus.INSTALLED) {
                 removeInstallStateUpdateListener();
             } else {
-                Toast.makeText(getApplicationContext(), "InstallStateUpdatedListener: state: " + state.installStatus(), Toast.LENGTH_LONG).show();
+                Log.v("Instal State", "InstallStateUpdatedListener: state: " + state.installStatus());
             }
         };
         appUpdateManager.registerListener(installStateUpdatedListener);
 
-        // TODO: Use GCM notification instead
-        startService(new Intent(getApplicationContext(), UpdateService.class));
+        // TODO: Use GCM notification instead for version updates
+        try {
+            startService(new Intent(getApplicationContext(), UpdateService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (!PermissionsMngr.permissionsCheck(permissions, this)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);

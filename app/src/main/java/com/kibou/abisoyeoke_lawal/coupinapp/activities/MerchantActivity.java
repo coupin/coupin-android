@@ -200,7 +200,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 for (SelectedReward selectedReward: selectedList) {
                     int counter = 0;
                     while(counter < selectedReward.quantity) {
-                        if (!tempBlackList.contains(selectedReward.rewardId)) {
+                        if (!tempBlackList.contains(selectedReward.rewardId) && selectedReward.quantity > 0) {
                             selected.add(selectedReward.rewardId);
                             counter++;
                         }
@@ -347,7 +347,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
                     assert response.body() != null;
                     for (Reward reward : response.body()) {
-                        if (!selected.isEmpty() && selected.contains(reward.id)) {
+                        if (!selected.isEmpty() && selected.contains(reward.id) && reward.quantity > 0) {
                             reward.selectedQuantity = Collections.frequency(selected, reward.id);
                             if (reward.selectedQuantity > 0) {
                                 reward.isSelected = true;
@@ -357,6 +357,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                                 reward.selectedQuantity = reward.quantity;
                             }
                             selectedRewards.add(reward);
+                        }
+
+                        if (reward.quantity > 0) {
+                            selected.removeAll(Collections.singleton(reward.id));
                         }
 
                         values.add(reward);
