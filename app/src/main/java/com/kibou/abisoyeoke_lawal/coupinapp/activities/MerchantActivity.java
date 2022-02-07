@@ -43,6 +43,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -182,7 +183,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             merchantId = item.id;
             Glide.with(this).load(item.banner.url).into(bannerHolder);
             merchantName.setText(item.title);
-            merchantAddress.setText(item.address);
+            merchantAddress.setText(StringUtils.capitalize(item.address));
             String merchantPhoneString = "Tel: " + item.mobile;
             merchantPhone.setText(merchantPhoneString);
             merchantRating.setRating(item.rating);
@@ -308,6 +309,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     }
                 }
 
+                @EverythingIsNonNull
                 @Override
                 public void onFailure(Call<BookingResponse> call, Throwable t) {
                     toggleClickableButtons(false);
@@ -327,8 +329,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     private void navigate() {
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
-        navigateIntent.setData(Uri.parse("geo:" + item.location.latitude + "," + item.location.latitude +
-            "?q=" + item.location.latitude + "," + item.location.latitude));
+        navigateIntent.setData(Uri.parse("geo:" + item.location.latitude + "," + item.location.longitude +
+            "?q=" + item.location.latitude + "," + item.location.longitude));
         startActivity(navigateIntent);
     }
 

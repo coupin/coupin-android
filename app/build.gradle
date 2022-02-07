@@ -20,8 +20,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 104
-        versionName "1.2.0"
+        versionCode 106
+        versionName "1.2.2"
         manifestPlaceholders = [
                 paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
                 sentryEnvironment:"Development",

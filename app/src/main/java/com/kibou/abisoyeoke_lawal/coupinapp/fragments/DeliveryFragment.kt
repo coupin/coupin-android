@@ -176,7 +176,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
                             val deliveryDateTime = DateTimeUtils.convertZString(it.data?.deliveryTime)
                             val diff: Long = deliveryDateTime.time - Calendar.getInstance().time.time;
                             val minutes = (diff / 1000) / 60
-                            delivery_time.text = getString(R.string.estimated_time_of_delivery) + minutes + "mins"
+                            delivery_time.text = getString(R.string.estimated_time_of_delivery) + " " + minutes + "mins"
 //                            delivery_time.text = getString(R.string.estimated_time_of_delivery) + " " + it.time + "mins"
 
                             val totalCostString = setAmountFormat(deliveryCost + rewardsCost)

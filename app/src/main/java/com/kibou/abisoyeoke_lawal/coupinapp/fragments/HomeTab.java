@@ -359,7 +359,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 infoButton = (TextView) infoWindow.findViewById(R.id.info_button);
 
                                 title.setText(merchant.name);
-                                address.setText(merchant.address);
+                                address.setText(StringUtils.capitalize(merchant.address));
 
                                 assert merchant.logo != null;
                                 if (merchant.logo != null && merchant.logo.url != null) {

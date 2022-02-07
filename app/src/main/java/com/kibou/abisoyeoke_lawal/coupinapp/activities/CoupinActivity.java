@@ -107,7 +107,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         InnerItem.MerchantInfo merchantInfo = coupin.merchant.merchantInfo;
         merchantName.setText(merchantInfo.companyName);
-        merchantAddress.setText(merchantInfo.address);
+        merchantAddress.setText(StringUtils.capitalize(merchantInfo.address));
         if (coupin.visited) coupinVisited.setVisibility(View.VISIBLE);
         if (coupin.favourite) coupinFav.setVisibility(View.VISIBLE);
         if (coupin.favourite && coupin.visited) divider.setVisibility(View.VISIBLE);

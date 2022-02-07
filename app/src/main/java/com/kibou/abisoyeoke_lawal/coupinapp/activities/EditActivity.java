@@ -290,7 +290,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         userV2.sex = gender;
         userV2.ageRange = ageRange;
 
-        Call<User> request = apiCalls.saveCurrentUserInfo(PreferenceManager.getUserId(), userV2);
+        Call<User> request = apiCalls.updateCurrentUserInfo(PreferenceManager.getUserId(), userV2);
 
         request.enqueue(new Callback<User>() {
             @EverythingIsNonNull
