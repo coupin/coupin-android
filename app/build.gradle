@@ -20,8 +20,8 @@ android {
         applicationId "com.kibou.abisoyeoke_lawal.coupinapp"
         minSdkVersion 21
         targetSdkVersion 30
-        versionCode 106
-        versionName "1.2.2"
+        versionCode 107
+        versionName "1.2.3"
         manifestPlaceholders = [
                 paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
                 sentryEnvironment:"Development",
@@ -38,13 +38,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable = false
+            debuggable = true
             manifestPlaceholders = [
                     paytackPublicKey:"pk_live_eb8f2a5cd1b9a54f3144c59f8fff2afd0ecb1c97",
                     sentryEnvironment:"Production",
                     sentryDebug:false,
                     sentryDebugLevel:"debug"
             ]
+//            resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
             resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1/")
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {

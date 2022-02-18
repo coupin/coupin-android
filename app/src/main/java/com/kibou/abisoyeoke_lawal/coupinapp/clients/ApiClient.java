@@ -1,6 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.clients;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,19 +33,21 @@ public class ApiClient {
     }
 
     public static ApiError parseError(retrofit2.Response<?> response) {
-        ApiError error;
+        ApiError error = new ApiError();
 
         try {
             Converter<ResponseBody, ApiError> converter = retrofit.responseBodyConverter(
                     ApiError.class, new Annotation[0]
             );
 
-            error = converter.convert(response.errorBody());
-            assert error != null;
             error.statusCode = response.code();
+            if (response.errorBody() != null) {
+                error = converter.convert(response.errorBody());
+                assert error != null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ApiError();
+            return error;
         }
 
         return error;
@@ -54,11 +57,11 @@ public class ApiClient {
         if (retrofit == null || update) {
             String token = PreferenceManager.getToken();
             HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
-//            if (BuildConfig.BUILD_TYPE.equals("debug")) {
+            if (BuildConfig.BUILD_TYPE.equals("debug")) {
                 httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
-//            } else {
-//                httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
-//            }
+            } else {
+                httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
+            }
             OkHttpClient client = new OkHttpClient.Builder()
                     .addInterceptor(chain -> {
                         Request.Builder builder = chain.request().newBuilder();
@@ -73,6 +76,7 @@ public class ApiClient {
                     .build();
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                    .setLenient()
                     .create();
 
             retrofit = new Retrofit.Builder()
