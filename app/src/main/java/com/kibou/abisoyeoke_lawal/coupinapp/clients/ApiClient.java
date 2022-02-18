@@ -34,15 +34,16 @@ public class ApiClient {
 
     public static ApiError parseError(retrofit2.Response<?> response) {
         ApiError error = new ApiError();
+        error.statusCode = response.code();
 
         try {
             Converter<ResponseBody, ApiError> converter = retrofit.responseBodyConverter(
                     ApiError.class, new Annotation[0]
             );
 
-            error.statusCode = response.code();
             if (response.errorBody() != null) {
-                error = converter.convert(response.errorBody());
+                ApiError convertedError = converter.convert(response.errorBody());
+                error.message = convertedError.message;
                 assert error != null;
             }
         } catch (Exception e) {
