@@ -652,8 +652,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         disableLoadMore = response.body().size() < 5;
 
                         if (disableLoadMore) {
-                            Toast.makeText(getContext(), getString(R.string.empty_more_details),
-                                    Toast.LENGTH_SHORT).show();
+                            if (isVisible()) {
+                                Toast.makeText(getContext(), getString(R.string.empty_more_details),
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         String spotsText = iconsListV2.size() - 1 + " Rewards ";

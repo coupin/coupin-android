@@ -28,8 +28,8 @@ android {
                 sentryDebug:true,
                 sentryDebugLevel:"error"
         ]
-        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
-//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
+//        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
+        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }
@@ -38,14 +38,14 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-            debuggable = true
+            debuggable = false
             manifestPlaceholders = [
                     paytackPublicKey:"pk_live_eb8f2a5cd1b9a54f3144c59f8fff2afd0ecb1c97",
                     sentryEnvironment:"Production",
                     sentryDebug:false,
                     sentryDebugLevel:"debug"
             ]
-//            resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
+
             resValue("string", "base_url", "https://coupin-pro.herokuapp.com/api/v1/")
             Properties properties = new Properties()
             if (rootProject.file("local.properties").exists()) {

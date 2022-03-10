@@ -123,6 +123,7 @@ public class UseNowFragment extends Fragment implements MyOnClick {
                             Toast.makeText(getContext(), error.message, Toast.LENGTH_SHORT).show();
                         }
 
+                        isLoading = false;
                         if (page > 0) loading(5);
                     }
                 }
