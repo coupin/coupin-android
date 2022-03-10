@@ -33,6 +33,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public Context context;
     public List<RewardsListItemV2> rewardListItems;
 
+    private final String STATUS_AWAITING_PAYMENT = "awaiting_payment";
     static public MyOnClick myOnClick;
 
     @Override
@@ -70,12 +71,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             });
 
             String status = reward.status;
-
-            if(status.equals("awaiting_payment")){
+            if (status.equals("cancelled")) {
                 holder.code.setVisibility(View.GONE);
-                holder.status.setText("Awaiting Payment");
-            }
-            else {
+                holder.status.setText(context.getString(R.string.cancelled));
+            } else if(status.equals(STATUS_AWAITING_PAYMENT)){
+                holder.code.setVisibility(View.GONE);
+                holder.status.setText(context.getString(R.string.awaiting_payment));
+            } else {
                 holder.code.setVisibility(View.VISIBLE);
                 holder.status.setText("Payment Confirmed");
             }

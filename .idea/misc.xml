@@ -7,8 +7,12 @@
         <entry key="app/src/main/res/drawable-hdpi/default_indicator.xml" value="0.26216216216216215" />
         <entry key="app/src/main/res/drawable-hdpi/onboarding_indicator_selector.xml" value="0.26216216216216215" />
         <entry key="app/src/main/res/drawable-hdpi/selected_indicator.xml" value="0.26216216216216215" />
+        <entry key="app/src/main/res/drawable/background_rounded_strokes_only.xml" value="0.1705" />
         <entry key="app/src/main/res/drawable/green_btn_curved.xml" value="0.17777777777777778" />
         <entry key="app/src/main/res/drawable/green_round_edges.xml" value="0.17777777777777778" />
+        <entry key="app/src/main/res/drawable/round_edges_accept.xml" value="0.1" />
+        <entry key="app/src/main/res/drawable/round_edges_light_grey.xml" value="0.1705" />
+        <entry key="app/src/main/res/drawable/rounded_edges_mid_grey.xml" value="0.1705" />
         <entry key="app/src/main/res/layout/activity_hot.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/activity_interests.xml" value="0.26182432432432434" />
         <entry key="app/src/main/res/layout/activity_list.xml" value="0.2591973244147157" />
@@ -20,7 +24,11 @@
         <entry key="app/src/main/res/layout/cardview_hot.xml" value="0.2491638795986622" />
         <entry key="app/src/main/res/layout/cardview_review_deliverable.xml" value="0.335" />
         <entry key="app/src/main/res/layout/cardview_review_pickup.xml" value="0.335" />
+        <entry key="app/src/main/res/layout/cardview_reward.xml" value="0.1393110435663627" />
+        <entry key="app/src/main/res/layout/dialog_cancel_order.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/dialog_change_password.xml" value="0.25" />
         <entry key="app/src/main/res/layout/dialog_experience.xml" value="0.2591973244147157" />
+        <entry key="app/src/main/res/layout/dialog_filter.xml" value="0.335" />
         <entry key="app/src/main/res/layout/dialog_full_reward_details.xml" value="0.24722222222222223" />
         <entry key="app/src/main/res/layout/fragment_cart.xml" value="0.2516891891891892" />
         <entry key="app/src/main/res/layout/fragment_checkout.xml" value="0.2591973244147157" />
@@ -78,7 +86,7 @@
       </value>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">

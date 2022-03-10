@@ -217,6 +217,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapsInitializer.initialize(requireActivity().getApplicationContext());
     }
 
     @Override
@@ -256,10 +257,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         setCategories();
 
         // Error Dialog
-        networkErrorDialog = new NetworkErrorDialog(getActivity());
+        networkErrorDialog = new NetworkErrorDialog(requireActivity());
 
         // Filter Dialog
-        final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);
+        final FilterDialog filterDialog = new FilterDialog(requireActivity(), R.style.Filter_Dialog);
         filterDialog.setInterface(this);
         Window window = filterDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -682,6 +683,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                     if (page == 0) {
                         adapter.setIconList(iconsListV2);
                         adapter.notifyDataSetChanged();
+                        spots.setText("0 Rewards ");
                         showDialog(false);
                     } else {
                         isLoading = false;
@@ -690,7 +692,6 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
 
                     retrievingData = false;
-                    spots.setText("0 Rewards ");
 
 
                     if (error.statusCode == 404) {
@@ -943,6 +944,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             checkPermission();
         } catch (Exception e) {
             e.printStackTrace();
+            String message = e.getMessage() != null ? e.getMessage() : getString(R.string.error_general);
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }
 

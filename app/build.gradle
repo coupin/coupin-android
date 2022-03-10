@@ -28,8 +28,8 @@ android {
                 sentryDebug:true,
                 sentryDebugLevel:"error"
         ]
-//        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
-        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
+        resValue("string", "base_url", "http://10.0.2.2:5030/api/v1/")
+//        resValue("string", "base_url", "https://coupin-staging.herokuapp.com/api/v1/")
         testInstrumentationRunner 'androidx.test.runner.AndroidJUnitRunner'
         vectorDrawables.useSupportLibrary = true
     }

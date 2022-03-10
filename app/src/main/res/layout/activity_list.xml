@@ -96,7 +96,35 @@
             android:textSize="@dimen/medium_text"
             android:textStyle="normal"/>
 
+        <FrameLayout
+            android:background="@drawable/background_rounded_strokes_only"
+            android:id="@+id/text_payment_status_wrapper"
+            android:padding="@dimen/padding_sm_plus"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/margin_sm"
+            android:layout_marginEnd="@dimen/margin_sm_plus"
+            android:layout_marginStart="@dimen/margin_sm_plus"
+            android:layout_marginTop="@dimen/margin_sm"
+            android:layout_width="match_parent"
+            >
+
+            <TextView
+                android:background="@drawable/round_edges_mid_grey"
+                android:id="@+id/text_payment_status"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingBottom="@dimen/padding_sm"
+                android:paddingTop="@dimen/padding_sm"
+                android:text="@string/payment_processing"
+                android:textAllCaps="true"
+                android:textAlignment="center"
+                android:textColor="@color/grey2"
+                android:textStyle="bold"/>
+
+        </FrameLayout>
+
         <androidx.recyclerview.widget.RecyclerView
+            android:background="@android:color/transparent"
             android:id="@+id/list_view"
             android:layout_height="match_parent"
             android:layout_width="match_parent"
@@ -179,7 +207,8 @@
         android:layout_width="match_parent"
         android:orientation="horizontal"
         android:paddingBottom="@dimen/padding_code"
-        android:paddingTop="@dimen/padding_code">
+        android:paddingTop="@dimen/padding_code"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/label_code"
@@ -204,34 +233,69 @@
 
     <LinearLayout
         android:background="@color/colorAccent"
-        android:id="@+id/coupin_activate_holder"
+        android:id="@+id/coupin_activate_and_cancel_holder"
         android:gravity="center"
         android:layout_alignParentBottom="true"
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:paddingBottom="@dimen/padding_code"
-        android:paddingTop="@dimen/padding_code"
-        android:visibility="gone">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/coupin_get"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:background="@color/colorAccent"
+            android:id="@+id/coupin_activate_holder"
+            android:gravity="center"
             android:layout_height="wrap_content"
-            android:text="@string/get_coupin"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textSize="@dimen/xxlarge_text"
-            android:textStyle="bold"/>
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_code"
+            android:paddingTop="@dimen/padding_code"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/coupin_get"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/get_coupin"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/xlarge_text"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:background="@color/darkGrey2"
+            android:id="@+id/coupin_cancel_holder"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:paddingBottom="@dimen/padding_code"
+            android:paddingTop="@dimen/padding_code"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/coupin_cancel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/cancel_order"
+                android:textAllCaps="true"
+                android:textColor="@color/white"
+                android:textSize="@dimen/xlarge_text"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:background="@color/text_color_3"
         android:id="@+id/navigate"
+        android:contentDescription="@string/example_description"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp"
         android:layout_marginTop="155dp"
         android:layout_height="48dp"
         android:layout_width="48dp"

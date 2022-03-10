@@ -605,6 +605,7 @@
     <string name="delete_address_dialog_body">Are you sure you want to delete this address?</string>
     <string name="delete">delete</string>
     <string name="cancel">Cancel</string>
+    <string name="cancelled">Cancelled</string>
     <string name="make_payment">Make payment</string>
     <string name="_add_new_address">+ Add New Address</string>
     <string name="delivery_address">Delivery Address</string>
@@ -627,4 +628,11 @@
     <string name="empty_cart">Cart is empty</string>
     <string name="dash">--</string>
     <string name="default_notification_channel_id">com.appleap.coupinapp</string>
+    <string name="payment_processing">Processing Payment</string>
+    <string name="cancel_order">Cancel Order</string>
+    <string name="discard_order">Discard Order</string>
+    <string name="please_wait">Please wait…</string>
+    <string name="view_code">View Code</string>
+    <string name="awaiting_payment">Awaiting Payment</string>
+    <string name="prompt_cancel">All the rewards in this coupin will be lost.\nAre you sure you want to proceed?</string>
 </resources>

@@ -106,7 +106,7 @@ public class FilterNoDistDialog extends Dialog implements View.OnClickListener {
             case R.id.fil_nd_health:
                 toggleTag(fillNDHealth, "healthnbeauty");
                 break;
-            case R.id.fil_gadget:
+            case R.id.fil_groceries:
                 toggleTag(fillNDGroceries, "groceries");
                 break;
             case R.id.fil_nd_shopping:

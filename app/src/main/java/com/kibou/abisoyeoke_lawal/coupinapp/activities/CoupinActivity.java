@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.content.res.AppCompatResources;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -27,6 +28,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.dialog.CancelOrderDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
@@ -45,6 +47,7 @@ import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -67,6 +70,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public ImageView merchantBanner;
     @BindView(R.id.coupin_activate_holder)
     public LinearLayout activateHolder;
+    @BindView(R.id.coupin_cancel_holder)
+    public LinearLayout cancelHolder;
     @BindView(R.id.coupin_code_holder)
     public LinearLayout codeHolder;
     @BindView(R.id.list_view)
@@ -83,6 +88,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public TextView merchantName;
     @BindView(R.id.list_merchant_address)
     public TextView merchantAddress;
+    @BindView(R.id.text_payment_status)
+    public TextView textPaymentStatus;
     @BindView(R.id.coupin_vertical_divided)
     public View divider;
 
@@ -90,6 +97,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     private ArrayList<Reward> coupinRewards;
     private ArrayList<SelectedReward> selected = new ArrayList<>();
     private boolean activityFromPurchase;
+    private CancelOrderDialog cancelOrderDialog;
     private RewardsListItemV2 coupin;
     private RVCoupinAdapter rvAdapter;
     private final Set<String> tempBlackList = new HashSet<>();
@@ -102,6 +110,9 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
         coupin = (RewardsListItemV2) getIntent().getSerializableExtra("coupin");
+
+        assert coupin != null;
+        cancelOrderDialog = new CancelOrderDialog(this, coupin.id, this, apiCalls);
 
         activityFromPurchase = getIntent().getBooleanExtra("fromPurchase", false);
 
@@ -137,20 +148,27 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
 
         ArrayList<RewardsListItemV2.RewardWrapper> res = coupin.rewards;
         String status = coupin.status;
-        listCode.setText("Please wait...");
+        listCode.setText(getString(R.string.please_wait));
 
         if (status.equals("awaiting_payment")){
             if (activityFromPurchase){
-                listCode.setText("View Code");
+                listCode.setText(getString(R.string.view_code));
                 listCode.setOnClickListener(v -> {
                     labelCode.setVisibility(View.GONE);
-                    listCode.setText("Please wait...");
+                    listCode.setText(getString(R.string.please_wait));
                     checkForCoupinUpdate();
                 });
+                activateHolder.setVisibility(View.VISIBLE);
             } else {
-                listCode.setText("Awaiting Payment");
+                listCode.setText(getString(R.string.awaiting_payment));
+                cancelHolder.setVisibility(View.VISIBLE);
             }
+        } else if (status.equals("cancelled")) {
+            textPaymentStatus.setText(getString(R.string.cancelled));
+            hideAllBottomButtons();
         } else {
+            switchToPaidView();
+            codeHolder.setVisibility(View.VISIBLE);
             labelCode.setVisibility(View.VISIBLE);
             listCode.setText(coupin.shortCode);
         }
@@ -159,7 +177,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         String totalString = "ACTIVE REWARDS - " + total;
         listCount.setText(totalString);
 
-        if (coupin.rewards != null) {
+        if (coupin.rewards != null && coupin.rewards.size() > 0) {
             for (RewardsListItemV2.RewardWrapper item : coupin.rewards) {
                 Reward reward = item.reward;
                 reward.selectedQuantity = item.quantity;
@@ -187,6 +205,9 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             startActivity(intent);
 
         });
+
+        cancelHolder.setOnClickListener(v -> cancelOrderDialog.show());
+
         reviewApplication();
     }
 
@@ -207,12 +228,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
                         labelCode.setVisibility(View.VISIBLE);
                         listCode.setText(item.shortCode);
                     } else {
-                        listCode.setText("Awaiting Payment");
+                        listCode.setText(getString(R.string.awaiting_payment));
                     }
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(CoupinActivity.this, error.message, Toast.LENGTH_SHORT).show();
-                    listCode.setText("View Code");
+                    listCode.setText(getString(R.string.view_code));
                 }
 
                 activateHolder.setEnabled(true);
@@ -222,11 +243,17 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             @Override
             public void onFailure(Call<RewardsListItemV2> call, Throwable t) {
                 t.printStackTrace();
-                listCode.setText("View Code");
+                listCode.setText(getString(R.string.view_code));
                 activateHolder.setEnabled(true);
                 Toast.makeText(CoupinActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    private void hideAllBottomButtons() {
+        activateHolder.setVisibility(View.GONE);
+        cancelHolder.setVisibility(View.GONE);
+        codeHolder.setVisibility(View.GONE);
     }
 
     private void reviewApplication(){
@@ -255,7 +282,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     }
 
     @Override
-    public void onItemClick(int position) { }
+    public void onItemClick(int position) {
+        if (position == 0) {
+            textPaymentStatus.setText(getString(R.string.cancelled));
+            hideAllBottomButtons();
+        }
+    }
 
     @Override
     public void onItemClick(int position, int quantity) { }
@@ -283,6 +315,12 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         sendIntent.putExtra(Intent.EXTRA_TITLE, "Coupin Share!");
         sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
         startActivity(sendIntent);
+    }
+
+    private void switchToPaidView() {
+        textPaymentStatus.setText("Payment Confirmed");
+        textPaymentStatus.setTextColor(AppCompatResources.getColorStateList(this, android.R.color.white));
+        textPaymentStatus.setBackground(AppCompatResources.getDrawable(this, R.drawable.round_edges_accept));
     }
 
     @Override

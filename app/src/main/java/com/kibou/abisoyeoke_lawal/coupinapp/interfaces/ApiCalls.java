@@ -31,6 +31,7 @@ import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface ApiCalls {
+    // Auth Routes
     @POST("auth/forgot-password")
     Call<GenericResponse> requestPasswordChange(@Body PasswordChangeRequest request);
 
@@ -46,6 +47,8 @@ public interface ApiCalls {
     @POST("auth/signin/c/social")
     Call<AuthResponse> signInSocial(@Body SignInRequest request);
 
+
+    // Coupin Routes
     @GET("coupin")
     Call<ArrayList<RewardsListItemV2>> getCoupins(@Query("saved") boolean saved, @Query("page") int page);
 
@@ -56,8 +59,13 @@ public interface ApiCalls {
     Call<RewardsListItemV2> getCoupin(@Path("id") String coupinId);
 
     @PUT("coupin/{id}/activate")
-    Call<BookingResponse> activateCoupin(@Path("id") String merchantId);
+    Call<BookingResponse> activateCoupin(@Path("id") String coupinId);
 
+    @POST("coupin/{id}/cancel")
+    Call<BookingResponse> cancelCoupin(@Path("id") String coupinId);
+
+
+    // Customer Routes
     @PUT("customer/category")
     Call<User> updateInterestInfo(@Body InterestsRequest body);
 
@@ -88,6 +96,8 @@ public interface ApiCalls {
     @POST("customer/notifications/{userId}")
     Call<GenericResponse> setNotificationToken(@Path("userId") String userId, @Body TokenRequest request);
 
+
+    // Merchant Routes
     @POST("merchant")
     Call<ArrayList<MerchantV2>> getMerchants(@Body MerchantRequest request);
 
@@ -110,6 +120,8 @@ public interface ApiCalls {
     @GET("mobile/version")
     Call<HashMap<String, String>> getLatestVersionNumber();
 
+
+    // Reward Routes
     @GET("rewards/merchant/{merchantId}")
     Call<ArrayList<Reward>> getMerchantRewards(@Path("merchantId") String id, @Query("page") int page);
 }
