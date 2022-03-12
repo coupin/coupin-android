@@ -78,6 +78,8 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
     public RecyclerView listView;
     @BindView(R.id.list_toolbar)
     public RelativeLayout listToolbar;
+    @BindView(R.id.coupin_get)
+    public TextView labelGet;
     @BindView(R.id.label_code)
     public TextView labelCode;
     @BindView(R.id.list_code)
@@ -150,19 +152,20 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         String status = coupin.status;
         listCode.setText(getString(R.string.please_wait));
 
-        if (status.equals("awaiting_payment")){
-            if (activityFromPurchase){
-                listCode.setText(getString(R.string.view_code));
-                listCode.setOnClickListener(v -> {
-                    labelCode.setVisibility(View.GONE);
-                    listCode.setText(getString(R.string.please_wait));
-                    checkForCoupinUpdate();
-                });
-                activateHolder.setVisibility(View.VISIBLE);
-            } else {
-                listCode.setText(getString(R.string.awaiting_payment));
-                cancelHolder.setVisibility(View.VISIBLE);
-            }
+        if (activityFromPurchase) {
+            activateHolder.setVisibility(View.VISIBLE);
+            activateHolder.setEnabled(true);
+        } else if (status.equals("awaiting_payment") && ((coupin.useNow && !coupin.isDeliverable) ||
+                (coupin.isDeliverable && isDeliveryNotInProgress()))
+        ) {
+            listCode.setText(getString(R.string.awaiting_payment));
+            cancelHolder.setVisibility(View.VISIBLE);
+        } else if (status.equals("paid") && coupin.isDeliverable && isDeliveryNotInProgress()) {
+            switchToPaidView();
+            cancelHolder.setVisibility(View.VISIBLE);
+            codeHolder.setVisibility(View.VISIBLE);
+            labelCode.setVisibility(View.VISIBLE);
+            listCode.setText(coupin.shortCode);
         } else if (status.equals("cancelled")) {
             textPaymentStatus.setText(getString(R.string.cancelled));
             hideAllBottomButtons();
@@ -196,14 +199,18 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         listBack.setOnClickListener(v -> onBackPressed());
 
         activateHolder.setOnClickListener(v -> {
-            MerchantV2 merchantV2 = TypeUtils.convertInnerItemToMerchantV2(coupin.merchant, coupin.visited, coupin.favourite);
+            if (activityFromPurchase || coupin.useNow) {
+                labelGet.setText(getString(R.string.please_wait));
+                checkForCoupinUpdate();
+            } else {
+                MerchantV2 merchantV2 = TypeUtils.convertInnerItemToMerchantV2(coupin.merchant, coupin.visited, coupin.favourite);
 
-            Intent intent = new Intent(this, MerchantActivity.class);
-            intent.putExtra("merchant", TypeUtils.objectToString(merchantV2));
-            intent.putExtra("selected", TypeUtils.objectToString(selected));
-            intent.putExtra("coupinId", coupin.id);
-            startActivity(intent);
-
+                Intent intent = new Intent(this, MerchantActivity.class);
+                intent.putExtra("merchant", TypeUtils.objectToString(merchantV2));
+                intent.putExtra("selected", TypeUtils.objectToString(selected));
+                intent.putExtra("coupinId", coupin.id);
+                startActivity(intent);
+            }
         });
 
         cancelHolder.setOnClickListener(v -> cancelOrderDialog.show());
@@ -225,18 +232,22 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
                     RewardsListItemV2 item = response.body();
                     assert item != null;
                     if (item.shortCode != null && !item.status.equals("awaiting_payment")) {
+                        switchToPaidView();
                         labelCode.setVisibility(View.VISIBLE);
                         listCode.setText(item.shortCode);
+                        codeHolder.setVisibility(View.VISIBLE);
+                        activateHolder.setVisibility(View.GONE);
                     } else {
-                        listCode.setText(getString(R.string.awaiting_payment));
+                        labelGet.setText(getString(R.string.get_coupin));
+                        Toast.makeText(CoupinActivity.this, "Still awaiting payment..", Toast.LENGTH_SHORT).show();
                     }
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(CoupinActivity.this, error.message, Toast.LENGTH_SHORT).show();
                     listCode.setText(getString(R.string.view_code));
+                    labelGet.setText(getString(R.string.get_coupin));
+                    activateHolder.setEnabled(true);
                 }
-
-                activateHolder.setEnabled(true);
             }
 
             @EverythingIsNonNull
@@ -244,6 +255,7 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
             public void onFailure(Call<RewardsListItemV2> call, Throwable t) {
                 t.printStackTrace();
                 listCode.setText(getString(R.string.view_code));
+                labelGet.setText(getString(R.string.get_coupin));
                 activateHolder.setEnabled(true);
                 Toast.makeText(CoupinActivity.this, getString(R.string.error_general), Toast.LENGTH_SHORT).show();
             }
@@ -254,6 +266,11 @@ public class CoupinActivity extends AppCompatActivity implements MyOnClick, View
         activateHolder.setVisibility(View.GONE);
         cancelHolder.setVisibility(View.GONE);
         codeHolder.setVisibility(View.GONE);
+    }
+
+    private boolean isDeliveryNotInProgress() {
+        return coupin.isDeliverable && (coupin.deliveryStatus == null ||
+                coupin.deliveryStatus.equals("scheduled") || coupin.deliveryStatus.equals("started"));
     }
 
     private void reviewApplication(){

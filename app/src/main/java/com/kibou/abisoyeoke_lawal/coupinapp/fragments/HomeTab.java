@@ -363,7 +363,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 address.setText(StringUtils.capitalize(merchant.address));
 
                                 assert merchant.logo != null;
-                                if (merchant.logo != null && merchant.logo.url != null) {
+                                if (merchant.logo.url != null) {
                                     banner.setImageBitmap(thumbnails.get(merchant.id));
                                 }
 
