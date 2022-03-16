@@ -46,6 +46,8 @@ public class User implements Serializable {
     public String notify;
     @SerializedName("days")
     public String days;
+    @SerializedName("referralCode")
+    public String referralCode;
 
     public static class Notification implements Serializable {
         @SerializedName("notify")

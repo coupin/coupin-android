@@ -1,8 +1,10 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.content.res.ResourcesCompat;
 
 import android.view.View;
@@ -39,6 +41,8 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     public CircleImageView profilePicture;
     @BindView(R.id.edit_back)
     public ImageView editBack;
+    @BindView(R.id.text_btn_referral)
+    public LinearLayoutCompat btnReferral;
     @BindView(R.id.profile_age)
     public Spinner profileAgeRange;
     @BindView(R.id.profile_gender)
@@ -59,6 +63,8 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
     public TextView profileLastName;
     @BindView(R.id.profile_mobile)
     public TextView profileMobile;
+    @BindView(R.id.text_referral)
+    public TextView textReferral;
 
     private ApiCalls apiCalls;
 
@@ -82,7 +88,6 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
         loadingDialog = new LoadingDialog(this, R.style.Loading_Dialog);
-
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this, R.array.genders, android.R.layout.simple_spinner_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -123,6 +128,7 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
 
         setupDetailsV2();
 
+        btnReferral.setOnClickListener(this);
         changePasswordBtn.setOnClickListener(this);
         editFalse.setOnClickListener(this);
         editTrue.setOnClickListener(this);
@@ -144,6 +150,9 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
 
         if (userV2.mobileNumber != null && !userV2.mobileNumber.isEmpty())
                 profileMobile.setText(userV2.mobileNumber);
+
+        if (userV2.referralCode != null)
+            textReferral.setText(userV2.referralCode);
 
         boolean isFemale = userV2.sex != null && !userV2.sex.equals("male");
         profileGender.setSelection(isFemale ? 2 : 1);
@@ -324,6 +333,16 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
         });
     }
 
+    private void shareApp() {
+        String msg = "Share and get ***! https://play.google.com/store/apps/details?id=com.kibou.abisoyeoke_lawal" +
+                ".coupinapp?referralCode=" + userV2.referralCode;
+        Intent sendIntent = new Intent(Intent.ACTION_SEND);
+        sendIntent.setType("text/plain");
+        sendIntent.putExtra(Intent.EXTRA_TITLE, "Coupin Share!");
+        sendIntent.putExtra(Intent.EXTRA_TEXT, msg);
+        startActivity(sendIntent);
+    }
+
     private void result(String message) {
         Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
@@ -352,6 +371,9 @@ public class EditActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.edit_back:
                 onBackPressed();
+                break;
+            case R.id.text_btn_referral:
+                shareApp();
                 break;
         }
     }

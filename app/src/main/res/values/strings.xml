@@ -635,4 +635,7 @@
     <string name="view_code">View Code</string>
     <string name="awaiting_payment">Awaiting Payment</string>
     <string name="prompt_cancel">All the rewards in this coupin will be lost.\nAre you sure you want to proceed?</string>
+    <string name="label_referral">Referral Code</string>
+    <string name="btn">Button</string>
+    <string name="edit">Edit</string>
 </resources>

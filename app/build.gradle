@@ -67,7 +67,7 @@ android {
             debuggable = false
             manifestPlaceholders = [
                     paytackPublicKey:"pk_test_e34c598056e00361d0ecceefac6299eef29b7e46",
-                    sentryEnvironment:"Development",
+                    sentryEnvironment:"Staging",
                     sentryDebug:true,
                     sentryDebugLevel:"error"
             ]

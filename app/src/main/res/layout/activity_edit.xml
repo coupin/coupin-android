@@ -11,302 +11,351 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:animateLayoutChanges="true">
+            android:animateLayoutChanges="true"
+            android:orientation="vertical">
 
             <RelativeLayout
-                android:background="@color/background"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background"
                 android:padding="@dimen/padding_sm">
 
                 <ImageView
                     android:id="@+id/edit_back"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
-                    android:layout_height="@dimen/icon_sm"
                     android:layout_width="@dimen/icon_sm"
+                    android:layout_height="@dimen/icon_sm"
+                    android:layout_alignParentStart="true"
+                    android:contentDescription="@string/btn"
                     android:src="@drawable/ic_back"
-                    app:tint="@color/text_color_1"/>
+                    app:tint="@color/text_color_1" />
 
                 <TextView
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:text="@string/my_profile"
                     android:textColor="@color/text_color_1"
                     android:textSize="@dimen/xxlarge_text"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/edit_true"
-                    android:drawableLeft="@drawable/ic_edit_true"
-                    android:gravity="center_vertical"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
-                    android:text="Edit"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:gravity="center_vertical"
+                    android:text="@string/edit"
                     android:textColor="@color/text_color_1"
                     android:textSize="@dimen/medium_text"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold"
+                    app:drawableStartCompat="@drawable/ic_edit_true" />
 
                 <TextView
                     android:id="@+id/edit_false"
-                    android:drawableLeft="@drawable/ic_edit_false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
                     android:drawableTint="@color/colorAccent"
                     android:gravity="center_vertical"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
-                    android:text="Save"
+                    android:text="@string/bt_save"
                     android:textColor="@color/colorAccent"
                     android:textSize="@dimen/medium_text"
                     android:textStyle="bold"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:drawableStartCompat="@drawable/ic_edit_false" />
 
             </RelativeLayout>
 
-            <RelativeLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_gravity="center_horizontal"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="@dimen/margin_sm"
+                android:layout_width="wrap_content">
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/profile_picture"
-                    android:layout_height="@dimen/icon_lg"
                     android:layout_width="@dimen/icon_lg"
-                    android:paddingBottom="@dimen/padding_sm"
-                    android:paddingTop="@dimen/padding_sm"
+                    android:layout_height="@dimen/icon_lg"
                     android:layout_marginTop="10dp"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:paddingBottom="@dimen/padding_sm"
                     android:src="@drawable/ic_clogo"
-                    app:civ_circle_background_color="@color/white"
                     app:civ_border_color="@android:color/transparent"
                     app:civ_border_overlay="false"
-                    app:civ_border_width="1dp"/>
-
-            </RelativeLayout>
-
-            <LinearLayout
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:padding="@dimen/padding_sm"
-                android:orientation="vertical">
+                    app:civ_border_width="1dp"
+                    app:civ_circle_background_color="@color/white"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
+                    android:id="@+id/label_referral"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
+                    android:text="@string/label_referral"
+                    android:textAlignment="center"
+                    android:textColor="@color/text_color_8"
+                    android:textSize="@dimen/small_text"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/profile_picture" />
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/text_btn_referral"
+                    android:background="@drawable/green_btn_curved"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="horizontal"
+                    android:paddingStart="@dimen/padding_sm_plus"
+                    android:paddingTop="@dimen/padding_sm"
+                    android:paddingEnd="@dimen/padding_sm_plus"
+                    android:paddingBottom="@dimen/padding_sm"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/label_referral">
+
+                    <TextView
+                        android:id="@+id/text_referral"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/margin_xs"
+                        android:layout_width="wrap_content"
+                        android:text="@string/dash"
+                        android:textAllCaps="true"
+                        android:textColor="@color/white"
+                        android:textSize="@dimen/medium_text"
+                        android:textStyle="bold" />
+
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="16dp"
+                        android:layout_height="16dp"
+                        android:src="@drawable/ic_share" />
+
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_sm">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/label_firstname"
                     android:textColor="@color/text_color_8"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <EditText
-                    android:background="@drawable/background_edit_false"
-                    android:focusable="false"
                     android:id="@+id/profile_firstname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_false"
+                    android:focusable="false"
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
                     android:textColor="@color/text_color_1"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_sm"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_sm">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/label_lastname"
                     android:textColor="@color/text_color_8"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <EditText
-                    android:background="@drawable/background_edit_false"
-                    android:focusable="false"
                     android:id="@+id/profile_lastname"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_false"
+                    android:focusable="false"
                     android:inputType="textCapWords"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
                     android:textColor="@color/text_color_1"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_sm"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_sm">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/label_email"
                     android:textColor="@color/text_color_8"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <EditText
-                    android:background="@drawable/background_edit_false"
-                    android:focusable="false"
                     android:id="@+id/profile_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_false"
+                    android:focusable="false"
                     android:inputType="textEmailAddress"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
                     android:textColor="@color/text_color_1"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_sm"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_sm">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/label_mobile"
                     android:textColor="@color/text_color_8"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <EditText
-                    android:background="@drawable/background_edit_false"
-                    android:focusable="false"
                     android:id="@+id/profile_mobile"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_false"
+                    android:focusable="false"
                     android:inputType="phone"
                     android:maxLength="11"
                     android:maxLines="1"
                     android:padding="@dimen/padding_sm"
                     android:textColor="@color/text_color_1"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_sm"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_sm">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/label_gender"
                     android:textColor="@color/text_color_8"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <Spinner
-                    android:background="@drawable/background_edit_false"
-                    android:clickable="false"
-                    android:focusable="false"
                     android:id="@+id/profile_gender"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_false"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:spinnerMode="dropdown"
                     android:padding="@dimen/padding_sm"
+                    android:spinnerMode="dropdown"
                     android:textColor="@color/text_color_1"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <TextView
                     android:id="@+id/gender_error"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/select_gender_prompt"
                     android:textColor="@color/red"
                     android:textSize="@dimen/large_text"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:padding="@dimen/padding_sm"
-                android:orientation="vertical">
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="@dimen/padding_sm">
 
                 <TextView
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/label_age"
                     android:textColor="@color/text_color_8"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <Spinner
-                    android:background="@drawable/background_edit_false"
-                    android:clickable="false"
-                    android:focusable="false"
                     android:id="@+id/profile_age"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/background_edit_false"
+                    android:clickable="false"
+                    android:focusable="false"
                     android:inputType="phone"
                     android:maxLines="1"
-                    android:spinnerMode="dropdown"
                     android:padding="@dimen/padding_sm"
+                    android:spinnerMode="dropdown"
                     android:textColor="@color/text_color_1"
-                    android:textSize="@dimen/large_text"/>
+                    android:textSize="@dimen/large_text" />
 
                 <TextView
                     android:id="@+id/age_error"
-                    android:layout_height="wrap_content"
-                    android:layout_marginBottom="@dimen/margin_xs"
-                    android:layout_marginTop="@dimen/margin_xs"
                     android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_xs"
+                    android:layout_marginBottom="@dimen/margin_xs"
                     android:text="@string/select_age_prompt"
                     android:textColor="@color/red"
                     android:textSize="@dimen/large_text"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
 
             </LinearLayout>
 
             <Button
-                android:background="@drawable/round_edges_grey"
                 android:id="@+id/profile_password"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="@dimen/margin_sm"
-                android:layout_width="match_parent"
+                android:background="@drawable/round_edges_grey"
                 android:text="@string/change_pass"
                 android:textAllCaps="true"
-                android:textStyle="bold"
-                android:textColor="@color/background"/>
+                android:textColor="@color/background"
+                android:textStyle="bold" />
 
         </LinearLayout>
-        
+
     </ScrollView>
 
 </RelativeLayout>

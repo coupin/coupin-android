@@ -13,6 +13,7 @@
         <entry key="app/src/main/res/drawable/round_edges_accept.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/round_edges_light_grey.xml" value="0.1705" />
         <entry key="app/src/main/res/drawable/rounded_edges_mid_grey.xml" value="0.1705" />
+        <entry key="app/src/main/res/layout/activity_edit.xml" value="0.335" />
         <entry key="app/src/main/res/layout/activity_hot.xml" value="0.2591973244147157" />
         <entry key="app/src/main/res/layout/activity_interests.xml" value="0.26182432432432434" />
         <entry key="app/src/main/res/layout/activity_list.xml" value="0.2591973244147157" />
