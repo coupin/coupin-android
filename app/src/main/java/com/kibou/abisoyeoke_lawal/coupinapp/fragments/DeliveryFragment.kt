@@ -18,6 +18,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.DeliveryAddressItemClickL
 import com.kibou.abisoyeoke_lawal.coupinapp.models.AddressResponseModel
 import com.kibou.abisoyeoke_lawal.coupinapp.models.DropOff
 import com.kibou.abisoyeoke_lawal.coupinapp.models.GokadaOrderEstimateRequestBody
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.Resource
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.setAmountFormat
@@ -31,6 +32,8 @@ import kotlinx.android.synthetic.main.fragment_checkout.*
 import kotlinx.android.synthetic.main.fragment_delivery.*
 import org.jetbrains.anko.toast
 import java.lang.Exception
+import java.text.SimpleDateFormat
+import java.util.*
 
 @AndroidEntryPoint
 class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemClickListener {
@@ -118,7 +121,7 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
                             val action = DeliveryFragmentDirections.actionDeliveryFragmentToCheckoutFragment()
                             findNavController().navigate(action)
                         }else {
-                            requireActivity().toast("Gokada delivery is unavailable at this time")
+                            requireActivity().toast("Kwik delivery is unavailable at this time")
                         }
                     }else{
                         requireActivity().toast("Select an address")
@@ -134,16 +137,63 @@ class DeliveryFragment : Fragment(), View.OnClickListener, DeliveryAddressItemCl
     override fun onAddressClick(addressModel: AddressResponseModel) {
         if(::addressAdapter.isInitialized){
             addressAdapter.updateClickedView(addressModel)
-            val deliveryLatitude = addressModel.location.latitude
-            val deliveryLongitude = addressModel.location.longitude
-            val deliveryAddress = addressModel.address
+//            val deliveryLatitude = addressModel.location.latitude
+//            val deliveryLongitude = addressModel.location.longitude
+            val deliveryAddressId = addressModel.id
+            val merchantId = getCoupinVM.merchantLD.value?.id
 
             getCoupinVM.addressIdMLD.value = addressModel.id
 
-            if(deliveryLatitude != null && deliveryLongitude != null){
-                getPriceEstimate(deliveryLatitude.toString(), deliveryLongitude.toString(), deliveryAddress)
+            if(merchantId != null){
+                getKwikPriceEstimate(merchantId, deliveryAddressId, rewardsCost);
             }
+
+            // TODO: Uncomment GoKaDa Implementation when it's working
+//            addressAdapter.updateClickedView(addressModel)
+//            val deliveryLatitude = addressModel.location.latitude
+//            val deliveryLongitude = addressModel.location.longitude
+//            val deliveryAddress = addressModel.address
+//
+//            getCoupinVM.addressIdMLD.value = addressModel.id
+//
+//            if(deliveryLatitude != null && deliveryLongitude != null){
+//                getPriceEstimate(deliveryLatitude.toString(), deliveryLongitude.toString(), deliveryAddress)
+//            }
         }
+    }
+
+    private fun getKwikPriceEstimate(merchantId : String, deliveryAddressId : String, totalCost : Float){
+        deliveryViewModel.getKwikDeliveryEstimate(merchantId, deliveryAddressId, totalCost).observe(this, {
+            it?.let {
+                when(it.status){
+                    Resource.Status.SUCCESS -> {
+                        progress_bar.visibility = View.GONE
+                        it.data?.let {
+                            val deliveryCost = it.data?.estimatedCost ?: 0F
+                            delivery_cost.text = "\u20A6 ${setAmountFormat(deliveryCost)}"
+
+                            val simpleDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
+                            val deliveryDateTime = DateTimeUtils.convertZString(it.data?.deliveryTime)
+                            val diff: Long = deliveryDateTime.time - Calendar.getInstance().time.time;
+                            val minutes = (diff / 1000) / 60
+                            delivery_time.text = getString(R.string.estimated_time_of_delivery) + " " + minutes + "mins"
+//                            delivery_time.text = getString(R.string.estimated_time_of_delivery) + " " + it.time + "mins"
+
+                            val totalCostString = setAmountFormat(deliveryCost + rewardsCost)
+                            total_cost.text = "₦ $totalCostString"
+
+                            getCoupinVM.setDeliveryPrice(deliveryCost.toInt())
+                        }
+                    }
+                    Resource.Status.ERROR -> {
+                        getCoupinVM.setDeliveryPrice(null)
+                        progress_bar.visibility = View.GONE
+                        requireContext().toast("Error getting delivery price estimate. Please try again later.").show()
+                    }
+                    Resource.Status.LOADING -> progress_bar.visibility = View.VISIBLE
+                }
+            }
+        })
     }
 
     private fun getPriceEstimate(deliveryLatitude : String, deliveryLongitude : String, deliveryAddress : String){

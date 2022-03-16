@@ -92,6 +92,7 @@
 
 
             <TextView
+                android:ellipsize="marquee"
                 android:id="@+id/info_button"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -102,7 +103,8 @@
                 android:paddingEnd="15dp"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:text="Reward Title"
+                android:singleLine="true"
+                android:text="@string/dash"
                 android:textAllCaps="true"
                 android:textAlignment="viewStart"
                 android:textColor="@color/colorAccent"

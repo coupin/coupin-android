@@ -10,12 +10,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.kibou.abisoyeoke_lawal.coupinapp.R
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ReviewSelectionCancelClickListener
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils
 import org.jetbrains.anko.find
 import java.text.SimpleDateFormat
 import java.util.*
 
-class RVReviewSelectionPickup(private val resource : MutableList<RewardV2>, private val reviewSelectionCancelClickListener : ReviewSelectionCancelClickListener)
+class RVReviewSelectionPickup(private val resource : MutableList<Reward>, private val reviewSelectionCancelClickListener : ReviewSelectionCancelClickListener)
     : RecyclerView.Adapter<RVReviewSelectionPickup.RVReviewSelectionPickupVH>() {
 
     class RVReviewSelectionPickupVH(view : View) : RecyclerView.ViewHolder(view) {
@@ -37,10 +37,10 @@ class RVReviewSelectionPickup(private val resource : MutableList<RewardV2>, priv
     override fun onBindViewHolder(holder: RVReviewSelectionPickupVH, position: Int) {
         val viewResource = resource[position]
         holder.apply {
-            topSectionTitle.text = viewResource.title
+            topSectionTitle.text = viewResource.name
 
             val simpleDateFormat = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-            expiryDate.text = simpleDateFormat.format(viewResource.expires)
+            expiryDate.text = simpleDateFormat.format(DateTimeUtils.convertZString(viewResource.endDate))
 
             if (viewResource.price.oldPrice > 0) {
                 fullPrice.text = "\u20A6 ${viewResource.price.oldPrice}"
@@ -67,7 +67,7 @@ class RVReviewSelectionPickup(private val resource : MutableList<RewardV2>, priv
         return resource.size
     }
 
-    fun setResource(resource : List<RewardV2>){
+    fun setResource(resource : List<Reward>){
         this.resource.clear()
         this.resource.addAll(resource)
         this.notifyDataSetChanged()

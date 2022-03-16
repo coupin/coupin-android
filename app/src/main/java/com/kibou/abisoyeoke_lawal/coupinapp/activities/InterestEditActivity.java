@@ -4,6 +4,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.res.ResourcesCompat;
 
+import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -15,6 +16,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.adapters.InterestEditAdapter;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiError;
+import com.kibou.abisoyeoke_lawal.coupinapp.dialog.LoadingDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Interest;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
@@ -38,17 +40,18 @@ public class InterestEditActivity extends AppCompatActivity {
     public TextView interestSave;
 
     private ApiCalls apiCalls;
-    public ArrayList<Interest> interests = new ArrayList<>();
-    public ArrayList<String> selected = new ArrayList<>();
+    private final ArrayList<Interest> interests = new ArrayList<>();
+    private ArrayList<String> selected = new ArrayList<>();
+    private LoadingDialog loadingDialog;
 
     public int[] categoryIcons = new int[]{R.drawable.int_food, R.drawable.int_groceries,
             R.drawable.int_gadget, R.drawable.int_ent, R.drawable.int_beauty,
             R.drawable.int_fashion, R.drawable.int_ticket, R.drawable.int_travel};
     public String[] categories = new String[]{"Food & Drink", "Groceries", "Electronics & Tech",
             "Entertainment", "Health & Beauty", "Shopping", "Tickets", "Travel & Hotels"};
-    public String[] categoryValues = new String[]{"\"foodndrink\"", "\"groceries\"",
-            "\"technology\"", "\"entertainment\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"",
-            "\"travel\""};
+    public String[] categoryValues = new String[]{"foodndrink", "groceries",
+            "technology", "entertainment", "healthnbeauty", "shopping", "tickets",
+            "travel"};
     private User user;
 
     @Override
@@ -58,6 +61,7 @@ public class InterestEditActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
+        loadingDialog = new LoadingDialog(this);
         selected = PreferenceManager.getUserInterests();
         user = PreferenceManager.getCurrentUser();
 
@@ -66,7 +70,7 @@ public class InterestEditActivity extends AppCompatActivity {
             item.setIcon(categoryIcons[i]);
             item.setLabel(categories[i]);
             item.setValue(categoryValues[i]);
-            item.setSelected(false);
+            item.setSelected(selected.contains(categoryValues[i].replace("\"", "")));
             interests.add(item);
         }
 
@@ -106,7 +110,9 @@ public class InterestEditActivity extends AppCompatActivity {
     }
 
     public void sendInterestInfo() {
-        Call<User> request = apiCalls.updateInterestInfo(new InterestsRequest(selected.toString()));
+        loadingDialog.show();
+
+        Call<User> request = apiCalls.updateInterestInfo(new InterestsRequest(selected));
         request.enqueue(new Callback<User>() {
             @EverythingIsNonNull
             @Override
@@ -115,10 +121,12 @@ public class InterestEditActivity extends AppCompatActivity {
                     Toast.makeText(InterestEditActivity.this, "Your interests have been updated.", Toast.LENGTH_SHORT).show();
                     user.interests = selected;
                     PreferenceManager.setCurrentUser(user);
+                    loadingDialog.dismiss();
                     onBackPressed();
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(InterestEditActivity.this, error.message, Toast.LENGTH_SHORT).show();
+                    loadingDialog.dismiss();
                 }
             }
 
@@ -127,6 +135,7 @@ public class InterestEditActivity extends AppCompatActivity {
             public void onFailure(Call<User> call, Throwable t) {
                 t.printStackTrace();
                 Toast.makeText(InterestEditActivity.this, "Your interest failed to update. Please try again later.", Toast.LENGTH_SHORT).show();
+                loadingDialog.dismiss();
             }
         });
     }

@@ -147,7 +147,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         gsc = GoogleSignIn.getClient(this, gso);
 
         googleLogin.setOnClickListener(view -> attemptGoogleLogin());
-        facebookLogin.setOnClickListener(view -> loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "email")));
+        facebookLogin.setOnClickListener(view -> {
+            showProgress(true);
+            loginManager.logInWithReadPermissions(LoginActivity.this, Arrays.asList("public_profile", "email"));
+        });
     }
 
     private void populateAutoComplete() {
@@ -192,11 +195,16 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     PreferenceManager.setAuthToken(response.body().token);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                    finish();
+                    finishAffinity();
                 } else {
                     showProgress(false);
                     ApiError error = ApiClient.parseError(response);
-                    Toast.makeText(getApplicationContext(), error.message, Toast.LENGTH_SHORT).show();
+                    if (error.statusCode == 401) {
+                        Toast.makeText(getApplicationContext(), "User does not exist. Please sign up to get started.",
+                                Toast.LENGTH_SHORT).show();
+                    } else {
+                        Toast.makeText(getApplicationContext(), error.message, Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
 
@@ -228,7 +236,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     PreferenceManager.setAuthToken(response.body().token);
                     showProgress(false);
                     startActivity(new Intent(LoginActivity.this, HomeActivity.class));
-                    finish();
+                    finishAffinity();
                 } else {
                     showProgress(false);
                     ApiError error = ApiClient.parseError(response);
@@ -341,6 +349,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
      * Attemps to sign in using google
      */
     private void attemptGoogleLogin() {
+        showProgress(true);
         Intent signInIntend = gsc.getSignInIntent();
         startActivityForResult(signInIntend, RC_SIGNIN_GOOGLE);
     }
@@ -358,6 +367,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), "Error occurred while logging in with that account. Please try another", Toast.LENGTH_SHORT).show();
+            showProgress(false);
         }
     }
 
@@ -463,7 +473,10 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
                     // TODO: Update user profile picture
                     socialLoginUser(jsonObject.getString("email"), jsonObject.get("id").toString());
                 } catch (Exception e) {
+                    showProgress(false);
                     e.printStackTrace();
+                    Toast.makeText(getApplicationContext(), "An error occurred while trying to sign you in through Facebook. " +
+                            "Please try again", Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -479,6 +492,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
 
     @Override
     public void onError(FacebookException e) {
+        showProgress(false);
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
@@ -497,7 +511,7 @@ public class LoginActivity extends AppCompatActivity implements FacebookCallback
         super.onBackPressed();
 
         startActivity(new Intent(LoginActivity.this, LandingActivity.class));
-        finish();
+        finishAffinity();
     }
 }
 

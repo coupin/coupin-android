@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -34,13 +35,15 @@ import com.kibou.abisoyeoke_lawal.coupinapp.dialog.RewardInfoDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.ApiCalls;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.SelectedReward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.responses.BookingResponse;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.User;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.requests.CoupinRequest;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
+import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 import com.wang.avi.AVLoadingIndicatorView;
 
@@ -48,6 +51,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -61,6 +65,7 @@ import retrofit2.internal.EverythingIsNonNull;
 
 import static android.view.View.GONE;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.blackListIntent;
+import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.coupinIdText;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.expiryDateIntent;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.intentExtraGoToPayment;
 import static com.kibou.abisoyeoke_lawal.coupinapp.utils.StringsKt.merchantIntent;
@@ -118,10 +123,10 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private ApiCalls apiCalls;
     private ArrayList<Date> expiryDates;
     private final Set<String> tempBlackList = new HashSet<>();
-    private final Set<RewardV2> selectedRewards = new HashSet<>();
+    private final Set<Reward> selectedRewards = new HashSet<>();
     private ArrayList<String> pictures;
     private ArrayList<String> selected;
-    private ArrayList<RewardV2> values;
+    private ArrayList<Reward> values;
     private boolean favourite = false;
     private boolean isLoading = false;
     private boolean requestGenderNumber = false;
@@ -134,6 +139,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     private JSONObject res;
     private RVPopUpAdapter rvPopUpAdapter;
     private Set<String> favourites;
+    private String coupinId;
     private String merchantId;
     private User user;
 
@@ -177,7 +183,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             merchantId = item.id;
             Glide.with(this).load(item.banner.url).into(bannerHolder);
             merchantName.setText(item.title);
-            merchantAddress.setText(item.address);
+            merchantAddress.setText(StringUtils.capitalize(item.address));
             String merchantPhoneString = "Tel: " + item.mobile;
             merchantPhone.setText(merchantPhoneString);
             merchantRating.setRating(item.rating);
@@ -187,13 +193,23 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             tempBlackList.addAll(PreferenceManager.getBlacklist());
             rvPopUpAdapter.setBlacklist(tempBlackList);
 
+            if (extra.containsKey("selected")) {
+                coupinId = extra.getString("coupinId");
+                String selectedString = extra.getString("selected");
+                ArrayList<SelectedReward> selectedList = (ArrayList<SelectedReward>) TypeUtils.stringToObject(selectedString);
+                assert selectedList != null;
+                for (SelectedReward selectedReward: selectedList) {
+                    int counter = 0;
+                    while(counter < selectedReward.quantity) {
+                        if (!tempBlackList.contains(selectedReward.rewardId) && selectedReward.quantity > 0) {
+                            selected.add(selectedReward.rewardId);
+                            counter++;
+                        }
+                    }
+                }
+            }
+
             // Show Mobile and Gender Dialog
-//            if (PreferenceMngr.getToTotalCoupinsGenerated(user.getString("_id")) > 0
-//                && (!user.has("mobileNumber") || !user.has("ageRange"))) {
-//                experienceDialog = new ExperienceDialog(this, this, user);
-//                requestGenderNumber = true;
-//                experienceDialog.show();
-//            }
             if (PreferenceManager.getToTotalCoupinsGenerated(user.id) > 0
                 && (user.mobileNumber == null || user.ageRange == null)) {
                 experienceDialog = new ExperienceDialog(this, this, user);
@@ -249,11 +265,37 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
         selectedBtnSave.setOnClickListener(v -> {
             toggleClickableButtons(true);
 
-            Call<BookingResponse> request = apiCalls.createCoupin(new CoupinRequest(false, expiryDate.toString(), item.id, selected.toString()));
+            ArrayList<String> rewardsToSave = new ArrayList<>();
+
+            if (selectedRewards.size() == 0) {
+                Toast.makeText(
+                        MerchantActivity.this,
+                        "Please select rewards you would like to save.",
+                        Toast.LENGTH_SHORT
+                ).show();
+                toggleClickableButtons(false);
+            }
+
+            if (expiryDate == null) {
+                expiryDate = Collections.max(expiryDates);
+            }
+
+            for (Reward reward: selectedRewards) {
+                int counter = 0;
+                while (counter < reward.selectedQuantity) {
+                    rewardsToSave.add(reward.id);
+                    counter++;
+                }
+            }
+
+            Call<BookingResponse> request = apiCalls.createCoupin(new CoupinRequest(false, expiryDate.toString(), item.id,
+                    rewardsToSave.toString(), coupinId));
             request.enqueue(new Callback<BookingResponse>() {
+                @EverythingIsNonNull
                 @Override
                 public void onResponse(Call<BookingResponse> call, retrofit2.Response<BookingResponse> response) {
                     if (response.isSuccessful()) {
+                        selected.clear();
                         onBackPressed();
                         finish();
                     } else {
@@ -267,6 +309,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                     }
                 }
 
+                @EverythingIsNonNull
                 @Override
                 public void onFailure(Call<BookingResponse> call, Throwable t) {
                     toggleClickableButtons(false);
@@ -286,8 +329,8 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     private void navigate() {
         Intent navigateIntent = new Intent(Intent.ACTION_VIEW);
-        navigateIntent.setData(Uri.parse("geo:" + item.location.latitude + "," + item.location.latitude +
-            "?q=" + item.location.latitude + "," + item.location.latitude));
+        navigateIntent.setData(Uri.parse("geo:" + item.location.latitude + "," + item.location.longitude +
+            "?q=" + item.location.latitude + "," + item.location.longitude));
         startActivity(navigateIntent);
     }
 
@@ -295,25 +338,61 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      * Load Merchant Rewards
      */
     public void loadRewards() {
-        Call<ArrayList<RewardV2>> request = apiCalls.getMerchantRewards(merchantId, page);
-        request.enqueue(new Callback<ArrayList<RewardV2>>() {
+        Call<ArrayList<Reward>> request = apiCalls.getMerchantRewards(merchantId, page);
+        request.enqueue(new Callback<ArrayList<Reward>>() {
             @EverythingIsNonNull
             @Override
-            public void onResponse(Call<ArrayList<RewardV2>> call, retrofit2.Response<ArrayList<RewardV2>> response) {
+            public void onResponse(Call<ArrayList<Reward>> call, retrofit2.Response<ArrayList<Reward>> response) {
                 if (response.isSuccessful()) {
+                    String expiryDate = "";
+                    boolean allAvailable = true;
+
                     assert response.body() != null;
-                    for (RewardV2 rewardV2: response.body()) {
-                        values.add(rewardV2);
-                        if (rewardV2.pictures != null && rewardV2.pictures.size() > 0) {
-                            for (Image image: rewardV2.pictures) {
+                    for (Reward reward : response.body()) {
+                        if (!selected.isEmpty() && selected.contains(reward.id) && reward.quantity > 0) {
+                            reward.selectedQuantity = Collections.frequency(selected, reward.id);
+                            if (reward.selectedQuantity > 0) {
+                                reward.isSelected = true;
+                            }
+                            if (reward.selectedQuantity > reward.quantity) {
+                                allAvailable = false;
+                                reward.selectedQuantity = reward.quantity;
+                            }
+                            selectedRewards.add(reward);
+                        }
+
+                        if (reward.quantity > 0) {
+                            selected.removeAll(Collections.singleton(reward.id));
+                        }
+
+                        values.add(reward);
+                        expiryDates.add(TypeUtils.stringToDate(reward.endDate));
+                        if (reward.pictures != null && reward.pictures.size() > 0) {
+                            for (Image image: reward.pictures) {
                                 pictures.add(image.url);
                             }
                         }
                     }
 
+                    if (!selected.isEmpty()) {
+                        String itemsSelectedString = selected.size() + " Items Selected";
+                        selectedText.setText(itemsSelectedString);
+                        if (selectedHolder.getVisibility() == GONE) {
+                            selectedHolder.setVisibility(View.VISIBLE);
+                        }
+
+                        if (!allAvailable) {
+                            Toast.makeText(
+                                    MerchantActivity.this,
+                                    "Some of your selections have less than saved in stock. Please review before moving forward.",
+                                    Toast.LENGTH_SHORT
+                            ).show();
+                        }
+                    }
+
                     isLoading = false;
                     if (page == 0) {
-                        if (values.size() == 0) {
+                        if (values.isEmpty()) {
                             toggleViews(1);
                         } else {
                             toggleViews(0);
@@ -335,7 +414,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
 
             @EverythingIsNonNull
             @Override
-            public void onFailure(Call<ArrayList<RewardV2>> call, Throwable t) {
+            public void onFailure(Call<ArrayList<Reward>> call, Throwable t) {
                 t.printStackTrace();
                 isLoading = false;
 
@@ -491,6 +570,13 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        rvPopUpAdapter.setOnSelect(this);
+    }
+
+    @Override
     public void onSelect(boolean selected, int index) {
         if (index == -1) {
             Toast.makeText(MerchantActivity.this, "Sorry this reward can only be used once. ", Toast.LENGTH_SHORT).show();
@@ -506,7 +592,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
      */
     @Override
     public void onSelect(boolean selected, int index, int quantity) {
-        RewardV2 reward = values.get(index);
+        Reward reward = values.get(index);
         if (selected) {
             this.selected.add(reward.id);
             this.expiryDates.add(TypeUtils.stringToDate(reward.endDate));
@@ -514,14 +600,14 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             if (selectedHolder.getVisibility() == GONE) {
                 selectedHolder.setVisibility(View.VISIBLE);
             }
-            if (!reward.isMultiple) {
+            if (!reward.multiple.status) {
                 tempBlackList.add(reward.id);
             }
             selectedRewards.add(reward);
-            reward.quantity = quantity;
+            reward.selectedQuantity = quantity;
             reward. isSelected = true;
         } else {
-            this.selected.remove(reward.id);
+            this.selected.removeAll(Collections.singleton(reward.id));
             this.expiryDates.remove(TypeUtils.stringToDate(reward.endDate));
             selectedText.setText(this.selected.size() + " Items Selected");
             if (this.selected.size() == 0) {
@@ -530,7 +616,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             tempBlackList.remove(reward.id);
             selectedRewards.remove(reward);
             reward.isSelected = false;
-            reward.quantity = 1;
+            reward.selectedQuantity = 1;
         }
     }
 
@@ -645,7 +731,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             ArrayList<String> rewardIds = new ArrayList<>();
 
             if(!values.isEmpty()){
-                for(RewardV2 reward : selectedRewards){
+                for(Reward reward : selectedRewards){
                     rewardIds.add(reward.id);
                     isDeliverableList.add(reward.isDelivery);
                 }
@@ -661,6 +747,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
             intent.putExtra(merchantIntent, merchant);
             intent.putExtra(expiryDateIntent, expiryDate.toString());
             intent.putExtra(blackListIntent, blackList);
+            intent.putExtra(coupinIdText, coupinId);
 
             if(!isDeliverableList.contains(true)){
                 intent.putExtra(intentExtraGoToPayment, true);
@@ -687,7 +774,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 if (response.isSuccessful()) {
                     favourites.add(id);
                     PreferenceManager.setFavourites(favourites);
-                    Toast.makeText(MerchantActivity.this, "Added Successfully.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MerchantActivity.this, "Added to Favourites.", Toast.LENGTH_SHORT).show();
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(MerchantActivity.this, error.message, Toast.LENGTH_SHORT).show();
@@ -724,7 +811,7 @@ public class MerchantActivity extends AppCompatActivity implements MyOnSelect, M
                 if (response.isSuccessful()) {
                     favourites.remove(id);
                     PreferenceManager.setFavourites(favourites);
-                    Toast.makeText(MerchantActivity.this, "Removed Successfully.", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MerchantActivity.this, "Removed from Favourites.", Toast.LENGTH_SHORT).show();
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(MerchantActivity.this, error.message, Toast.LENGTH_SHORT).show();

@@ -217,6 +217,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        MapsInitializer.initialize(requireActivity().getApplicationContext());
     }
 
     @Override
@@ -241,7 +242,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 if (currentLocation == null) {
                     currentLocation = locationResult.getLastLocation();
-                    setupListV2();
+                    setupList();
                 } else {
                     currentLocation = locationResult.getLastLocation();
                 }
@@ -256,10 +257,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         setCategories();
 
         // Error Dialog
-        networkErrorDialog = new NetworkErrorDialog(getActivity());
+        networkErrorDialog = new NetworkErrorDialog(requireActivity());
 
         // Filter Dialog
-        final FilterDialog filterDialog = new FilterDialog(getActivity(), R.style.Filter_Dialog);
+        final FilterDialog filterDialog = new FilterDialog(requireActivity(), R.style.Filter_Dialog);
         filterDialog.setInterface(this);
         Window window = filterDialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -288,6 +289,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public void onMapReady(@NonNull GoogleMap googleMap) {
                 mGoogleMap = googleMap;
 
+
                 if (!NetworkGPSUtils.isConnected(requireActivity())) {
                     networkErrorDialog.setOptions(R.drawable.attention, getResources().getString(R.string.error_connection_title),
                             getResources().getString(R.string.error_connection_detail), new View.OnClickListener() {
@@ -303,6 +305,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
                 mGoogleMap.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireActivity(), R.raw.style_json));
                 mGoogleMap.getUiSettings().setMyLocationButtonEnabled(false);
+                mGoogleMap.getUiSettings().setCompassEnabled(false);
+                mGoogleMap.getUiSettings().setMapToolbarEnabled(false);
                 if (ActivityCompat.checkSelfPermission(requireActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getContext(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
                     // TODO: Consider calling
                     //    ActivityCompat#requestPermissions
@@ -356,10 +360,10 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                                 infoButton = (TextView) infoWindow.findViewById(R.id.info_button);
 
                                 title.setText(merchant.name);
-                                address.setText(merchant.address);
+                                address.setText(StringUtils.capitalize(merchant.address));
 
                                 assert merchant.logo != null;
-                                if (merchant.logo != null && merchant.logo.url != null) {
+                                if (merchant.logo.url != null) {
                                     banner.setImageBitmap(thumbnails.get(merchant.id));
                                 }
 
@@ -534,7 +538,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
 
             // Get Current Location
             if (currentLocation != null) {
-                setupListV2();
+                setupList();
             } else {
                 getMyLocation();
             }
@@ -598,17 +602,23 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         }
     }
 
-    // TODO: New - Make V1
-    private void setupListV2() {
-        showDialog(true);
+    private void setupList() {
+        if (retrievingData) return;
 
-        prepareMapAndGeoLocation();
+        if (page == 0) {
+            showDialog(true);
+            retrievingData = true;
+            prepareMapAndGeoLocation();
+        }
 
         MerchantRequest body = new MerchantRequest();
+        if (latitude != null)
         body.latitude = latitude.doubleValue();
+        if (longitude != null)
         body.longitude = longitude.doubleValue();
         body.distance = distance;
         body.categories = categories.toString();
+        body.page = page;
         body.limit = 5;
 
         Call<ArrayList<MerchantV2>> request = apiCalls.getMerchants(body);
@@ -616,30 +626,37 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             @EverythingIsNonNull
             @Override
             public void onResponse(Call<ArrayList<MerchantV2>> call, retrofit2.Response<ArrayList<MerchantV2>> response) {
-                MerchantV2 first = new MerchantV2();
-                first.picture = R.drawable.hot;
-                iconsListV2.add(first);
+                if (page == 0) {
+                    MerchantV2 first = new MerchantV2();
+                    first.picture = R.drawable.hot;
+                    iconsListV2.add(first);
 
-                if (currentLocation != null) {
-                    markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
-                            .title("Hello!")
-                            .snippet("You are here")
-                            .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                    if (currentLocation != null) {
+                        markers.add(0, myPosition = mGoogleMap.addMarker(new MarkerOptions()
+                                .title("Hello!")
+                                .snippet("You are here")
+                                .position(new LatLng(currentLocation.getLatitude(), currentLocation.getLongitude()))
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_myself))));
+                    }
                 }
 
                 if (response.isSuccessful()) {
-                    try {
-                        int counter = 1;
-
                         assert response.body() != null;
                         for (MerchantV2 item : response.body()) {
-                            iconsListV2.add(counter++, item);
+                            iconsListV2.add(item);
                             markers.add(mGoogleMap.addMarker(new MarkerOptions()
                                     .title(item.name)
                                     .snippet(TypeUtils.objectToString(item))
                                     .position(new LatLng(item.location.latitude, item.location.longitude))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_circle_w))));
+                        }
+                        disableLoadMore = response.body().size() < 5;
+
+                        if (disableLoadMore) {
+                            if (isVisible()) {
+                                Toast.makeText(getContext(), getString(R.string.empty_more_details),
+                                        Toast.LENGTH_SHORT).show();
+                            }
                         }
 
                         String spotsText = iconsListV2.size() - 1 + " Rewards ";
@@ -648,44 +665,56 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
                         // TODO: Set the bounds properly
                         setBounds();
 
+                        if (page == 0) {
+                            showDialog(false);
+                            adapter.setIconList(iconsListV2);
+                        } else {
+                            isLoading = false;
+                            loading();
+                        }
+
                         page++;
-                        showDialog(false);
-                        adapter.setIconList(iconsListV2);
-                        adapter.notifyDataSetChanged();
                         retrievingData = false;
+                        adapter.notifyDataSetChanged();
                         (new LogoConverter()).execute(true);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        adapter.setIconList(iconsListV2);
-                        adapter.notifyDataSetChanged();
-                        retrievingData = false;
-                        showDialog(false);
-                    }
                 } else {
                     ApiError error = ApiClient.parseError(response);
 
-                    adapter.setIconList(iconsListV2);
-                    adapter.notifyDataSetChanged();
+                    if (page == 0) {
+                        adapter.setIconList(iconsListV2);
+                        adapter.notifyDataSetChanged();
+                        spots.setText("0 Rewards ");
+                        showDialog(false);
+                    } else {
+                        isLoading = false;
+                        loading();
+                    }
+
 
                     retrievingData = false;
-                    spots.setText("0 Rewards ");
-                    showDialog(false);
 
-                    if (HomeTab.this.isVisible()) {
-                        if (error.statusCode == 404) {
-                            networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_title),
-                                    getResources().getString(R.string.empty_details), new View.OnClickListener() {
-                                        @Override
-                                        public void onClick(View view) {
-                                            networkErrorDialog.dismiss();
-                                        }
-                                    });
-                            networkErrorDialog.show();
-                            center();
+
+                    if (error.statusCode == 404) {
+                        disableLoadMore = true;
+                        if (page == 0) {
+                            if (HomeTab.this.isVisible()) {
+                                networkErrorDialog.setOptions(R.drawable.empty, getResources().getString(R.string.empty_title),
+                                        getResources().getString(R.string.empty_details), new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                networkErrorDialog.dismiss();
+                                            }
+                                        });
+                                networkErrorDialog.show();
+                            }
                         } else {
-                            Toast.makeText(getContext(), error.message,
+                            Toast.makeText(getContext(), getString(R.string.empty_details_more),
                                     Toast.LENGTH_SHORT).show();
                         }
+                        center();
+                    } else {
+                        Toast.makeText(getContext(), error.message,
+                                Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -695,6 +724,14 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             public void onFailure(Call<ArrayList<MerchantV2>> call, Throwable t) {
                 showDialog(false);
                 t.printStackTrace();
+                retrievingData = false;
+
+                if (page == 0) {
+                    showDialog(false);
+                } else {
+                    isLoading = false;
+                    loading();
+                }
             }
         });
     }
@@ -787,7 +824,7 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             if (pastVisibleItems + visibleItemCount >= totalItemCount) {
                 isLoading = true;
                 loading();
-                handler.postDelayed(() -> setupListV2(), 2000);
+                handler.postDelayed(() -> setupList(), 2000);
             }
             }
         });
@@ -896,7 +933,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
         filter = true;
         adapter.clearPreviousView();
         onMarker = false;
-        setupListV2();
+        page = 0;
+        setupList();
     }
 
     @Override
@@ -906,6 +944,8 @@ public class HomeTab extends Fragment implements LocationListener, CustomClickLi
             checkPermission();
         } catch (Exception e) {
             e.printStackTrace();
+            String message = e.getMessage() != null ? e.getMessage() : getString(R.string.error_general);
+            Toast.makeText(context, message, Toast.LENGTH_SHORT).show();
         }
     }
 

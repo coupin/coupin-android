@@ -2,20 +2,17 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.viewModels
-import androidx.navigation.fragment.NavHostFragment
 import com.google.gson.Gson
 import com.kibou.abisoyeoke_lawal.coupinapp.R
-import com.kibou.abisoyeoke_lawal.coupinapp.models.Merchant
 import com.kibou.abisoyeoke_lawal.coupinapp.models.MerchantV2
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.*
 import com.kibou.abisoyeoke_lawal.coupinapp.view_models.GetCoupinViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.android.synthetic.main.activity_get_coupin.*
 import java.util.*
-import kotlin.collections.HashMap
 
 @AndroidEntryPoint
 class GetCoupinActivity : AppCompatActivity() {
@@ -26,6 +23,7 @@ class GetCoupinActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_get_coupin)
 
+        getCoupinId()
         getIntentRewards()
         setMerchant()
         setExpiryDate()
@@ -33,10 +31,17 @@ class GetCoupinActivity : AppCompatActivity() {
         setBlackList()
     }
 
+    private fun getCoupinId(){
+        val coupinIdString = intent.getStringExtra(coupinIdText)
+        coupinIdString?.let{
+            getCoupinVM.coupinIdMLD.value = it
+        }
+    }
+
     private fun getIntentRewards(){
         val rewardsString = intent.getStringExtra(rewardsIntent)
         rewardsString?.let{
-            val rewardsArray= Gson().fromJson(it, Array<RewardV2>::class.java)
+            val rewardsArray= Gson().fromJson(it, Array<Reward>::class.java)
             rewardsArray?.let {
                 getCoupinVM.setSelectedCoupins(it)
             }

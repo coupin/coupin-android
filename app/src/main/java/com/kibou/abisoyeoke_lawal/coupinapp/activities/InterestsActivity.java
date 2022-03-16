@@ -58,9 +58,9 @@ public class InterestsActivity extends AppCompatActivity {
             R.drawable.int_fashion, R.drawable.int_ticket, R.drawable.int_travel};
     public String[] categories = new String[]{"Food & Drink", "Groceries", "Electronics & Tech",
             "Entertainment", "Health & Beauty", "Shopping", "Tickets", "Travel & Hotels"};
-    public String[] categoryValues = new String[]{"\"foodndrink\"", "\"groceries\"",
-            "\"technology\"", "\"entertainment\"", "\"healthnbeauty\"", "\"shopping\"", "\"tickets\"",
-            "\"travel\""};
+    public String[] categoryValues = new String[]{"foodndrink", "groceries",
+            "technology", "entertainment", "healthnbeauty", "shopping", "tickets",
+            "travel"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,7 +164,7 @@ public class InterestsActivity extends AppCompatActivity {
      * Persist user interest info
      */
     public void sendInterestInfo() {
-        Call<User> request = apiCalls.saveInterestInfo(new InterestsRequest(selected.toString()));
+        Call<User> request = apiCalls.saveInterestInfo(new InterestsRequest(selected));
         request.enqueue(new Callback<User>() {
             @EverythingIsNonNull
             @Override

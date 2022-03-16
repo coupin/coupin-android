@@ -1,6 +1,7 @@
 package com.kibou.abisoyeoke_lawal.coupinapp.clients;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -32,19 +33,22 @@ public class ApiClient {
     }
 
     public static ApiError parseError(retrofit2.Response<?> response) {
-        ApiError error;
+        ApiError error = new ApiError();
+        error.statusCode = response.code();
 
         try {
             Converter<ResponseBody, ApiError> converter = retrofit.responseBodyConverter(
                     ApiError.class, new Annotation[0]
             );
 
-            error = converter.convert(response.errorBody());
-            assert error != null;
-            error.statusCode = response.code();
+            if (response.errorBody() != null) {
+                ApiError convertedError = converter.convert(response.errorBody());
+                error.message = convertedError.message;
+                assert error != null;
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return new ApiError();
+            return error;
         }
 
         return error;
@@ -73,10 +77,11 @@ public class ApiClient {
                     .build();
             Gson gson = new GsonBuilder()
                     .setDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                    .setLenient()
                     .create();
 
             retrofit = new Retrofit.Builder()
-                    .baseUrl(context.getResources().getString(R.string.base_url_v2))
+                    .baseUrl(context.getResources().getString(R.string.base_url))
                     .addConverterFactory(GsonConverterFactory.create(gson))
                     .client(client)
                     .build();

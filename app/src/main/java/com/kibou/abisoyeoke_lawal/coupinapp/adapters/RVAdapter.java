@@ -16,7 +16,7 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
@@ -33,6 +33,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
     public Context context;
     public List<RewardsListItemV2> rewardListItems;
 
+    private final String STATUS_AWAITING_PAYMENT = "awaiting_payment";
     static public MyOnClick myOnClick;
 
     @Override
@@ -70,12 +71,13 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             });
 
             String status = reward.status;
-
-            if(status.equals("awaiting_payment")){
+            if (status.equals("cancelled")) {
                 holder.code.setVisibility(View.GONE);
-                holder.status.setText("Awaiting Payment");
-            }
-            else {
+                holder.status.setText(context.getString(R.string.cancelled));
+            } else if(status.equals(STATUS_AWAITING_PAYMENT)){
+                holder.code.setVisibility(View.GONE);
+                holder.status.setText(context.getString(R.string.awaiting_payment));
+            } else {
                 holder.code.setVisibility(View.VISIBLE);
                 holder.status.setText("Payment Confirmed");
             }
@@ -83,7 +85,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             holder.code.setText("Code: " + reward.shortCode);
 
             for (int x = 0 ; x < reward.rewardCount; x++) {
-                RewardV2 rewardV2 = reward.rewards.get(x).reward;
+                Reward rewardV2 = reward.rewards.get(x).reward;
                 if (x == 0) {
                     temp = DateTimeUtils.convertZString(rewardV2.endDate);
                 } else {
@@ -96,7 +98,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM, yy", Locale.ENGLISH);
             holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
-            RewardV2 first = reward.rewards.get(0).reward;
+            Reward first = reward.rewards.get(0).reward;
             holder.rewardOne.setText(first.description);
             if (first.price != null && first.price.oldPrice > 0 && first.price.newPrice > 0) {
                 float oldPrice = first.price.oldPrice;
@@ -108,7 +110,7 @@ public class RVAdapter extends RecyclerView.Adapter<RVAdapter.ItemViewHolder> {
             }
 
             if (reward.rewardCount > 1) {
-                RewardV2 second = reward.rewards.get(1).reward;
+                Reward second = reward.rewards.get(1).reward;
                 holder.rewardTwo.setText(second.description);
                 if (second.price != null && second.price.oldPrice > 0 && second.price.newPrice > 0) {
                     float oldPrice = second.price.oldPrice;

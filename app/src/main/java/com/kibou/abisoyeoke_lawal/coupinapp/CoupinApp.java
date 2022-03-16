@@ -6,6 +6,8 @@ import android.content.Context;
 import androidx.appcompat.app.AppCompatDelegate;
 
 import com.google.android.libraries.places.api.Places;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import java.lang.ref.WeakReference;
@@ -33,6 +35,15 @@ public class CoupinApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setApplicationId(BuildConfig.FIREBASE_APP_ID)
+                .setProjectId(BuildConfig.FIREBASE_P_ID)
+                .setApiKey(BuildConfig.FIREBASE_API_KEY)
+                .build();
+
+        FirebaseApp.initializeApp(this, options, BuildConfig.FIREBASE_NAME);
+
         mContext = new WeakReference<>(this);
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), BuildConfig.GOOGLE_PLACES_API);

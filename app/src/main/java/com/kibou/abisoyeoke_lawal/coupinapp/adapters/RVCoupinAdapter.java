@@ -6,6 +6,7 @@ import android.graphics.Paint;
 import androidx.annotation.NonNull;
 import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
+
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +15,7 @@ import android.widget.TextView;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
 import java.text.SimpleDateFormat;
@@ -27,7 +28,7 @@ import java.util.Locale;
  */
 
 public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_lawal.coupinapp.adapters.RVCoupinAdapter.ItemViewHolder> {
-    public List<RewardV2> rewardListItems;
+    public List<Reward> rewardListItems;
     static public MyOnClick myOnClick;
     public Context context;
 
@@ -38,7 +39,7 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
         return itemViewHolder;
     }
 
-    public RVCoupinAdapter(List<RewardV2> rewardListItems, MyOnClick myOnClick, Context context) {
+    public RVCoupinAdapter(List<Reward> rewardListItems, MyOnClick myOnClick, Context context) {
         RVCoupinAdapter.myOnClick = myOnClick;
         this.rewardListItems = rewardListItems;
         this.context = context;
@@ -47,12 +48,12 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
         // Add data here
-        final RewardV2 reward = rewardListItems.get(position);
+        final Reward reward = rewardListItems.get(position);
 
         try {
             holder.title.setText(reward.name);
             holder.details.setText(reward.description);
-            if(reward.isDiscount) {
+            if(reward.isDiscount()) {
                 float oldPrice = reward.price.oldPrice;
                 float newPrice = reward.price.newPrice;
                 float discount = ((oldPrice - newPrice) / oldPrice) * 100;
@@ -60,7 +61,6 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
                 holder.priceNew.setText("N" + (((int) newPrice)));
                 holder.priceOld.setText("N" + ((int) oldPrice));
                 holder.priceOld.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
-                holder.quantity.setText("x " + reward.quantity);
             } else if (reward.price.oldPrice > 0) {
                 String oldPriceString = "N" + (int) reward.price.oldPrice;
                 holder.priceOld.setText(oldPriceString);
@@ -70,6 +70,9 @@ public class RVCoupinAdapter extends RecyclerView.Adapter<com.kibou.abisoyeoke_l
                 holder.priceOld.setText(newPriceString);
                 holder.discount.setVisibility(View.INVISIBLE);
             }
+
+            String quantityString = "x " + reward.selectedQuantity;
+            holder.quantity.setText(quantityString);
 
             Date expiryDate = DateTimeUtils.convertZString(reward.endDate);
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.getDefault());

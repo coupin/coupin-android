@@ -20,12 +20,13 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.Image;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.TypeUtils;
 
@@ -69,7 +70,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
     private GalleryDialog imageDialog;
 
     private Context context;
-    private RewardV2 reward;
+    private Reward reward;
 
     private boolean isCart = false;
 
@@ -92,7 +93,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         super(context, cancelable, cancelListener);
     }
 
-    public DetailsDialog(@NonNull Context context, RewardV2 reward, boolean isCart) {
+    public DetailsDialog(@NonNull Context context, Reward reward, boolean isCart) {
         super(context);
         this.context = context;
         this. reward = reward;
@@ -152,7 +153,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullOldPrice.setPaintFlags(Paint.STRIKE_THRU_TEXT_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         // Discount
-        if (reward.isDiscount) {
+        if (reward.isDiscount()) {
             float oldPrice = reward.price.oldPrice;
             float newPrice = reward.price.newPrice;
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
@@ -210,6 +211,7 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         if(isCart){
             fullRemove.setVisibility(View.GONE);
             fullPin.setVisibility(View.VISIBLE);
+            fullPin.setText("Update Reward");
         }else if (reward.isSelected) {
             fullPin.setVisibility(View.GONE);
             fullRemove.setVisibility(View.VISIBLE);
@@ -224,19 +226,32 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
         fullDateStart.setText(simpleDateFormat.format(Objects.requireNonNull(TypeUtils.stringToDate(reward.startDate))));
 
         // Reusable
-        if (reward.isMultiple) {
-            quantityEditText.setText(String.valueOf(reward.quantity));
+        if (reward.quantity == 0) {
+            quantityTextView.setText("Unavailable at the moment");
+            addBtn.setEnabled(false);
+            subtractBtn.setEnabled(false);
+        } else if (reward.multiple.status) {
             addBtn.setEnabled(true);
             subtractBtn.setEnabled(true);
             String quantityString = reward.quantity + " in stock";
             quantityTextView.setText(quantityString);
+            quantityEditText.setEnabled(true);
         } else {
             quantityTextView.setText("Limited to 1 per Customer");
             addBtn.setEnabled(false);
             subtractBtn.setEnabled(false);
-            quantityEditText.setText(String.valueOf(1));
         }
 
+        // Set Quantity if the reward already has selected quantity
+        if (reward.quantity == 0) {
+            quantityEditText.setText("0");
+        } else if (reward.selectedQuantity > 0) {
+            quantityEditText.setText(String.valueOf(reward.selectedQuantity));
+        } else {
+            quantityEditText.setText("1");
+        }
+
+        // Self explanatory
         fullDelivery.setText(reward.isDelivery ? "YES" : "No");
 
         if (hideButton) {
@@ -309,10 +324,14 @@ public class DetailsDialog extends Dialog implements View.OnClickListener {
                 showImageDialog(3);
                 break;
             case R.id.btn_pin:
-                String enteredQuantity = quantityEditText.getText().toString().trim();
-                if(isQuantityValid(enteredQuantity)){
-                    myOnClick.onItemClick(0, Integer.parseInt(enteredQuantity));
-                    dismiss();
+                if (reward.quantity == 0) {
+                    Toast.makeText(context, "This reward is currently unavailable.", Toast.LENGTH_SHORT).show();
+                } else {
+                    String enteredQuantity = quantityEditText.getText().toString().trim();
+                    if (isQuantityValid(enteredQuantity)) {
+                        myOnClick.onItemClick(0, Integer.parseInt(enteredQuantity));
+                        dismiss();
+                    }
                 }
                 break;
             case R.id.btn_remove:

@@ -89,7 +89,7 @@
                             android:layout_height="wrap_content"
                             android:layout_width="match_parent"
                             android:paddingBottom="10dp"
-                            android:text="@string/testing"
+                            android:text="@string/dash"
                             android:textAllCaps="true"
                             android:textColor="@color/text_color_1"
                             android:textSize="@dimen/logo_text"
@@ -104,7 +104,7 @@
                             <RatingBar
                                 android:id="@+id/merchant_rating"
                                 android:layout_height="wrap_content"
-                                android:layout_marginRight="3dp"
+                                android:layout_marginEnd="3dp"
                                 android:layout_width="wrap_content"
                                 style="@style/circleRating"/>
 
@@ -112,7 +112,7 @@
                                 android:id="@+id/rating_text"
                                 android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
-                                android:text="4.2/5.0"
+                                android:text="--/5.0"
                                 android:textColor="@color/text_color_4"
                                 android:textSize="@dimen/large_text"
                                 android:textStyle="normal"/>
@@ -123,8 +123,7 @@
                             android:id="@+id/merchant_address_textview"
                             android:layout_height="wrap_content"
                             android:layout_width="300dp"
-                            android:paddingLeft="@dimen/padding_xs"
-                            android:paddingRight="@dimen/padding_md"
+                            android:paddingEnd="@dimen/padding_md"
                             android:paddingStart="@dimen/padding_xs"
                             android:textColor="@color/text_color_1"
                             android:textSize="@dimen/large_text"
@@ -135,8 +134,7 @@
                             android:id="@+id/merchant_phone_textview"
                             android:layout_height="wrap_content"
                             android:layout_width="300dp"
-                            android:paddingLeft="@dimen/padding_xs"
-                            android:paddingRight="@dimen/padding_md"
+                            android:paddingEnd="@dimen/padding_md"
                             android:paddingStart="@dimen/padding_xs"
                             android:inputType="phone"
                             android:textColor="@color/text_color_1"

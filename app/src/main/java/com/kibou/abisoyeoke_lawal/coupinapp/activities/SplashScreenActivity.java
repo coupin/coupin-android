@@ -2,13 +2,17 @@ package com.kibou.abisoyeoke_lawal.coupinapp.activities;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.IntentSender;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+
+import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -16,6 +20,18 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.facebook.appevents.AppEventsLogger;
+import com.google.android.material.snackbar.Snackbar;
+import com.google.android.play.core.appupdate.AppUpdateInfo;
+import com.google.android.play.core.appupdate.AppUpdateManager;
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory;
+import com.google.android.play.core.install.InstallStateUpdatedListener;
+import com.google.android.play.core.install.model.AppUpdateType;
+import com.google.android.play.core.install.model.InstallStatus;
+import com.google.android.play.core.install.model.UpdateAvailability;
+import com.google.android.play.core.tasks.Task;
+import com.google.firebase.FirebaseApp;
+import com.google.firebase.FirebaseOptions;
+import com.kibou.abisoyeoke_lawal.coupinapp.BuildConfig;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.clients.ApiClient;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.UpdateDialog;
@@ -28,6 +44,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.sentry.Sentry;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -35,11 +52,16 @@ import retrofit2.internal.EverythingIsNonNull;
 
 public class SplashScreenActivity extends AppCompatActivity implements MyOnSelect {
     private ApiCalls apiCalls;
-    private final boolean check = false;
+    private AppUpdateManager appUpdateManager;
     private boolean isLoggedIn = false;
     private boolean interestsSelected = false;
     private boolean isOnboardingDone = false;
     private Bundle extras;
+    private Handler handler = new Handler();
+    private InstallStateUpdatedListener installStateUpdatedListener;
+    private UpdateDialog updateDialog;
+
+    private final boolean check = false;
     private final int PERMISSION_ALL = 1;
     private final int count = 0;
     private final String[] permissions = {
@@ -47,8 +69,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         Manifest.permission.ACCESS_FINE_LOCATION
     };
 
-    Handler handler = new Handler();
-    UpdateDialog updateDialog;
+    private static final int FLEXIBLE_APP_UPDATE_REQ_CODE = 123;
 
     @BindView(R.id.gif_image)
     ImageView gifView;
@@ -66,6 +87,7 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
             .into(gifView);
 
         apiCalls = ApiClient.getInstance().getCalls(this, true);
+        appUpdateManager = AppUpdateManagerFactory.create(getApplicationContext());
 
         PreferenceManager.setContext(getApplicationContext());
 
@@ -73,8 +95,23 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         interestsSelected = PreferenceManager.interestsSelected();
         isOnboardingDone = PreferenceManager.isOnboardingDone();
 
-        // TODO: Use GCM notification instead
-        startService(new Intent(getApplicationContext(), UpdateService.class));
+        installStateUpdatedListener = state -> {
+            if (state.installStatus() == InstallStatus.DOWNLOADED) {
+                popupSnackBarForCompleteUpdate();
+            } else if (state.installStatus() == InstallStatus.INSTALLED) {
+                removeInstallStateUpdateListener();
+            } else {
+                Log.v("Instal State", "InstallStateUpdatedListener: state: " + state.installStatus());
+            }
+        };
+        appUpdateManager.registerListener(installStateUpdatedListener);
+
+        // TODO: Use GCM notification instead for version updates
+        try {
+            startService(new Intent(getApplicationContext(), UpdateService.class));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (!PermissionsMngr.permissionsCheck(permissions, this)) {
             ActivityCompat.requestPermissions(this, permissions, PERMISSION_ALL);
@@ -91,6 +128,39 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
                 }
             }
         }
+    }
+
+    // Check update from playstore
+    private void checkUpdate() {
+        Task<AppUpdateInfo> appUpdateInfoTask = appUpdateManager.getAppUpdateInfo();
+        appUpdateInfoTask.addOnSuccessListener(appUpdateInfo -> {
+            if (appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
+                    && appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                startUpdateFlow(appUpdateInfo);
+            } else if (appUpdateInfo.installStatus() == InstallStatus.DOWNLOADED) {
+                popupSnackBarForCompleteUpdate();
+            } else {
+                proceed();;
+            }
+        }).addOnFailureListener(e -> {
+            Log.v("Update Attempt", "Failed to check update.");
+            proceed();;
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable @org.jetbrains.annotations.Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == FLEXIBLE_APP_UPDATE_REQ_CODE) {
+            if (resultCode == RESULT_CANCELED) {
+                Toast.makeText(this, "Update Cancelled!", Toast.LENGTH_SHORT).show();
+            } else if (resultCode == RESULT_OK) {
+                Toast.makeText(this, "Update Complete!", Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, "Update Failed!", Toast.LENGTH_SHORT).show();
+            }
+        }
+        proceed();;
     }
 
     @Override
@@ -124,6 +194,19 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         }
     }
 
+    private void popupSnackBarForCompleteUpdate() {
+        Snackbar.make(findViewById(android.R.id.content).getRootView(), "New app is ready!", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Install", view -> {
+                    if (appUpdateManager != null) {
+                        appUpdateManager.completeUpdate();
+                    } else {
+                        proceed();;
+                    }
+                })
+                .setActionTextColor(getResources().getColor(R.color.colorPrimaryDark))
+                .show();
+    }
+
     public void proceed() {
         handler.postDelayed(() -> {
             if (isLoggedIn) {
@@ -151,6 +234,27 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
         }, 2000);
     }
 
+    private void removeInstallStateUpdateListener() {
+        if (appUpdateManager != null) {
+            appUpdateManager.unregisterListener(installStateUpdatedListener);
+        }
+    }
+
+    private void startUpdateFlow(AppUpdateInfo appUpdateInfo) {
+        try {
+            appUpdateManager.startUpdateFlowForResult(
+                    appUpdateInfo,
+                    AppUpdateType.FLEXIBLE,
+                    this,
+                    FLEXIBLE_APP_UPDATE_REQ_CODE
+            );
+        } catch (IntentSender.SendIntentException e) {
+            e.printStackTrace();
+            Sentry.captureException(e);
+            proceed();
+        }
+    }
+
     @Override
     public void onSelect(boolean selected, int version) {
         if (selected) {
@@ -175,14 +279,14 @@ public class SplashScreenActivity extends AppCompatActivity implements MyOnSelec
                     PreferenceManager.setCurrentUser(response.body());
                 }
 
-                proceed();
+                checkUpdate();
             }
 
             @EverythingIsNonNull
             @Override
             public void onFailure(Call<User> call, Throwable t) {
                 t.printStackTrace();
-                proceed();
+                checkUpdate();
             }
         });
     }

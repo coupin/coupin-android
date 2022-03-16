@@ -43,15 +43,16 @@
             app:layout_constraintTop_toTopOf="@id/delivery_back"
             app:layout_constraintBottom_toBottomOf="@id/delivery_back"
             android:textStyle="bold"/>
+
         <ImageView
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@id/delivery_back"
-            app:layout_constraintBottom_toBottomOf="@id/delivery_back"
+            android:layout_width="19dp"
+            android:layout_height="35dp"
             android:layout_marginEnd="10dp"
             android:indeterminate="true"
-            android:src="@drawable/gokada_logo2"/>
+            android:src="@drawable/kwik"
+            app:layout_constraintBottom_toBottomOf="@id/delivery_back"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/delivery_back" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.core.widget.NestedScrollView

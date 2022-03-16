@@ -9,16 +9,26 @@ import java.util.Date;
 public class RewardsListItemV2 implements Serializable {
     @SerializedName("rewardId")
     public ArrayList<RewardWrapper> rewards;
+    @SerializedName("rewardsArray")
+    public ArrayList<Reward> rewardsArray;
     @SerializedName("favourite")
     public boolean favourite;
     @SerializedName("isActive")
     public boolean isActive;
     @SerializedName("visited")
     public boolean visited;
+    @SerializedName("isDeliverable")
+    public boolean isDeliverable;
     @SerializedName("useNow")
     public boolean useNow;
     @SerializedName("createdAt")
     public String createdAt;
+    @SerializedName("deliveryAddressId")
+    public String deliveryAddressId;
+    @SerializedName("deliveryId")
+    public String deliveryId;
+    @SerializedName("deliveryStatus")
+    public String deliveryStatus;
     @SerializedName("expiryDate")
     public String expiryDate;
     @SerializedName("_id")
@@ -33,21 +43,20 @@ public class RewardsListItemV2 implements Serializable {
     public User userid;
 
     public static class RewardWrapper implements Serializable {
+        @SerializedName("singleUse")
+        public boolean singleUse;
+        @SerializedName("quantity")
+        public int quantity;
         @SerializedName("id")
-        public RewardV2 reward;
+        public Reward reward;
+        @SerializedName("status")
+        public String status;
+        @SerializedName("usedOn")
+        public String usedOn;
     }
 
     public boolean later;
     public Date expiresDate;
     public int rewardCount;
     public String bookingId;
-//    public String bookingShortCode;
-//    public String merchantAddress;
-//    public String merchantBanner;
-//    public String merchantLogo;
-//    public String merchantName;
-//    public String merchantPhone;
-//    public String rewardDetails;
-//    public String rewardDescription;
-//    public String rewardName;
 }

@@ -7,6 +7,7 @@ import android.graphics.Paint;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,7 @@ import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.dialog.DetailsDialog;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnSelect;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.PreferenceManager;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.StringUtils;
@@ -36,7 +37,7 @@ import java.util.Set;
 
 public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHolder> {
     public Set<String> blacklist;
-    public ArrayList<RewardV2> rewards;
+    public ArrayList<Reward> rewards;
     public Context context;
     private final boolean isCart;
     static public MyOnSelect myOnSelect;
@@ -53,7 +54,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
         public TextView headTitle;
         public View head;
         public View rewardDivider;
-        public LinearLayout backgroud;
+        public LinearLayout background;
         public TextView quantityLabel;
 
         public ViewHolder(View itemView) {
@@ -69,12 +70,12 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             headTitle = (TextView) head.findViewById(R.id.list_reward_title);
             rewardDivider = (View) head.findViewById(R.id.reward_divider);
             tickFrame = (FrameLayout) head.findViewById(R.id.tick_frame);
-            backgroud = head.findViewById(R.id.background);
+            background = head.findViewById(R.id.background);
             quantityLabel = head.findViewById(R.id.quantity_label);
         }
     }
 
-    public RVPopUpAdapter(ArrayList<RewardV2> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
+    public RVPopUpAdapter(ArrayList<Reward> rewards, Context context, MyOnSelect myOnSelect, boolean isCart) {
         this.context = context;
         RVPopUpAdapter.myOnSelect = myOnSelect;
         this.rewards = rewards;
@@ -91,10 +92,10 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
     @Override
     public void onBindViewHolder(final RVPopUpAdapter.ViewHolder holder, final int position) {
-        final RewardV2 reward = rewards.get(position);
+        final Reward reward = rewards.get(position);
 
         holder.headDetails.setText(reward.description);
-        if (reward.isDiscount) {
+        if (reward.isDiscount()) {
             float oldPrice = reward.price.oldPrice;
             float newPrice = reward.price.newPrice;
             float discount = ((oldPrice - newPrice) / oldPrice) * 100;
@@ -130,12 +131,12 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
 
             detailsDialog.setClickListener(new MyOnClick() {
                 @Override
-                public void onItemClick(int position1) { }
+                public void onItemClick(int position1) {}
 
                 @Override
                 public void onItemClick(int place, int quantity) {
                     if (place == 0) {
-                        holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                        holder.background.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                         holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
                         holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
                         holder.tickFrame.setVisibility(View.VISIBLE);
@@ -148,16 +149,16 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                         holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
                         holder.quantityLabel.setText("x " + quantity);
                         reward.isSelected = true;
+                        reward.selectedQuantity = quantity;
                         myOnSelect.onSelect(true, position, quantity);
-
                     } else {
                         Boolean isDarkMode = PreferenceManager.getBoolean(isDarkModePref);
                         if(isDarkMode){
-                            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+                            holder.background.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
 
                         }else{
-                            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.white));
+                            holder.background.setBackgroundColor(context.getResources().getColor(R.color.white));
                             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.lightGrey));
                         }
                         holder.head.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
@@ -171,6 +172,7 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
                         holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.text_color_1));
                         holder.quantityLabel.setText("");
                         reward.isSelected = false;
+                        reward.selectedQuantity = 0;
                         myOnSelect.onSelect(false, position, quantity);
                     }
                 }
@@ -178,8 +180,8 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             detailsDialog.show();
         });
 
-        if(reward.isSelected){
-            holder.backgroud.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
+        if(reward.isSelected) {
+            holder.background.setBackgroundColor(context.getResources().getColor(R.color.darkGrey));
             holder.head.setBackgroundColor(context.getResources().getColor(R.color.text_color_3));
             holder.rewardDivider.setBackgroundColor(context.getResources().getColor(R.color.darkTick));
             holder.tickFrame.setVisibility(View.VISIBLE);
@@ -190,12 +192,16 @@ public class RVPopUpAdapter extends RecyclerView.Adapter<RVPopUpAdapter.ViewHold
             holder.headPriceNew.setTextColor(context.getResources().getColor(R.color.white));
             holder.headTitle.setTextColor(context.getResources().getColor(R.color.white));
             holder.quantityLabel.setTextColor(context.getResources().getColor(R.color.white));
-            holder.quantityLabel.setText("x " + reward.quantity);
+            holder.quantityLabel.setText("x " + reward.selectedQuantity);
         }
     }
 
     public void setBlacklist(Set<String> blacklist) {
         this.blacklist = blacklist;
+    }
+
+    public void setOnSelect(MyOnSelect myOnSelect) {
+        this.myOnSelect = myOnSelect;
     }
 
     @Override

@@ -69,6 +69,8 @@ data class GokadaOrderEstimateRequestBody(val api_key : String, val pickup_addre
 data class DropOff(val address: String, val latitude: String, val longitude: String)
 data class GokadaOrderEstimateResponse(val error : String?, val message : String?, val status : Int?, val distance : Double?,
                                  val time : Int?, val fare : Int?)
+data class KwikOrderEstimateResponse(val data : KwikData?)
+data class KwikData(val estimatedCost : Float?, val deliveryTime : String?)
 
 
 
@@ -77,7 +79,8 @@ data class GokadaOrderEstimateResponse(val error : String?, val message : String
 /** GENERATE COUPIN **/
 data class GetCoupinResponseModel (val data : Data?)
 data class GetCoupinRequestModel(val saved : Boolean, val rewardId: List<String>, val deliveryAddress : String,
-                                 val isDeliverable : Boolean, val expiryDate : String, val merchantId : String)
+                                 val isDeliverable : Boolean, val expiryDate : String, val merchantId : String, val coupinId:
+                                 String)
 
 data class Data(val booking: Booking?, val reference: String?)
 
@@ -96,7 +99,7 @@ data class Booking (
 
     val merchantId: String?,
 
-    val rewardId: List<RewardID>?,
+    val rewardId: List<RewardIDMini>?,
 
     val expiryDate: String?,
     val deliveryAddress: Any? = null,
@@ -119,6 +122,9 @@ data class RewardID (
     val _id: String?,
 
     val id: String?
+)
+data class RewardIDMini (
+    val id: ID?
 )
 
 data class ID (
@@ -153,8 +159,8 @@ data class Multiple (
 )
 
 data class Price (
-    val old: Long?,
-    val new: Long?
+    val old: Double?,
+    val new: Double?
 )
 
 data class Review (

@@ -129,6 +129,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     handleGoogleSignUpResult(task);
                 } catch (Exception e) {
                     e.printStackTrace();
+                    showProgress(false);
                     Toast.makeText(this, getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
                 }
                 break;
@@ -157,7 +158,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                     nextIntent.putExtra("name", body.name);
                     showProgress(false);
                     startActivity(nextIntent);
-                    finish();
+                    finishAffinity();
                 } else {
                     ApiError error = ApiClient.parseError(response);
                     Toast.makeText(SignUpActivity.this, error.message, Toast.LENGTH_LONG).show();
@@ -246,6 +247,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
      * Google Signup
      */
     private void attemptGoogleSignUp() {
+        showProgress(true);
         Intent signInIntent = gsc.getSignInIntent();
         startActivityForResult(signInIntent, RC_SIGNUP_GOOGLE);
     }
@@ -262,6 +264,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                 account.getPhotoUrl().toString()));
 
         } catch (Exception e) {
+            showProgress(false);
             e.printStackTrace();
             Toast.makeText(getApplicationContext(), getResources().getString(R.string.error_google), Toast.LENGTH_SHORT).show();
         }
@@ -320,7 +323,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
         super.onBackPressed();
 
         startActivity(new Intent(SignUpActivity.this, LandingActivity.class));
-        finish();
+        finishAffinity();
     }
 
     @Override
@@ -339,6 +342,7 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
                         url
                 ));
             } catch (Exception e) {
+                showProgress(false);
                 e.printStackTrace();
                 Toast.makeText(getApplicationContext(), "An error occurred while trying to register you through Facebook. Please try again", Toast.LENGTH_SHORT).show();
             }
@@ -357,11 +361,13 @@ public class SignUpActivity extends AppCompatActivity implements FacebookCallbac
 
     @Override
     public void onError(FacebookException e) {
+        showProgress(false);
         Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        showProgress(false);
         Toast.makeText(getApplicationContext(), connectionResult.getErrorMessage(), Toast.LENGTH_SHORT).show();
     }
 }

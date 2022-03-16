@@ -19,7 +19,7 @@ public class InnerItem implements Serializable {
 
     public static class MerchantInfo implements Serializable {
         @SerializedName("rewards")
-        public ArrayList<RewardV2> rewards;
+        public ArrayList<Reward> rewards;
         @SerializedName("categories")
         public ArrayList<String> categories;
         @SerializedName("location")

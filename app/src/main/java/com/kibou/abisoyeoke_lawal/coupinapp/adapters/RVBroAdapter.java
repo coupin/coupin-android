@@ -14,7 +14,7 @@ import com.bumptech.glide.Glide;
 import com.kibou.abisoyeoke_lawal.coupinapp.R;
 import com.kibou.abisoyeoke_lawal.coupinapp.interfaces.MyOnClick;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.InnerItem;
-import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardV2;
+import com.kibou.abisoyeoke_lawal.coupinapp.models.Reward;
 import com.kibou.abisoyeoke_lawal.coupinapp.models.RewardsListItemV2;
 import com.kibou.abisoyeoke_lawal.coupinapp.utils.DateTimeUtils;
 
@@ -68,7 +68,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
 
             int counter = 0;
             for (RewardsListItemV2.RewardWrapper rewardWrapper: reward.rewards) {
-                RewardV2 rewardMini = rewardWrapper.reward;
+                Reward rewardMini = rewardWrapper.reward;
                 if (counter == 0) {
                     temp = DateTimeUtils.convertZString(rewardMini.endDate);
                 } else {
@@ -82,7 +82,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd MMM yyyy", Locale.ENGLISH);
             holder.activeExpiration.setText(simpleDateFormat.format(temp));
 
-            RewardV2 first = reward.rewards.get(0).reward;
+            Reward first = reward.rewards.get(0).reward;
             holder.rewardOne.setText(first.description);
             if (first.price != null && first.price.oldPrice > 0 && first.price.newPrice > 0) {
                 float oldPrice = first.price.oldPrice;
@@ -94,7 +94,7 @@ public class RVBroAdapter extends RecyclerView.Adapter<RVBroAdapter.ItemViewHold
             }
 
             if (reward.rewards.size() > 1) {
-                RewardV2 second = reward.rewards.get(1).reward;
+                Reward second = reward.rewards.get(1).reward;
                 holder.rewardTwo.setText(second.description);
                 if (second.price != null && second.price.oldPrice > 0 && second.price.newPrice > 0) {
                     float oldPrice = second.price.oldPrice;
